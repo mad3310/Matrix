@@ -43,13 +43,15 @@ public class TaskMclusterInitZookeeperServiceImpl extends BaseTask4RDSServiceImp
 			return tr;
 
 		Long mclusterId = getLongFromObject(params.get("mclusterId"));
-		if(mclusterId == null)
+		if(null == mclusterId) {
 			throw new ValidateException("params's mclusterId is null");
+		}
 		
 		//执行业务
 		MclusterModel mclusterModel = this.mclusterService.selectById(mclusterId);
-		if(mclusterModel == null)
+		if(null == mclusterModel) {
 			throw new ValidateException("mclusterModel is null by mclusterId:" + mclusterId);
+		}
 
 		//执行业务
 		String namesstr = (String)params.get("addNames");
@@ -59,45 +61,48 @@ public class TaskMclusterInitZookeeperServiceImpl extends BaseTask4RDSServiceImp
 			containers.add(this.containerService.selectByName(addName));
 		}
 
-		if(containers.isEmpty())
+		if(containers.isEmpty()) {
 			throw new ValidateException("containers is empty by name:" + namesstr);
+		}
 
 		//get zk ip from old container.
 		List<ContainerModel> oldContainers = this.containerService.selectByMclusterId(mclusterId);
-		if(oldContainers.isEmpty())
+		if(oldContainers.isEmpty()) {
 			throw new ValidateException("old containers is empty by mclusterId:" + mclusterId);
-
-		String zookeeperIp = "";
-		for (ContainerModel oldContainer:oldContainers) {
-			ApiResultObject zkInfo = this.pythonService.getZkInfo(oldContainer.getIpAddr(), mclusterModel.getAdminUser(), mclusterModel.getAdminPassword());
-			tr = analyzeRestServiceResult(zkInfo);
-			if(tr.isSuccess()) {
-				Map zkInfoMap = ((Map)transToMap(zkInfo.getResult()).get("response"));
-				if(null != zkInfoMap && "False".equals(zkInfoMap.get("zkLeader"))) {
-					zookeeperIp = (String) zkInfoMap.get("zkAddress");
-					break;
-				}
-			}
 		}
-		if(StringUtils.isEmpty(zookeeperIp))
-			throw new ValidateException("init zk error,old container's zk ip is null");
+		
 
 		for (int i = 0; i < containers.size(); i++) {
 			ContainerModel container = containers.get(i);
 			String nodeIp = container.getIpAddr();
 			Map<String, String> zkParm = new HashMap<String,String>();
-			zkParm.put("zkAddress", zookeeperIp);
 			zkParm.put("zkPort", Constant.ZK_PORT);
-			ApiResultObject resultObject = this.pythonService.initZookeeper(nodeIp,zkParm);
 			
-			tr = analyzeRestServiceResult(resultObject);
-			if(!tr.isSuccess()) {
+			//zk集群，当集群中第一台zk异常后，挂载集群中的其他
+			int z = 0;
+			for (int j = 0; j<oldContainers.size(); j++) {
+				String zookeeperIp = oldContainers.get(j).getZookeeperIp();
+				if(StringUtils.isEmpty(zookeeperIp)) {
+					throw new ValidateException("init zk error,old container's zk ip is null");
+				}
+				
+				zkParm.put("zkAddress", zookeeperIp);
+				ApiResultObject resultObject = this.pythonService.initZookeeper(nodeIp,zkParm);
+				
+				tr = analyzeRestServiceResult(resultObject);
+				if(tr.isSuccess()) {
+					container.setZookeeperIp(zookeeperIp);
+					this.containerService.updateBySelective(container);
+					break;
+				}
+				z++;
+			}
+			
+			if(z == oldContainers.size()) {
 				tr.setResult("the" + (i+1) +"node error:" + tr.getResult());
 				break;
-			} else {
-				container.setZookeeperIp(zookeeperIp);
-				this.containerService.updateBySelective(container);
 			}
+			
 		}
 		
 		tr.setParams(params);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -105,9 +106,9 @@ public class SwiftServerController {
 		return obj;
 	}	
 	@RequestMapping(value="/{id}/folder",method=RequestMethod.POST)
-	public @ResponseBody ResultObject addFolder(@PathVariable Long id, String file,String directory){
+	public @ResponseBody ResultObject addFolder(@Valid FolderModel folderModel, @PathVariable Long id){
 		isAuthoritySwift(id);
-		this.swiftServerProxy.addFolder(id,file,directory);
+		this.swiftServerProxy.addFolder(id,folderModel.getFile(),folderModel.getDirectory());
 		ResultObject obj = new ResultObject();
 		return obj;
 	}	

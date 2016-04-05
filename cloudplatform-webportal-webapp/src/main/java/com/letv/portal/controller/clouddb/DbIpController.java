@@ -1,5 +1,9 @@
 package com.letv.portal.controller.clouddb;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -48,12 +52,8 @@ public class DbIpController {
 		if(null == dbId || StringUtils.isNullOrEmpty(ips)) {
 			throw new ValidateException("参数不能为空");
 		} else {
-			//DbModel dbModel = this.dbService.selectById(dbId);
-			//if(dbModel!=null && dbModel.getCreateUser()==this.sessionService.getSession().getUserId()) {
-				this.dbUserProxy.saveOrUpdateIps(dbId,ips);
-			//} else {
-			//	throw new ValidateException("非法用户！");
-			//}
+			isAuthorityDb(dbId);
+			this.dbUserProxy.saveOrUpdateIps(dbId,ips);
 		}
 		return obj;
 	}
@@ -66,5 +66,16 @@ public class DbIpController {
 			obj.setData(this.dbUserService.selectMarkIps4dbUser(dbId,username));
 			return obj;
 		}
+	}
+	
+	private void isAuthorityDb(Long dbId) {
+		if(null == dbId)
+			throw new ValidateException("参数不合法");
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("id", dbId);
+		map.put("createUser", sessionService.getSession().getUserId());
+		List<DbModel> dbs = this.dbService.selectByMap(map);
+		if(null == dbs  || dbs.isEmpty())
+			throw new ValidateException("参数不合法");
 	}
 }
