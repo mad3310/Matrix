@@ -796,7 +796,7 @@
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com</service.notice.email.to>
+                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -868,7 +868,7 @@
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com</service.notice.email.to>
+                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -940,7 +940,7 @@
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com</service.notice.email.to>
+                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1012,7 +1012,7 @@
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com</service.notice.email.to>
+                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1055,11 +1055,6 @@
     </profiles>
 
     <repositories>
-        <repository>
-            <id>matrix.thirdparty</id>
-            <name>Matrix Thirdparty Repository</name>
-            <url>http://10.200.91.144:28081/nexus/content/repositories/thirdparty/</url>
-        </repository>
         <repository>
             <id>letv.public</id>
             <name>Letv.com Repository</name>
