@@ -3,7 +3,7 @@
  * dblist page
  */
 define(function(require){
-	var pFresh,iFresh;
+	var iFresh;
     var common = require('../../common');
     var cn = new common();
 
@@ -91,34 +91,32 @@ define(function(require){
 	}
 	function refreshCtl(data) {
 		dbListHandler.DbListHandler(data);
+		clearInterval(iFresh);
 		if ($(".progress").length == 0){
-			if(pFresh){
-				clearInterval(pFresh);
-			}
-			if(iFresh){
-				clearInterval(iFresh);
-			}
 			iFresh = setInterval(asyncData,cn.dbListRefreshTime);
 		}else{
-			asyncProgressData();
-			if(iFresh){
-				clearInterval(iFresh);
-			}
-			if(pFresh){
-				clearInterval(pFresh);
-			}
-			pFresh = setInterval(asyncProgressData,10000);
+			 /*进度条数据刷新*/
+			var asyncProgressIntervalList=[]
+			$("input[name = progress_db_id]").each(function(){
+				var dbId = $(this).val(),
+				url = "/build/db/" + dbId,
+				intervalId = setInterval(function(){
+					cn.GetLocalData(url,function(data){
+						dbListHandler.progress(dbId,data,onProgressEnd);
+					});
+				},5000);
+				
+				function onProgressEnd(){
+					var intervalIndex= asyncProgressIntervalList.indexOf(intervalId);
+					asyncProgressIntervalList.splice(intervalIndex,1);
+					clearInterval(intervalId);
+					if(asyncProgressIntervalList.length===0){
+						asyncData();	
+					}
+				}
+				
+				asyncProgressIntervalList.push(intervalId);
+			});
 		}
-	}
-	 /*进度条数据刷新*/
-	function asyncProgressData(){
-		$("input[name = progress_db_id]").each(function(){
-			var dbId = $(this).val();
-			function progress_func(data){
-				dbListHandler.progress(dbId,data,asyncData);
-			}
-			var url = "/build/db/" + dbId;
-			cn.GetLocalData(url,progress_func);
-		})
 	}
 });
