@@ -102,7 +102,7 @@ public class ContainerProxyImpl extends BaseProxyImpl<ContainerModel> implements
         totalParams.put("mclusterId",containerModel.getMclusterId());
         totalParams.put("type","mclusteraddnode");
         Integer total = this.containerService.selectByMapCount(totalParams);
-        if(total < 0)
+        if(0 == total)
             throw new ValidateException("RDS集群数据节点最少为三个");
         containerModel.setStatus(MclusterStatus.DELETING.getValue());
         this.containerService.updateBySelective(containerModel);

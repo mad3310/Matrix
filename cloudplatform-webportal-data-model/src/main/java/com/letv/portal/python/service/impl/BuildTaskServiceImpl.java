@@ -114,7 +114,7 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
                 Map<String,Object> glbParams = new HashMap<String,Object>();
                 List<String> urlPorts = new ArrayList<String>();
                 for (ContainerModel container : containers) {
-                    if(!"mclustervip".equals(container.getType())) {
+                    if("mclusternode".equals(container.getType()) || "mclusteraddnode".equals(container.getType())) {
                         urlPorts.add(container.getIpAddr() + ":3306");
                     }
                 }

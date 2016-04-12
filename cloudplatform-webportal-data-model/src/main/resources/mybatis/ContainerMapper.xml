@@ -326,22 +326,6 @@
 	</select>
 	
 	<!-- 根据条件查询 -->
-	<select id="selectValidNonVipContianer" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select
-		<include refid="Base_Column_List" />,M.MCLUSTER_NAME,M.ADMIN_USER,M.ADMIN_PASSWORD,H.HOST_NAME,H.HOST_NAME_ALIAS,U.HCLUSTER_NAME_ALIAS,H.HCLUSTER_ID
-		from WEBPORTAL_CONTAINER C,WEBPORTAL_MCLUSTER_INFO M,WEBPORTAL_HOST H,WEBPORTAL_HCLUSTER U
-		where 1=1
-		<if test="type != null ">
-			and C.TYPE=#{type}
-		</if>
-		<if test="mclusterId != null ">
-			and C.MCLUSTER_ID=#{mclusterId} 
-		</if>
-		and C.MCLUSTER_ID=M.Id AND M.STATUS IN(1,7,8,9,13,14) and C.HOST_ID=H.ID and H.HCLUSTER_ID=U.ID
-		
-	</select>
-	
-	<!-- 根据条件查询 -->
 	<select id="selectValidByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />,M.MCLUSTER_NAME,M.ADMIN_USER,M.ADMIN_PASSWORD,H.HOST_NAME,H.HOST_NAME_ALIAS,U.HCLUSTER_NAME_ALIAS,H.HCLUSTER_ID
@@ -349,9 +333,6 @@
 		where 1=1
 		<if test="containerName != null  and containerName != '' and containerName != 'null'">
 			and C.CONTAINER_NAME like CONCAT('%',#{containerName},'%')
-		</if>
-		<if test="type != null ">
-			and C.TYPE=#{type}
 		</if>
 		<if test="ipAddr != null and ipAddr != ''">
 			and C.IP_ADDR like CONCAT('%',#{ipAddr},'%') escape '^'
@@ -362,6 +343,14 @@
 		<if test="hclusterName != null and hclusterName != ''">
 			and U.HCLUSTER_NAME=#{hclusterName} 
 		</if>
+		<if test="types != null and types.length > 0">
+			and C.TYPE IN 
+			<foreach collection="types" item="type" index="index"
+           		open="(" close=")" separator=",">
+           		#{type}
+        	</foreach>
+		</if>
+		
 		and C.MCLUSTER_ID=M.Id AND M.STATUS IN(1,7,8,9,13,14) and C.HOST_ID=H.ID and H.HCLUSTER_ID=U.ID
 		
 	</select>
