@@ -161,8 +161,7 @@ public class MclusterProxyImpl extends BaseProxyImpl<MclusterModel> implements
         List<HostModel> hostModels = this.hostService.selectByHclusterId(mcluster.getHclusterId());
         Map<String, Object> totalParams = new HashMap<String, Object>();
         totalParams.put("mclusterId",mclusterId);
-        totalParams.put("type","mclusternode");
-        Integer total = this.containerService.selectByMapCount(totalParams);
+        Integer total = this.containerService.selectCountNodeContainers(totalParams);
 
         if(total+count > hostModels.size())
             throw new ValidateException("当前集群所在物理机集群最高数据节点为"+hostModels.size() +"个");

@@ -75,7 +75,7 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 			ZabbixPushModel zabbixPushModel = new ZabbixPushModel();
 			zabbixPushModel.setAuth(auth);
 			String templateId = "";
-			if("mclusternode".equals(c.getType())) {
+			if("mclusternode".equals(c.getType()) || "mclusteraddnode".equals(c.getType())) {
 				templateId = ZABBIX_TEMPLATE_NORMAL;
 			} else if("mclustervip".equals(c.getType())) {
 				templateId = ZABBIX_TEMPLATE_VIP;

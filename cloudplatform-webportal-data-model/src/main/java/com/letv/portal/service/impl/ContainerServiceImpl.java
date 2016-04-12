@@ -78,7 +78,14 @@ public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implem
 	}
 	@Override
 	public List<ContainerModel> selectVaildNormalContainers(Map<String,Object> params) {
-		return this.selectValidContianerByType("mclusternode", params);
+		return this.selectValidNonVipContianer(params);
+	}
+	
+	private List<ContainerModel> selectValidNonVipContianer(Map<String,Object> params){
+		if(params == null)
+			params = new HashMap<String,Object>();
+		params.put("type", "mclustervip");
+		return this.containerDao.selectValidNonVipContianer(params);
 	}
 	
 	private List<ContainerModel> selectValidContianerByType(String type,Map<String,Object> params){
@@ -105,6 +112,17 @@ public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implem
 	public List<ContainerModel> selectWithHClusterNameByMap(
 			Map<String, Object> params) {
 		return this.containerDao.selectWithHClusterNameByMap(params);
+	}
+
+	@Override
+	public Integer selectCountNodeContainers(Map<String, Object> map) {
+		return this.containerDao.selectCountNodeContainers(map);
+	}
+
+	@Override
+	public List<ContainerModel> selectNodeContainersByMap(
+			Map<String, Object> map) {
+		return this.containerDao.selectNodeContainersByMap(map);
 	}
 	
 

@@ -145,7 +145,7 @@ public class DbServiceImpl extends BaseServiceImpl<DbModel> implements
 				.getMclusterId());
 		List<String> urlPorts = new ArrayList<String>();
 		for (ContainerModel container : containers) {
-			if ("mclusternode".equals(container.getType())) {
+			if (!"mclustervip".equals(container.getType())) {
 				urlPorts.add(container.getIpAddr() + ":3306");
 			}
 		}

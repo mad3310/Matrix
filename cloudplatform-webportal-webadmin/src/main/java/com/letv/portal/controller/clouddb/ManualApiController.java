@@ -247,7 +247,6 @@ public class ManualApiController {
 		for (MclusterModel mclusterModel : mclusters) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("mclusterId", mclusterModel.getId());
-			map.put("type","mclusternode");
 			boolean isSuccess = this.zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectWithHClusterNameByMap(map));
 			if(isSuccess) {
 				success++;

@@ -32,6 +32,12 @@ public interface IContainerDao extends IBaseDao<ContainerModel> {
 	public List<ContainerModel> selectVipIps4Monitor();
 	public List<ContainerModel> selectValidByMap(Map<String, Object> params);
 	/**
+	 * 查询非vip的正常状态的container
+	 * @param params
+	 * @return
+	 */
+	public List<ContainerModel> selectValidNonVipContianer(Map<String, Object> params);
+	/**
 	 * 获取container信息（包含物理机集群名称）
 	 * @param params
 	 * @return
@@ -39,4 +45,8 @@ public interface IContainerDao extends IBaseDao<ContainerModel> {
 	public List<ContainerModel> selectWithHClusterNameByMap(Map<String, Object> params);
 
 	List<ContainerModel> selectVipByClusterId(Long mclusterId);
+	
+	Integer selectCountNodeContainers(Map<String, Object> map);
+	
+	List<ContainerModel> selectNodeContainersByMap(Map<String, Object> map);
 }

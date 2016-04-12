@@ -91,8 +91,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
 	    Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("mclusterId", mclusterId);
-	    map.put("type", "mclusternode");
-	    List<ContainerModel> containers = this.containerService.selectByMap(map);	  
+	    List<ContainerModel> containers = this.containerService.selectNodeContainersByMap(map);	  
 	    
 	    MonitorIndexModel monitorIndexModel  = this.monitorIndexService.selectById(chartId);	   
 	    Date end = new Date();
@@ -383,8 +382,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
 	    Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("mclusterId", mclusterId);
-	    map.put("type", "mclusternode");
-	    List<ContainerModel> containers = this.containerService.selectByMap(map);
+	    List<ContainerModel> containers = this.containerService.selectNodeContainersByMap(map);
 	    if(containers.size()<0) {
 	    	return 0F;
 	    }
@@ -397,8 +395,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
 	    Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("mclusterId", mclusterId);
-	    map.put("type", "mclusternode");
-	    List<ContainerModel> containers = this.containerService.selectByMap(map);
+	    List<ContainerModel> containers = this.containerService.selectNodeContainersByMap(map);
 	    if(containers.size()<0) {
 	    	return null;
 	    }
