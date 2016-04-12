@@ -321,8 +321,17 @@
 			WEBPORTAL_MCLUSTER_INFO M ON M.ID = C.MCLUSTER_ID
 		join 
 			WEBPORTAL_HCLUSTER H on M.HCLUSTER_ID = H.ID
-		where 
-			C.TYPE != "mclustervip" and C.MCLUSTER_ID=#{mclusterId}
+		where 1=1
+			<if test="mclusterId != null ">
+				and C.MCLUSTER_ID=#{mclusterId} 
+			</if>
+			<if test="types != null and types.length > 0">
+				and C.TYPE IN 
+				<foreach collection="types" item="type" index="index"
+	           		open="(" close=")" separator=",">
+	           		#{type}
+	        	</foreach>
+			</if>
 	</select>
 	
 	<!-- 根据条件查询 -->

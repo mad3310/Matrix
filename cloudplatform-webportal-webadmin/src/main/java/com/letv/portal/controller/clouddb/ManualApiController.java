@@ -61,7 +61,7 @@ public class ManualApiController {
 		 }
 		 Map<String, Object> map = new HashMap<String, Object>();
 		 map.put("mclusterId", mclusters.get(0).getId());
-		 map.put("type","mclustervip");
+		 map.put("types", new String[]{"mclustervip"});
 	     this.zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectWithHClusterNameByMap(map));
 	     result.getMsgs().add("集群监控删除成功");
 	     return result;
@@ -76,7 +76,7 @@ public class ManualApiController {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("mclusterId", mclusters.get(0).getId());
-		map.put("type","mclustervip");
+		map.put("types", new String[]{"mclustervip"});
 		boolean addResult = this.zabbixPushService.createMultiContainerPushZabbixInfo(this.containerService.selectWithHClusterNameByMap(map));
 		if(addResult) {
 			result.getMsgs().add("集群监控添加成功");
@@ -205,7 +205,7 @@ public class ManualApiController {
 		for (MclusterModel mclusterModel : mclusters) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("mclusterId", mclusterModel.getId());
-			map.put("type","mclustervip");
+			map.put("types", new String[]{"mclustervip"});
 			boolean isSuccess = this.zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectWithHClusterNameByMap(map));
 			if(isSuccess) {
 				success++;
@@ -247,6 +247,7 @@ public class ManualApiController {
 		for (MclusterModel mclusterModel : mclusters) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("mclusterId", mclusterModel.getId());
+			map.put("types", new String[]{"mclusternode", "mclusteraddnode"});
 			boolean isSuccess = this.zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectWithHClusterNameByMap(map));
 			if(isSuccess) {
 				success++;
