@@ -161,6 +161,9 @@ function compressContainer(obj){
 			type:'delete',
 			success:function(data){
 				removeLoading();
+				if(typeof(data) == 'string'){
+					data = JSON.parse(data)
+				};
 				if(error(data)) return;
 				queryContainer();
 			}
