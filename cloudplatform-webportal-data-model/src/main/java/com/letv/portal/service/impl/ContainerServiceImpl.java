@@ -82,10 +82,10 @@ public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implem
 		return this.selectValidContianerByTypes(params, "mclusternode", "mclusteraddnode");
 	}
 	
-	private List<ContainerModel> selectValidContianerByTypes(Map<String,Object> params, String... type){
+	private List<ContainerModel> selectValidContianerByTypes(Map<String,Object> params, String... types){
 		if(params == null)
 			params = new HashMap<String,Object>();
-		params.put("types", type);
+		params.put("types", types);
 		return this.containerDao.selectValidByMap(params);
 	}
 	
