@@ -352,9 +352,13 @@
                         <artifactId>sshj</artifactId>
                     </exclusion>
                 </exclusions>
-
             </dependency>
             <!-- jclouds OpenStack dependencies -->
+            <dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>1</version>
+			</dependency>
             <dependency>
                 <groupId>org.apache.jclouds.api</groupId>
                 <artifactId>openstack-keystone</artifactId>
@@ -443,7 +447,7 @@
                 <!--<version>1.7.2</version>-->
                 <version>1.5.1</version>
             </dependency>
-
+			
         </dependencies>
     </dependencyManagement>
 
@@ -453,8 +457,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
@@ -482,7 +486,7 @@
                 <version>2.5.1</version>
                 <configuration>
                     <sourceExcludes>
-                        <sourceExclude>**/.svn/**</sourceExclude>
+                        <sourceExclude>**/.git/**</sourceExclude>
                     </sourceExcludes>
                     <additionalProjectnatures>
                         <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
@@ -520,7 +524,7 @@
                 <version>2.0.2</version>
                 <configuration>
                     <dependentWarExcludes>
-                        **/jdbc.properties,**/hibernate.cfg.xml,**/web.xml,WEB-INF/classes/META-INF/**,**/.svn/**
+                        **/jdbc.properties,**/hibernate.cfg.xml,**/web.xml,WEB-INF/classes/META-INF/**,**/.git/**
                     </dependentWarExcludes>
                 </configuration>
             </plugin>
@@ -530,7 +534,7 @@
                 <version>2.3</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/.svn/**</exclude>
+                        <exclude>**/.git/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -583,7 +587,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>**/.svn/**</exclude>
+                    <exclude>**/.git/**</exclude>
                 </excludes>
                 <filtering>true</filtering>
             </resource>
@@ -592,7 +596,7 @@
             <testResource>
                 <directory>src/test/resources</directory>
                 <excludes>
-                    <exclude>**/.svn/**</exclude>
+                    <exclude>**/.git/**</exclude>
                 </excludes>
                 <filtering>true</filtering>
             </testResource>

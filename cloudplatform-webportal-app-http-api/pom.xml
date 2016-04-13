@@ -198,9 +198,9 @@
             <artifactId>commons-fileupload</artifactId>
         </dependency>
          <dependency>
-  <groupId>commons-io</groupId>
-  <artifactId>commons-io</artifactId>
-</dependency>
+		  	<groupId>commons-io</groupId>
+		  	<artifactId>commons-io</artifactId>
+		</dependency>
         <!-- SECURITY begin -->
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
