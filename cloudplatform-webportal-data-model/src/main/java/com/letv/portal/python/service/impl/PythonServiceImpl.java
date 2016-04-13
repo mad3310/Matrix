@@ -193,7 +193,7 @@ public class PythonServiceImpl implements IPythonService{
 	public ApiResultObject checkContainerStatus(String nodeIp,String username,String password) {
 		StringBuffer url = new StringBuffer();
 		url.append(URL_HEAD).append(nodeIp).append(URL_PORT).append("/cluster/check/online_node");
-		String result = HttpClient.get(url.toString(),username,password);
+		String result = HttpClient.get(url.toString(), 5000, 10000, username, password);
 		return new ApiResultObject(result,url.toString());
 
 	}

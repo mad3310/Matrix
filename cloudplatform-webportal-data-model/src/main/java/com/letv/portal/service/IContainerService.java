@@ -37,5 +37,13 @@ public interface IContainerService extends IBaseService<ContainerModel> {
 	List<ContainerModel> selectVaildNormalContainers(Map<String, Object> params);
 	
 	List<ContainerModel> selectWithHClusterNameByMap(Map<String, Object> params);
+	
+	/**
+	 * 查询container数量（非vip）
+	 * @param map
+	 * @return
+	 */
+	Integer selectCountNodeContainers(Map<String,Object> map);
+	List<ContainerModel> selectNodeContainersByMap(Map<String,Object> map);
 
 }

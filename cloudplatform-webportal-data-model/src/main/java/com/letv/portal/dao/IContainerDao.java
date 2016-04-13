@@ -39,4 +39,8 @@ public interface IContainerDao extends IBaseDao<ContainerModel> {
 	public List<ContainerModel> selectWithHClusterNameByMap(Map<String, Object> params);
 
 	List<ContainerModel> selectVipByClusterId(Long mclusterId);
+	
+	Integer selectCountNodeContainers(Map<String, Object> map);
+	
+	List<ContainerModel> selectNodeContainersByMap(Map<String, Object> map);
 }

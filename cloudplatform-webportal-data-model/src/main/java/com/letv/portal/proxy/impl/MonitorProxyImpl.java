@@ -234,8 +234,7 @@ public class MonitorProxyImpl implements IMonitorProxy{
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("mclusterId", db.getMclusterId());
-		map.put("type", "mclusternode");
-		List<ContainerModel> containers = this.containerService.selectByMap(map);	
+		List<ContainerModel> containers = this.containerService.selectNodeContainersByMap(map);	
 		if(containers == null || containers.isEmpty())
 			throw new ValidateException("参数不合法");
 		List<MonitorViewYModel> data = this.monitorService.getMonitorData(containers.get(0).getIpAddr(), chartId, strategy,isTimeAveraging,format);

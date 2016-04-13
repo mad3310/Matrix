@@ -99,6 +99,9 @@ public class ContainerController {
         ContainerModel containerModel = this.containerService.selectById(containerId);
         if(null == containerModel)
             throw new ValidateException("参数不合法");
+        if("mclusternode".equals(containerModel.getType())) {
+        	throw new ValidateException("初始节点不能缩容");
+        }
         this.containerProxy.deleteAndBuild(containerModel);
 		return result;
 	}
