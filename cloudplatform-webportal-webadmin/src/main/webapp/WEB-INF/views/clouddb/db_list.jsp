@@ -27,7 +27,7 @@
 							<input type="text" class="form-control" id="dbName" placeholder="数据库名称">
 						</div>
 						<div class="form-group col-sm-6 col-xs-12 col-md-2">
-							<input type="text" class="form-control" id="dbMcluster" placeholder="所属Mcluster">
+							<input type="text" class="form-control" id="dbMcluster" placeholder="所属RDS集群">
 						</div>
 						<div class="form-group col-sm-6 col-xs-12 col-md-2">
 							<!-- <input type="text" class="form-control" id="dbPhyMcluster" placeholder="所属物理机集群"> -->
@@ -147,7 +147,7 @@
 								</label>
 							</th>
 							<th>数据库名称</th>
-							<th  class="hidden-480">所属Mcluster</th>
+							<th  class="hidden-480">所属RDS集群</th>
 							<th  class="hidden-480">所属物理机集群</th>
 							<th>所属用户</th>
 							<th  class="hidden-480">
