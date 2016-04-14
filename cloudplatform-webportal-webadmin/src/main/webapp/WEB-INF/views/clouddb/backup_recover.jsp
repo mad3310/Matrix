@@ -15,7 +15,7 @@
 		});
 	</script>
 		<div class="widget-header hidden-md hidden-lg">
-			<h5 class="widget-title">备份恢复查询条件</h5>
+			<h5 class="widget-title">备份查询条件</h5>
 			<div class="widget-toolbar">
 				<a href="#" data-action="collapse">
 					<i class="ace-icon fa fa-chevron-down"></i>
@@ -79,7 +79,7 @@
 	<!-- </div> -->
 			<div class="widget-box widget-color-blue ui-sortable-handle col-xs-12">
 				<div class="widget-header">
-					<h5 class="widget-title">备份恢复列表</h5>
+					<h5 class="widget-title">备份列表</h5>
 				</div>
 				<div class="widget-body">
 					<div class="widget-main no-padding">
