@@ -243,9 +243,27 @@ function searchAction(){
         }
     });
 }
+
+function InitSearchClearButton(){
+	var inputDbNameEl=$("#dbName"),
+	inputmclusterNameEl=$("#mclusterName"),
+	selectBackupStatusEl=$('#backupStatus'),
+	startTimeEl=$('#startTime').data("DateTimePicker"),
+	endTimeEl=$('#endTime').data("DateTimePicker");
+	$("#btnSearchClear").on('click',function(e){
+		inputDbNameEl.val("");
+		inputmclusterNameEl.val("");
+		selectBackupStatusEl.val("");
+		startTimeEl.date(null);
+		endTimeEl.date(null);
+		queryByPage(currentPage, recordsPerPage);
+	});
+}
+
 function page_init(){
 	$('#nav-search').addClass("hidden");
 	queryByPage(currentPage, recordsPerPage);
 	searchAction();
 	pageControl();
+	InitSearchClearButton();
 }

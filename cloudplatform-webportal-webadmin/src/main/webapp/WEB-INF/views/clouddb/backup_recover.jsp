@@ -71,7 +71,7 @@
 				</div>
 				<div class="form-group col-xs-12 col-sm-6 col-md-3">
 					<button id="bksearch" class="btn btn-primary btn-sm btn-search"><i class="ace-icon fa fa-search"></i>搜索</button>
-					<button class="btn btn-sm" type="button" id="clear">清空</button>
+					<button class="btn btn-sm" type="button" id="btnSearchClear">清空</button>
 				</div>
 			</div>
 		</div>
