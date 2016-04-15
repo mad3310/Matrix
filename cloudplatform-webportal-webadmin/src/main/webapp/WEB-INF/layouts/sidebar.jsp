@@ -46,7 +46,7 @@
                     <ul class="submenu">
                         <li><a href="${ctx}/list/mcluster"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">RDS集群列表</span></a><b class="arrow"></b>
                         </li>
-                        <li><a href="${ctx}/list/container"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">Container列表</span></a><b class="arrow"></b></li>
+                        <li><a href="${ctx}/list/container"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">Node列表</span></a><b class="arrow"></b></li>
                     </ul>
                 </li>
                 <li id="sidebar-db-mgr">

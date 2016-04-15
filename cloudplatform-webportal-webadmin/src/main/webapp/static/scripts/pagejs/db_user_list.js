@@ -6,7 +6,7 @@ var currentSelectedLineDbName = 1;
 	//初始化
 	page_init();
 	
-	var sltArray = [0,3,5,6,7,8,9,13,14];
+	var sltArray = [6,3,0];
 	addSltOpt(sltArray,$("#dbuserStatus"));
 	
 	$(document).on('click', 'th input:checkbox' , function(){
