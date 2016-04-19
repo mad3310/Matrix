@@ -296,7 +296,8 @@ function containerClusterOs(status,type,os){
 		"14":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0},
 		"15":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
 		"16":{"start":1,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0},
-		"17":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0}
+		"17":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
+		"18":{"start":0,"restart":0,"stop":0,"delete":0,"create":0,"expand":0,"compress":0},
 	};
 	var rdsContainer={
 		"1":{"start":0,"stop":0,"delete":0,"compress":1},
@@ -312,8 +313,8 @@ function containerClusterOs(status,type,os){
 		"rds":rds,
 		"rdsContainer":rdsContainer
 	};
-	var temp=osObjs[type][status][os];
-	return temp;
+	var temp=osObjs[type] && osObjs[type][status] && osObjs[type][status][os];
+	return typeof temp !== 'number'? 1:temp;
 }
 function containerOsHtml(type,os){
 	var rdsHtml={
