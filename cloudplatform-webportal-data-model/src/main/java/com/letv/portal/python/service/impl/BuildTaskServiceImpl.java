@@ -1058,7 +1058,7 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             throw new ValidateException("hcluster's host is null.");
 
         Random random = new Random();
-        return hosts.get(random.nextInt(hosts.size()-1)).getHostIp();
+        return hosts.get(random.nextInt(hosts.size())).getHostIp();
     }
     private boolean isSelectVip(Long dbId) {
         int step = this.taskChainService.getStepByDbId(dbId);
