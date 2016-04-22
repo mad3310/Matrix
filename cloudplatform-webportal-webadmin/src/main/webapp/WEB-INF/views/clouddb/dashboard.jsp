@@ -38,7 +38,7 @@
 							</div>
 							<div class="infobox-data">
 								<span class="infobox-data-number" id="db_clusterSum">0</span>
-								<div class="infobox-content">container集群</div>
+								<div class="infobox-content">RDS集群</div>
 							</div>
 						</div>
 

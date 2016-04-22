@@ -77,16 +77,16 @@ function formValidate() {
                  validMessage: '请按提示输入',
                  validators: {
                      notEmpty: {
-                         message: 'Container集群名称不能为空!'
+                         message: 'RDS集群名称不能为空!'
                      },
 			          stringLength: {
 			              max: 40,
-			              message: 'Container集群名过长'
+			              message: 'RDS集群名过长'
 			          },regexp: {
 		                  regexp: /^([a-zA-Z_0-9]*)$/,
   		                  message: "请输入字母数字或'_'."
                  	  },remote: {
-	                        message: 'Container集群名已存在!',
+	                        message: 'RDS集群名已存在!',
 	                        url: "/mcluster/validate"
 	                    }
 	             }
@@ -104,7 +104,7 @@ function formValidate() {
                  validMessage: '请按提示选择',
                  validators: {
                      notEmpty: {
-                         message: '选择Container集群不能为空!'
+                         message: '选择RDS集群不能为空!'
                      }
 	             }
          	}	

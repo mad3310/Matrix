@@ -47,12 +47,12 @@ $(function(){
 					$(this).parent().remove();
 					queryByPage();
 					if($('.queryBadge').length<=0){
-						$('.queryOption').find('.widget-title').html('Container查询条件');
+						$('.queryOption').find('.widget-title').html('Node查询条件');
 					}
 					return;
 				});
 			}else{
-				$('.queryOption').find('.widget-title').html('Container查询条件');
+				$('.queryOption').find('.widget-title').html('Node查询条件');
 			}
 
 		}
