@@ -715,7 +715,7 @@
                 <matrix.rds.data.default.image>letv/mcluster:0.0.2</matrix.rds.data.default.image>
                 <matrix.rds.vip.default.image>letv/mcluster_vip_gbalancer:0.0.3</matrix.rds.vip.default.image>
 
-                <webportal.local.http>http://10.154.255.54</webportal.local.http>
+                <webportal.local.http>http://10.154.255.68</webportal.local.http>
                 <webportal.admin.http>http://10.154.238.148:8080</webportal.admin.http>
                 <webportal.api.http>http://10.150.149.31:8080</webportal.api.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
