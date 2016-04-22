@@ -12,7 +12,7 @@
     <context:annotation-config />
     <context:component-scan base-package="com.letv.common" />
     
-    <task:executor id="executor" pool-size="${task.executor.size}" />
+    <task:executor id="executor" pool-size="${task.executor.size}" queue-capacity="500" rejection-policy="CALLER_RUNS"/>
     <task:scheduler id="scheduler" pool-size="30" />  
     <task:annotation-driven executor="executor" scheduler="scheduler" />
     
