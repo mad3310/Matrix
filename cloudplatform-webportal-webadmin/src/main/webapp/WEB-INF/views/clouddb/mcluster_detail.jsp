@@ -21,7 +21,7 @@
 					<thead>
 						<tr
 							style="background-image: none; background-color: #307ECC; color: #FFFFFF;">
-							<th>container名称</th>
+							<th>node名称</th>
 							<th class="hidden-480">类型</th>
 							<th class="hidden-480">宿主机ip</th>
 							<th>ip</th>

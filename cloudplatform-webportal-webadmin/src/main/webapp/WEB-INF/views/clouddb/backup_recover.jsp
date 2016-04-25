@@ -92,7 +92,7 @@
 									<td style="width: 20%">结束时间</td>
 									<td style="width: 10%">状态</td>
 									<td style="width: 20%">详情</td> -->
-									<td class="hidden-480">container集群名称</td>
+									<td class="hidden-480">RDS集群</td>
 									<td>数据库名称</td>
 									<td class="hidden-480">开始时间</td>
 									<td class="hidden-480">结束时间</td>
