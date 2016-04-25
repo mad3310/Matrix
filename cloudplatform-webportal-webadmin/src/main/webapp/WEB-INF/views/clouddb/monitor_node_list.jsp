@@ -30,7 +30,7 @@
 					<form class="form-inline">
 						<div class="form-group col-sm-6 col-xs-12 col-md-2">
 							<input type="text" class="form-control" id="monitorContainer"
-								placeholder="container集群名称">
+								placeholder="RDS集群名称">
 						</div>
 
 						<div class="form-group col-sm-6 col-xs-12 col-md-2">
@@ -139,7 +139,7 @@
 							<th width="20%">所属物理机集群</th>
 							<th width="20%" class="hidden-480">当前状态</th>
 							<th width="20%">操作</th> -->
-							<th>container集群名称</th>
+							<th>RDS集群名称</th>
 							<th>VIP节点地址</th>
 							<th class="hidden-480">所属物理机集群</th>
 							<th>当前状态</th>

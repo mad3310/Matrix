@@ -40,11 +40,11 @@
 		<div class="col-xs-12 col-sm-12 col-md-7 column">
 			<ul id="myTab" class="nav nav-tabs">
 			   <li class="active">
-			      <a class="hidden-480" href="#create_on_cluster" data-toggle="tab">在已有Container集群创建</a>
+			      <a class="hidden-480" href="#create_on_cluster" data-toggle="tab">在已有RDS集群创建</a>
 			      <a class="hidden-md hidden-lg" href="#create_on_cluster" data-toggle="tab">已有集群</a>
 			   </li>
 			   <li>
-			   	  <a class="hidden-480" href="#create_on_new_cluster" data-toggle="tab">在新Container集群创建</a>
+			   	  <a class="hidden-480" href="#create_on_new_cluster" data-toggle="tab">在新RDS集群创建</a>
 			   	  <a class="hidden-md hidden-lg" href="#create_on_new_cluster" data-toggle="tab">新集群</a>
 			   </li>
 			   <li>
@@ -57,7 +57,7 @@
 						<input type="text" class="form-control hide" id="dbId" name="dbId" value="${dbId}"/>
 						<input type="text" class="form-control hide" value="2" id="auditType" name="auditType"/>
 						<div class="form-group">
-							<label class="col-xs-12 col-sm-12 col-md-4 control-label" for="mclusterOption">选择Container集群</label>
+							<label class="col-xs-12 col-sm-12 col-md-4 control-label" for="mclusterOption">选择RDS集群</label>
 							<div class="col-xs-12 col-sm-12 col-md-6">
 								<select class="form-control" id="mclusterOption" name="mclusterId" data-placeholder="请选择集群...">
 									<option value="">  </option>
@@ -74,7 +74,7 @@
 						<input type="text" class="form-control hide" id="dbId" name="dbId" value="${dbId}"/>
 						<input type="text" class="form-control hide" value="2" id="auditType" name="auditType"/>
 						<div class="form-group">
-							<label for="text" class="control-label col-xs-12 col-sm-12 col-md-3 ">Container集群名称</label>
+							<label for="text" class="control-label col-xs-12 col-sm-12 col-md-3 ">RDS集群名称</label>
 							<div class="col-xs-12 col-sm-12 col-md-6 ">
 								<input class="form-control" name="mclusterName" id="mclusterName" type="text"/>
 							</div>
