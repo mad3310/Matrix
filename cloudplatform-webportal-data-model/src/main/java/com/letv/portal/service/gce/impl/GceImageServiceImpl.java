@@ -6,13 +6,17 @@ import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.portal.enumeration.GceImageStatus;
 import com.letv.portal.model.HostModel;
+import com.letv.portal.model.UserModel;
 import com.letv.portal.python.service.IGcePythonService;
 import com.letv.portal.python.service.IPythonService;
 import com.letv.portal.service.IHclusterService;
 import com.letv.portal.service.IHostService;
+import com.letv.portal.service.IUserService;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
@@ -36,6 +40,8 @@ public class GceImageServiceImpl extends BaseServiceImpl<GceImage> implements IG
 	private IHostService hostService;
 	@Resource
 	private IGcePythonService gcePythonService;
+	@Autowired
+	private IUserService userService;
 
 
 	public GceImageServiceImpl() {
@@ -80,5 +86,15 @@ public class GceImageServiceImpl extends BaseServiceImpl<GceImage> implements IG
 			gceImage.setStatus(GceImageStatus.AVAILABLE);
 		}
 		super.insert(gceImage);
+	}
+
+	@Override
+	public void saveInfoWithUserNames(String userNames, GceImage gceImage) {
+		String[] operatorNames = userNames.split(",");
+		for (String name : operatorNames) {
+			UserModel user = this.userService.getUserByName(name);
+			gceImage.setOwner(user.getId());
+			super.insert(gceImage);
+		}
 	}
 }
