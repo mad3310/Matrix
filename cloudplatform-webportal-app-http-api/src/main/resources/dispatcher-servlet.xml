@@ -70,6 +70,7 @@
 	        <list>
 	          <value>/jettyMonitor</value>
 	          <value>/dbMonitor</value>
+	          <value>/gceImg/group</value>
 	        </list>
 	      </property>
 	    </bean>
