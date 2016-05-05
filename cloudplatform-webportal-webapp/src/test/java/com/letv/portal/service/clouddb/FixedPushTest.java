@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.AssertTrue;
 
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +30,7 @@ public class FixedPushTest extends AbstractTest{
 	private IFixedPushService fixedPushService;
 
 	@Test
+	@Ignore
 	public void createContainerPushFixedInfoTest() {
 
 		// get()获得snr号然后做拼接
@@ -62,8 +66,17 @@ public class FixedPushTest extends AbstractTest{
 		}
 
 	}
+	
+	@Test
+	public void testSendFixedInfo() {
+		boolean ret = fixedPushService.sendFixedInfo("10.154.156.129", "lisx-test", "10.200.83.1", "add");
+		Assert.assertTrue(ret);
+		ret = fixedPushService.sendFixedInfo("10.154.156.129", "lisx-test", "10.200.83.1", "delete");
+		Assert.assertTrue(ret);
+	}
 
 	@Test
+	@Ignore
 	public void testSocket() {
 		try {
 			// Socket s1 = new Socket("123.126.33.215", 29450);
