@@ -185,6 +185,12 @@ public class SkipController {
 		return mav;
 	}
 	
+	@RequestMapping(value ="/rds",method=RequestMethod.GET)
+	public ModelAndView toRDS(ModelAndView mav){
+		mav.setViewName("/rds/index");
+		return mav;
+	}
+	
 	private void isAuthorityDb(Long dbId) {
 		if(dbId == null)
 			throw new ValidateException("参数不合法");
