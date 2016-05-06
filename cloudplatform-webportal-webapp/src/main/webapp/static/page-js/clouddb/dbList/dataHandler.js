@@ -125,7 +125,7 @@ define(function(require,exports,module){
             });
         },
         /*进度条进度控制*/
-	    progress : function(dbId,data,asyncData){
+	    progress : function(dbId,data,onProgressEnd){
 	    	var data = data.data;	    	
    	        var unitLen = 100 / 10;
    	        var $obj = $("#prg" + dbId);
@@ -150,15 +150,15 @@ define(function(require,exports,module){
            	}else if (data == 0 || data >= 10){
            		$prg.css({"width": "100%"});
            		$prg.html("100%");
-           		$obj.next().html("创建完成");
-           		asyncData();
+           		$obj.next().html("创建完成");  
+           		onProgressEnd();
            	}else if(data == -1){
            		$prg.css({"width": "100%"});
            		$prg.html("100%");
            		$obj.next().html("创建失败");
-           		asyncData();
+           		onProgressEnd();
            	}else{
-           		asyncData();
+           		onProgressEnd();
            	}
 	   	}
     }

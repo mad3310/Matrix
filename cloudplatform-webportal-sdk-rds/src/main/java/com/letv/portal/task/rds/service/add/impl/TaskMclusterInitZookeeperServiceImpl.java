@@ -82,19 +82,18 @@ public class TaskMclusterInitZookeeperServiceImpl extends BaseTask4RDSServiceImp
 			int z = 0;
 			for (int j = 0; j<oldContainers.size(); j++) {
 				String zookeeperIp = oldContainers.get(j).getZookeeperIp();
-				if(StringUtils.isEmpty(zookeeperIp)) {
-					throw new ValidateException("init zk error,old container's zk ip is null");
+				if(!StringUtils.isEmpty(zookeeperIp)) {
+					zkParm.put("zkAddress", zookeeperIp);
+					ApiResultObject resultObject = this.pythonService.initZookeeper(nodeIp,zkParm);
+					
+					tr = analyzeRestServiceResult(resultObject);
+					if(tr.isSuccess()) {
+						container.setZookeeperIp(zookeeperIp);
+						this.containerService.updateBySelective(container);
+						break;
+					}
 				}
 				
-				zkParm.put("zkAddress", zookeeperIp);
-				ApiResultObject resultObject = this.pythonService.initZookeeper(nodeIp,zkParm);
-				
-				tr = analyzeRestServiceResult(resultObject);
-				if(tr.isSuccess()) {
-					container.setZookeeperIp(zookeeperIp);
-					this.containerService.updateBySelective(container);
-					break;
-				}
 				z++;
 			}
 			

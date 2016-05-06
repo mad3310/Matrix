@@ -12,7 +12,7 @@
 		});
 	</script>
 		<div class="widget-header hidden-md hidden-lg">
-			<h5 class="widget-title">Container查询条件</h5>
+			<h5 class="widget-title">Node查询条件</h5>
 			<div class="widget-toolbar">
 				<a href="#" data-action="collapse">
 					<i class="ace-icon fa fa-chevron-down"></i>
@@ -30,7 +30,7 @@
 						</div> -->
 						<div class="form-group col-sm-6 col-xs-12 col-md-2">
 							<input type="text" class="form-control" id="containerName"
-								placeholder="container名称">
+								placeholder="node名称">
 						</div>
 						<div class="form-group col-sm-6 col-xs-12 col-md-2">
 							<input type="text" class="form-control" id="ipAddr"
@@ -59,7 +59,7 @@
 	
 		<div class="widget-box widget-color-blue ui-sortable-handle col-xs-12">
 			<div class="widget-header">
-				<h5 class="widget-title">Container列表</h5>
+				<h5 class="widget-title">Node列表</h5>
 			</div>
 			<div class="widget-body">
 				<div class="widget-main no-padding">
@@ -79,8 +79,8 @@
 								<th width="15%">宿主机ip</th>
 								<th width="15%">创建时间 </th>
 								<th width="15%" class="hidden-480">当前状态</th> -->
-								<th>Container名称</th>
-								<th class='hidden-480'>所属container集群</th>
+								<th>Node名称</th>
+								<th class='hidden-480'>所属rds集群</th>
 								<th class="hidden-480">所属物理机集群</th>
 								<th>ip</th>
 								<th>宿主机ip</th>

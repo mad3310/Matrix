@@ -1,19 +1,20 @@
 package com.letv.portal.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.letv.common.dao.IBaseDao;
 import com.letv.common.dao.QueryParam;
 import com.letv.common.paging.impl.Page;
 import com.letv.portal.dao.IContainerDao;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.service.IContainerService;
-
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service("containerService")
 public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implements
@@ -74,17 +75,17 @@ public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implem
 
 	@Override
 	public List<ContainerModel> selectVaildVipContainers(Map<String,Object> params) {
-		return this.selectValidContianerByType("mclustervip", params);
+		return this.selectValidContianerByTypes(params, "mclustervip");
 	}
 	@Override
 	public List<ContainerModel> selectVaildNormalContainers(Map<String,Object> params) {
-		return this.selectValidContianerByType("mclusternode", params);
+		return this.selectValidContianerByTypes(params, "mclusternode", "mclusteraddnode");
 	}
 	
-	private List<ContainerModel> selectValidContianerByType(String type,Map<String,Object> params){
+	private List<ContainerModel> selectValidContianerByTypes(Map<String,Object> params, String... types){
 		if(params == null)
 			params = new HashMap<String,Object>();
-		params.put("type", type);
+		params.put("types", types);
 		return this.containerDao.selectValidByMap(params);
 	}
 	
@@ -105,6 +106,17 @@ public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implem
 	public List<ContainerModel> selectWithHClusterNameByMap(
 			Map<String, Object> params) {
 		return this.containerDao.selectWithHClusterNameByMap(params);
+	}
+
+	@Override
+	public Integer selectCountNodeContainers(Map<String, Object> map) {
+		return this.containerDao.selectCountNodeContainers(map);
+	}
+
+	@Override
+	public List<ContainerModel> selectNodeContainersByMap(
+			Map<String, Object> map) {
+		return this.containerDao.selectNodeContainersByMap(map);
 	}
 	
 

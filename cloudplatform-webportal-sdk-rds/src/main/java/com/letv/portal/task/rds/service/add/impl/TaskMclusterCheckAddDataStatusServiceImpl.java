@@ -84,7 +84,7 @@ public class TaskMclusterCheckAddDataStatusServiceImpl extends BaseTask4RDSServi
 				ContainerModel container = new ContainerModel();
 				BeanUtils.populate(container, map);
 				container.setMclusterId(mclusterModel.getId());
-				container.setType("mclusternode");
+				container.setType("mclusteraddnode");
 				container.setIpMask((String) map.get("netMask"));
 				container.setContainerName((String) map.get("containerName"));
 				container.setStatus(MclusterStatus.ADDING.getValue());

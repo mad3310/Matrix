@@ -15,7 +15,7 @@
 		});
 	</script>
 		<div class="widget-header hidden-md hidden-lg">
-			<h5 class="widget-title">备份恢复查询条件</h5>
+			<h5 class="widget-title">备份查询条件</h5>
 			<div class="widget-toolbar">
 				<a href="#" data-action="collapse">
 					<i class="ace-icon fa fa-chevron-down"></i>
@@ -71,7 +71,7 @@
 				</div>
 				<div class="form-group col-xs-12 col-sm-6 col-md-3">
 					<button id="bksearch" class="btn btn-primary btn-sm btn-search"><i class="ace-icon fa fa-search"></i>搜索</button>
-					<button class="btn btn-sm" type="button" id="clear">清空</button>
+					<button class="btn btn-sm" type="button" id="btnSearchClear">清空</button>
 				</div>
 			</div>
 		</div>
@@ -79,7 +79,7 @@
 	<!-- </div> -->
 			<div class="widget-box widget-color-blue ui-sortable-handle col-xs-12">
 				<div class="widget-header">
-					<h5 class="widget-title">备份恢复列表</h5>
+					<h5 class="widget-title">备份列表</h5>
 				</div>
 				<div class="widget-body">
 					<div class="widget-main no-padding">
@@ -92,7 +92,7 @@
 									<td style="width: 20%">结束时间</td>
 									<td style="width: 10%">状态</td>
 									<td style="width: 20%">详情</td> -->
-									<td class="hidden-480">container集群名称</td>
+									<td class="hidden-480">RDS集群</td>
 									<td>数据库名称</td>
 									<td class="hidden-480">开始时间</td>
 									<td class="hidden-480">结束时间</td>

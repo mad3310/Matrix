@@ -144,9 +144,11 @@ public class DbServiceImpl extends BaseServiceImpl<DbModel> implements
 		MclusterModel mcluster = this.mclusterService.selectById(db
 				.getMclusterId());
 		List<String> urlPorts = new ArrayList<String>();
+		StringBuffer buffer = new StringBuffer();
 		for (ContainerModel container : containers) {
-			if ("mclusternode".equals(container.getType())) {
-				urlPorts.add(container.getIpAddr() + ":3306");
+			if ("mclusternode".equals(container.getType()) || "mclusteraddnode".equals(container.getType())) {
+				buffer.setLength(0);
+				urlPorts.add(buffer.append(container.getIpAddr()).append(":3306").toString());
 			}
 		}
 

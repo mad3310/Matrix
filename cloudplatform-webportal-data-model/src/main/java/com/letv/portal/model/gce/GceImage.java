@@ -33,7 +33,7 @@ public class GceImage extends BaseModel {
 		return owner;
 	}
     @NotNull
-    @URL
+    //@URL
 	public String getUrl() {
 		return url;
 	}

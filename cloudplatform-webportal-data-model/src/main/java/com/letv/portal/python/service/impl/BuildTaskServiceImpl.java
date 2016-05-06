@@ -113,9 +113,11 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
                 List<ContainerModel> containers = this.containerService.selectByMclusterId(((BigInteger)params.get("mclusterId")).longValue());
                 Map<String,Object> glbParams = new HashMap<String,Object>();
                 List<String> urlPorts = new ArrayList<String>();
+                StringBuffer buffer = new StringBuffer();
                 for (ContainerModel container : containers) {
-                    if("mclusternode".equals(container.getType())) {
-                        urlPorts.add(container.getIpAddr() + ":3306");
+                    if("mclusternode".equals(container.getType()) || "mclusteraddnode".equals(container.getType())) {
+                    	buffer.setLength(0);
+                        urlPorts.add(buffer.append(container.getIpAddr()).append(":3306").toString());
                     }
                 }
                 glbParams.put("User", "monitor");
@@ -1056,7 +1058,7 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             throw new ValidateException("hcluster's host is null.");
 
         Random random = new Random();
-        return hosts.get(random.nextInt(hosts.size()-1)).getHostIp();
+        return hosts.get(random.nextInt(hosts.size())).getHostIp();
     }
     private boolean isSelectVip(Long dbId) {
         int step = this.taskChainService.getStepByDbId(dbId);

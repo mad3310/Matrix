@@ -101,7 +101,7 @@ public class TaskMclusterStartServiceImpl extends BaseTask4RDSServiceImpl implem
                     startFlag = false;
                     break;
                 }
-                if(result.getResult().contains(container.getIpAddr())){
+                if(null != result.getResult() && result.getResult().contains(container.getIpAddr())){
                     container.setStatus(MclusterStatus.RUNNING.getValue());
                     this.containerService.updateBySelective(container);
                     tr.setSuccess(true);

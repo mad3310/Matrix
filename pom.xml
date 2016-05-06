@@ -50,6 +50,18 @@
 
     <dependencyManagement>
         <dependencies>
+        	<dependency>
+			  <groupId>org.mortbay.jetty</groupId>
+			  <artifactId>jsp-2.1-jetty</artifactId>
+			  <version>6.1.15</version>
+			  <scope>provided</scope>
+			</dependency>
+        	<dependency>
+			  <groupId>javax.el</groupId>
+			  <artifactId>javax.el-api</artifactId>
+			  <version>3.0.1-b04</version>
+			  <scope>provided</scope>
+			</dependency>
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
@@ -352,9 +364,13 @@
                         <artifactId>sshj</artifactId>
                     </exclusion>
                 </exclusions>
-
             </dependency>
             <!-- jclouds OpenStack dependencies -->
+            <dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>1</version>
+			</dependency>
             <dependency>
                 <groupId>org.apache.jclouds.api</groupId>
                 <artifactId>openstack-keystone</artifactId>
@@ -443,7 +459,7 @@
                 <!--<version>1.7.2</version>-->
                 <version>1.5.1</version>
             </dependency>
-
+			
         </dependencies>
     </dependencyManagement>
 
@@ -453,8 +469,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
@@ -482,7 +498,7 @@
                 <version>2.5.1</version>
                 <configuration>
                     <sourceExcludes>
-                        <sourceExclude>**/.svn/**</sourceExclude>
+                        <sourceExclude>**/.git/**</sourceExclude>
                     </sourceExcludes>
                     <additionalProjectnatures>
                         <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
@@ -520,7 +536,7 @@
                 <version>2.0.2</version>
                 <configuration>
                     <dependentWarExcludes>
-                        **/jdbc.properties,**/hibernate.cfg.xml,**/web.xml,WEB-INF/classes/META-INF/**,**/.svn/**
+                        **/jdbc.properties,**/hibernate.cfg.xml,**/web.xml,WEB-INF/classes/META-INF/**,**/.git/**
                     </dependentWarExcludes>
                 </configuration>
             </plugin>
@@ -530,7 +546,7 @@
                 <version>2.3</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/.svn/**</exclude>
+                        <exclude>**/.git/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -558,24 +574,8 @@
             </plugin>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.9</version>
-                <configuration>
-                    <contextPath>/</contextPath>
-                    <scanIntervalSeconds>3</scanIntervalSeconds>
-                    <scanTargetPatterns>
-                        <scanTargetPattern>
-                            <directory>src/main/webapp/WEB-INF</directory>
-                            <excludes>
-                                <exclude>**/*.jsp</exclude>
-                            </excludes>
-                            <includes>
-                                <include>**/*.properties</include>
-                                <include>**/*.xml</include>
-                            </includes>
-                        </scanTargetPattern>
-                    </scanTargetPatterns>
-                </configuration>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.9</version>
             </plugin>
         </plugins>
 
@@ -583,7 +583,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>**/.svn/**</exclude>
+                    <exclude>**/.git/**</exclude>
                 </excludes>
                 <filtering>true</filtering>
             </resource>
@@ -592,7 +592,7 @@
             <testResource>
                 <directory>src/test/resources</directory>
                 <excludes>
-                    <exclude>**/.svn/**</exclude>
+                    <exclude>**/.git/**</exclude>
                 </excludes>
                 <filtering>true</filtering>
             </testResource>
@@ -715,8 +715,8 @@
                 <matrix.rds.data.default.image>letv/mcluster:0.0.2</matrix.rds.data.default.image>
                 <matrix.rds.vip.default.image>letv/mcluster_vip_gbalancer:0.0.3</matrix.rds.vip.default.image>
 
-                <webportal.local.http>http://10.154.238.45:8080</webportal.local.http>
-                <webportal.admin.http>http://10.154.238.148:8080</webportal.admin.http>
+                <webportal.local.http>http://10.154.238.29</webportal.local.http>
+                <webportal.admin.http>http://10.154.238.198</webportal.admin.http>
                 <webportal.api.http>http://10.150.149.31:8080</webportal.api.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
@@ -796,7 +796,7 @@
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com</service.notice.email.to>
+                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -868,7 +868,7 @@
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com</service.notice.email.to>
+                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -940,7 +940,7 @@
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com</service.notice.email.to>
+                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1012,7 +1012,7 @@
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com</service.notice.email.to>
+                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1056,11 +1056,6 @@
 
     <repositories>
         <repository>
-            <id>matrix.thirdparty</id>
-            <name>Matrix Thirdparty Repository</name>
-            <url>http://10.200.91.144:28081/nexus/content/repositories/thirdparty/</url>
-        </repository>
-        <repository>
             <id>letv.public</id>
             <name>Letv.com Repository</name>
             <url>http://maven.letv.cn/nexus/content/groups/public/</url>
@@ -1094,12 +1089,12 @@
         <repository>
             <id>project-release</id>
             <name>Projects Release repository</name>
-            <url>http://maven.letv.cn/nexus/content/repositories/releases/</url>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Release/</url>
         </repository>
         <snapshotRepository>
             <id>project-snapshots</id>
             <name>Projects SnapShot repository</name>
-            <url>http://maven.letv.cn/nexus/content/repositories/snapshots/</url>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
 

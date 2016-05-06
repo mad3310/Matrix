@@ -119,7 +119,7 @@ function startContainer(obj){
 			}
 		});
 	}
-	confirmframe("启动container","启动container大概需要几分钟时间!","请耐心等待...",startCmd);
+	confirmframe("启动Node","启动Node大概需要几分钟时间!","请耐心等待...",startCmd);
 }
 function stopContainer(obj){
 	var _target=$(obj);
@@ -143,7 +143,7 @@ function stopContainer(obj){
 			}
 		});
 	}
-	confirmframe("关闭container","关闭container将不能提供服务,再次启动需要十几分钟!","您确定要关闭?",stopCmd);
+	confirmframe("关闭Node","关闭Node将不能提供服务,再次启动需要十几分钟!","您确定要关闭?",stopCmd);
 }
 function compressContainer(obj){
 	var _target=$(obj);
@@ -161,10 +161,13 @@ function compressContainer(obj){
 			type:'delete',
 			success:function(data){
 				removeLoading();
+				if(typeof(data) == 'string'){
+					data = JSON.parse(data)
+				};
 				if(error(data)) return;
 				queryContainer();
 			}
 		});
 	}
-	confirmframe("删除container","删除container,缩容container集群!","您确定要删除?",compressCmd);
+	confirmframe("删除node","删除node,缩容RDS集群!","您确定要删除?",compressCmd);
 }
