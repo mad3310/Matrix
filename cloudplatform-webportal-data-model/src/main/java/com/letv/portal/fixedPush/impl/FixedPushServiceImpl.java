@@ -1,5 +1,6 @@
 package com.letv.portal.fixedPush.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,30 +70,41 @@ public class FixedPushServiceImpl implements IFixedPushService{
 			throw new ValidateException("根据hostIp未获取到sn，hostIp:" + hostIp);
 		}
 		
-		StringBuffer buffer = new StringBuffer();
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("ip", ip);
+		params.put("name", name);
+		params.put("hostIp", sn);
+		String ret;
 		if("add".equals(type)) {//新增固资
-			buffer.append(fixedPushAddUrl).append("?");
-			buffer.append("link_token").append("=").append(fixedPushAddToken).append("&");
+			params.put("link_token", fixedPushAddToken);
+			try {
+				ret = HttpClient.get(fixedPushAddUrl, params, 5000, 10000);
+			} catch (Exception e) {
+				logger.error("invoke cmdb api push fixed failure:", e);
+				throw new RuntimeException("推送固资调用cmdb接口失败:", e);
+			}
 		} else if("delete".equals(type)) {//删除固资
-			buffer.append(fixedPushDelUrl).append("?");
-			buffer.append("link_token").append("=").append(fixedPushDelToken).append("&");
+			params.put("link_token", fixedPushDelToken);
+			try {
+				ret = HttpClient.get(fixedPushDelUrl, params, 5000, 10000);
+			} catch (Exception e) {
+				logger.error("invoke cmdb api push fixed failure:", e);
+				throw new RuntimeException("推送固资调用cmdb接口失败:", e);
+			}
 		} else {
-			logger.debug("由于type未识别，未推送固资");
-			return false;
+			logger.error("由于type未识别，未推送固资");
+			throw new ValidateException("由于type未识别，未推送固资， type:" + type);
 		}
-		buffer.append("ip").append("=").append(ip).append("&");
-		buffer.append("name").append("=").append(name).append("&");
-		buffer.append("hostIp").append("=").append(sn);
-		String ret = HttpClient.get(buffer.toString(), 5000, 10000);
 		
 		logger.info("固资推送结果：{}", ret);
 		Map<String, Object> resultMap = JSON.parseObject(ret, Map.class);
-		if(null != resultMap && (int)resultMap.get("Code")==0) {
+		Object code = resultMap.get("Code");
+		if(null != resultMap && code instanceof Integer && (int)code==0) {
 			logger.debug("固资推送成功hostIp:[{}],name:[{}],ip:[{}],type:[{}]", hostIp, name, ip, type);
 			return true;
 		} else {
 			logger.debug("固资推送失败hostIp:[{}],name:[{}],ip:[{}],type:[{}]", hostIp, name, ip, type);
-			return false;
+			throw new ValidateException("由于type未识别，未推送固资， type:" + type);
 		}
 		
 	}
