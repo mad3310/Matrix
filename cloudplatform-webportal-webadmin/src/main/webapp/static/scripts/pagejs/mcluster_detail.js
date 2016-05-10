@@ -91,6 +91,20 @@ function queryContainer(){
 				recordsArray.push("<tr>",td0,td1,td2,td3,td4,td5,td6,td7,td8,"</tr>");
 			}
 			tby.append(recordsArray.join(''));
+			//执行中状态查询，成功或失败后刷新页面
+			var containerExecutingStatus=[7,8,10,15,17];
+			rdsExecutingStatusHandler(containerExecutingStatus,array,'/container?id=',function(data,intervalId){
+				if(data.result===1 && data.data &&  data.data.data && data.data.data[0]){
+					if(containerExecutingStatus.indexOf(data.data.data[0].status)==-1){
+						clearInterval(intervalId);
+						queryContainer();
+					}
+				}
+				else{
+					clearInterval(intervalId);
+					queryContainer();
+				}
+			});
 			/*初始化tooltip*/
 			$('[data-toggle = "tooltip"]').tooltip();
 		}

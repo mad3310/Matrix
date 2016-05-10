@@ -342,6 +342,23 @@ function containerOsHtml(type,os){
 	var temp=htmlObjs[type][os];
 	return temp?temp:'-';
 }
+function rdsExecutingStatusHandler(executingStatus,entityList,queryUrl,callback){
+	entityList.filter(function(entity){
+		return executingStatus.indexOf(entity.status)>-1;
+	}).forEach(function(entity){
+		var intervalId =setInterval(function(){
+			$.ajax({
+				cache:false,
+				type : "get",
+				url : queryUrl+entity.id,
+				dataType : "json", /*这句可用可不用，没有影响*/
+				success : function(data) {
+					callback(data,intervalId);
+				}}
+			);
+		},8000);
+	});
+}
 /* 错误提示框,一般在异步请求返回信息中用到 */
 function error(errorThrown, time) {
 	if (errorThrown.result == 0) {

@@ -204,29 +204,17 @@ function queryByPage() {
 			}
 			//执行中状态查询，成功或失败后刷新页面
 			var mclusterExecutingStatus=[2,7,8,10,15,17];
-			array.filter(function(mcluster){
-				return mclusterExecutingStatus.indexOf(mcluster.status)>-1;
-			}).forEach(function(mcluster){
-				var intervalId =setInterval(function(){
-					$.ajax({
-						cache:false,
-						type : "get",
-						url : "/mcluster/list?id="+mcluster.id,
-						dataType : "json", /*这句可用可不用，没有影响*/
-						success : function(data) {
-							if(data.result===1 && data.data &&  data.data.data && data.data.data[0]){
-								if(mclusterExecutingStatus.indexOf(data.data.data[0].status)==-1){
-									clearInterval(intervalId);
-									queryByPage();
-								}
-							}
-							else{
-								clearInterval(intervalId);
-								queryByPage();
-							}
-						}}
-					);
-				},8000);
+			rdsExecutingStatusHandler(mclusterExecutingStatus,array,'/mcluster/list?id=',function(data,intervalId){
+				if(data.result===1 && data.data &&  data.data.data && data.data.data[0]){
+					if(mclusterExecutingStatus.indexOf(data.data.data[0].status)==-1){
+						clearInterval(intervalId);
+						queryByPage();
+					}
+				}
+				else{
+					clearInterval(intervalId);
+					queryByPage();
+				}
 			});
 			
 		},
