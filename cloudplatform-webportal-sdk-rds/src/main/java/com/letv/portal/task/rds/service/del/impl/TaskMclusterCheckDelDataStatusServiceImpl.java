@@ -1,6 +1,7 @@
 package com.letv.portal.task.rds.service.del.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
+import com.letv.common.util.RetryUtil;
+import com.letv.common.util.function.IRetry;
 import com.letv.portal.constant.Constant;
 import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.model.HostModel;
@@ -47,34 +50,53 @@ public class TaskMclusterCheckDelDataStatusServiceImpl extends BaseTask4RDSServi
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception{
 		TaskResult tr = super.execute(params);
-		if(!tr.isSuccess())
+		if(!tr.isSuccess()) {
 			return tr;
-		
+		}
 		Long mclusterId = getLongFromObject(params.get("mclusterId"));
-		if(mclusterId == null)
+		if(null == mclusterId) {
 			throw new ValidateException("params's mclusterId is null");
+		}
 		//执行业务
 		MclusterModel mclusterModel = this.mclusterService.selectById(mclusterId);
-		if(mclusterModel == null)
+		if(null == mclusterModel) {
 			throw new ValidateException("mclusterModel is null by mclusterId:" + mclusterId);
+		}
 		HostModel host = this.hostService.getHostByHclusterId(mclusterModel.getHclusterId());
-		if(host == null || mclusterModel.getHclusterId() == null)
+		if(null == host || null == mclusterModel.getHclusterId()) {
 			throw new ValidateException("host is null by hclusterIdId:" + mclusterModel.getHclusterId());
+		}
 		
-		String mclusterDataName = mclusterModel.getMclusterName();
-		String delName = (String) params.get("delName");
-		ApiResultObject result = pythonService.checkContainerDelStatus(mclusterDataName,delName, host.getHostIp(), host.getName(), host.getPassword());
-		tr = analyzeRestServiceResult(result);
+		final Map<String, String> checkParams = new HashMap<String, String>();
+		checkParams.put("mclusterDataName", mclusterModel.getMclusterName());
+		checkParams.put("delName", (String) params.get("delName"));
+		checkParams.put("hostIp", host.getHostIp());
+		checkParams.put("name", host.getName());
+		checkParams.put("password", host.getPassword());
 		
-		Long start = new Date().getTime();
-		while(!tr.isSuccess()) {
-			Thread.sleep(PYTHON_CHECK_INTERVAL_TIME);
-			if(new Date().getTime()-start >PYTHON_CREATE_CHECK_TIME) {
-				tr.setResult("check time over:"+result.getUrl());
-				break;
+		Map<String, Object> obj = RetryUtil.retryByTime(new IRetry<Object, Boolean>() {
+			@Override
+			public Object execute() {
+				return pythonService.checkContainerDelStatus(checkParams);
 			}
-			result = pythonService.checkContainerDelStatus(mclusterDataName,delName, host.getHostIp(), host.getName(), host.getPassword());
-			tr = analyzeRestServiceResult(result);
+			
+			@Override
+			public Object analyzeResult(Object r) {
+				return analyzeRestServiceResult((ApiResultObject) r);
+			}
+			
+			@Override
+			public Boolean judgeAnalyzeResult(Object o) {
+				return ((TaskResult)o).isSuccess();
+			}
+		}, PYTHON_CREATE_CHECK_TIME, PYTHON_CHECK_INTERVAL_TIME);
+		
+		
+		if(obj.get("analyzeResult") instanceof Boolean && !(Boolean)obj.get("analyzeResult")) {//分析结果异常或超时时-false
+			ApiResultObject result = (ApiResultObject) obj.get("executeResult");
+			tr.setResult("check time over:"+result.getUrl());
+		} else {
+			tr = (TaskResult) obj.get("analyzeResult");
 		}
 		tr.setParams(params);
 		return tr;
@@ -84,7 +106,7 @@ public class TaskMclusterCheckDelDataStatusServiceImpl extends BaseTask4RDSServi
 	public TaskResult analyzeRestServiceResult(ApiResultObject result) {
 		TaskResult tr = new TaskResult();
 		Map<String, Object> map = transToMap(result.getResult());
-		if(map == null) {
+		if(null == map) {
 			tr.setSuccess(false);
 			tr.setResult("api connect failed:" + result.getUrl());
 			return tr;

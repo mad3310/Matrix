@@ -40,14 +40,15 @@ public interface IPythonService {
 	ApiResultObject checkContainerAddStatus(String mclusterDataName, String addNames, String hostIp, String name, String password);
 	/**
 	 * 检查删除container状态,通过检查策略进行检查
-	 * @param mclusterDataName 集群名称
-	 * @param delName 节点名称
-	 * @param hostIp
-	 * @param name
-	 * @param password
+	 * @param params 必须参数：
+	 * 					mclusterDataName-集群名称
+	 * 					delName-节点名称
+	 * 					hostIp-集群所在主机ip
+	 * 					name-主机用户名
+	 * 					password-主机密码
 	 * @return
 	 */
-	ApiResultObject checkContainerDelStatus(String mclusterDataName, String delName, String hostIp, String name, String password);
+	ApiResultObject checkContainerDelStatus(Map<String, String> params);
 	
 	/**Methods Name: initZookeeper <br>
 	 * Description: 初始化zookeeper节点<br>
