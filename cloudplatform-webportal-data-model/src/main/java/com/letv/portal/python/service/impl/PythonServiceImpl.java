@@ -58,6 +58,14 @@ public class PythonServiceImpl implements IPythonService{
 		String result = HttpClient.get(url.toString(), name, password);
 		return new ApiResultObject(result,url.toString());
 	}
+	
+	@Override
+	public ApiResultObject checkContainerDelStatus(String mclusterDataName, String delName, String hostIp, String name, String password) {
+		StringBuffer url = new StringBuffer();
+		url.append(URL_HEAD).append(hostIp).append(URL_PORT).append("/containerCluster/").append(mclusterDataName).append("/node/").append(delName);
+		String result = HttpClient.get(url.toString(), name, password);
+		return new ApiResultObject(result,url.toString());
+	}
 
 	@Override
 	public ApiResultObject getZkInfo(String nodeIp,String username,String password) {
