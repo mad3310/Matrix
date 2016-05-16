@@ -4,10 +4,12 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.common.util.HttpClient;
 import com.letv.portal.enumeration.DbUserRoleStatus;
@@ -57,6 +59,32 @@ public class PythonServiceImpl implements IPythonService{
 		url.append(URL_HEAD).append(hostIp).append(URL_PORT).append("/containerCluster/").append(mclusterDataName).append("/node/").append(addNames);
 		String result = HttpClient.get(url.toString(), name, password);
 		return new ApiResultObject(result,url.toString());
+	}
+	
+	@Override
+	public ApiResultObject checkContainerDelStatus(Map<String, String> params) {
+		if(null == params) {
+			throw new ValidateException("参数不能为空！");
+		}
+		StringBuilder builder = new StringBuilder();
+		String mclusterDataName = params.get("mclusterDataName");
+		String delName = params.get("delName");
+		String hostIp = params.get("hostIp");
+		String name = params.get("name");
+		String password = params.get("password");
+				
+		if(StringUtils.isEmpty(mclusterDataName) || 
+				StringUtils.isEmpty(delName) || 
+				StringUtils.isEmpty(hostIp) || 
+				StringUtils.isEmpty(name) ||
+				StringUtils.isEmpty(password)) {
+			builder.append("参数不合法：").append(params.toString()).append(" 都不能为空");
+			throw new ValidateException(builder.toString());
+		}
+		//TODO 抽出共用方法
+		builder.append(URL_HEAD).append(hostIp).append(URL_PORT).append("/containerCluster/").append(mclusterDataName).append("/node/").append(delName);
+		String result = HttpClient.get(builder.toString(), name, password);
+		return new ApiResultObject(result, builder.toString());
 	}
 
 	@Override
