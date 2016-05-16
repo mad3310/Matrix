@@ -48,7 +48,7 @@ public class TaskMclusterCheckDelDataStatusServiceImpl extends BaseTask4RDSServi
 	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception{
-		TaskResult tr = super.commonValidator(params);
+		TaskResult tr = super.validator(params);
 		if(!tr.isSuccess()) {
 			return tr;
 		}
