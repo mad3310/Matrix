@@ -97,6 +97,7 @@ public class TaskMclusterCheckDelDataStatusServiceImpl extends BaseTask4RDSServi
 		} else {
 			ApiResultObject result = (ApiResultObject) obj.get("executeResult");
 			tr.setResult("check time over:"+result.getUrl());
+			tr.setSuccess(false);
 		}
 		tr.setParams(params);
 		return tr;
