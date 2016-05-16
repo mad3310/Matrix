@@ -81,6 +81,7 @@ public class PythonServiceImpl implements IPythonService{
 			builder.append("参数不合法：").append(params.toString()).append(" 都不能为空");
 			throw new ValidateException(builder.toString());
 		}
+		//TODO 抽出共用方法
 		builder.append(URL_HEAD).append(hostIp).append(URL_PORT).append("/containerCluster/").append(mclusterDataName).append("/node/").append(delName);
 		String result = HttpClient.get(builder.toString(), name, password);
 		return new ApiResultObject(result, builder.toString());

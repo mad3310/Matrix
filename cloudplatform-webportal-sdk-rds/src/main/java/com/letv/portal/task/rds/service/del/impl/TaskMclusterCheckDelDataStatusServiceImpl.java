@@ -1,6 +1,5 @@
 package com.letv.portal.task.rds.service.del.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public class TaskMclusterCheckDelDataStatusServiceImpl extends BaseTask4RDSServi
 	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception{
-		TaskResult tr = super.execute(params);
+		TaskResult tr = super.commonValidator(params);
 		if(!tr.isSuccess()) {
 			return tr;
 		}
@@ -74,7 +73,7 @@ public class TaskMclusterCheckDelDataStatusServiceImpl extends BaseTask4RDSServi
 		checkParams.put("name", host.getName());
 		checkParams.put("password", host.getPassword());
 		
-		Map<String, Object> obj = RetryUtil.retryByTime(new IRetry<Object, Boolean>() {
+		IRetry<Object, Boolean> iRetry = new IRetry<Object, Boolean>() {
 			@Override
 			public Object execute() {
 				return pythonService.checkContainerDelStatus(checkParams);
@@ -89,18 +88,20 @@ public class TaskMclusterCheckDelDataStatusServiceImpl extends BaseTask4RDSServi
 			public Boolean judgeAnalyzeResult(Object o) {
 				return ((TaskResult)o).isSuccess();
 			}
-		}, PYTHON_CREATE_CHECK_TIME, PYTHON_CHECK_INTERVAL_TIME);
+		};
 		
+		Map<String, Object> obj = RetryUtil.retryByTime(iRetry, PYTHON_CREATE_CHECK_TIME, PYTHON_CHECK_INTERVAL_TIME);
 		
-		if(obj.get("analyzeResult") instanceof Boolean && !(Boolean)obj.get("analyzeResult")) {//分析结果异常或超时时-false
+		if((Boolean)obj.get("judgeAnalyzeResult")) {//分析结果正常
+			tr = (TaskResult) obj.get("analyzeResult");
+		} else {
 			ApiResultObject result = (ApiResultObject) obj.get("executeResult");
 			tr.setResult("check time over:"+result.getUrl());
-		} else {
-			tr = (TaskResult) obj.get("analyzeResult");
 		}
 		tr.setParams(params);
 		return tr;
 	}
+	
 	
 	@Override
 	public TaskResult analyzeRestServiceResult(ApiResultObject result) {

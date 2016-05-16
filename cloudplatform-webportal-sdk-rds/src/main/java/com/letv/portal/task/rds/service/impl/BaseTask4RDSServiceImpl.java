@@ -34,6 +34,22 @@ public class BaseTask4RDSServiceImpl extends BaseTaskServiceImpl implements IBas
 	private IDbService dbService;
 	private final static Logger logger = LoggerFactory.getLogger(BaseTask4RDSServiceImpl.class);
 	
+	/**
+	 * 该工作流通用的参数验证
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public TaskResult commonValidator(Map<String, Object> params) throws Exception {
+		TaskResult tr = new TaskResult();
+		if(params == null || params.isEmpty()) {
+			tr.setResult("params is empty");
+			tr.setSuccess(false);
+		}
+		tr.setParams(params);
+		return tr;
+	}
+	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
 		TaskResult tr = new TaskResult();
