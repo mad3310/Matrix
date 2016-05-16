@@ -40,6 +40,17 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	private final static Logger logger = LoggerFactory.getLogger(BaseTaskServiceImpl.class);
 	
 	@Override
+	public TaskResult validator(Map<String, Object> params) throws Exception {
+		TaskResult tr = new TaskResult();
+		if(params == null || params.isEmpty()) {
+			tr.setResult("params is empty");
+			tr.setSuccess(false);
+		}
+		tr.setParams(params);
+		return tr;
+	}
+	
+	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
 		TaskResult tr = new TaskResult();
 		if(params == null || params.isEmpty()) {
