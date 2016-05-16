@@ -7,12 +7,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>控制台-乐视云平台</title>
         <link rel="shortcut icon" href="http://i3.letvimg.com/lc05_lecloud/201601/12/10/21/favicon.ico">
-        <link rel="stylesheet" href="/stylesheets/vendor/bootstrap.css">
-        <link rel="stylesheet" href="/stylesheets/vendor/font-awesome.css">
-        <link rel="stylesheet" href="/stylesheets/vendor/toaster.css">
-        <link rel="stylesheet" href="/stylesheets/vendor/rzslider.css">
-        <link rel="stylesheet" href="/stylesheets/common.css">
-        <link rel="stylesheet" href="/stylesheets/style-rds.css">
+        <link rel="stylesheet" href="/stylesheets/dist/vendor.css">
+        <link rel="stylesheet" href="/stylesheets/dist/common-1463380997464.css">
+        <link rel="stylesheet" href="/stylesheets/dist/style-rds-1463380997464.css">
         </head>
         <style>
         .main .side-bar {
@@ -38,6 +35,6 @@
         </div>
         <div class="clearfix"></div>
         </div>
-        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-main-build-1462418307641.js"></script>
+        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-main-build-1463380997464.js"></script>
         </body>
         </html>
