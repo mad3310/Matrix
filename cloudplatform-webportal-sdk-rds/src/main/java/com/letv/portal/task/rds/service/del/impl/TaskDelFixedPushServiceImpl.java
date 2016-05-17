@@ -70,7 +70,10 @@ public class TaskDelFixedPushServiceImpl extends BaseTask4RDSServiceImpl impleme
 	}
     @Override
     public void callBack(TaskResult tr) {
-//		super.callBack(tr);
+    	Long mclusterId = getLongFromObject(((Map<String, Object>) tr.getParams()).get("mclusterId"));
+		MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
+		mcluster.setStatus(MclusterStatus.RUNNING.getValue());
+		this.mclusterService.updateBySelective(mcluster);
     }
 
     @Override

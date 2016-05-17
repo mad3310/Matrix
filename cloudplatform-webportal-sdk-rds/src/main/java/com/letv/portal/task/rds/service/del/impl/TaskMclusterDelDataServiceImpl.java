@@ -68,10 +68,6 @@ public class TaskMclusterDelDataServiceImpl extends BaseTask4RDSServiceImpl impl
 	}
 	@Override
 	public void callBack(TaskResult tr) {
-		Long mclusterId = getLongFromObject(((Map<String, Object>) tr.getParams()).get("mclusterId"));
-		MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
-		mcluster.setStatus(MclusterStatus.RUNNING.getValue());
-		this.mclusterService.updateBySelective(mcluster);
 //		super.callBack(tr);
 	}
 
