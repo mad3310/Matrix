@@ -189,8 +189,8 @@ public class PythonServiceImpl implements IPythonService{
 
         Map<String,String> map = new HashMap<String,String>();
         map.put("isNewCluster", "false");
-
-        String result = HttpClient.post(url.toString(), map,username,password);
+        
+        String result = HttpClient.post(url.toString(), map, 5000, 100000, username, password);
         return new ApiResultObject(result,url.toString());
     }
 
