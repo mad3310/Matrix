@@ -97,7 +97,7 @@ public class TaskController {
 	@RequestMapping(value ="/monitor",method=RequestMethod.GET)   
 	public @ResponseBody ResultObject taskMonitorList(Page page,HttpServletRequest request,ResultObject obj) {
 		Map<String,Object> params = HttpUtil.requestParam2Map(request);
-		obj.setData(this.taskChainIndexService.selectPageByParams(page, params));
+		obj.setData(this.taskChainIndexService.queryByPagination(page, params));
 		return obj;
 	}
 	/**Methods Name: taskMonitorDetail <br>
