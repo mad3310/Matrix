@@ -17,4 +17,11 @@ public interface IBaseTaskService {
 
 	public TaskResult analyzeRestServiceResult(ApiResultObject resultObject);
 	
+	/**
+	 * 通用参数验证
+	 * @param params
+	 * @return
+	 */
+	public TaskResult validator(Map<String, Object> params) throws Exception;
+	
 }

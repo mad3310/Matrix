@@ -124,7 +124,7 @@
 	</update>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="java.util.Map">
+		parameterType="com.letv.common.dao.QueryParam">
 		select count(1) from WEBPORTAL_TASK_CHAIN_INDEX tci
 		left join WEBPORTAL_TEMPLATE_TASK tt on tt.ID = tci.TASK_ID
 		<include refid="Example_Page_Where_Clause"/>
