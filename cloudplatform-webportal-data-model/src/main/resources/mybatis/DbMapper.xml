@@ -197,7 +197,7 @@
 	<select id="selectByDbNameForValidate" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
-		from WEBPORTAL_DB m WHERE m.DB_NAME = #{dbName} and m.CREATE_USER = #{createUser}
+		from WEBPORTAL_DB m WHERE m.DB_NAME = #{dbName}
 	</select>
 
 	<!-- 查询创建用户所需参数-->
