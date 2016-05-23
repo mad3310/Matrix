@@ -230,4 +230,14 @@ public class HclusterController {
 		this.hclusterService.update(hclusterModel);
 		return obj;
 	}
+	
+	@AoLog(desc="停用hcluster集群", type=AoLogType.UPDATE)
+	@RequestMapping(value = "/stop", method = RequestMethod.POST)
+	public @ResponseBody ResultObject  stopHcluster(HclusterModel hclusterModel){
+		ResultObject obj = new ResultObject();
+		hclusterModel.setStatus(HclusterStatus.DEFAULT.getValue());
+		this.hclusterService.update(hclusterModel);
+		return obj;
+	}
+	
 }
