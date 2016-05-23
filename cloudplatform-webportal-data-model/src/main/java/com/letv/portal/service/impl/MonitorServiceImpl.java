@@ -304,7 +304,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 					point.add(beforData.get(i+1).getMonitorDate());
 					float diff = beforData.get(i+1).getDetailValue()-beforData.get(i).getDetailValue();
 					float time = (beforData.get(i+1).getMonitorDate().getTime()-beforData.get(i).getMonitorDate().getTime())/1000;
-					float value = diff>0?diff/time:0;
+					float value = diff>0&&time>0 ? diff/time : 0;
 					value = monitorDataAdapter(value,format);
 					point.add(value);
 					datas.add(point);

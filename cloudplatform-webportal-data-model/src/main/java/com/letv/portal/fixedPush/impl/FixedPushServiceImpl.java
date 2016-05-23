@@ -1,25 +1,21 @@
 package com.letv.portal.fixedPush.impl;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import com.alibaba.fastjson.JSON;
-import com.letv.common.exception.TaskExecuteException;
+import com.letv.common.exception.ValidateException;
 import com.letv.common.util.HttpClient;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.ContainerModel;
-import com.letv.portal.model.ContainerPush;
-import com.letv.portal.model.fixed.FixedPushModel;
 
 
 
@@ -37,12 +33,16 @@ public class FixedPushServiceImpl implements IFixedPushService{
 	
 	private final static Logger logger = LoggerFactory.getLogger(FixedPushServiceImpl.class);
 	
-	@Value("${fixedpush.url}")
-	private String FIXEDPUSH_GET;
-	@Value("${fixedpush.url.ip}")
-	private String FIXEDPUSH_SOCKET_IP;
-	@Value("${fixedpush.url.port}")
-	private int FIXEDPUSH_SOCKET_PORT;
+	@Value("${fixedpush.sn.url}")
+	private String fixedPushSnUrl;//查询sn地址
+	@Value("${fixedpush.add.url}")
+	private String fixedPushAddUrl;//灵枢新增固资推送地址
+	@Value("${fixedpush.add.token}")
+	private String fixedPushAddToken;//灵枢新增固资推送地址token
+	@Value("${fixedpush.del.url}")
+	private String fixedPushDelUrl;//灵枢删除固资推送地址
+	@Value("${fixedpush.del.token}")
+	private String fixedPushDelToken;//灵枢删除固资推送地址token
 
 	public Boolean createMutilContainerPushFixedInfo(List<ContainerModel> containers){
         boolean flag = true;
@@ -64,69 +64,67 @@ public class FixedPushServiceImpl implements IFixedPushService{
 		}
 		return flag;
 	}
-	public Boolean sendFixedInfo(String serverTag,String name,String ip,String type) {
-		boolean flag = true;
-		try {
-			List<ContainerPush> list = new ArrayList<ContainerPush>();
-			ContainerPush containerMode = new ContainerPush();
-			containerMode.setName(name);
-			containerMode.setIp(ip);
-			list.add(containerMode);
-
-			FixedPushModel fixedPushModel = new FixedPushModel();
-			fixedPushModel.setServertag(serverTag);
-			fixedPushModel.setType(type);
-			fixedPushModel.setIpaddress(list);
-			sendFixedInfo(fixedPushModel);
-		} catch (Exception e) {
-			flag = false;
-		} finally {
-			return flag;
+	public Boolean sendFixedInfo(String hostIp,String name,String ip,String type) {
+		String sn = getSnByHostIp(hostIp);
+		logger.debug("推送固资根据HostIp:[{}}获取sn:[{}]", hostIp, sn);
+		if(StringUtils.isEmpty(sn)) {
+			throw new ValidateException("根据hostIp未获取到sn，hostIp:" + hostIp);
 		}
-	}
-
-	private String sendFixedInfo(FixedPushModel fixedPushModel)throws Exception{
-	    String sn =	receviceFixedInfo(fixedPushModel);
-	    fixedPushModel.setServertag(sn);
-	    String pushString =  JSON.toJSONString(fixedPushModel);
-	    sendSocket(pushString);
-        return null;
-	}
- 
-	private String receviceFixedInfo(FixedPushModel fixedPushModel) throws Exception{
-		if(fixedPushModel!=null){
-			String hostIp = fixedPushModel.getServertag();
-			String url = FIXEDPUSH_GET+hostIp;
-			String sn=HttpClient.get(url);			
-			return sn;
-		}else {
-			return null;
-		}      
-	}
-
-	private void sendSocket(String pushString) throws IOException{
-        Socket s1 = new Socket(FIXEDPUSH_SOCKET_IP, FIXEDPUSH_SOCKET_PORT);
-	    InputStream is = s1.getInputStream();
-	    DataInputStream dis = new DataInputStream(is);
-	    OutputStream os = s1.getOutputStream();	
-		try{
-			if(null == pushString ||"".equals(pushString)){
-			}else{
-			os.write(int2byte(pushString.getBytes().length));
-			os.write(pushString.getBytes());
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("ip", ip);
+		params.put("name", name);
+		params.put("hostIp", sn);
+		String ret;
+		if("add".equals(type)) {//新增固资
+			params.put("link_token", fixedPushAddToken);
+			try {
+				ret = HttpClient.get(fixedPushAddUrl, params, 5000, 10000);
+			} catch (Exception e) {
+				logger.error("invoke cmdb api delete fixed failure:", e);
+				throw new RestClientException("推送新增固资调用cmdb接口失败:", e);
 			}
-            os.flush();            
-        } catch (Exception e) {
-           logger.debug("socket发送出错");
-        }finally{
-        	 dis.close();
-        	 s1.close();
-        }
+		} else if("delete".equals(type)) {//删除固资
+			params.put("link_token", fixedPushDelToken);
+			try {
+				ret = HttpClient.get(fixedPushDelUrl, params, 5000, 10000);
+			} catch (Exception e) {
+				logger.error("invoke cmdb api delete fixed failure:", e);
+				throw new RestClientException("推送删除固资调用cmdb接口失败:", e);
+			}
+		} else {
+			logger.error("由于type未识别，未推送固资");
+			throw new ValidateException("由于type未识别，未推送固资， type:" + type);
+		}
+		
+		logger.info("固资推送结果：{}", ret);
+		Map<String, Object> resultMap = JSON.parseObject(ret, Map.class);
+		
+		Object code = null==resultMap ? 1 : resultMap.get("Code");
+		if(null!=code && (int)code==0) {
+			logger.debug("固资推送成功hostIp:[{}],name:[{}],ip:[{}],type:[{}]", hostIp, name, ip, type);
+			return true;
+		} else {
+			StringBuilder builder = new StringBuilder();
+			builder.append("固资推送失败hostIp:[").append(hostIp)
+			.append("],name:[").append(name)
+			.append("],ip:[").append(ip)
+			.append("],type:[").append(type)
+			.append("]");
+			logger.debug(builder.toString());
+			throw new ValidateException(builder.toString());
+		}
+		
 	}
-    private static byte[] int2byte(int i) {
-        return new byte[] { (byte) ((i >> 24) & 0xFF),
-                (byte) ((i >> 16) & 0xFF), (byte) ((i >> 8) & 0xFF),
-                (byte) (i & 0xFF) };
-    }
+	
+	/**
+	 * 根据宿主机ip获取对应的sn
+	 * @param hostIp
+	 * @return
+	 */
+	private String getSnByHostIp(String hostIp) {
+		return HttpClient.get(fixedPushSnUrl + hostIp);			
+	}
+
 
 }

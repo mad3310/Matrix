@@ -652,9 +652,11 @@
                 <webportal.log.path>D:</webportal.log.path>
 
                 <!-- fixed and zabbix config -->
-                <fixedpush.url.ip>10.154.29.106</fixedpush.url.ip>
-                <fixedpush.url.port>29350</fixedpush.url.port>
-                <fixedpush.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.url>
+                <fixedpush.sn.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.sn.url>
+                <fixedpush.add.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockeradd</fixedpush.add.url>
+                <fixedpush.add.token>6f27cbbafb1b0ac2c8f5008fe83ead22</fixedpush.add.token>
+                <fixedpush.del.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockerdelete</fixedpush.del.url>
+                <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
 
                 <zabbix.post.url>http://10.200.90.51/zabbix_test/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -727,9 +729,11 @@
                 <webportal.log.path>/var/log</webportal.log.path>
 
                 <!-- fixed and zabbix config -->
-                <fixedpush.url.ip>10.154.29.106</fixedpush.url.ip>
-                <fixedpush.url.port>29350</fixedpush.url.port>
-                <fixedpush.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.url>
+                <fixedpush.sn.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.sn.url>
+                <fixedpush.add.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockeradd</fixedpush.add.url>
+                <fixedpush.add.token>6f27cbbafb1b0ac2c8f5008fe83ead22</fixedpush.add.token>
+                <fixedpush.del.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockerdelete</fixedpush.del.url>
+                <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
 
                 <zabbix.post.url>http://10.200.90.51/zabbix_test/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -802,9 +806,11 @@
                 <webportal.log.path>/var/log</webportal.log.path>
 
                 <!-- fixed and zabbix config -->
-                <fixedpush.url.ip>10.154.29.106</fixedpush.url.ip>
-                <fixedpush.url.port>29350</fixedpush.url.port>
-                <fixedpush.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.url>
+                <fixedpush.sn.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.sn.url>
+                <fixedpush.add.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockeradd</fixedpush.add.url>
+                <fixedpush.add.token>6f27cbbafb1b0ac2c8f5008fe83ead22</fixedpush.add.token>
+                <fixedpush.del.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockerdelete</fixedpush.del.url>
+                <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
 
                 <zabbix.post.url>http://10.0.51.13/zabbix/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -874,9 +880,11 @@
                 <webportal.log.path>/var/log</webportal.log.path>
 
                 <!-- fixed and zabbix config -->
-                <fixedpush.url.ip>10.154.29.106</fixedpush.url.ip>
-                <fixedpush.url.port>29350</fixedpush.url.port>
-                <fixedpush.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.url>
+                <fixedpush.sn.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.sn.url>
+                <fixedpush.add.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockeradd</fixedpush.add.url>
+                <fixedpush.add.token>6f27cbbafb1b0ac2c8f5008fe83ead22</fixedpush.add.token>
+                <fixedpush.del.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockerdelete</fixedpush.del.url>
+                <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
 
                 <zabbix.post.url>http://10.0.51.13/zabbix/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -946,9 +954,11 @@
                 <webportal.log.path>/var/log</webportal.log.path>
 
                 <!-- fixed and zabbix config -->
-                <fixedpush.url.ip>10.154.29.106</fixedpush.url.ip>
-                <fixedpush.url.port>29350</fixedpush.url.port>
-                <fixedpush.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.url>
+                <fixedpush.sn.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.sn.url>
+                <fixedpush.add.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockeradd</fixedpush.add.url>
+                <fixedpush.add.token>6f27cbbafb1b0ac2c8f5008fe83ead22</fixedpush.add.token>
+                <fixedpush.del.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockerdelete</fixedpush.del.url>
+                <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
 
                 <zabbix.post.url>http://10.0.51.13/zabbix/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -1018,9 +1028,11 @@
                 <webportal.log.path>/var/log</webportal.log.path>
 
                 <!-- fixed and zabbix config -->
-                <fixedpush.url.ip>10.154.29.106</fixedpush.url.ip>
-                <fixedpush.url.port>29350</fixedpush.url.port>
-                <fixedpush.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.url>
+                <fixedpush.sn.url>http://oss.letv.cn:9310/comm_searchMachineSnrByIp.action?ip=</fixedpush.sn.url>
+                <fixedpush.add.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockeradd</fixedpush.add.url>
+                <fixedpush.add.token>6f27cbbafb1b0ac2c8f5008fe83ead22</fixedpush.add.token>
+                <fixedpush.del.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockerdelete</fixedpush.del.url>
+                <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
 
                 <zabbix.post.url>http://10.0.51.13/zabbix/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
