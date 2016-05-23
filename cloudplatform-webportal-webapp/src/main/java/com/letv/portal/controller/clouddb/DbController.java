@@ -91,7 +91,7 @@ public class DbController {
 	public @ResponseBody ResultObject save(DbModel dbModel,boolean isCreateAdmin) {
 		String dbName = dbModel.getDbName();
 		// 未能通过合法性检查：数据库名已经存在，关键字， 空字符
-		if(StringUtils.isBlank(dbName) || !isLegalDbName(dbName)) {
+		if(!isLegalDbName(dbName)) {
 			throw new ValidateException("数据库名称未通过合法性验证！");
 		}
 		this.dbProxy.saveAndBuild(dbModel,isCreateAdmin);
@@ -130,9 +130,6 @@ public class DbController {
 	
 	@RequestMapping(value="/validate",method=RequestMethod.POST)
 	public @ResponseBody Map<String,Object> validate(String dbName,HttpServletRequest request) {
-		if(StringUtils.isEmpty(dbName))
-			throw new ValidateException("参数不合法");
-		//List<DbModel> list = this.dbService.selectByDbNameForValidate(dbName,sessionService.getSession().getUserId());
 		Map<String,Object> map = new HashMap<String,Object>();
 		// 屏蔽关键字以及数据库同名账号
 		map.put("valid", isLegalDbName(dbName));
@@ -155,7 +152,7 @@ public class DbController {
 	 * 页面返回逻辑
 	 */
 	private boolean isLegalDbName(String dbName) {
-		return isExistDbName(dbName) || isKeyword(dbName) ? false : true;
+		return StringUtils.isBlank(dbName) || isExistDbName(dbName) || isKeyword(dbName) ? false : true;
 	}
 	
 	/*
