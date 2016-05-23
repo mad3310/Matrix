@@ -159,7 +159,7 @@ public class DbController {
 	 * 判断数据库名称是否存在
 	 */
 	private boolean isExistDbName(String dbName) {
-		List<DbModel> list = dbService.selectByDbNameForValidate(dbName);
+		List<DbModel> list = dbService.selectByDbNameForValidate(dbName, sessionService.getSession().getUserId());
 		return list.size() > 0  ? true : false;
 	}
 	

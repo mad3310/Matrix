@@ -40,7 +40,7 @@ public interface IDbService extends IBaseService<DbModel> {
 	 * @param dbName
 	 * @return
 	 */
-	public List<DbModel> selectByDbNameForValidate(String dbName);
+	public List<DbModel> selectByDbNameForValidate(String dbName,Long createUser);
 
 	/**Methods Name: deleteByMclusterId <br>
 	 * Description: 根据container集群id删除对应db<br>
