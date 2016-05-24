@@ -1,6 +1,7 @@
 package com.letv.portal.task.rds.service.del.impl;
 
 import com.letv.common.exception.ValidateException;
+import com.letv.common.result.ApiResultObject;
 import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.ContainerModel;
@@ -11,6 +12,7 @@ import com.letv.portal.service.IContainerService;
 import com.letv.portal.service.IHostService;
 import com.letv.portal.service.IMclusterService;
 import com.letv.portal.task.rds.service.impl.BaseTask4RDSServiceImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,11 +55,11 @@ public class TaskDelFixedPushServiceImpl extends BaseTask4RDSServiceImpl impleme
 		if(containers.isEmpty())
 			throw new ValidateException("containers is empty by name:" + namesstr);
 		
-		boolean isSuccess = fixedPushService.deleteMutilContainerPushFixedInfo(containers);
-		if(!isSuccess) {
+		ApiResultObject apiResult = fixedPushService.deleteMutilContainerPushFixedInfo(containers);
+		if(!apiResult.getAnalyzeResult()) {
 			//发送推送失败邮件，流程继续。
 			buildResultToMgr("RDS服务相关系统推送异常", mclusterModel.getMclusterName() +"集群固资系统数据推送失败，请运维人员重新推送", tr.getResult(), null);
-			tr.setResult("固资系统数据推送失败");
+			tr.setResult(apiResult.getResult());
 		} else {
 			for(ContainerModel containerModel:containers) {
 				this.containerService.delete(containerModel);

@@ -120,7 +120,7 @@
 	<select id="selectByIpAndUsername" resultMap="BaseResultMap" parameterType="DbUser">
 		select
 		<include refid="Base_Column_List" />
-		from WEBPORTAL_DB_USER m WHERE m.USERNAME = #{username} and m.ACCEPT_IP=#{acceptIp} and m.DB_ID=#{dbId}
+		from WEBPORTAL_DB_USER m WHERE m.USERNAME = binary #{username} and m.ACCEPT_IP=#{acceptIp} and m.DB_ID=#{dbId}
 	</select>
 
 	<!-- 根据dbId查询-->

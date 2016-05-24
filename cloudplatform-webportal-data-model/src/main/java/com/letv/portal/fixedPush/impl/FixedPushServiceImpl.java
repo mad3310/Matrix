@@ -9,10 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
 import com.alibaba.fastjson.JSON;
 import com.letv.common.exception.ValidateException;
+import com.letv.common.result.ApiResultObject;
 import com.letv.common.util.HttpClient;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.ContainerModel;
@@ -44,31 +44,40 @@ public class FixedPushServiceImpl implements IFixedPushService{
 	@Value("${fixedpush.del.token}")
 	private String fixedPushDelToken;//灵枢删除固资推送地址token
 
-	public Boolean createMutilContainerPushFixedInfo(List<ContainerModel> containers){
-        boolean flag = true;
+	public ApiResultObject createMutilContainerPushFixedInfo(List<ContainerModel> containers){
+		ApiResultObject ret = null;
 		for(ContainerModel c:containers) {
-			flag = sendFixedInfo(c.getHostIp(), c.getContainerName(), c.getIpAddr(), "add");
-            if(!flag)
-                break;
+			ret = sendFixedInfo(c.getHostIp(), c.getContainerName(), c.getIpAddr(), "add");
+			if(!ret.getAnalyzeResult()) {
+				break;
+			}
+				
 		}
-		return flag;
+		return ret;
 	}
+	
 
 	@Override
-	public Boolean deleteMutilContainerPushFixedInfo(List<ContainerModel> containers){
-        boolean flag = true;
+	public ApiResultObject deleteMutilContainerPushFixedInfo(List<ContainerModel> containers){
+		ApiResultObject ret = null;
 		for(ContainerModel c:containers) {
-			flag = sendFixedInfo(c.getHostIp(), c.getContainerName(), c.getIpAddr(), "delete");
-            if(!flag)
+			ret = sendFixedInfo(c.getHostIp(), c.getContainerName(), c.getIpAddr(), "delete");
+            if(!ret.getAnalyzeResult())
                 break;
 		}
-		return flag;
+		return ret;
 	}
-	public Boolean sendFixedInfo(String hostIp,String name,String ip,String type) {
+	
+	
+	public ApiResultObject sendFixedInfo(String hostIp,String name,String ip,String type) {
+		ApiResultObject apiResult = new ApiResultObject();
 		String sn = getSnByHostIp(hostIp);
 		logger.debug("推送固资根据HostIp:[{}}获取sn:[{}]", hostIp, sn);
 		if(StringUtils.isEmpty(sn)) {
-			throw new ValidateException("根据hostIp未获取到sn，hostIp:" + hostIp);
+			logger.error("根据hostIp未获取到sn，hostIp:{}", hostIp);
+			apiResult.setAnalyzeResult(false);
+			apiResult.setResult("根据hostIp未获取到sn，hostIp:"+ hostIp);
+			return apiResult;
 		}
 		
 		Map<String, String> params = new HashMap<String, String>();
@@ -78,43 +87,40 @@ public class FixedPushServiceImpl implements IFixedPushService{
 		String ret;
 		if("add".equals(type)) {//新增固资
 			params.put("link_token", fixedPushAddToken);
-			try {
-				ret = HttpClient.get(fixedPushAddUrl, params, 5000, 10000);
-			} catch (Exception e) {
-				logger.error("invoke cmdb api delete fixed failure:", e);
-				throw new RestClientException("推送新增固资调用cmdb接口失败:", e);
-			}
+			ret = HttpClient.get(fixedPushAddUrl, params, 5000, 10000);
 		} else if("delete".equals(type)) {//删除固资
 			params.put("link_token", fixedPushDelToken);
-			try {
-				ret = HttpClient.get(fixedPushDelUrl, params, 5000, 10000);
-			} catch (Exception e) {
-				logger.error("invoke cmdb api delete fixed failure:", e);
-				throw new RestClientException("推送删除固资调用cmdb接口失败:", e);
-			}
+			ret = HttpClient.get(fixedPushDelUrl, params, 5000, 10000);
 		} else {
 			logger.error("由于type未识别，未推送固资");
 			throw new ValidateException("由于type未识别，未推送固资， type:" + type);
 		}
 		
-		logger.info("固资推送结果：{}", ret);
+		logger.debug("固资推送结果：{}", ret);
 		Map<String, Object> resultMap = JSON.parseObject(ret, Map.class);
-		
-		Object code = null==resultMap ? 1 : resultMap.get("Code");
-		if(null!=code && (int)code==0) {
-			logger.debug("固资推送成功hostIp:[{}],name:[{}],ip:[{}],type:[{}]", hostIp, name, ip, type);
-			return true;
-		} else {
-			StringBuilder builder = new StringBuilder();
-			builder.append("固资推送失败hostIp:[").append(hostIp)
-			.append("],name:[").append(name)
-			.append("],ip:[").append(ip)
-			.append("],type:[").append(type)
-			.append("]");
-			logger.debug(builder.toString());
-			throw new ValidateException(builder.toString());
+		if(null == resultMap) {
+			apiResult.setAnalyzeResult(false);
+			apiResult.setResult("调用固资系统失败");
+			return apiResult;
 		}
 		
+		Object code = resultMap.get("Code");
+		if(null!=code && (Integer)code==0) {
+			logger.debug("固资推送成功hostIp:[{}],name:[{}],ip:[{}],type:[{}]", hostIp, name, ip, type);
+			apiResult.setAnalyzeResult(true);
+			apiResult.setResult((String) resultMap.get("Msg"));
+		} else {
+			logger.error("固资推送失败结果：{}", ret);
+			logger.error("固资推送失败hostIp:[{}],name:[{}],ip:[{}],type:[{}]", hostIp, name, ip, type);
+			apiResult.setAnalyzeResult(false);
+			StringBuilder builder = new StringBuilder();
+			builder.append("固资推送失败,")
+			.append("ip[").append(ip).append("]")
+			.append(",type[").append(type).append("]")
+			.append(",失败原因:").append((String) resultMap.get("Msg"));
+			apiResult.setResult(builder.toString());
+		}
+		return apiResult;
 	}
 	
 	/**
