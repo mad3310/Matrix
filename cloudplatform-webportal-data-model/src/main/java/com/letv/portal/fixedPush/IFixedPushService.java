@@ -1,9 +1,10 @@
 package com.letv.portal.fixedPush;
 
 import java.util.List;
+import java.util.Map;
 
+import com.letv.common.result.ApiResultObject;
 import com.letv.portal.model.ContainerModel;
-import com.letv.portal.model.fixed.FixedPushModel;
 
 
 /**Program Name: IFixedPushService <br>
@@ -21,8 +22,8 @@ public interface IFixedPushService {
 	 * @author name: wujun
 	 * @param containers
 	 */
-	Boolean createMutilContainerPushFixedInfo(List<ContainerModel> containers);
-	Boolean deleteMutilContainerPushFixedInfo(List<ContainerModel> containers);
+	ApiResultObject createMutilContainerPushFixedInfo(List<ContainerModel> containers);
+	ApiResultObject deleteMutilContainerPushFixedInfo(List<ContainerModel> containers);
 
 	/**
 	 *固资推送接口
@@ -32,5 +33,5 @@ public interface IFixedPushService {
 	 * @param type add or delete
 	 * @return  true,如果推送失败 ,发送邮件,运维手动推送.
 	 */
-	Boolean sendFixedInfo(String serverTag,String name,String ip,String type);
+	ApiResultObject sendFixedInfo(String serverTag,String name,String ip,String type);
 }

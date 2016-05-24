@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import com.letv.portal.model.ContainerModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.letv.common.exception.ValidateException;
-import com.letv.common.paging.impl.Page;
+import com.letv.common.result.ApiResultObject;
 import com.letv.common.result.ResultObject;
-import com.letv.common.util.HttpUtil;
-import com.letv.common.util.StringUtil;
-import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.fixedPush.IFixedPushService;
+import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.MclusterModel;
-import com.letv.portal.model.adminoplog.AoLogType;
-import com.letv.portal.proxy.IMclusterProxy;
-import com.letv.portal.python.service.IBuildTaskService;
 import com.letv.portal.service.IContainerService;
 import com.letv.portal.service.IMclusterService;
-import com.letv.portal.service.adminoplog.AoLog;
 import com.letv.portal.service.adminoplog.ClassAoLog;
 import com.letv.portal.zabbixPush.IZabbixPushService;
 
@@ -109,8 +100,8 @@ public class ManualApiController {
 		for (MclusterModel mclusterModel : mclusters) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("mclusterId", mclusterModel.getId());
-			boolean isSuccess = this.fixedPushService.deleteMutilContainerPushFixedInfo(this.containerService.selectByMap(map));
-			if(isSuccess) {
+			ApiResultObject apiResult = this.fixedPushService.deleteMutilContainerPushFixedInfo(this.containerService.selectByMap(map));
+			if(apiResult.getAnalyzeResult()) {
 				success++;
 			} else {
 				fail ++;
@@ -132,8 +123,8 @@ public class ManualApiController {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("mclusterId", mclusters.get(0).getId());
-		boolean addResult = this.fixedPushService.createMutilContainerPushFixedInfo(this.containerService.selectByMap(map));
-		if(addResult) {
+		ApiResultObject addResult = this.fixedPushService.createMutilContainerPushFixedInfo(this.containerService.selectByMap(map));
+		if(addResult.getAnalyzeResult()) {
 			result.getMsgs().add("集群固资信息创建成功");
 		} else {
 			result.getMsgs().add("集群固资信息创建失败");
@@ -148,8 +139,8 @@ public class ManualApiController {
 		containerModel.setContainerName(name);
 		containerModel.setHostIp(hostIp);
         containers.add(containerModel);
-		boolean addResult = this.fixedPushService.createMutilContainerPushFixedInfo(containers);
-		if(addResult) {
+        ApiResultObject apiResult = this.fixedPushService.createMutilContainerPushFixedInfo(containers);
+		if(apiResult.getAnalyzeResult()) {
 			result.getMsgs().add("集群固资信息创建成功");
 		} else {
 			result.getMsgs().add("集群固资信息创建失败");
@@ -165,8 +156,8 @@ public class ManualApiController {
 		for (MclusterModel mclusterModel : mclusters) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("mclusterId", mclusterModel.getId());
-			boolean isSuccess = this.fixedPushService.deleteMutilContainerPushFixedInfo(this.containerService.selectByMap(map));
-			if(isSuccess) {
+			ApiResultObject apiResult = this.fixedPushService.deleteMutilContainerPushFixedInfo(this.containerService.selectByMap(map));
+			if(apiResult.getAnalyzeResult()) {
 				success++;
 			} else {
 				fail ++;
@@ -183,8 +174,8 @@ public class ManualApiController {
 		for (MclusterModel mclusterModel : mclusters) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("mclusterId", mclusterModel.getId());
-			boolean isSuccess = this.fixedPushService.createMutilContainerPushFixedInfo(this.containerService.selectByMap(map));
-			if(isSuccess) {
+			ApiResultObject apiResult = this.fixedPushService.createMutilContainerPushFixedInfo(this.containerService.selectByMap(map));
+			if(apiResult.getAnalyzeResult()) {
 				success++;
 			} else {
 				fail ++;

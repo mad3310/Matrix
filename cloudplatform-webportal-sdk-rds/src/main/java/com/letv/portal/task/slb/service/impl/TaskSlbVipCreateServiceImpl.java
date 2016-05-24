@@ -55,11 +55,11 @@ public class TaskSlbVipCreateServiceImpl extends BaseTask4SlbServiceImpl impleme
 			for (String ip : ips) {
 				ipBuffer.append(ip).append(",");
 				if(ip.startsWith("10.")) {
-					boolean flag = this.fixedPushService.sendFixedInfo(host.getHostIp(),server.getSlbName()+"_vip",ip,"add");
-					if(!flag) {
+					ApiResultObject apiResult = this.fixedPushService.sendFixedInfo(host.getHostIp(),server.getSlbName()+"_vip",ip,"add");
+					if(!apiResult.getAnalyzeResult()) {
 						//发送推送失败邮件，流程继续。
 						buildResultToMgr("SLB服务相关系统推送异常", server.getSlbName()+"vip ip固资系统数据推送失败，请运维人员重新推送", tr.getResult(), null);
-						tr.setResult("固资系统数据推送失败");
+						tr.setResult(apiResult.getResult());
 						break;
 					}
 				}
