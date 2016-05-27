@@ -11,10 +11,17 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
-
+       
 	<import resource="classpath:applicationContext-adminOpLog.xml"/>
+	
 	<!--对web包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 --> 
-	<context:component-scan base-package="com.letv.portal.controller"/> 
+	<context:component-scan base-package="com.letv.portal"/>
+	
+	<aop:aspectj-autoproxy proxy-target-class="true">
+        <aop:include name="cacheAspect"/>
+    </aop:aspectj-autoproxy>
+    <bean id="cacheAspect" class="com.letv.portal.annotation.CacheAspect"></bean>
+	 
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
 	      <property name="locations">
 		    <list> 

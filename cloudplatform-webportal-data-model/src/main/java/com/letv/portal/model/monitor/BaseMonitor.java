@@ -1,7 +1,12 @@
 package com.letv.portal.model.monitor;
 
+import java.io.Serializable;
 
-public class BaseMonitor {
+
+public class BaseMonitor implements Serializable {
+	
+	private static final long serialVersionUID = -4453351061673231608L;
+	
 	private int result;
 	
 	public BaseMonitor() {

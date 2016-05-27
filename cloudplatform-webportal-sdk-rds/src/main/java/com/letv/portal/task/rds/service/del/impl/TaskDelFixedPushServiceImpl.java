@@ -60,19 +60,20 @@ public class TaskDelFixedPushServiceImpl extends BaseTask4RDSServiceImpl impleme
 			//发送推送失败邮件，流程继续。
 			buildResultToMgr("RDS服务相关系统推送异常", mclusterModel.getMclusterName() +"集群固资系统数据推送失败，请运维人员重新推送", tr.getResult(), null);
 			tr.setResult(apiResult.getResult());
-		} else {
-			for(ContainerModel containerModel:containers) {
-				this.containerService.delete(containerModel);
-			}
-		}
-
+		} 
 		tr.setSuccess(true);
 		tr.setParams(params);
 		return tr;
 	}
     @Override
     public void callBack(TaskResult tr) {
-    	Long mclusterId = getLongFromObject(((Map<String, Object>) tr.getParams()).get("mclusterId"));
+    	Map<String, Object> params = (Map<String, Object>) tr.getParams();
+    	String namesstr = (String)params.get("delName");
+		ContainerModel containerModel = this.containerService.selectByName(namesstr);
+		if(null != containerModel) {
+			this.containerService.delete(containerModel);
+		}
+    	Long mclusterId = getLongFromObject(params.get("mclusterId"));
 		MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
 		mcluster.setStatus(MclusterStatus.RUNNING.getValue());
 		this.mclusterService.updateBySelective(mcluster);

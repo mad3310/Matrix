@@ -13,6 +13,7 @@ import com.letv.common.util.JsonUtil;
 import com.letv.common.util.JsonUtils;
 import com.letv.mms.cache.ICacheService;
 import com.letv.mms.cache.factory.CacheFactory;
+import com.letv.portal.annotation.Cache;
 import com.letv.portal.constant.Constant;
 import com.letv.portal.dao.IMonitorDao;
 import com.letv.portal.enumeration.*;
@@ -703,6 +704,7 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
     }
 
     @Override
+    @Cache(namespace="monitorData", expiration=15000)
     public BaseMonitor getMonitorData(String ip, Long monitorType) {
         BaseMonitor monitor = null;
         String result = "";
