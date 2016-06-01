@@ -15,7 +15,8 @@
 	<import resource="classpath:applicationContext-adminOpLog.xml"/>
 	
 	<!--对web包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 --> 
-	<context:component-scan base-package="com.letv.portal"/>
+	<context:component-scan base-package="com.letv.portal.controller"/>
+	<context:component-scan base-package="com.letv.portal.python.service"/>
 	
 	<aop:aspectj-autoproxy proxy-target-class="true">
         <aop:include name="cacheAspect"/>

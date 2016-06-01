@@ -2,6 +2,7 @@ package com.letv.portal.zabbixPush;
 
 import java.util.List;
 
+import com.letv.common.result.ApiResultObject;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.zabbix.ZabbixPushModel;
 
@@ -14,7 +15,7 @@ public interface IZabbixPushService{
 	 * @author name: wujun
 	 * @param containerModels
 	 */
-	public Boolean createMultiContainerPushZabbixInfo(List<ContainerModel> containerModels);
+	public ApiResultObject createMultiContainerPushZabbixInfo(List<ContainerModel> containerModels);
 	
 	/**
 	 * Methods Name: MultiContainerPushZabbixInfo <br>
@@ -22,7 +23,7 @@ public interface IZabbixPushService{
 	 * @author name: wujun
 	 * @param containerModels
 	 */
-	public Boolean deleteSingleContainerPushZabbixInfo(ContainerModel containerModel);
+	public ApiResultObject deleteSingleContainerPushZabbixInfo(ContainerModel containerModel, String auth);
 	/**
 	 * Methods Name: deleteMutilContainerPushZabbixInfo <br>
 	 * Description: 删除多个container信息<br>
@@ -30,7 +31,7 @@ public interface IZabbixPushService{
 	 * @param containerModel
 	 * @return
 	 */
-	public Boolean deleteMutilContainerPushZabbixInfo(List<ContainerModel> list);
+	public ApiResultObject deleteMutilContainerPushZabbixInfo(List<ContainerModel> list);
 	/**
 	 * Methods Name: loginZabbix <br>
 	 * Description:登陆zabbix系统<br>
@@ -46,7 +47,7 @@ public interface IZabbixPushService{
 	 * @param zabbixPushModel
 	 * @return
 	 */
-	public String pushZabbixInfo(ZabbixPushModel zabbixPushModel,Long containerId); 
+	public ApiResultObject pushZabbixInfo(ZabbixPushModel zabbixPushModel,Long containerId); 
 	
 	/**
 	 * Methods Name: sendFixedInfo <br>

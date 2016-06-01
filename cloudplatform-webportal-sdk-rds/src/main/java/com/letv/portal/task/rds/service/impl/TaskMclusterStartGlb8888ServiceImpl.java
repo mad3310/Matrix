@@ -66,4 +66,9 @@ public class TaskMclusterStartGlb8888ServiceImpl extends BaseTask4RDSServiceImpl
 		return tr;
 	}
 	
+	@Override
+	public void callBack(TaskResult tr) {
+		super.rollBack(tr);
+	}
+	
 }
