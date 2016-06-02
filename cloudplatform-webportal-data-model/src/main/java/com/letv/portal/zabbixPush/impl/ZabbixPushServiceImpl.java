@@ -275,7 +275,6 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 				if(result.contains("_succeess")){
 					String[] rs = result.split("_");
 					result = rs[0];
-					builder.delete(0, builder.length());
 					builder.append("推送zabbix系统成功").append(result);
 					logger.debug(builder.toString());
 					apiResult.setAnalyzeResult(true);
@@ -283,7 +282,6 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 				}else {			
 					String[] rs = result.split("_");
 					result = rs[0];
-					builder.delete(0, builder.length());
 					builder.append("推送zabbix系统失败").append(result);
 					logger.debug(builder.toString());
 					apiResult.setAnalyzeResult(false);
@@ -291,7 +289,6 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 				}					
 				
 			} catch (Exception e) {
-				builder.delete(0, builder.length());
 				builder.append("推送zabbix系统失败").append(e.getMessage());
 				logger.debug(builder.toString());
 				apiResult.setAnalyzeResult(false);

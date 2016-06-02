@@ -21,7 +21,7 @@
 	<aop:aspectj-autoproxy proxy-target-class="true">
         <aop:include name="cacheAspect"/>
     </aop:aspectj-autoproxy>
-    <bean id="cacheAspect" class="com.letv.portal.annotation.CacheAspect"></bean>
+    <bean id="cacheAspect" class="com.letv.mms.cache.annotation.CacheAspect"></bean>
 	 
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
 	      <property name="locations">

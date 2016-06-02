@@ -13,7 +13,7 @@ import com.letv.common.util.JsonUtil;
 import com.letv.common.util.JsonUtils;
 import com.letv.mms.cache.ICacheService;
 import com.letv.mms.cache.factory.CacheFactory;
-import com.letv.portal.annotation.Cache;
+import com.letv.mms.cache.annotation.Cache;
 import com.letv.portal.constant.Constant;
 import com.letv.portal.dao.IMonitorDao;
 import com.letv.portal.enumeration.*;
@@ -415,11 +415,13 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
         for (ContainerModel containerModel : list) {
             ips.append(containerModel.getIpAddr()).append(",");
         }
-        if(!this.zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectVipByClusterId(mcluster.getId())).getAnalyzeResult()) {
+        ApiResultObject zabbixPushResult = this.zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectVipByClusterId(mcluster.getId()));
+        if(!zabbixPushResult.getAnalyzeResult()) {
             //send zabbix push failed to manager.
             this.buildResultToMgr("zabbix 删除推送失败，请手动操作", result.getResult(), ips.toString(), this.SERVICE_NOTICE_MAIL_ADDRESS);
         }
-        if(!this.fixedPushService.deleteMutilContainerPushFixedInfo(list).getAnalyzeResult()) {
+        ApiResultObject fixedPushResult = this.fixedPushService.deleteMutilContainerPushFixedInfo(list);
+        if(!fixedPushResult.getAnalyzeResult()) {
             //send fixed push failed to manager.
             this.buildResultToMgr("fixed 删除推送失败，请手动操作", result.getResult(), ips.toString(), this.SERVICE_NOTICE_MAIL_ADDRESS);
         }
