@@ -415,7 +415,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
         for (ContainerModel containerModel : list) {
             ips.append(containerModel.getIpAddr()).append(",");
         }
-        ApiResultObject zabbixPushResult = this.zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectVipByClusterId(mcluster.getId()));
+        List<ContainerModel> containers = this.containerService.selectVipByClusterId(mcluster.getId());
+        ApiResultObject zabbixPushResult = this.zabbixPushService.deleteMutilContainerPushZabbixInfo(containers);
         if(!zabbixPushResult.getAnalyzeResult()) {
             //send zabbix push failed to manager.
             this.buildResultToMgr("zabbix 删除推送失败，请手动操作", result.getResult(), ips.toString(), this.SERVICE_NOTICE_MAIL_ADDRESS);

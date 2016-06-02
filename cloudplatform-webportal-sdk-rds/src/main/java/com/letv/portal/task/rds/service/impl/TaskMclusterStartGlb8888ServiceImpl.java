@@ -68,6 +68,7 @@ public class TaskMclusterStartGlb8888ServiceImpl extends BaseTask4RDSServiceImpl
 	
 	@Override
 	public void callBack(TaskResult tr) {
+		//TODO 此处rollback是通用逻辑，成功失败都可以调用，但语义上有歧义
 		super.rollBack(tr);
 	}
 	

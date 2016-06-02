@@ -268,35 +268,39 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 		ApiResultObject apiResult = new ApiResultObject();
 		StringBuilder builder = new StringBuilder();
 	    if(null != auth){
-	    	String result = "";
 			try {
 				zabbixPushDeleteModel.setAuth(auth);
-				result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushDeleteModel)));				
+				String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushDeleteModel)));		
+				String[] rs = null==result ? new String[]{""} : result.split("_");
+				result = rs[0];
 				if(result.contains("_succeess")){
-					String[] rs = result.split("_");
-					result = rs[0];
 					builder.append("推送zabbix系统成功").append(result);
 					logger.debug(builder.toString());
-					apiResult.setAnalyzeResult(true);
-					apiResult.setResult(builder.toString());
+					apiResult = getApiResultObject(true, builder.toString());
 				}else {			
-					String[] rs = result.split("_");
-					result = rs[0];
 					builder.append("推送zabbix系统失败").append(result);
 					logger.debug(builder.toString());
-					apiResult.setAnalyzeResult(false);
-					apiResult.setResult(builder.toString());
+					apiResult = getApiResultObject(false, builder.toString());
 				}					
 				
 			} catch (Exception e) {
 				builder.append("推送zabbix系统失败").append(e.getMessage());
 				logger.debug(builder.toString());
-				apiResult.setAnalyzeResult(false);
-				apiResult.setResult(builder.toString());
+				apiResult = getApiResultObject(false, builder.toString());
 			}
+	    } else {
+	    	builder.append("zabbix登录认证为空");
+	    	apiResult = getApiResultObject(false, builder.toString());
 	    }
 		return apiResult;
 	}; 
+	
+	private ApiResultObject getApiResultObject(boolean analyzeResult, String result) {
+		ApiResultObject apiResult = new ApiResultObject();
+		apiResult.setAnalyzeResult(analyzeResult);
+		apiResult.setResult(result);
+		return apiResult;
+	}
 	/**
 	 * Methods Name: loginZabbix <br>
 	 * Description:登陆zabbix系统<br>
