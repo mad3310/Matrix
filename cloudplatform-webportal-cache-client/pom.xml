@@ -45,6 +45,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
+        
+        <!-- 自定义注解相关 -->
+        <dependency>
+         	<groupId>org.aspectj</groupId>
+         	<artifactId>aspectjrt</artifactId>
+     	</dependency>
 	</dependencies>
 
 </project>

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.exception.ValidateException;
+import com.letv.common.result.ApiResultObject;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.MclusterModel;
 import com.letv.portal.model.task.TaskResult;
@@ -48,21 +49,21 @@ public class TaskZabbixPushServiceImpl extends BaseTask4RDSServiceImpl implement
 		if(containers.isEmpty())
 			throw new ValidateException("containers is empty by mclusterId:" + mclusterId);
 		
-		boolean isSuccess = zabbixPushService.createMultiContainerPushZabbixInfo(containers);
-		if(!isSuccess) {
+		ApiResultObject apiResult = zabbixPushService.createMultiContainerPushZabbixInfo(containers);
+		tr.setResult(apiResult.getResult());
+		if(!apiResult.getAnalyzeResult()) {
 			//发送推送失败邮件，流程继续。
 			buildResultToMgr("RDS服务相关系统推送异常", mclusterModel.getAdminPassword() +"集群zabbix系统数据推送失败，请运维人员重新推送", tr.getResult(), null);
-			tr.setResult("zabbix系统数据推送失败");
 		}
 		
-		tr.setSuccess(true);
+		tr.setSuccess(apiResult.getAnalyzeResult());
 		tr.setParams(params);
 		return tr;
 	}
 	
 	@Override
-	public void callBack(TaskResult tr) {
-		super.rollBack(tr);
+	public void rollBack(TaskResult tr) {
 	}
+	
 	
 }

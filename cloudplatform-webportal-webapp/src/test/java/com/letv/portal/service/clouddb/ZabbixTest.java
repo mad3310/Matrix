@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.letv.common.result.ApiResultObject;
 import com.letv.portal.junitBase.AbstractTest;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.service.IContainerService;
@@ -50,8 +51,8 @@ public class ZabbixTest extends AbstractTest {
 			containerModel1.setType("mclustervip");
 			list.add(containerModel1);
 		
-			flag = zabbixPushService.createMultiContainerPushZabbixInfo(list);
-			System.out.println(flag);
+			ApiResultObject apiResult = zabbixPushService.createMultiContainerPushZabbixInfo(list);
+			System.out.println(apiResult.getAnalyzeResult());
 		} catch (Exception e) {
 			logger.debug("zabbix创建成功");
 		}
@@ -69,8 +70,8 @@ public class ZabbixTest extends AbstractTest {
 			containerModel1.setType("mclustervip");
 			list.add(containerModel1);
 		
-			flag = zabbixPushService.createMultiContainerPushZabbixInfo(list);
-			System.out.println(flag);
+			ApiResultObject apiResult = zabbixPushService.createMultiContainerPushZabbixInfo(list);
+			System.out.println(apiResult.getAnalyzeResult());
 		} catch (Exception e) {
 			logger.debug("zabbix创建成功");
 		}
@@ -85,8 +86,8 @@ public class ZabbixTest extends AbstractTest {
 
 		try {
 			
-	     flag =	zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectByMap(map));
-	     System.out.println(flag);
+		 ApiResultObject apiResult =	zabbixPushService.deleteMutilContainerPushZabbixInfo(this.containerService.selectByMap(map));
+	     System.out.println(apiResult.getAnalyzeResult());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

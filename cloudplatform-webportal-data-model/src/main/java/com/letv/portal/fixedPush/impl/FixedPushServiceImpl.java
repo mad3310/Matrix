@@ -1,5 +1,6 @@
 package com.letv.portal.fixedPush.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,12 +47,17 @@ public class FixedPushServiceImpl implements IFixedPushService{
 
 	public ApiResultObject createMutilContainerPushFixedInfo(List<ContainerModel> containers){
 		ApiResultObject ret = null;
+		List<ContainerModel> success = new ArrayList<ContainerModel>();
 		for(ContainerModel c:containers) {
 			ret = sendFixedInfo(c.getHostIp(), c.getContainerName(), c.getIpAddr(), "add");
-			if(!ret.getAnalyzeResult()) {
+			if(!ret.getAnalyzeResult()) {//添加失败
+				for (ContainerModel containerModel : success) {//把添加成功的删除
+            		sendFixedInfo(containerModel.getHostIp(), containerModel.getContainerName(), containerModel.getIpAddr(), "delete");
+				}
 				break;
-			}
-				
+			} else {
+            	success.add(c);
+            }
 		}
 		return ret;
 	}
@@ -60,10 +66,17 @@ public class FixedPushServiceImpl implements IFixedPushService{
 	@Override
 	public ApiResultObject deleteMutilContainerPushFixedInfo(List<ContainerModel> containers){
 		ApiResultObject ret = null;
+		List<ContainerModel> success = new ArrayList<ContainerModel>();
 		for(ContainerModel c:containers) {
 			ret = sendFixedInfo(c.getHostIp(), c.getContainerName(), c.getIpAddr(), "delete");
-            if(!ret.getAnalyzeResult())
-                break;
+            if(!ret.getAnalyzeResult()) {//删除失败
+            	for (ContainerModel containerModel : success) {//把删除成功的再添加上去
+            		sendFixedInfo(containerModel.getHostIp(), containerModel.getContainerName(), containerModel.getIpAddr(), "add");
+				}
+            	break;
+            } else {
+            	success.add(c);
+            }
 		}
 		return ret;
 	}
