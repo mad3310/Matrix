@@ -225,6 +225,12 @@ public class SkipController {
 		return mav;
 	}
 	
+	@RequestMapping(value="/list/rds/backup",method=RequestMethod.GET)
+	public ModelAndView toBackupRdsView(ModelAndView mav){
+		mav.setViewName("/clouddb/backup_recover_rds");
+		return mav;
+	}
+	
 	@RequestMapping(value ="/list/rds/node/health",method=RequestMethod.GET)
 	public ModelAndView toRdsNodeHealthList(ModelAndView mav,HttpServletRequest request){
 		mav.setViewName("/clouddb/rds_monitor_node_health");

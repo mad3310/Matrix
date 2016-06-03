@@ -56,7 +56,8 @@
                         <li><a href="${ctx}/list/dbUser"> <i class="menu-icon fa fa-caret-right"></i><span class="menu-text">数据库用户列表</span></a><b class="arrow"></b></li>
                     </ul>
                 </li>
-                <li><a href="${ctx}/list/backup"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text">备份与恢复</span></a><b class="arrow"></b>
+                <li><a href="${ctx}/list/rds/backup"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text">rds备份</span></a><b class="arrow"></b>
+                <li><a href="${ctx}/list/backup"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text">rds备份日志</span></a><b class="arrow"></b>
                 </li>
                 <li id="sidebar-monitor-mgr">
                     <a class="dropdown-toggle" href="#"><i></i><span class="menu-text">监控管理 </span><b class="arrow fa fa-angle-down"></b></a>

@@ -235,7 +235,8 @@ function queryByPage() {
 				case 'restart':
 					restartCluster((_target).closest('a'));
 					break;
-				case 'del':
+				case 'delete':
+					deleteMcluster((_target).closest('a'));
 					break;
 				case 'extend':
 					addMemory((_target).closest('a'));
@@ -538,7 +539,6 @@ function stopMcluster(obj){
 }
 
 function deleteMcluster(obj){
-	
 	/*warn("危险操作，本版本不启用...",3000);
 	return;*/
 	
