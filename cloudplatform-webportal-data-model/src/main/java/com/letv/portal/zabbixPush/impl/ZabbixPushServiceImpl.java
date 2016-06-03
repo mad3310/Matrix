@@ -220,30 +220,26 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 	 */
 	public ApiResultObject pushZabbixInfo(ZabbixPushModel zabbixPushModel,Long containerId){
 		ApiResultObject apiResult = new ApiResultObject();
+		StringBuilder builder = new StringBuilder();
 		try {
-			String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushModel)));				
+			String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushModel)));			
+			String[] rs = null==result ? new String[]{""} : result.split("_");
+			String hostId = rs[0];
 			if(result.contains("_succeess")){
-				String[] rs = result.split("_");
-				String hostId = rs[0];
 				ContainerModel containerModel = new ContainerModel();
 				containerModel.setId(containerId);
 				containerModel.setZabbixHosts(hostId);
 				containerService.updateBySelective(containerModel);
-				logger.debug("推送zabbix系统成功"+result);
-				apiResult.setAnalyzeResult(true);
-				apiResult.setResult(hostId);
-			}else {			
-				String[] rs = result.split("_");
-				result = rs[0];
-				logger.debug("推送zabbix系统失败"+result);
-				apiResult.setAnalyzeResult(false);
-				apiResult.setResult("推送zabbix系统失败"+result);
+				logger.info("推送zabbix系统成功{}", result);
+				apiResult = getApiResultObject(true, hostId);
+			} else {			
+				builder.append("推送zabbix系统失败").append(result);
+				apiResult = getApiResultObject(false, builder.toString());
 			}					
 			
 		} catch (Exception e) {
-			logger.debug("推送zabbix系统失败"+e.getMessage());
-			apiResult.setAnalyzeResult(false);
-			apiResult.setResult("推送zabbix系统失败"+e.getMessage());
+			builder.append("推送zabbix系统失败").append(e.getMessage());
+			apiResult = getApiResultObject(false, builder.toString());
 		}
 		return apiResult;
 	}; 
@@ -275,17 +271,14 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 				result = rs[0];
 				if(result.contains("_succeess")){
 					builder.append("推送zabbix系统成功").append(result);
-					logger.debug(builder.toString());
 					apiResult = getApiResultObject(true, builder.toString());
 				}else {			
 					builder.append("推送zabbix系统失败").append(result);
-					logger.debug(builder.toString());
 					apiResult = getApiResultObject(false, builder.toString());
 				}					
 				
 			} catch (Exception e) {
 				builder.append("推送zabbix系统失败").append(e.getMessage());
-				logger.debug(builder.toString());
 				apiResult = getApiResultObject(false, builder.toString());
 			}
 	    } else {
@@ -296,6 +289,7 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 	}; 
 	
 	private ApiResultObject getApiResultObject(boolean analyzeResult, String result) {
+		logger.info("调用zabbix结果：{}", result);
 		ApiResultObject apiResult = new ApiResultObject();
 		apiResult.setAnalyzeResult(analyzeResult);
 		apiResult.setResult(result);
@@ -315,7 +309,7 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 		try {
 			loginResult = analysisResult(transResult(result));
 		} catch (Exception e) {
-		logger.debug("登陆zabbix系统失败"+e.getMessage());
+			logger.info("登陆zabbix系统失败"+e.getMessage());
 		}
 		return loginResult;
 	}; 
