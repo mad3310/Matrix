@@ -32,7 +32,7 @@
             <img src="/images/nav-help.png" class="help-icon" />
             <span>帮助中心</span>
         </a>
-        <a href="http://10.154.238.45:8080/" class="header-help pull-right">
+        <a href="/" class="header-help pull-right">
             <img src="/images/nav-last.png" class="help-icon" />
             <span>返回旧版</span>
         </a>
