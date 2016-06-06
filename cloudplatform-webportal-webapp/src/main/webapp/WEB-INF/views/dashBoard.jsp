@@ -151,7 +151,7 @@
 									<span class="item-icon product-icons-48 product-icons-rds"></span>
 								</a>
 								<p class="item-title">
-									<a href="${ctx}/list/db">关系型数据库&nbsp;<span class="item-title-short">RDS</span>
+									<a href="/rds">关系型数据库&nbsp;<span class="item-title-short">RDS</span>
 									</a>
 								</p>
 							</div>
@@ -383,7 +383,7 @@
 										</div>
 										<div class="pull-right clearfix">
 											<div class="pull-left product-opt-wrap">
-												<a href="/detail/dbCreate" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
+												<a href="/rds" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
 													<span id="rds-purchase" class="glyphicon glyphicon-shopping-cart product-opt-icon"></span>
 												</a>
 											</div>

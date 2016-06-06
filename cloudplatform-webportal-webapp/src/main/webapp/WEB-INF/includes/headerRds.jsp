@@ -28,11 +28,11 @@
             <img src="/images/nav-account.png" class="account-icon" />
             <span class="header-username"></span>
         </a>
-        <a href="/helpcenter.html" class="header-help pull-right">
+        <a href="/helpCenter/helpCenter.jsp" class="header-help pull-right">
             <img src="/images/nav-help.png" class="help-icon" />
             <span>帮助中心</span>
         </a>
-        <a href="/" class="header-help pull-right">
+        <a href="/list/db" class="header-help pull-right">
             <img src="/images/nav-last.png" class="help-icon" />
             <span>返回旧版</span>
         </a>
