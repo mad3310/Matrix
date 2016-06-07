@@ -1210,6 +1210,7 @@ td .text-danger{color: #d95c5c;}
 /*header.jsp	create by dongwanlong 2016-04-01*/
 #navbar-container .ace-nav li.light-blue{min-height:55px;display:table;}
 #navbar-container .ace-nav li.light-blue a{display:table-cell;vertical-align:middle;}
+.image-size-adapt .form-group{padding-bottom:10px;}
 /*end*/
 
 

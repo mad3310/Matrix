@@ -123,7 +123,7 @@
             <h4 class="modal-title">添加镜像 </h4>
           </div>
 	  <form id="add-gce-image-form" name="add-gce-image-form" class="form-horizontal" role="form">
-	    <div class="modal-body">
+	    <div class="modal-body image-size-adapt">
               <div class="form-group">
 		<label class="col-sm-12 col-xs-12 col-md-4 control-label" for="taskUnitName">镜像名称</label>
 		<div class="col-sm-10 col-xs-10 col-md-6">

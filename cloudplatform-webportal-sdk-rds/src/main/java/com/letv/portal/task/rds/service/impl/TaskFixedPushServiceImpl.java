@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.exception.ValidateException;
+import com.letv.common.result.ApiResultObject;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.MclusterModel;
@@ -50,16 +51,20 @@ public class TaskFixedPushServiceImpl extends BaseTask4RDSServiceImpl implements
 		if(containers.isEmpty())
 			throw new ValidateException("containers is empty by mclusterId:" + mclusterId);
 		
-		boolean isSuccess = fixedPushService.createMutilContainerPushFixedInfo(containers);
-		if(!isSuccess) {
+		ApiResultObject apiResult = fixedPushService.createMutilContainerPushFixedInfo(containers);
+		tr.setResult(apiResult.getResult());
+		if(!apiResult.getAnalyzeResult()) {
 			//发送推送失败邮件，流程继续。
 			buildResultToMgr("RDS服务相关系统推送异常", mclusterModel.getAdminPassword() +"集群固资系统数据推送失败，请运维人员重新推送", tr.getResult(), null);
-			tr.setResult("固资系统数据推送失败");
 		}
 		
-		tr.setSuccess(true);
+		tr.setSuccess(apiResult.getAnalyzeResult());
 		tr.setParams(params);
 		return tr;
+	}
+	
+	@Override
+	public void rollBack(TaskResult tr) {
 	}
 	
 }

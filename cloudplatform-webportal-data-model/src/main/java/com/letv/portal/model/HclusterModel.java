@@ -21,7 +21,15 @@ public class HclusterModel extends BaseModel{
 	private String hclusterNameAlias;//别名
 	
 	private String type;//集群用途
+	private Long areaId;//地区id
 	
+	
+	public Long getAreaId() {
+		return areaId;
+	}
+	public void setAreaId(Long areaId) {
+		this.areaId = areaId;
+	}
 	public String getHclusterNameAlias() {
 		return hclusterNameAlias;
 	}

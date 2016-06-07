@@ -87,8 +87,7 @@ public class DbServiceImpl extends BaseServiceImpl<DbModel> implements
 	}
 
 	@Override
-	public List<DbModel> selectByDbNameForValidate(String dbName,
-			Long createUser) {
+	public List<DbModel> selectByDbNameForValidate(String dbName, Long createUser) {
 		if (StringUtils.isEmpty(dbName) || null == createUser)
 			throw new ValidateException("参数不合法");
 		HashMap<String, Object> params = new HashMap<String, Object>();

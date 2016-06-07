@@ -1,8 +1,11 @@
 package com.letv.portal.model.monitor;
 
+import java.io.Serializable;
+
 public class NodeModel extends BaseMonitor {
 	
-	
+	private static final long serialVersionUID = 6043376043424618205L;
+
 	private Meta meta;
 	
 	private Response response;
@@ -26,7 +29,9 @@ public class NodeModel extends BaseMonitor {
 		this.meta = meta;
 	}
 
-	public static class Meta {
+	public static class Meta implements Serializable {
+		private static final long serialVersionUID = -6637659355252428782L;
+		
 		private String code;
 
 		public String getCode() {
@@ -38,7 +43,9 @@ public class NodeModel extends BaseMonitor {
 		}
 	}
 
-	public static class Response {
+	public static class Response implements Serializable{
+		private static final long serialVersionUID = 42187492989168080L;
+		
 		private Node node;
 		private Db db;
 		public Node getNode() {
@@ -57,7 +64,8 @@ public class NodeModel extends BaseMonitor {
 	}
 	
 
-	public static class Node {
+	public static class Node implements Serializable{
+		private static final long serialVersionUID = 2706770940539382989L;
 		private DetailModel log_warning;
 		private DetailModel log_health;
 		private DetailModel log_error;
@@ -90,7 +98,8 @@ public class NodeModel extends BaseMonitor {
 		
 	}
 	
-	public static class Db {
+	public static class Db implements Serializable{
+		private static final long serialVersionUID = -4759722577027187402L;
 		private DetailModel existed_db_anti_item;
 		private DetailModel cur_conns;
 		private DetailModel wsrep_status;
@@ -144,8 +153,8 @@ public class NodeModel extends BaseMonitor {
 		
 	}
 	
-	public static class DetailModel {
-		
+	public static class DetailModel implements Serializable {
+		private static final long serialVersionUID = -6595878731277685775L;
 		private String alarm;
 		private String message;
 		private Object error_record;

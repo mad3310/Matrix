@@ -1,8 +1,11 @@
 package com.letv.portal.model.monitor;
 
+import java.io.Serializable;
+
 public class ClusterModel extends BaseMonitor {
 	
-	
+	private static final long serialVersionUID = -2759916694114126871L;
+
 	private Meta meta;
 	
 	private Response response;
@@ -26,7 +29,8 @@ public class ClusterModel extends BaseMonitor {
 		this.meta = meta;
 	}
 
-	public static class Meta {
+	public static class Meta implements Serializable{
+		private static final long serialVersionUID = -19989822112406773L;
 		private String code;
 
 		public String getCode() {
@@ -38,7 +42,8 @@ public class ClusterModel extends BaseMonitor {
 		}
 	}
 
-	public static class Response {
+	public static class Response implements Serializable{
+		private static final long serialVersionUID = 8672169006272159381L;
 		private Node node;
 		private Cluster cluster;
 		
@@ -61,7 +66,8 @@ public class ClusterModel extends BaseMonitor {
 	}
 	
 
-	public static class Node {
+	public static class Node implements Serializable{
+		private static final long serialVersionUID = -7136064209257357126L;
 		private NodeSize node_size;
 
 		public NodeSize getNode_size() {
@@ -72,7 +78,8 @@ public class ClusterModel extends BaseMonitor {
 			this.node_size = node_size;
 		}
 	}
-	public static class NodeSize {
+	public static class NodeSize implements Serializable{
+		private static final long serialVersionUID = -8729738640152826300L;
 		private String[] lost_ip;
 		private String message;
 		private String alarm;
@@ -97,7 +104,8 @@ public class ClusterModel extends BaseMonitor {
 		}
 		
 	}
-	public static class Cluster {
+	public static class Cluster implements Serializable{
+		private static final long serialVersionUID = -5434624806375187603L;
 		private  Available cluster_available;
 
 		public Available getCluster_available() {
@@ -109,7 +117,8 @@ public class ClusterModel extends BaseMonitor {
 		}
 	}
 	
-	public static class Available {
+	public static class Available implements Serializable{
+		private static final long serialVersionUID = -8234192749703817491L;
 		private String message; 
 		private String alarm;
 		public String getMessage() {

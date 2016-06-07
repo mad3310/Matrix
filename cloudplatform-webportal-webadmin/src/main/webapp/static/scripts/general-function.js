@@ -284,20 +284,20 @@ function stateTransform(status,type){
 }
 function containerClusterOs(status,type,os){
 	var rds={
-		"1":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":1,"compress":1},
-		"2":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
-		"3":{"start":0,"restart":0,"stop":0,"delete":1,"create":1,"expand":0,"compress":0},
-		"5":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0},
-		"7":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
-		"8":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
-		"10":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
-		"9":{"start":1,"restart":1,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
-		"13":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0},
-		"14":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0},
-		"15":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
-		"16":{"start":1,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0},
-		"17":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0},
-		"18":{"start":0,"restart":0,"stop":0,"delete":0,"create":0,"expand":0,"compress":0},
+		"1":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":1,"compress":1,"backup":1},
+		"2":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"3":{"start":0,"restart":0,"stop":0,"delete":1,"create":1,"expand":0,"compress":0,"backup":0},
+		"5":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"7":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"8":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"10":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"9":{"start":1,"restart":1,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"13":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"14":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"15":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"16":{"start":1,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"17":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
+		"18":{"start":0,"restart":0,"stop":0,"delete":0,"create":0,"expand":0,"compress":0,"backup":0},
 	};
 	var rdsContainer={
 		"1":{"start":0,"stop":0,"delete":0,"compress":1},
@@ -325,7 +325,11 @@ function containerOsHtml(type,os){
 		"expand":"<a class='orange' href='#' onclick='expandMcluster(this);' onfocus='this.blur();'  title='扩容' data-toggle='tooltip' data-placement='right'>"
 							+"<i class='ace-icon fa fa-expand bigger-120'></i></a>",
 		"delete":"<a class='red' href='#' onclick='deleteMcluster(this);' onfocus='this.blur();'  title='删除' data-toggle='tooltip' data-placement='right'>"
-							+"<i class='ace-icon fa fa-trash-o bigger-120'></i></a>"
+							+"<i class='ace-icon fa fa-trash-o bigger-120'></i></a>",
+		"all_backUp":"<a class='red' href='#' onclick='' onfocus='this.blur();'  title='全量备份' data-toggle='tooltip' data-placement='right'>"
+								+"<i class='ace-icon fa fa-trash-o bigger-120'></i></a>",
+		"add_backUp":"<a class='red' href='#' onclick='' onfocus='this.blur();'  title='增量备份' data-toggle='tooltip' data-placement='right'>"
+									+"<i class='ace-icon fa fa-trash-o bigger-120'></i></a>"
 	};
 	var rdsContainerHtml={
 		"start":"<a class='green' href='#' onclick='startContainer(this)' onfocus='this.blur();' title='启动' data-toggle='tooltip' data-placement='right'>"

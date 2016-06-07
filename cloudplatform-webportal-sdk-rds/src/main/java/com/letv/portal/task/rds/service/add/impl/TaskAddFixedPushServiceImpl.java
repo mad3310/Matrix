@@ -1,6 +1,8 @@
 package com.letv.portal.task.rds.service.add.impl;
 
 import com.letv.common.exception.ValidateException;
+import com.letv.common.result.ApiResultObject;
+import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.MclusterModel;
@@ -10,6 +12,7 @@ import com.letv.portal.service.IContainerService;
 import com.letv.portal.service.IHostService;
 import com.letv.portal.service.IMclusterService;
 import com.letv.portal.task.rds.service.impl.BaseTask4RDSServiceImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,25 +60,61 @@ public class TaskAddFixedPushServiceImpl extends BaseTask4RDSServiceImpl impleme
 		if(containers.isEmpty())
 			throw new ValidateException("containers is empty by name:" + namesstr);
 		
-		boolean isSuccess = fixedPushService.createMutilContainerPushFixedInfo(containers);
-		if(!isSuccess) {
+		ApiResultObject apiResult = fixedPushService.createMutilContainerPushFixedInfo(containers);
+		tr.setResult(apiResult.getResult());
+		if(!apiResult.getAnalyzeResult()) {
 			//发送推送失败邮件，流程继续。
 			buildResultToMgr("RDS服务相关系统推送异常", mclusterModel.getMclusterName() +"集群固资系统数据推送失败，请运维人员重新推送", tr.getResult(), null);
-			tr.setResult("固资系统数据推送失败");
 		}
 		
-		tr.setSuccess(true);
+		tr.setSuccess(apiResult.getAnalyzeResult());
 		tr.setParams(params);
 		return tr;
 	}
     @Override
     public void callBack(TaskResult tr) {
-//		super.callBack(tr);
+    	Map<String, Object> params = (Map<String, Object>) tr.getParams();
+    	String namesstr  =  (String) params.get("addNames");
+        String[] containerNames = namesstr.split(",");
+        changeContainerStatusByNames(containerNames, MclusterStatus.RUNNING);
+        
+        Long mclusterId = getLongFromObject(params.get("mclusterId"));
+        changeMclusterStatus(mclusterId, MclusterStatus.RUNNING);
     }
 
     @Override
     public void rollBack(TaskResult tr) {
-//		super.rollBack(tr);
+    	Map<String, Object> params = (Map<String, Object>) tr.getParams();
+    	String namesstr  =  (String) params.get("addNames");
+        String[] containerNames = namesstr.split(",");
+        changeContainerStatusByNames(containerNames, MclusterStatus.ADDINGFAILED);
+        
+        Long mclusterId = getLongFromObject(params.get("mclusterId"));
+        changeMclusterStatus(mclusterId, MclusterStatus.ADDINGFAILED);
+    }
+    
+    /**
+     * 修改节点状态
+     * @param containerNames 集群名称
+     * @param status 状态
+     */
+    private void changeContainerStatusByNames(String[] containerNames, MclusterStatus status) {
+    	for (String name : containerNames) {
+            ContainerModel containerModel = this.containerService.selectByName(name);
+            containerModel.setStatus(status.getValue());
+            this.containerService.updateBySelective(containerModel);
+        }
+    }
+    
+    /**
+     * 修改集群状态
+     * @param mclusterId 集群id
+     * @param status 状态
+     */
+    private void changeMclusterStatus(Long mclusterId, MclusterStatus status) {
+    	MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
+        mcluster.setStatus(status.getValue());
+        this.mclusterService.updateBySelective(mcluster);
     }
 	
 }

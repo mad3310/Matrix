@@ -147,17 +147,17 @@
 					<ul class="row">
 						<li id="rds-opened" class="hide product-item col-xs-12 col-sm-12 col-md-3 col-lg-3">
 							<div class="item-profile clearfix">
-								<a href="${ctx}/list/db" class="pull-left">
+								<a href="/rds" class="pull-left">
 									<span class="item-icon product-icons-48 product-icons-rds"></span>
 								</a>
 								<p class="item-title">
-									<a href="${ctx}/list/db">关系型数据库&nbsp;<span class="item-title-short">RDS</span>
+									<a href="/rds">关系型数据库&nbsp;<span class="item-title-short">RDS</span>
 									</a>
 								</p>
 							</div>
 							<div class="item-record">
 								<span class="item-record-num">
-									<a class="item-record-num-count" href="${ctx}/list/db"><span id="dbCount">0</span></a>
+									<a class="item-record-num-count" href="/rds"><span id="dbCount">0</span></a>
 								</span>
 								<span class="item-record-unit">个</span>
 								<a data-toggle="tooltip" data-placement="top" title="数据库数">
@@ -383,7 +383,7 @@
 										</div>
 										<div class="pull-right clearfix">
 											<div class="pull-left product-opt-wrap">
-												<a href="/detail/dbCreate" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
+												<a href="/rds" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
 													<span id="rds-purchase" class="glyphicon glyphicon-shopping-cart product-opt-icon"></span>
 												</a>
 											</div>

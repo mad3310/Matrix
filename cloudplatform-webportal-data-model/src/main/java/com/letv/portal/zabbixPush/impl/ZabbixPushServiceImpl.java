@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.letv.common.result.ApiResultObject;
 import com.letv.common.util.HttpClient;
 import com.letv.portal.fixedPush.impl.FixedPushServiceImpl;
 import com.letv.portal.model.ContainerModel;
@@ -55,11 +56,15 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 	@Autowired
 	private IContainerService containerService;
 	@Override
-	public Boolean createMultiContainerPushZabbixInfo(List<ContainerModel> containerModels) {
-		if(containerModels.isEmpty())
-			return false;
+	public ApiResultObject createMultiContainerPushZabbixInfo(List<ContainerModel> containerModels) {
+		ApiResultObject apiResult = new ApiResultObject();
+		List<String> zabbixHosts = new ArrayList<String>();
+		if(containerModels.isEmpty()) {
+			apiResult.setAnalyzeResult(false);
+			apiResult.setResult("参数为空");
+			return apiResult;
+		}
 		
-		int count =0;
 		String result=loginZabbix();
 		String auth = "";
 	    if(result!=null && result.contains("_succeess")){
@@ -68,10 +73,44 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 			logger.info("登陆zabbix系统成功");
 		} else {
 			logger.info("登陆zabbix系统失败");
-			return false;
+			apiResult.setAnalyzeResult(false);
+			apiResult.setResult("登陆zabbix系统失败");
+			return apiResult;
 		}
 	    
 		for(ContainerModel c:containerModels){
+			apiResult = addSingleContainerPushZabbixInfo(c, auth);
+
+			if(!apiResult.getAnalyzeResult()) {
+				//推送部分失败后删除已成功的推送
+				deleteContainerZabbixInfoByZabbixHosts(zabbixHosts, auth);
+				return apiResult;
+			} else {
+				zabbixHosts.add(apiResult.getResult());
+			}
+		}
+		return apiResult;
+	}
+	
+	/**
+	 * 根据zabbix返回的host删除zabbix推送
+	 * @param zabbixHosts
+	 */
+	private void deleteContainerZabbixInfoByZabbixHosts(List<String> zabbixHosts, String auth) {
+		ZabbixPushDeleteModel zabbixPushDeleteModel = new ZabbixPushDeleteModel();
+		List<String> list = new ArrayList<String>();
+		for (String host : zabbixHosts) {
+			list.clear();
+			list.add(host);
+			zabbixPushDeleteModel.setParams(list);
+			pushDeleteZabbixInfo(zabbixPushDeleteModel, auth);	
+		}
+	}
+	
+	public ApiResultObject addSingleContainerPushZabbixInfo(
+			ContainerModel c, String auth) {
+		ApiResultObject result = null;
+		if(null != c) {
 			ZabbixPushModel zabbixPushModel = new ZabbixPushModel();
 			zabbixPushModel.setAuth(auth);
 			String templateId = "";
@@ -100,37 +139,40 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 			params.setInterfaces(list);
 
 			zabbixPushModel.setParams(params);
-			String hostId =	pushZabbixInfo(zabbixPushModel,c.getId());
-
-			if(StringUtils.isNullOrEmpty(hostId))
-				return false;
+			result = pushZabbixInfo(zabbixPushModel,c.getId());			
 			
 			//临时方案，以LSJ开头的使用洛杉矶的id
 			UserMacroParam macro = null;
 			if(c.getHcluster().getHclusterName().startsWith("LSJ")) {
-				macro = new UserMacroParam(hostId,ZABBIX_LSJ_HOST_USERMACRO);
+				macro = new UserMacroParam(result.getResult(), ZABBIX_LSJ_HOST_USERMACRO);
 			} else {
-				macro = new UserMacroParam(hostId,ZABBIX_HOST_USERMACRO);
+				macro = new UserMacroParam(result.getResult(), ZABBIX_HOST_USERMACRO);
 			}
 			
 			zabbixPushModel.setParams(macro);
 			zabbixPushModel.setMethod("usermacro.create");
-			usermacroCreate(zabbixPushModel);
-		}
-		return true;
+			usermacroCreate(zabbixPushModel, result);
+			if(!result.getAnalyzeResult()) {//失败后删除该条推送
+				List<String> zabbixHosts = new ArrayList<String>();
+				zabbixHosts.add(result.getResult());
+				deleteContainerZabbixInfoByZabbixHosts(zabbixHosts, auth);
+			}
+		}		
+		return result;
 	}
+	
 	@Override
-	public Boolean deleteSingleContainerPushZabbixInfo(
-			ContainerModel containerModel) {
-		Boolean flag = false;
+	public ApiResultObject deleteSingleContainerPushZabbixInfo(
+			ContainerModel containerModel, String auth) {
+		ApiResultObject result = null;
 		if(containerModel!=null){
 			ZabbixPushDeleteModel zabbixPushDeleteModel = new ZabbixPushDeleteModel();
 			List<String> list = new ArrayList<String>();
 			list.add(containerModel.getZabbixHosts());
 			zabbixPushDeleteModel.setParams(list);
-			flag  = pushDeleteZabbixInfo(zabbixPushDeleteModel);					
+			result = pushDeleteZabbixInfo(zabbixPushDeleteModel, auth);					
 		}		
-		return flag;
+		return result;
 	}
 	/**
 	 * Methods Name: deleteMutilContainerPushZabbixInfo <br>
@@ -140,16 +182,33 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 	 * @return
 	 */
 	@Override
-	public Boolean deleteMutilContainerPushZabbixInfo(
-			List<ContainerModel> list) {
-		Boolean flag = false;
-		int count =0;
-		for(ContainerModel c:list){
-			flag = deleteSingleContainerPushZabbixInfo(c);	
-			if(!flag)
-				break;
+	public ApiResultObject deleteMutilContainerPushZabbixInfo(List<ContainerModel> list) {
+		ApiResultObject apiResult = new ApiResultObject();
+		List<ContainerModel> success = new ArrayList<ContainerModel>();
+		
+		String result = loginZabbix();
+		String auth = "";
+	    if(result!=null && result.contains("_succeess")){
+			String[] auths = result.split("_");
+			auth = auths[0];
+			logger.info("登陆zabbix系统成功");
+		} else {
+			logger.info("登陆zabbix系统失败");
+			apiResult.setAnalyzeResult(false);
+			apiResult.setResult("登陆zabbix系统失败");
+			return apiResult;
 		}
-	     return flag;
+		
+		for(ContainerModel c:list){
+			apiResult = deleteSingleContainerPushZabbixInfo(c, auth);	
+			if(null != apiResult && !apiResult.getAnalyzeResult()) {//删除推送失败
+				addSingleContainerPushZabbixInfo(c, auth);
+				break;
+			} else {
+				success.add(c);
+			}
+		}
+	     return apiResult;
 	}
 
 	/**
@@ -159,35 +218,39 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 	 * @param zabbixPushModel
 	 * @return
 	 */
-	public String pushZabbixInfo(ZabbixPushModel zabbixPushModel,Long containerId){
-		String hostId = "";
+	public ApiResultObject pushZabbixInfo(ZabbixPushModel zabbixPushModel,Long containerId){
+		ApiResultObject apiResult = new ApiResultObject();
+		StringBuilder builder = new StringBuilder();
 		try {
-			String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushModel)));				
+			String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushModel)));			
+			String[] rs = null==result ? new String[]{""} : result.split("_");
+			String hostId = rs[0];
 			if(result.contains("_succeess")){
-				String[] rs = result.split("_");
-				hostId = rs[0];
 				ContainerModel containerModel = new ContainerModel();
 				containerModel.setId(containerId);
 				containerModel.setZabbixHosts(hostId);
 				containerService.updateBySelective(containerModel);
-				logger.debug("推送zabbix系统成功"+result);
-			}else {			
-				String[] rs = result.split("_");
-				result = rs[0];
-				logger.debug("推送zabbix系统失败"+result);
+				logger.info("推送zabbix系统成功{}", result);
+				apiResult = getApiResultObject(true, hostId);
+			} else {			
+				builder.append("推送zabbix系统失败").append(result);
+				apiResult = getApiResultObject(false, builder.toString());
 			}					
 			
 		} catch (Exception e) {
-			  logger.debug("推送zabbix系统失败"+e.getMessage());
+			builder.append("推送zabbix系统失败").append(e.getMessage());
+			apiResult = getApiResultObject(false, builder.toString());
 		}
-		return hostId;
+		return apiResult;
 	}; 
-	public boolean usermacroCreate(ZabbixPushModel zabbixPushModel){
+	
+	public void usermacroCreate(ZabbixPushModel zabbixPushModel, ApiResultObject apiResult){
 		String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushModel)));
 		if(StringUtils.isNullOrEmpty(result) || !result.contains("_succeess")) {
-			return false;
+			apiResult.setAnalyzeResult(false);
+			apiResult.setResult(result);
 		}
-		return true;
+		apiResult.setAnalyzeResult(true);
 	}; 
 	
 	/**
@@ -197,40 +260,41 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 	 * @param zabbixPushDeleteModel
 	 * @return
 	 */
-	public Boolean pushDeleteZabbixInfo(ZabbixPushDeleteModel zabbixPushDeleteModel){
-		Boolean flag = false;
-	    String result=loginZabbix();
-	    if(result!=null){
-			if(result.contains("_succeess")){
-				String[] auths = result.split("_");
-				String auth = auths[0];
-				logger.debug("登陆zabbix系统成功");
-				try {
-					zabbixPushDeleteModel.setAuth(auth);
-					result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushDeleteModel)));				
-					if(result.contains("_succeess")){
-						String[] rs = result.split("_");
-						result = rs[0];
-						flag = true;
-						logger.debug("推送zabbix系统成功"+result);
-					}else {			
-						String[] rs = result.split("_");
-						result = rs[0];
-						logger.debug("推送zabbix系统失败"+result);
-					}					
-					
-				} catch (Exception e) {
-				  logger.debug("推送zabbix系统失败"+e.getMessage());
-				}
-			}else {
-				logger.debug("登陆zabbix系统失败");
-			}	    	
+	public ApiResultObject pushDeleteZabbixInfo(ZabbixPushDeleteModel zabbixPushDeleteModel, String auth){
+		ApiResultObject apiResult = new ApiResultObject();
+		StringBuilder builder = new StringBuilder();
+	    if(null != auth){
+			try {
+				zabbixPushDeleteModel.setAuth(auth);
+				String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushDeleteModel)));		
+				String[] rs = null==result ? new String[]{""} : result.split("_");
+				result = rs[0];
+				if(result.contains("_succeess")){
+					builder.append("推送zabbix系统成功").append(result);
+					apiResult = getApiResultObject(true, builder.toString());
+				}else {			
+					builder.append("推送zabbix系统失败").append(result);
+					apiResult = getApiResultObject(false, builder.toString());
+				}					
+				
+			} catch (Exception e) {
+				builder.append("推送zabbix系统失败").append(e.getMessage());
+				apiResult = getApiResultObject(false, builder.toString());
+			}
+	    } else {
+	    	builder.append("zabbix登录认证为空");
+	    	apiResult = getApiResultObject(false, builder.toString());
 	    }
-
-		//loginZabbix(name,password);//login
-		//sendZabbixInfo(object)//发送消息
-		return flag;
+		return apiResult;
 	}; 
+	
+	private ApiResultObject getApiResultObject(boolean analyzeResult, String result) {
+		logger.info("调用zabbix结果：{}", result);
+		ApiResultObject apiResult = new ApiResultObject();
+		apiResult.setAnalyzeResult(analyzeResult);
+		apiResult.setResult(result);
+		return apiResult;
+	}
 	/**
 	 * Methods Name: loginZabbix <br>
 	 * Description:登陆zabbix系统<br>
@@ -245,7 +309,7 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 		try {
 			loginResult = analysisResult(transResult(result));
 		} catch (Exception e) {
-		logger.debug("登陆zabbix系统失败"+e.getMessage());
+			logger.info("登陆zabbix系统失败"+e.getMessage());
 		}
 		return loginResult;
 	}; 
