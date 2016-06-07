@@ -2,6 +2,7 @@ package com.letv.portal.task.rds.service.add.impl;
 
 import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
+import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.MclusterModel;
@@ -72,12 +73,48 @@ public class TaskAddFixedPushServiceImpl extends BaseTask4RDSServiceImpl impleme
 	}
     @Override
     public void callBack(TaskResult tr) {
-//		super.callBack(tr);
+    	Map<String, Object> params = (Map<String, Object>) tr.getParams();
+    	String namesstr  =  (String) params.get("addNames");
+        String[] containerNames = namesstr.split(",");
+        changeContainerStatusByNames(containerNames, MclusterStatus.RUNNING);
+        
+        Long mclusterId = getLongFromObject(params.get("mclusterId"));
+        changeMclusterStatus(mclusterId, MclusterStatus.RUNNING);
     }
 
     @Override
     public void rollBack(TaskResult tr) {
-//		super.rollBack(tr);
+    	Map<String, Object> params = (Map<String, Object>) tr.getParams();
+    	String namesstr  =  (String) params.get("addNames");
+        String[] containerNames = namesstr.split(",");
+        changeContainerStatusByNames(containerNames, MclusterStatus.ADDINGFAILED);
+        
+        Long mclusterId = getLongFromObject(params.get("mclusterId"));
+        changeMclusterStatus(mclusterId, MclusterStatus.ADDINGFAILED);
+    }
+    
+    /**
+     * 修改节点状态
+     * @param containerNames 集群名称
+     * @param status 状态
+     */
+    private void changeContainerStatusByNames(String[] containerNames, MclusterStatus status) {
+    	for (String name : containerNames) {
+            ContainerModel containerModel = this.containerService.selectByName(name);
+            containerModel.setStatus(status.getValue());
+            this.containerService.updateBySelective(containerModel);
+        }
+    }
+    
+    /**
+     * 修改集群状态
+     * @param mclusterId 集群id
+     * @param status 状态
+     */
+    private void changeMclusterStatus(Long mclusterId, MclusterStatus status) {
+    	MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
+        mcluster.setStatus(status.getValue());
+        this.mclusterService.updateBySelective(mcluster);
     }
 	
 }
