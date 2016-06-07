@@ -80,7 +80,17 @@ public class TaskDelFixedPushServiceImpl extends BaseTask4RDSServiceImpl impleme
 
     @Override
     public void rollBack(TaskResult tr) {
-//		super.rollBack(tr);
+    	Map<String, Object> params = (Map<String, Object>) tr.getParams();
+    	String namesstr = (String)params.get("delName");
+		ContainerModel containerModel = this.containerService.selectByName(namesstr);
+		if(MclusterStatus.ADDING.getValue() == containerModel.getStatus()) {
+			containerModel.setStatus(MclusterStatus.DELETINGFAILED.getValue());
+			this.containerService.updateBySelective(containerModel);
+		}
+		Long mclusterId = getLongFromObject(params.get("mclusterId"));
+		MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
+		mcluster.setStatus(MclusterStatus.DELETINGFAILED.getValue());
+		this.mclusterService.updateBySelective(mcluster);
     }
 	
 }

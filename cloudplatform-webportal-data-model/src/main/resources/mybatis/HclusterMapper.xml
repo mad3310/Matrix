@@ -11,6 +11,7 @@
 		<result column="DESCN" property="descn" />
 		<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
 		<result column="TYPE" property="type" />
+		<result column="AREA_ID" property="areaId" />
 		
 		<result column="STATUS" property="status" />
 		<result column="DELETED" property="deleted" />
@@ -50,7 +51,8 @@
 	</resultMap>
 	
 	<sql id="Base_Column_List">
-		m.id,m.hcluster_name,m.status,m.type,m.DELETED,m.update_user,m.update_time,m.create_user,m.create_time,m.descn,m.HCLUSTER_NAME_ALIAS
+		m.id,m.hcluster_name,m.status,m.type,m.DELETED,m.update_user,m.update_time,m.create_user,m.create_time,
+		m.descn,m.HCLUSTER_NAME_ALIAS,m.AREA_ID
 	</sql>
 	
 	
@@ -69,6 +71,9 @@
 			</if>
 			<if test="status != null and status != '' ">
 				and m.STATUS=#{status}
+			</if>
+			<if test="areaId != null and areaId != '' ">
+				and m.AREA_ID=#{areaId}
 			</if>
 			<if test="type != null and type != '' ">
 				and m.TYPE like CONCAT('%',#{type},'%') escape '^'
@@ -99,6 +104,9 @@
 			<if test="params != null and params.status !=null and params.status != '' ">
 				and m.STATUS=#{params.status}
 			</if>
+			<if test="params != null and params.areaId !=null and params.areaId != '' ">
+				and m.AREA_ID=#{params.areaId}
+			</if>
 			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''  and params.hclusterName != 'null'">
 				and m.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
 			</if>
@@ -113,9 +121,9 @@
 	<insert id="insert" parameterType="Hcluster">
 		insert into
 		WEBPORTAL_HCLUSTER
-		(HCLUSTER_NAME,STATUS,TYPE,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER,DESCN,HCLUSTER_NAME_ALIAS)
+		(HCLUSTER_NAME,STATUS,TYPE,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER,DESCN,HCLUSTER_NAME_ALIAS,AREA_ID)
 		values
-		(#{hclusterName},#{status},#{type},#{deleted},now(),#{createUser},#{updateTime},#{updateUser},#{descn},#{hclusterNameAlias})
+		(#{hclusterName},#{status},#{type},#{deleted},now(),#{createUser},#{updateTime},#{updateUser},#{descn},#{hclusterNameAlias},#{areaId})
 	</insert>
 	
 	<!-- 物理删除 -->

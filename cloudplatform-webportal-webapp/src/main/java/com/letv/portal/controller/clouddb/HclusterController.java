@@ -45,6 +45,15 @@ public class HclusterController {
 		obj.setData(this.hclusterService.selectHclusterByStatus(hclusterModel));
 		return obj;
 	}
+	@RequestMapping(value="/{areaId}/{type}",method = RequestMethod.GET)
+	public  @ResponseBody ResultObject selectHclusterByStatusAndType(@PathVariable String type,@PathVariable Long areaId,HclusterModel hclusterModel){
+		ResultObject obj = new ResultObject();
+		hclusterModel.setStatus(HclusterStatus.RUNNING.getValue());
+		hclusterModel.setType(type);
+		hclusterModel.setAreaId(areaId);
+		obj.setData(this.hclusterService.selectHclusterByStatus(hclusterModel));
+		return obj;
+	}
 	/**
 	 * Methods Name: forbidHcluster <br>
 	 * Description: 禁用hcluster集群<br>
