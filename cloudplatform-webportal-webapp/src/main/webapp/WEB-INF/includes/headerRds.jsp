@@ -24,7 +24,7 @@
         <div class="header-separator pull-right">
             <i class="separator"></i>
         </div>
-        <a href="https://lcp-uc-test.lecloud.com/userView/ucOverview.do" class="header-account pull-right">
+        <a href="javascript:void(0);" class="header-account pull-right">
             <img src="/images/nav-account.png" class="account-icon" />
             <span class="header-username"></span>
         </a>
