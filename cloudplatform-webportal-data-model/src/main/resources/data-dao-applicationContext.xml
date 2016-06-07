@@ -13,6 +13,8 @@
         <property name="configLocation" value="classpath:mybatis-config.xml" />
         
         <property name="mapperLocations" value="classpath:mybatis/*.xml" />
+        
+        <property name="typeAliasesPackage" value="com.letv.portal.model" />
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

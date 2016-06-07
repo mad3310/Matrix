@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.letv.portal.dao.common.IAreaDao">
+
+	<resultMap id="BaseResultMap" type="AreaModel">
+	    <result column="ID" property="id" />
+	    <result column="CODE" property="code" />
+	    <result column="NAME" property="name" />
+	    <result column="PARENT_ID" property="parentId" />
+	    <result column="DESCN" property="descn" />
+	    <result column="DELETED" property="deleted" />
+	    <result column="CREATE_TIME" property="createTime" />
+	    <result column="UPDATE_TIME" property="updateTime" />
+	    <result column="CREATE_USER" property="createUser" />
+	    <result column="UPDATE_USER" property="updateUser" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+	    area.ID,area.CODE,area.NAME,area.PARENT_ID,area.DESCN,area.DELETED,area.CREATE_TIME,area.UPDATE_TIME,area.CREATE_USER,area.UPDATE_USER
+	</sql>
+	
+	<insert id="insert" parameterType="AreaModel" useGeneratedKeys="true" keyProperty="id" >
+	    insert into WEBPORTAL_AREA 
+	        (CODE,NAME,PARENT_ID,DESCN,DELETED,CREATE_TIME,UPDATE_TIME,CREATE_USER,UPDATE_USER) 
+	    values
+	        (#{code},#{name},#{parentId},#{descn},#{deleted},now(),#{updateTime},#{createUser},#{updateUser})
+	</insert>
+	
+	<sql id="Common_Where_Clause">
+	    where 1=1
+	    <trim suffixOverrides=",">
+	        <if test="id != null ">
+	            and area.ID=#{id}
+	        </if>
+	        <if test="code != null ">
+	            and area.CODE=#{code}
+	        </if>
+	        <if test="name != null ">
+	            and area.NAME=#{name}
+	        </if>
+	        <if test="parentId != null ">
+	            and area.PARENT_ID=#{parentId}
+	        </if>
+	        <if test="descn != null ">
+	            and area.DESCN=#{descn}
+	        </if>
+	        <if test="deleted != null ">
+	            and area.DELETED=#{deleted}
+	        </if>
+	        <if test="createTime != null ">
+	            and area.CREATE_TIME=#{createTime}
+	        </if>
+	        <if test="updateTime != null ">
+	            and area.UPDATE_TIME=#{updateTime}
+	        </if>
+	        <if test="createUser != null ">
+	            and area.CREATE_USER=#{createUser}
+	        </if>
+	        <if test="updateUser != null ">
+	            and area.UPDATE_USER=#{updateUser}
+	        </if>
+	    </trim>
+	</sql>
+	
+	<select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
+	    select
+	        <include refid="Base_Column_List" />
+	    from
+	        WEBPORTAL_AREA area
+	        <include refid="Common_Where_Clause" />
+	</select>
+	
+	<select id="selectAllNonParentArea" resultMap="BaseResultMap">
+	    select
+	        area.ID,area.CODE,area.NAME
+	    from
+	        WEBPORTAL_AREA area
+	    where
+	    	area.PARENT_ID != 0
+	</select>
+
+</mapper>   
