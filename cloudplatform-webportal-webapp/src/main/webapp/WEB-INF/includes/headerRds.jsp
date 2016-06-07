@@ -1,6 +1,6 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
     <div class="header">
-        <a href="/index.html" class="header-brand pull-left">
+        <a href="/" class="header-brand pull-left">
             <!-- <img src="/static/images/brand-logo.png" class="brand-logo" /> -->
             <img class="brand-logo" src="http://i3.letvimg.com/lc04_lecloud/201601/12/10/22/letvcloud-logo.png">
         </a>
