@@ -1,5 +1,6 @@
 package com.letv.portal.controller.clouddb;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,6 +80,9 @@ public class DbUserController {
 	@RequestMapping(method=RequestMethod.POST)
 	public @ResponseBody ResultObject save(DbUserModel dbUserModel,String types,String ips,ResultObject obj) {
 		isAuthorityDb(dbUserModel.getDbId());
+		if(!this.dbUserService.isLegalDbUserName(dbUserModel.getUsername())) {
+			throw new ValidateException("账号名称包含关键字或与数据库同名");
+		}
 		if(StringUtils.isNullOrEmpty(types) || StringUtils.isNullOrEmpty(ips)|| types.contains("undefined") || ips.contains("undefined")) {
 			throw new ValidateException("参数不合法");
 		}

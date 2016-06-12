@@ -1,18 +1,15 @@
 package com.letv.portal.controller.clouddb;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +23,7 @@ import com.letv.common.session.SessionServiceImpl;
 import com.letv.common.util.HttpUtil;
 import com.letv.portal.model.DbModel;
 import com.letv.portal.proxy.IDbProxy;
-import com.letv.portal.service.IContainerService;
 import com.letv.portal.service.IDbService;
-import com.letv.portal.service.IDbUserService;
-import com.letv.portal.service.IMclusterService;
 
 /**Program Name: DbController <br>
  * Description:  db数据库的相关操作<br>
@@ -48,8 +42,7 @@ public class DbController {
 	private IDbProxy dbProxy;
 	@Autowired(required=false)
 	private SessionServiceImpl sessionService;
-	@Value("${db.mysql.reserve.keywords}")
-	private String dbKeywords;
+	
 	
 	private final static Logger logger = LoggerFactory.getLogger(DbController.class);
 	
@@ -59,7 +52,6 @@ public class DbController {
 	 * @param request
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(method=RequestMethod.GET)   
 	public @ResponseBody ResultObject list(Page page,HttpServletRequest request,ResultObject obj) {
 		Map<String,Object> params = HttpUtil.requestParam2Map(request);
@@ -89,11 +81,6 @@ public class DbController {
 	 */
 	@RequestMapping(method=RequestMethod.POST)   
 	public @ResponseBody ResultObject save(DbModel dbModel,boolean isCreateAdmin) {
-		String dbName = dbModel.getDbName();
-		// 未能通过合法性检查：数据库名已经存在，关键字， 空字符
-		if(!isLegalDbName(dbName)) {
-			throw new ValidateException("数据库名称未通过合法性验证！");
-		}
 		this.dbProxy.saveAndBuild(dbModel,isCreateAdmin);
 		ResultObject obj = new ResultObject();
 		return obj;
@@ -130,9 +117,11 @@ public class DbController {
 	
 	@RequestMapping(value="/validate",method=RequestMethod.POST)
 	public @ResponseBody Map<String,Object> validate(String dbName,HttpServletRequest request) {
+		if(StringUtils.isEmpty(dbName))
+			throw new ValidateException("参数不合法");
+		List<DbModel> list = this.dbService.selectByDbNameForValidate(dbName,sessionService.getSession().getUserId());
 		Map<String,Object> map = new HashMap<String,Object>();
-		// 屏蔽关键字以及数据库同名账号
-		map.put("valid", isLegalDbName(dbName));
+		map.put("valid", list.size()>0?false:true);
 		return map;
 	}
 	
@@ -146,36 +135,4 @@ public class DbController {
 		if(dbs == null || dbs.isEmpty())
 			throw new ValidateException("参数不合法");
 	}
-	
-	/*
-	 * 数据库名和关键字验证
-	 * 页面返回逻辑
-	 */
-	private boolean isLegalDbName(String dbName) {
-		return StringUtils.isBlank(dbName) || isExistDbName(dbName) || isKeyword(dbName) ? false : true;
-	}
-	
-	/*
-	 * 判断数据库名称是否存在
-	 */
-	private boolean isExistDbName(String dbName) {
-		List<DbModel> list = dbService.selectByDbNameForValidate(dbName, sessionService.getSession().getUserId());
-		return list.size() > 0  ? true : false;
-	}
-	
-	/*
-	 * 是否属于数据库关键字
-	 */
-	private boolean isKeyword(String dbname) {
-		
-		if(StringUtils.isBlank(dbKeywords))
-			return false;
-		
-		String[] keywords = StringUtils.split(dbKeywords, ",");
-		List<String> keywordList = Arrays.asList(keywords);
-		if(keywordList.contains(dbname))
-			return true;
-		return false;
-	}
-
 }

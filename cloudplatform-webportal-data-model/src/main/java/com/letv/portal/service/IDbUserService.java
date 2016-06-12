@@ -133,4 +133,11 @@ public interface IDbUserService extends IBaseService<DbUserModel> {
 	 */
 	public void updateDescnByUsername(DbUserModel dbUserModel);
 	
+	/**
+	 * 判断数据库账号是否合法
+	 * @param dbUserName
+	 * @return
+	 */
+	public boolean isLegalDbUserName(String dbUserName);
+	
 }
