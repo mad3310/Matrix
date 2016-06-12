@@ -245,16 +245,16 @@ public class DbUserServiceImpl extends BaseServiceImpl<DbUserModel> implements
 	}
 
 	@Override
-	public boolean isLegalDbUserName(String dbUserName) {
-		return StringUtils.isNullOrEmpty(dbUserName) || isExistDbName(dbUserName) || isKeyword(dbUserName) ? false : true;
+	public boolean isLegalDbUserName(String dbUserName, Long dbId) {
+		return StringUtils.isNullOrEmpty(dbUserName) || isExistDbName(dbUserName, dbId) || isKeyword(dbUserName) ? false : true;
 	}
 	
 	/*
 	 * 判断用户是否与数据库名称相同
 	 */
-	private boolean isExistDbName(String dbUserName) {
-		List<DbModel> list = dbService.selectByDbNameForValidate(dbUserName, sessionService.getSession().getUserId());
-		return list.size() > 0  ? true : false;
+	private boolean isExistDbName(String dbUserName, Long dbId) {
+		DbModel dbModel = dbService.selectById(dbId);
+		return null!=dbModel && dbUserName.equals(dbModel.getDbName())  ? true : false;
 	}
 	
 	/*
