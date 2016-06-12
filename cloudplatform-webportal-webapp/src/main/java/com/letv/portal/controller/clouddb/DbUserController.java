@@ -80,7 +80,7 @@ public class DbUserController {
 	@RequestMapping(method=RequestMethod.POST)
 	public @ResponseBody ResultObject save(DbUserModel dbUserModel,String types,String ips,ResultObject obj) {
 		isAuthorityDb(dbUserModel.getDbId());
-		if(!this.dbUserService.isLegalDbUserName(dbUserModel.getUsername())) {
+		if(!this.dbUserService.isLegalDbUserName(dbUserModel.getUsername(), dbUserModel.getDbId())) {
 			throw new ValidateException("账号名称包含关键字或与数据库同名");
 		}
 		if(StringUtils.isNullOrEmpty(types) || StringUtils.isNullOrEmpty(ips)|| types.contains("undefined") || ips.contains("undefined")) {
