@@ -1,11 +1,10 @@
 package com.letv.portal.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -22,9 +21,10 @@ import com.letv.common.paging.impl.Page;
 import com.letv.common.session.SessionServiceImpl;
 import com.letv.common.util.PasswordRandom;
 import com.letv.portal.dao.IDbUserDao;
-import com.letv.portal.enumeration.DbStatus;
 import com.letv.portal.enumeration.DbUserRoleStatus;
+import com.letv.portal.model.DbModel;
 import com.letv.portal.model.DbUserModel;
+import com.letv.portal.service.IDbService;
 import com.letv.portal.service.IDbUserService;
 import com.mysql.jdbc.StringUtils;
 
@@ -37,6 +37,8 @@ public class DbUserServiceImpl extends BaseServiceImpl<DbUserModel> implements
 	
 	@Resource
 	private IDbUserDao dbUserDao;
+	@Resource
+	private IDbService dbService;
 	
 	@Autowired
 	private ITemplateMessageSender defaultEmailSender;
@@ -46,6 +48,9 @@ public class DbUserServiceImpl extends BaseServiceImpl<DbUserModel> implements
 	
 	@Autowired(required=false)
 	private SessionServiceImpl sessionService;
+	
+	@Value("${db.mysql.user.reserve.keywords}")
+	private String dbUserKeywords;
 	
 	public DbUserServiceImpl() {
 		super(DbUserModel.class);
@@ -237,5 +242,32 @@ public class DbUserServiceImpl extends BaseServiceImpl<DbUserModel> implements
 	public void updateDescnByUsername(DbUserModel dbUserModel) {
 		this.dbUserDao.updateDescnByUsername(dbUserModel);
 		
+	}
+
+	@Override
+	public boolean isLegalDbUserName(String dbUserName, Long dbId) {
+		return StringUtils.isNullOrEmpty(dbUserName) || isExistDbName(dbUserName, dbId) || isKeyword(dbUserName) ? false : true;
+	}
+	
+	/*
+	 * 判断用户是否与数据库名称相同
+	 */
+	private boolean isExistDbName(String dbUserName, Long dbId) {
+		DbModel dbModel = dbService.selectById(dbId);
+		return null!=dbModel && dbUserName.equals(dbModel.getDbName())  ? true : false;
+	}
+	
+	/*
+	 * 是否属于数据库用户关键字
+	 */
+	private boolean isKeyword(String dbUserName) {
+		if(StringUtils.isNullOrEmpty(dbUserKeywords))
+			return false;
+		
+		String[] keywords = dbUserKeywords.split(",");
+		List<String> keywordList = Arrays.asList(keywords);
+		if(keywordList.contains(dbUserName))
+			return true;
+		return false;
 	}
 }
