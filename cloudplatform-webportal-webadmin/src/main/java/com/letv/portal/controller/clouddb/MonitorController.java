@@ -128,6 +128,19 @@ public class MonitorController {
 		result.setData(this.monitorService.getMonitorViewData(mclusterId,chartId,strategy));
 		return result;
 	}
+	/**
+	 * 从es取出物理机磁盘使用量示例
+	 * @param hostId
+	 * @param chartId
+	 * @param strategy
+	 * @param result
+	 * @return
+	 */
+	@RequestMapping(value="/{hostId}/{chartId}/{strategy}",method=RequestMethod.GET)
+	public @ResponseBody ResultObject test(@PathVariable Long hostId, @PathVariable Long chartId, @PathVariable Integer strategy, ResultObject result) {
+		result.setData(this.monitorService.getHostDiskMonitorData(hostId, chartId, strategy));
+		return result;
+	}
 	@RequestMapping(value="/topN/{hclusterId}/{chartId}/{monitorName}/{strategy}/{topN}",method=RequestMethod.GET)
 	public @ResponseBody ResultObject mclusterMonitorChartsTopN(@PathVariable Long hclusterId,@PathVariable Long chartId,@PathVariable String monitorName,@PathVariable Integer strategy,@PathVariable Integer topN,ResultObject result) {
 		result.setData(this.monitorService.getMonitorTopNViewData(hclusterId, chartId,monitorName, strategy, topN));
