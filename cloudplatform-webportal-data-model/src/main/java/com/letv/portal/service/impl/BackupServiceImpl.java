@@ -16,6 +16,7 @@ import com.letv.common.dao.IBaseDao;
 import com.letv.common.exception.CommonException;
 import com.letv.portal.dao.IBackupResultDao;
 import com.letv.portal.model.BackupResultModel;
+import com.letv.portal.python.service.IPythonService;
 import com.letv.portal.service.IBackupService;
 
 /**Program Name: BackupServiceImpl <br>
@@ -83,5 +84,10 @@ public class BackupServiceImpl extends BaseServiceImpl<BackupResultModel> implem
 	@Override
 	public List<BackupResultModel> selectByMapGroupByMcluster(Map<String, Object> params) {
 		return this.backupResultDao.selectByMapGroupByMcluster(params);
+	}
+
+	@Override
+	public BackupResultModel selectLastedBackupRecord(Map<String, Object> params) {
+		return backupResultDao.selectLastedBackupRecord(params);
 	}
 }

@@ -1,5 +1,6 @@
 package com.letv.portal.python.service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.letv.common.result.ApiResultObject;
@@ -305,7 +306,16 @@ public interface IPythonService {
 	 * @param name
 	 * @param password
 	 */
-	ApiResultObject wholeBackup4Db(String ipAddr,String name, String password);
+	ApiResultObject wholeBackup4Db(String ipAddr, String name, String password);
+	
+	/**
+	 * Description: db数据库增量备份
+	 * @param ip    ip地址
+	 * @param name  用户名
+	 * @param pwd   密码
+	 * @return
+	 */
+	public ApiResultObject incrBackup4Db(String ip, String name, String pwd);
 
 	/**Methods Name: checkBackup4Db <br>
 	 * Description: 检查db备份结果<br>
@@ -332,4 +342,5 @@ public interface IPythonService {
 	ApiResultObject updateAuthority(DbUserModel dbUserModel, String dbName, String nodeIp, String username, String password);
 
 	ApiResultObject startNode(String ipAddr, String username, String password);
+	
 }

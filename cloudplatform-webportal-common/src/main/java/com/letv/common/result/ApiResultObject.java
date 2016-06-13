@@ -11,6 +11,7 @@ package com.letv.common.result;
 public class ApiResultObject {
 	private String result;
 	private String url;
+	private String backupType;
 	
 	public ApiResultObject(String result,String url) {
 		this.result = result;
@@ -29,4 +30,11 @@ public class ApiResultObject {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	public String getBackupType() {
+		return backupType;
+	}
+	public void setBackupType(String backupType) {
+		this.backupType = backupType;
+	}
+	
 }

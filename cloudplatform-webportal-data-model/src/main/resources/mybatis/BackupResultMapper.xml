@@ -20,6 +20,7 @@
 		<result column="CREATE_USER" property="createUser" />
 		<result column="UPDATE_TIME" property="updateTime" />
 		<result column="UPDATE_USER" property="updateUser" />
+		<result column="BACKUP_TYPE" property="backupType"/>
 		
 		<association property="mcluster" javaType="Mcluster">
 			<result column="MCLUSTER_NAME" property="mclusterName" />
@@ -34,7 +35,7 @@
 	</resultMap>
 	
 	<sql id="Base_Column_List">
-		r.ID,r.MCLUSTER_ID,r.HCLUSTER_ID,r.DB_ID,r.BACKUP_IP,r.START_TIME,r.END_TIME,r.STATUS,r.RESULT_DETAIL,r.DELETED,r.CREATE_TIME,r.CREATE_USER,r.UPDATE_TIME,r.UPDATE_USER
+		r.ID,r.MCLUSTER_ID,r.HCLUSTER_ID,r.DB_ID,r.BACKUP_IP,r.START_TIME,r.END_TIME,r.STATUS,r.RESULT_DETAIL,r.DELETED,r.CREATE_TIME,r.CREATE_USER,r.UPDATE_TIME,r.UPDATE_USER,r.BACKUP_TYPE
 	</sql>
 	
 	<!-- 查询条件 -->
@@ -72,9 +73,9 @@
 	<!-- 插入记录 -->
 	<insert id="insert" parameterType="BackupResult" useGeneratedKeys="true" keyProperty="id" >
 		insert into
-		WEBPORTAL_BACKUP_RESULT(MCLUSTER_ID,HCLUSTER_ID,DB_ID,BACKUP_IP,START_TIME,END_TIME,STATUS,RESULT_DETAIL,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER)
+		WEBPORTAL_BACKUP_RESULT(MCLUSTER_ID,HCLUSTER_ID,DB_ID,BACKUP_IP,START_TIME,END_TIME,STATUS,RESULT_DETAIL,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER,BACKUP_TYPE)
 		values(
-		#{mclusterId},#{hclusterId},#{dbId},#{backupIp},#{startTime},#{endTime},#{status},#{resultDetail},#{deleted},#{createTime},#{createUser},#{updateTime},#{updateUser})
+		#{mclusterId},#{hclusterId},#{dbId},#{backupIp},#{startTime},#{endTime},#{status},#{resultDetail},#{deleted},#{createTime},#{createUser},#{updateTime},#{updateUser},#{backupType})
 	</insert>
 
 	<!-- 根据id，修改记录 -->
@@ -281,6 +282,15 @@
     	<if test="page != null">
       		limit #{page.startRowPosition},#{page.recordsPerPage}
     	</if>
+	</select>
+	<!-- 查询最新的备份记录 -->
+	<select id="selectLastedBackupRecord" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from WEBPORTAL_BACKUP_RESULT r
+		<include refid="Example_Where_Clause" />
+		and r.BACKUP_TYPE!='none'
+		order by r.START_TIME desc limit 1
 	</select>
 	
 </mapper>   

@@ -1,5 +1,7 @@
 package com.letv.portal.proxy;
 
+import java.util.Map;
+
 import com.letv.portal.model.BackupResultModel;
 import com.letv.portal.model.MclusterModel;
 
@@ -20,11 +22,10 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 	public void backupTask(int stage);
 	
 	/**Methods Name: wholeBackup4Db <br>
-	 * Description: 数据库全量备份 <br>
+	 * Description: 数据库备份 <br>
 	 * @author name: liuhao1
 	 */
-	public void wholeBackup4Db(MclusterModel mcluster) throws Exception;
-
+	public void backup4Db(MclusterModel mcluster);
 	
 	/**Methods Name: checkBackupStatus <br>
 	 * Description: 检查某备份结果<br>
@@ -36,6 +37,20 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 	public void deleteOutData();
 
 	public void backupTaskReport();
+	
+	/**
+	 * 全量备份
+	 * @param params
+	 * @return
+	 */
+	public BackupResultModel wholeBackup4Db(MclusterModel mcluster);
+	
+	/**
+	 * 增量备份
+	 * @param params
+	 * @return
+	 */
+	public BackupResultModel incrBackup4Db(MclusterModel mcluster);
 	
 	
 }

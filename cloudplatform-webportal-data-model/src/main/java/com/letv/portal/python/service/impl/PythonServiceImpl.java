@@ -452,14 +452,14 @@ public class PythonServiceImpl implements IPythonService{
 	}
 
 	@Override
-	public ApiResultObject wholeBackup4Db(String ipAddr,String name, String password) {
-		StringBuffer url = new StringBuffer();
-		url.append(URL_HEAD).append(ipAddr).append(URL_PORT).append("/backup");
-		String result = HttpClient.get(url.toString(),1000,5000,name,password);
-		return new ApiResultObject(result, url.toString());
-	}
+//	public ApiResultObject wholeBackup4Db(String ipAddr,String name, String password) {
+//		StringBuffer url = new StringBuffer();
+//		url.append(URL_HEAD).append(ipAddr).append(URL_PORT).append("/backup");
+//		String result = HttpClient.get(url.toString(),1000,5000,name,password);
+//		return new ApiResultObject(result, url.toString());
+//	}
 
-	@Override
+	
 	public ApiResultObject checkBackup4Db(String ipAddr) {
 		StringBuffer url = new StringBuffer();
 		url.append(URL_HEAD).append(ipAddr).append(URL_PORT).append("/backup/check");
@@ -475,5 +475,32 @@ public class PythonServiceImpl implements IPythonService{
 		String result = HttpClient.post(url.toString(), params, 1000, 1000, null, null);
 		return new ApiResultObject(result, url.toString());
 	}
+	
+	@Override
+	public ApiResultObject wholeBackup4Db(String ip, String name, String pwd) {
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("backup_type", "full");
+		return executeBackup4Db(ip, name, pwd, params);
+	}
+	
+	@Override
+	public ApiResultObject incrBackup4Db(String ip, String name, String pwd) {
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("backup_type", "incr");
+		return executeBackup4Db(ip, name, pwd, params);
+	}
+	
+	/*
+	 * 根据给定的map参数执行备份操作
+	 */
+	private ApiResultObject executeBackup4Db(String ip, String name, String pwd, Map<String, String> params) {
+		StringBuffer url = new StringBuffer();
+		url.append(URL_HEAD).append(ip).append(URL_PORT).append("/backup");
+		String result = HttpClient.post(url.toString(), params, name, pwd);
+		return new ApiResultObject(result, url.toString());
+	}
+	
 
 }
