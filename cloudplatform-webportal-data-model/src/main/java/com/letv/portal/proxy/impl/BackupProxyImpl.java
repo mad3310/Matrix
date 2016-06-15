@@ -18,6 +18,7 @@ import com.letv.common.util.CalendarUtil;
 import com.letv.portal.enumeration.BackupStatus;
 import com.letv.portal.enumeration.BackupType;
 import com.letv.portal.enumeration.DbStatus;
+import com.letv.portal.model.BackupDTO;
 import com.letv.portal.model.BackupResultModel;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.DbModel;
@@ -57,6 +58,8 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	private long DB_BACKUP_INTERVAL_TIME;
 	@Value("${python.db.backup.checked.interval.time}")
 	private long DB_BACKUP_CHECKED_INTERVAL_TIME;
+	@Value("${python.db.backup.checked.term.time}")
+	private static String DB_BACKUP_CHECKED_TERM_TIME;
 	
 	@Value("${default.backup.ignore}")
 	private String DEFAULT_BACKUP_IGNORE;
@@ -94,59 +97,42 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		List<MclusterModel> backups = new ArrayList<MclusterModel>();
 		List<MclusterModel> checkRecord = new ArrayList<MclusterModel>();
 		
-		// TODO
-		backup_loop:
 		while(mclusters != null && !mclusters.isEmpty()) {
 			try {
+				// 备份时间检查
+				if(isStopBackup()) {
+					break;
+				}
+				
 				// 执行count个备份
 				for (int i = 0;i<count;i++) {
 					if(mclusters.size()<i+1)
 						break;
 					MclusterModel mcluster = mclusters.get(i);
 					
-					// 执行备份前的检查工作,确保有一次成功的全备存在
-					if(checkFullBackup(mcluster)) {
-						backups.add(mcluster);
-						backup4Db(mclusters.get(i));
-					} else {
-						break;
-					}
+					backups.add(mcluster);
+					backup4Db(mclusters.get(i));
 				}
 				
 				checkRecord.addAll(backups);
 				
 				// 根据状态和时间检查备份状态，如果时间截至，停止整个备份进程并记录未备份记录
-				scann_loop: 
 				while(checkRecord != null && !checkRecord.isEmpty()) {
-					for(MclusterModel mcluster : checkRecord) {
-						while(true) {
-							long mclusterId = mcluster.getId();
-							BackupResultModel analRet = getBackupStatusByID(mclusterId);
-							logger.info("db backup process status: {}", analRet.getStatus());
-							if(BackupStatus.BUILDING.equals(analRet.getStatus())) {
-								if(isStopBackup()) {
-									// 移除已经开始执行但尚未结束的备份
-									mclusters.removeAll(checkRecord);
-									backups.clear();
-									break backup_loop;
-								} else {
-									Thread.sleep(DB_BACKUP_CHECKED_INTERVAL_TIME);
-									continue;
-								}
-							} else {
-								// 更新备份结果
-								updateBackupResult(mcluster, analRet);
-								// 当前检查记录清理
-								checkRecord.remove(mcluster);
-								if(isStopBackup()) {
-									// 移除已经开始执行但尚未结束的备份
-									mclusters.removeAll(checkRecord);
-									backups.clear();
-									break backup_loop;
-								} else {
-									break scann_loop;
-								}
-							}
+					//for(MclusterModel mcluster : checkRecord) {
+					for(int i=0, size=checkRecord.size(); i<size; i++) {
+						MclusterModel mcluster = checkRecord.get(i);
+						long mclusterId = mcluster.getId();
+						BackupResultModel analRet = getBackupStatusByID(mclusterId);
+						logger.debug("db backup process status: {}", analRet.getStatus());
+						if(BackupStatus.BUILDING.equals(analRet.getStatus())) {
+							Thread.sleep(DB_BACKUP_CHECKED_INTERVAL_TIME);
+							continue;
+						} else {
+							// 更新备份结果
+							updateBackupResult(mcluster, analRet);
+							// 当前检查记录清理
+							checkRecord.remove(mcluster);
+							i--;
 						}
 					}
 				}
@@ -155,6 +141,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 				mclusters.removeAll(backups);
 				backups.clear();
 				
+				logger.debug("continue the next backup.");
 			} catch (Exception e) {
 				logger.error("db backup exception:{}",e.getMessage());
 			}
@@ -169,7 +156,8 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	/*
 	 * 从服务器获取当前集群备份状态
 	 */
-	private BackupResultModel getBackupStatusByID(long mclusterId) {
+	@Override
+	public BackupResultModel getBackupStatusByID(long mclusterId) {
 		ContainerModel container = selectValidVipContianer(mclusterId, "mclustervip");
 		ApiResultObject ret = pythonService.checkBackup4Db(container.getIpAddr());
 		BackupResultModel result = analysisBackupResult(new BackupResultModel(), ret);
@@ -185,11 +173,11 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			backup.setMclusterId(mcluster.getId());
 			backup.setHclusterId(mcluster.getHclusterId());
 			backup.setDbId(dbModels.get(0).getId());
-			backup.setBackupIp(container.getIpAddr());
+			if(null != container) 
+				backup.setBackupIp(container.getIpAddr());
 			backup.setBackupType(BackupType.NONE.name());
 			backup.setStatus(BackupStatus.ABNORMAL);
 			backup.setResultDetail("backup doesn't execute, Because there is a complete backup task is not performed");
-			//backup.setStartTime(date);
 	        backupService.insert(backup);
 		}
 	}
@@ -201,67 +189,14 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	 */
 	private boolean checkFullBackup(MclusterModel mcluster) {
 
-		boolean result = false;
-		try {
-			long  mclusterId = mcluster.getId();
-			BackupResultModel analRet = getBackupStatusByID(mclusterId);
+		long mclusterId = mcluster.getId();
+		BackupResultModel analRet = getBackupStatusByID(mclusterId);
 			
-			// 缺少全备份
-			if(BackupStatus.ABNORMAL.equals(analRet.getStatus())) {
-				ContainerModel container = selectValidVipContianer(mclusterId, "mclustervip");
-				String ip = container.getIpAddr();
-				String user = mcluster.getAdminUser();
-				String pwd = mcluster.getAdminPassword();
-				ApiResultObject serviceRet = pythonService.wholeBackup4Db(ip, user, pwd);
-				
-				// 备份记录
-				List<DbModel> dbModels = dbService.selectDbByMclusterId(mclusterId);
-				BackupResultModel backup = new BackupResultModel();
-				backup.setMclusterId(mclusterId);
-				backup.setHclusterId(mcluster.getHclusterId());
-				backup.setDbId(dbModels.get(0).getId());
-				backup.setBackupIp(ip);
-				backup.setBackupType(BackupType.FULL.name());
-				backup.setStartTime(new Date());
-				
-				// 检查备份状态，当在检查时间内不成功是返回
-				while(true) {
-					ApiResultObject checkRet = pythonService.checkBackup4Db(ip);
-					BackupResultModel wholeBackupRet = analysisBackupResult(new BackupResultModel(), checkRet);
-					// 状态检测间隔
-					Thread.sleep(DB_BACKUP_CHECKED_INTERVAL_TIME);
-					if(!BackupStatus.SUCCESS.equals(wholeBackupRet.getStatus())) {
-						if(BackupStatus.BUILDING.equals(wholeBackupRet.getStatus())) {
-							backup.setStatus(BackupStatus.BUILDING);
-							if(isStopBackup()) {
-								break;
-							} else {
-								continue;
-							}
-						} else if(BackupStatus.FAILD.equals(wholeBackupRet.getStatus())) {
-							backup.setStatus(BackupStatus.FAILD);
-							if(isStopBackup()) {
-								break;
-							} else {
-								continue;
-							}
-						}
-					} else {
-						result = true;
-						backup.setStatus(BackupStatus.SUCCESS);
-						break;
-					}
-				}
-				// 记录本次备份结果
-				backupService.insert(backup);
-			} else {
-				result = true;
-			}
-			return result;
-		} catch(InterruptedException ie) {
-			
+		// 缺少全备份
+		if(BackupStatus.ABNORMAL.equals(analRet.getStatus())) {
+			return true;
 		}
-		return result;
+		return false;
 	}
 	
 	/*
@@ -317,9 +252,9 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			return backupResult;
 		}
 		
-		ApiResultObject result = backupTransaction(mcluster, container);
+		BackupDTO result = backupTransaction(mcluster, container);
 		
-		backupResult.setBackupType(result.getBackupType());
+		backupResult.setBackupType(result.getBackupType().name());
 		String resultMessage = result.getResult();
 		if(StringUtils.isNullOrEmpty(resultMessage)) {
 			backupResult.setStatus(BackupStatus.FAILD);
@@ -333,20 +268,22 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		return backupResult;
 	}
 	
-	private ApiResultObject backupTransaction(MclusterModel mcluster, ContainerModel container) {
+	private BackupDTO backupTransaction(MclusterModel mcluster, ContainerModel container) {
 		
 		// 获得上一次最新的备份结果
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("mclusterId", mcluster.getId());
 		BackupResultModel lastedBackupResult = backupService.selectLastedBackupRecord(params);
-		ApiResultObject result = null;
+		BackupDTO result = null;
 		String ip = container.getIpAddr();
 		String user = mcluster.getAdminUser();
 		String pwd = mcluster.getAdminPassword();
 		
-		// 不存在历史备份结果
-		if(null == lastedBackupResult) {
-			result = executeBackupByWeek(ip, user, pwd);
+		// 没有初始化备份或历史备份记录不存在
+		if(checkFullBackup(mcluster) || null == lastedBackupResult) {
+			//result = executeBackupByWeek(ip, user, pwd);
+			result = pythonService.wholeBackup4Db(ip, user, pwd);
+			result.setBackupType(BackupType.FULL);
 		} else {
 			BackupStatus status = lastedBackupResult.getStatus();
 			String backpType = lastedBackupResult.getBackupType();
@@ -354,7 +291,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			if(BackupStatus.FAILD.equals(status)) {
 				if(BackupType.FULL.equals(backpType)) {
 					result = pythonService.wholeBackup4Db(ip, user, pwd);
-					result.setBackupType(BackupType.FULL.name());
+					result.setBackupType(BackupType.FULL);
 				} else {
 					result = executeBackupByWeek(ip, user, pwd);
 				}
@@ -369,15 +306,15 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	/*
 	 * 根据星期执行不同备份操作
 	 */
-	private ApiResultObject executeBackupByWeek(String ip, String user, String pwd) {
-		ApiResultObject result = null;
+	private BackupDTO executeBackupByWeek(String ip, String user, String pwd) {
+		BackupDTO result = null;
 		int dayOfWeek = CalendarUtil.getDayOfWeek(new Date());
 		if(dayOfWeek == 7) {
 			result = pythonService.wholeBackup4Db(ip, user, pwd);
-			result.setBackupType(BackupType.FULL.name());
+			result.setBackupType(BackupType.FULL);
 		} else {
 			result = pythonService.incrBackup4Db(ip, user, pwd);
-			result.setBackupType(BackupType.INCR.name());
+			result.setBackupType(BackupType.INCR);
 		}
 		return result;
 	}
@@ -623,6 +560,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		ApiResultObject serviceRet = pythonService.checkBackup4Db(ip);
 		backupRet = analysisBackupResult(backupRet, serviceRet);
 		backupRet.setMcluster(mcluster);
+		backupRet.setBackupType(BackupType.INCR.name());
 		
 		// 如果备份正则进行则直接返回，其他条件则直接执行备份操作
 		if(BackupStatus.BUILDING.equals(backupRet.getStatus())) {
@@ -633,7 +571,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			List<MclusterModel> mclusters = mclusterService.selectValidMclustersByMap(params);
 			String user = mclusters.get(0).getAdminUser();
 			String pwd = mclusters.get(0).getAdminPassword();
-			serviceRet = pythonService.wholeBackup4Db(ip, user, pwd);
+			serviceRet = pythonService.incrBackup4Db(ip, user, pwd);
 			backupRet = analysisBackupResult(backupRet, serviceRet);
 		}
 		return backupRet;
@@ -642,11 +580,14 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	private static boolean isStopBackup() {
 		Date realTime = new Date();
 		String date = CalendarUtil.getDateString(realTime, "yyyy-MM-dd");
-		Date stopDate = CalendarUtil.parseDate(date + " 8:00:00", "yyyy-MM-dd HH:mm:ss");
+		StringBuffer termTime = new StringBuffer();
+		termTime.append(date).append(" ").append(DB_BACKUP_CHECKED_TERM_TIME);
+		Date stopDate = CalendarUtil.parseDate(termTime.toString(), "yyyy-MM-dd HH:mm:ss");
 		int ret = realTime.compareTo(stopDate);
 		if(ret >= 0)
 			return true;
 		return false;
 	}
+	
 	
 }

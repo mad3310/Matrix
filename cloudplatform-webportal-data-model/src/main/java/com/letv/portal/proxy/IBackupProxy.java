@@ -52,5 +52,11 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 	 */
 	public BackupResultModel incrBackup4Db(MclusterModel mcluster);
 	
+	/**
+	 * 根据集群状态查询备份状态
+	 * @param mclusterId
+	 * @return
+	 */
+	public BackupResultModel getBackupStatusByID(long mclusterId);
 	
 }

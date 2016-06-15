@@ -13,6 +13,7 @@ import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.common.util.HttpClient;
 import com.letv.portal.enumeration.DbUserRoleStatus;
+import com.letv.portal.model.BackupDTO;
 import com.letv.portal.model.DbUserModel;
 import com.letv.portal.model.HostModel;
 import com.letv.portal.python.service.IPythonService;
@@ -450,15 +451,6 @@ public class PythonServiceImpl implements IPythonService{
 		String result = HttpClient.get(url.toString(),1000,1000);
 		return new ApiResultObject(result, url.toString());
 	}
-
-	@Override
-//	public ApiResultObject wholeBackup4Db(String ipAddr,String name, String password) {
-//		StringBuffer url = new StringBuffer();
-//		url.append(URL_HEAD).append(ipAddr).append(URL_PORT).append("/backup");
-//		String result = HttpClient.get(url.toString(),1000,5000,name,password);
-//		return new ApiResultObject(result, url.toString());
-//	}
-
 	
 	public ApiResultObject checkBackup4Db(String ipAddr) {
 		StringBuffer url = new StringBuffer();
@@ -477,7 +469,7 @@ public class PythonServiceImpl implements IPythonService{
 	}
 	
 	@Override
-	public ApiResultObject wholeBackup4Db(String ip, String name, String pwd) {
+	public BackupDTO wholeBackup4Db(String ip, String name, String pwd) {
 
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("backup_type", "full");
@@ -485,7 +477,7 @@ public class PythonServiceImpl implements IPythonService{
 	}
 	
 	@Override
-	public ApiResultObject incrBackup4Db(String ip, String name, String pwd) {
+	public BackupDTO incrBackup4Db(String ip, String name, String pwd) {
 
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("backup_type", "incr");
@@ -495,11 +487,11 @@ public class PythonServiceImpl implements IPythonService{
 	/*
 	 * 根据给定的map参数执行备份操作
 	 */
-	private ApiResultObject executeBackup4Db(String ip, String name, String pwd, Map<String, String> params) {
+	private BackupDTO executeBackup4Db(String ip, String name, String pwd, Map<String, String> params) {
 		StringBuffer url = new StringBuffer();
 		url.append(URL_HEAD).append(ip).append(URL_PORT).append("/backup");
 		String result = HttpClient.post(url.toString(), params, name, pwd);
-		return new ApiResultObject(result, url.toString());
+		return new BackupDTO(result, url.toString());
 	}
 	
 

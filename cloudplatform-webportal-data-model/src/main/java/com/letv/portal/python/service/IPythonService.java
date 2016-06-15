@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.letv.common.result.ApiResultObject;
+import com.letv.portal.model.BackupDTO;
 import com.letv.portal.model.DbUserModel;
 import com.letv.portal.model.HostModel;
 
@@ -306,7 +307,7 @@ public interface IPythonService {
 	 * @param name
 	 * @param password
 	 */
-	ApiResultObject wholeBackup4Db(String ipAddr, String name, String password);
+	BackupDTO wholeBackup4Db(String ipAddr, String name, String password);
 	
 	/**
 	 * Description: db数据库增量备份
@@ -315,7 +316,7 @@ public interface IPythonService {
 	 * @param pwd   密码
 	 * @return
 	 */
-	public ApiResultObject incrBackup4Db(String ip, String name, String pwd);
+	public BackupDTO incrBackup4Db(String ip, String name, String pwd);
 
 	/**Methods Name: checkBackup4Db <br>
 	 * Description: 检查db备份结果<br>
