@@ -21,9 +21,17 @@ import com.letv.common.result.ResultObject;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.MclusterModel;
+import com.letv.portal.model.gce.GceCluster;
+import com.letv.portal.model.gce.GceContainer;
+import com.letv.portal.model.slb.SlbCluster;
+import com.letv.portal.model.slb.SlbContainer;
 import com.letv.portal.service.IContainerService;
 import com.letv.portal.service.IMclusterService;
 import com.letv.portal.service.adminoplog.ClassAoLog;
+import com.letv.portal.service.gce.IGceClusterService;
+import com.letv.portal.service.gce.IGceContainerService;
+import com.letv.portal.service.slb.ISlbClusterService;
+import com.letv.portal.service.slb.ISlbContainerService;
 import com.letv.portal.zabbixPush.IZabbixPushService;
 
 @Controller
@@ -39,6 +47,14 @@ public class ManualApiController {
 	public IFixedPushService fixedPushService;
 	@Autowired
 	private IContainerService containerService;
+	@Autowired
+	private IGceContainerService gceContainerService;
+	@Autowired
+	private IGceClusterService gceClusterService;
+	@Autowired
+	private ISlbContainerService slbContainerService;
+	@Autowired
+	private ISlbClusterService slbClusterService;
 	
 	private final static Logger logger = LoggerFactory.getLogger(ManualApiController.class);
 	
@@ -259,6 +275,96 @@ public class ManualApiController {
 		result.getMsgs().add("delete mcluster sum:" + sum);
 		result.getMsgs().add("delete mcluster success:" + success);
 		result.getMsgs().add("delete mcluster fail:" + fail);
+		return result;
+	}
+	
+	@RequestMapping(value = "/V1/rds/fixed/pushAll", method=RequestMethod.GET)
+	public @ResponseBody ResultObject pushAllRdsFixed(ResultObject result) {
+		List<MclusterModel> mclusters  = this.mclusterService.selectValidMclustersByMap(null);
+		int sum = 0;
+		int success = 0;
+		int fail = 0;
+		StringBuilder builder = new StringBuilder();
+		for (MclusterModel mclusterModel : mclusters) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("mclusterId", mclusterModel.getId());
+			List<ContainerModel> containers = this.containerService.selectByMap(map);
+			ApiResultObject apiResult = this.fixedPushService.createMutilContainerPushFixedInfo(containers);
+			if(null!=apiResult && apiResult.getAnalyzeResult()) {
+				success++;
+			} else {
+				builder.append(mclusterModel.getId()).append(",");
+				fail ++;
+			}
+			sum++;
+		}
+		result.getMsgs().add("add mcluster sum:" + sum);
+		result.getMsgs().add("add mcluster success:" + success);
+		result.getMsgs().add("add mcluster fail:" + fail);
+		result.getMsgs().add("add mcluster fail mclusterIds:[" + builder.toString() +"]");
+		return result;
+	}
+	
+	@RequestMapping(value = "/V1/gce/fixed/pushAll", method=RequestMethod.GET)
+	public @ResponseBody ResultObject pushAllGceFixed(ResultObject result) {
+		List<GceCluster> gceClusters = this.gceClusterService.selectValidCluster();
+		int sum = 0;
+		int success = 0;
+		int fail = 0;
+		StringBuilder builder = new StringBuilder();
+		for (GceCluster gce : gceClusters) {
+			List<GceContainer> containers = this.gceContainerService.selectByGceClusterId(gce.getId());
+			ApiResultObject apiResult = null;
+			for (GceContainer container : containers) {
+				apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
+				if(!apiResult.getAnalyzeResult()) {
+					break;
+				}
+			}
+			if(null!=apiResult && apiResult.getAnalyzeResult()) {
+				success++;
+			} else {
+				builder.append(gce.getId()).append(",");
+				fail ++;
+			}
+			sum++;
+		}
+		result.getMsgs().add("add gcecluster sum:" + sum);
+		result.getMsgs().add("add gcecluster success:" + success);
+		result.getMsgs().add("add gcecluster fail:" + fail);
+		result.getMsgs().add("add gcecluster fail gceclusterIds:[" + builder.toString() +"]");
+		return result;
+	}
+	
+	
+	@RequestMapping(value = "/V1/slb/fixed/pushAll", method=RequestMethod.GET)
+	public @ResponseBody ResultObject pushAllSlbFixed(ResultObject result) {
+		List<SlbCluster> slbClusters = this.slbClusterService.selectValidCluster();
+		int sum = 0;
+		int success = 0;
+		int fail = 0;
+		StringBuilder builder = new StringBuilder();
+		for (SlbCluster slb : slbClusters) {
+			List<SlbContainer> containers = this.slbContainerService.selectBySlbClusterId(slb.getId());
+			ApiResultObject apiResult = null;
+			for (SlbContainer container : containers) {
+				apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
+				if(!apiResult.getAnalyzeResult()) {
+					break;
+				}
+			}
+			if(null!=apiResult && apiResult.getAnalyzeResult()) {
+				success++;
+			} else {
+				builder.append(slb.getId()).append(",");
+				fail ++;
+			}
+			sum++;
+		}
+		result.getMsgs().add("add slbcluster sum:" + sum);
+		result.getMsgs().add("add slbcluster success:" + success);
+		result.getMsgs().add("add slbcluster fail:" + fail);
+		result.getMsgs().add("add slbcluster fail slbclusterIds:[" + builder.toString() +"]");
 		return result;
 	}
 	

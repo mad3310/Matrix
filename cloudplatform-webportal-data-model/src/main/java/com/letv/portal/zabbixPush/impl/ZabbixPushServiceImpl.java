@@ -122,10 +122,10 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 			//临时方案，以LSJ开头的使用洛杉矶的id
 			HostParam params = null;
 			if(c.getHcluster().getHclusterName().startsWith("LSJ")) {
-				logger.info("洛杉矶id推送：groupId-{}，hostId-{}", ZABBIX_LSJ_HOST_GROUPID, ZABBIX_LSJ_HOST_PROXY_HOSTID);
+				logger.info("洛杉矶地区id推送：groupId-{}，hostId-{}", ZABBIX_LSJ_HOST_GROUPID, ZABBIX_LSJ_HOST_PROXY_HOSTID);
 				params = new HostParam(templateId,ZABBIX_LSJ_HOST_GROUPID,ZABBIX_LSJ_HOST_PROXY_HOSTID);
 			} else {
-				logger.info("其他id推送：groupId-{}，hostId-{}", ZABBIX_HOST_GROUPID, ZABBIX_HOST_PROXY_HOSTID);
+				logger.info("非洛杉矶地区id推送：groupId-{}，hostId-{}", ZABBIX_HOST_GROUPID, ZABBIX_HOST_PROXY_HOSTID);
 				params = new HostParam(templateId,ZABBIX_HOST_GROUPID,ZABBIX_HOST_PROXY_HOSTID);
 			}
 			
@@ -139,24 +139,28 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 			params.setInterfaces(list);
 
 			zabbixPushModel.setParams(params);
-			result = pushZabbixInfo(zabbixPushModel,c.getId());			
+			result = pushZabbixInfo(zabbixPushModel,c.getId());	
 			
-			//临时方案，以LSJ开头的使用洛杉矶的id
-			UserMacroParam macro = null;
-			if(c.getHcluster().getHclusterName().startsWith("LSJ")) {
-				macro = new UserMacroParam(result.getResult(), ZABBIX_LSJ_HOST_USERMACRO);
-			} else {
-				macro = new UserMacroParam(result.getResult(), ZABBIX_HOST_USERMACRO);
+			if(result.getAnalyzeResult()) {//成功
+				//临时方案，以LSJ开头的使用洛杉矶的id
+				UserMacroParam macro = null;
+				if(c.getHcluster().getHclusterName().startsWith("LSJ")) {
+					macro = new UserMacroParam(result.getResult(), ZABBIX_LSJ_HOST_USERMACRO);
+				} else {
+					macro = new UserMacroParam(result.getResult(), ZABBIX_HOST_USERMACRO);
+				}
+				
+				zabbixPushModel.setParams(macro);
+				zabbixPushModel.setMethod("usermacro.create");
+				usermacroCreate(zabbixPushModel, result);
+				if(!result.getAnalyzeResult()) {//失败后删除该条推送
+					List<String> zabbixHosts = new ArrayList<String>();
+					zabbixHosts.add(result.getResult());
+					deleteContainerZabbixInfoByZabbixHosts(zabbixHosts, auth);
+				}
 			}
 			
-			zabbixPushModel.setParams(macro);
-			zabbixPushModel.setMethod("usermacro.create");
-			usermacroCreate(zabbixPushModel, result);
-			if(!result.getAnalyzeResult()) {//失败后删除该条推送
-				List<String> zabbixHosts = new ArrayList<String>();
-				zabbixHosts.add(result.getResult());
-				deleteContainerZabbixInfoByZabbixHosts(zabbixHosts, auth);
-			}
+			
 		}		
 		return result;
 	}
@@ -202,7 +206,9 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 		for(ContainerModel c:list){
 			apiResult = deleteSingleContainerPushZabbixInfo(c, auth);	
 			if(null != apiResult && !apiResult.getAnalyzeResult()) {//删除推送失败
-				addSingleContainerPushZabbixInfo(c, auth);
+				for(ContainerModel suc : success) {
+					addSingleContainerPushZabbixInfo(suc, auth);
+				}
 				break;
 			} else {
 				success.add(c);
@@ -248,9 +254,7 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 		String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushModel)));
 		if(StringUtils.isNullOrEmpty(result) || !result.contains("_succeess")) {
 			apiResult.setAnalyzeResult(false);
-			apiResult.setResult(result);
 		}
-		apiResult.setAnalyzeResult(true);
 	}; 
 	
 	/**
@@ -268,12 +272,12 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 				zabbixPushDeleteModel.setAuth(auth);
 				String result = analysisResultMap(transResult(sendZabbixInfo(zabbixPushDeleteModel)));		
 				String[] rs = null==result ? new String[]{""} : result.split("_");
-				result = rs[0];
+				String hostId = rs[0];
 				if(result.contains("_succeess")){
-					builder.append("推送zabbix系统成功").append(result);
+					builder.append("推送zabbix系统成功").append(hostId);
 					apiResult = getApiResultObject(true, builder.toString());
 				}else {			
-					builder.append("推送zabbix系统失败").append(result);
+					builder.append("推送zabbix系统失败").append(hostId);
 					apiResult = getApiResultObject(false, builder.toString());
 				}					
 				
@@ -366,11 +370,16 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 			    result = ((Map<Object, Object>)map.get("error")).get("data").toString();
 			    result+="_error";
 			}else{
-				if(resulteMap.get("hostids")!=null){
-					String[] arg =	resulteMap.get("hostids").toString().split("\"");
+				String[] arg = null;
+				if(null != resulteMap.get("hostids")){
+					arg = resulteMap.get("hostids").toString().split("\"");
+				} else if(null != resulteMap.get("hostmacroids")) {
+					arg = resulteMap.get("hostmacroids").toString().split("\"");
+				}
+				if(null != arg) {
 					result = arg[1];
 					result+="_succeess";
-				}		
+				}
 			}
 		}
 		return result;

@@ -34,4 +34,11 @@ public interface IFixedPushService {
 	 * @return  true,如果推送失败 ,发送邮件,运维手动推送.
 	 */
 	ApiResultObject sendFixedInfo(String serverTag,String name,String ip,String type);
+	/**
+	 * 管理集群ip池
+	 * @param ips 多个ip已逗号隔开
+	 * @param type
+	 * @return
+	 */
+	ApiResultObject manageContainerIps(String ips, String type);
 }

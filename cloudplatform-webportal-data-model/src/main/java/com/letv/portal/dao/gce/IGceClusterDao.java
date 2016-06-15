@@ -11,4 +11,6 @@ public interface IGceClusterDao extends IBaseDao<GceCluster> {
 	List<GceCluster> selectByName(String clusterName);
 
 	Integer selectValidClusterCount();
+	
+	List<GceCluster> selectValidCluster();
 }

@@ -147,4 +147,9 @@ public class SlbClusterServiceImpl extends BaseServiceImpl<SlbCluster> implement
 		this.slbServerService.deleteByClusterId(slbCluster.getId());
 		this.slbClusterDao.delete(slbCluster);
 	}
+
+	@Override
+	public List<SlbCluster> selectValidCluster() {
+		return this.slbClusterDao.selectValidCluster();
+	}
 }

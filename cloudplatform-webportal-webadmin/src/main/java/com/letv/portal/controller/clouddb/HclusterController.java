@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import com.letv.common.util.StringUtil;
 import com.letv.portal.enumeration.HclusterStatus;
 import com.letv.portal.model.HclusterModel;
 import com.letv.portal.model.adminoplog.AoLogType;
+import com.letv.portal.proxy.IHclusterProxy;
 import com.letv.portal.service.IHclusterService;
 import com.letv.portal.service.adminoplog.AoLog;
 import com.letv.portal.service.adminoplog.ClassAoLog;
@@ -32,6 +34,8 @@ import com.letv.portal.service.adminoplog.ClassAoLog;
 public class HclusterController {
 	@Resource
 	private IHclusterService hclusterService;
+	@Resource
+	private IHclusterProxy hclusterProxy;
 
 	private final static Logger logger = LoggerFactory
 			.getLogger(HclusterController.class);
@@ -93,6 +97,13 @@ public class HclusterController {
 		obj.setData(this.hclusterService.selectByHclusterId(hclusterId));
 		return obj;
 	}
+	
+	@RequestMapping(value = "/detail/{hclusterId}", method = RequestMethod.GET)
+	public @ResponseBody ResultObject getHclusterById(@PathVariable Long hclusterId) {
+		ResultObject obj = new ResultObject();
+		obj.setData(this.hclusterService.selectById(hclusterId));
+		return obj;
+	}
 
 	/**
 	 * Methods Name: list <br>
@@ -116,16 +127,12 @@ public class HclusterController {
      * Description: 保存hcluster信息<br>
      * @author name: wujun
      * @param hclusterModel
-     * @param request
      * @return
      */
 	@AoLog(desc="创建hcluster信息",type=AoLogType.INSERT)
 	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody ResultObject saveHcluster(HclusterModel hclusterModel,
-			HttpServletRequest request) {
-		hclusterModel.setStatus(HclusterStatus.RUNNING.getValue());
-		ResultObject obj = new ResultObject();
-		this.hclusterService.insert(hclusterModel);
+	public @ResponseBody ResultObject saveHcluster(HclusterModel hclusterModel, ResultObject obj) {
+		this.hclusterProxy.insertAndRegisteIpsToCmdb(hclusterModel);
 		return obj;
 	}
 
@@ -156,8 +163,10 @@ public class HclusterController {
 	 */
 	@AoLog(desc="修改hcluster的相关信息",type=AoLogType.UPDATE)
 	@RequestMapping(value = "/{hclusterId}", method = RequestMethod.POST)
-	public void updateHclusterId(HclusterModel hclusterModel) {
-
+	public @ResponseBody ResultObject updateHclusterId(@PathVariable Long hclusterId, HclusterModel hclusterModel, ResultObject obj) {
+		hclusterModel.setId(hclusterId);
+		this.hclusterProxy.updateAndRegisteIpsToCmdb(hclusterModel);
+		return obj;
 	}
 
 	/**
