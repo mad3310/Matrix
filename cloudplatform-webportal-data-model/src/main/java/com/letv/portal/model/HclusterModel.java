@@ -22,8 +22,15 @@ public class HclusterModel extends BaseModel{
 	
 	private String type;//集群用途
 	private Long areaId;//地区id
+	private String containerIps;//集群ip池
 	
 	
+	public String getContainerIps() {
+		return containerIps;
+	}
+	public void setContainerIps(String containerIps) {
+		this.containerIps = containerIps;
+	}
 	public Long getAreaId() {
 		return areaId;
 	}
