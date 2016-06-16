@@ -47,6 +47,7 @@
 		        </bean>
 	        </list>
 	    </property>
+	   	<property name="webBindingInitializer" ref="webBindingInitializer"/>
 	</bean>
 	
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>  
@@ -91,6 +92,14 @@
 	  </mvc:interceptor>
 	</mvc:interceptors>
 	<mvc:view-controller path="/" view-name="redirect:/dashboard"/>
+	
+	<!-- add springMVC validation: use hibernate validator -->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+	</bean>
+	<bean id="webBindingInitializer" class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+		<property name="validator" ref="validator"/>
+	</bean>
 </beans>
 
 

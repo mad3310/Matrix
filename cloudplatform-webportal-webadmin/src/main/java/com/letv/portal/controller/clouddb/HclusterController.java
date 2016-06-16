@@ -6,8 +6,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -131,7 +131,7 @@ public class HclusterController {
      */
 	@AoLog(desc="创建hcluster信息",type=AoLogType.INSERT)
 	@RequestMapping(method = RequestMethod.POST)
-	public @ResponseBody ResultObject saveHcluster(HclusterModel hclusterModel, ResultObject obj) {
+	public @ResponseBody ResultObject saveHcluster(@Valid HclusterModel hclusterModel, ResultObject obj) {
 		this.hclusterProxy.insertAndRegisteIpsToCmdb(hclusterModel);
 		return obj;
 	}
@@ -163,7 +163,7 @@ public class HclusterController {
 	 */
 	@AoLog(desc="修改hcluster的相关信息",type=AoLogType.UPDATE)
 	@RequestMapping(value = "/{hclusterId}", method = RequestMethod.POST)
-	public @ResponseBody ResultObject updateHclusterId(@PathVariable Long hclusterId, HclusterModel hclusterModel, ResultObject obj) {
+	public @ResponseBody ResultObject updateHclusterId(@PathVariable Long hclusterId, @Valid HclusterModel hclusterModel, ResultObject obj) {
 		hclusterModel.setId(hclusterId);
 		this.hclusterProxy.updateAndRegisteIpsToCmdb(hclusterModel);
 		return obj;
