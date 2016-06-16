@@ -45,10 +45,12 @@ public class HclusterProxyImpl extends BaseProxyImpl<HclusterModel> implements
 	public void insertAndRegisteIpsToCmdb(HclusterModel hclusterModel) {
 		this.hclusterService.insert(hclusterModel);
 		String ips = hclusterModel.getContainerIps();
-		ApiResultObject apiResult = this.fixedPushService.manageContainerIps(ips, "add");
-		if(apiResult.getAnalyzeResult()) {
-			sendResultToMgr("固资管理ip接口添加推送失败，请手动操作", apiResult.getResult(), 
-					"需要添加的ip："+ips, null);
+		if(StringUtils.isNotEmpty(ips)) {
+			ApiResultObject apiResult = this.fixedPushService.manageContainerIps(ips, "add");
+			if(!apiResult.getAnalyzeResult()) {
+				sendResultToMgr("固资管理ip接口添加推送失败，请手动操作", apiResult.getResult(), 
+						"需要添加的ip："+ips, null);
+			}
 		}
 	}
 
@@ -59,12 +61,19 @@ public class HclusterProxyImpl extends BaseProxyImpl<HclusterModel> implements
 		 
 		this.hclusterService.update(hclusterModel);
 		
-		ApiResultObject deleteResult = this.fixedPushService.manageContainerIps(oldIps, "delete");
-		ApiResultObject addResult = null;
-		if(deleteResult.getAnalyzeResult()) {
+		ApiResultObject deleteResult = new ApiResultObject();
+		ApiResultObject addResult = new ApiResultObject();
+		if(StringUtils.isNotEmpty(oldIps)) {
+			deleteResult = this.fixedPushService.manageContainerIps(oldIps, "delete");
+		} else {
+			deleteResult.setAnalyzeResult(true);
+		}
+		if(deleteResult.getAnalyzeResult() && StringUtils.isNotEmpty(newIps)) {
 			addResult = this.fixedPushService.manageContainerIps(newIps, "add");
-		} 
-		if(!deleteResult.getAnalyzeResult() || null==addResult || !addResult.getAnalyzeResult()){
+		} else {
+			addResult.setAnalyzeResult(true);
+		}
+		if(!deleteResult.getAnalyzeResult() || !addResult.getAnalyzeResult()){
 			StringBuilder builder = new StringBuilder();
 			if(!deleteResult.getAnalyzeResult()) {
 				builder.append("需要删除的ip：").append(oldIps);
