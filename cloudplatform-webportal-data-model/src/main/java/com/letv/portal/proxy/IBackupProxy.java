@@ -2,6 +2,7 @@ package com.letv.portal.proxy;
 
 import java.util.Map;
 
+import com.letv.portal.model.BackupDTO;
 import com.letv.portal.model.BackupResultModel;
 import com.letv.portal.model.MclusterModel;
 
@@ -43,14 +44,14 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 	 * @param params
 	 * @return
 	 */
-	public BackupResultModel wholeBackup4Db(MclusterModel mcluster);
+	public BackupDTO wholeBackup4Db(MclusterModel mcluster);
 	
 	/**
 	 * 增量备份
 	 * @param params
 	 * @return
 	 */
-	public BackupResultModel incrBackup4Db(MclusterModel mcluster);
+	public BackupDTO incrBackup4Db(MclusterModel mcluster);
 	
 	/**
 	 * 根据集群状态查询备份状态

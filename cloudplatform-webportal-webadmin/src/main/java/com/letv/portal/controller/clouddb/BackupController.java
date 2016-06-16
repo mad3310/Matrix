@@ -12,10 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.letv.common.exception.ValidateException;
 import com.letv.common.paging.impl.Page;
 import com.letv.common.result.ResultObject;
 import com.letv.common.util.HttpUtil;
 import com.letv.common.util.StringUtil;
+import com.letv.portal.model.BackupResultModel;
+import com.letv.portal.model.MclusterModel;
+import com.letv.portal.proxy.IBackupProxy;
 import com.letv.portal.service.IBackupService;
 import com.letv.portal.service.adminoplog.ClassAoLog;
 
@@ -26,6 +30,8 @@ public class BackupController {
 	
 	@Autowired
 	private IBackupService backupService;
+	@Autowired
+	private IBackupProxy backupProxy;
 	
 	private final static Logger logger = LoggerFactory.getLogger(BackupController.class);
 		
@@ -37,6 +43,24 @@ public class BackupController {
 		params.put("orderBy", "START_TIME");
 		params.put("isAsc", true);
 		obj.setData(this.backupService.selectPageByParams(page, params));
+		return obj;
+	}
+	 
+	@RequestMapping(value="/full", method=RequestMethod.GET)   
+	public @ResponseBody ResultObject wholeBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
+		obj.setData(backupProxy.wholeBackup4Db(mcluster));
+		return obj;
+	}
+	
+	@RequestMapping(value="/incr", method=RequestMethod.GET)   
+	public @ResponseBody ResultObject incrBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
+		obj.setData(backupProxy.incrBackup4Db(mcluster));
+		return obj;
+	}
+	
+	@RequestMapping(value="/check", method=RequestMethod.GET)   
+	public @ResponseBody ResultObject getBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
+		obj.setData(backupProxy.getBackupStatusByID(mcluster.getId()));
 		return obj;
 	}
 	

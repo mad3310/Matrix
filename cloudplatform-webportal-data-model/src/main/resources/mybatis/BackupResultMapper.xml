@@ -260,6 +260,7 @@
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
+		select * from(
 		select
 		<include refid="Base_Column_List" />
 		,m.MCLUSTER_NAME,d.DB_NAME
@@ -279,6 +280,7 @@
 		<if test="params != null and !params.isAsc == false">
       		 desc 
     	</if>
+    	) lasted GROUP BY DB_ID ORDER BY START_TIME DESC
     	<if test="page != null">
       		limit #{page.startRowPosition},#{page.recordsPerPage}
     	</if>

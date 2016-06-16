@@ -118,14 +118,17 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 				
 				// 根据状态和时间检查备份状态，如果时间截至，停止整个备份进程并记录未备份记录
 				while(checkRecord != null && !checkRecord.isEmpty()) {
-					//for(MclusterModel mcluster : checkRecord) {
-					for(int i=0, size=checkRecord.size(); i<size; i++) {
+					for(int i=0; i<checkRecord.size(); i++) {
 						MclusterModel mcluster = checkRecord.get(i);
 						long mclusterId = mcluster.getId();
 						BackupResultModel analRet = getBackupStatusByID(mclusterId);
 						logger.debug("db backup process status: {}", analRet.getStatus());
 						if(BackupStatus.BUILDING.equals(analRet.getStatus())) {
 							Thread.sleep(DB_BACKUP_CHECKED_INTERVAL_TIME);
+							if(isStopBackup()) {
+								checkRecord = null;
+								break;
+							} 
 							continue;
 						} else {
 							// 更新备份结果
@@ -159,6 +162,8 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	@Override
 	public BackupResultModel getBackupStatusByID(long mclusterId) {
 		ContainerModel container = selectValidVipContianer(mclusterId, "mclustervip");
+		if(null == container)
+			return null;
 		ApiResultObject ret = pythonService.checkBackup4Db(container.getIpAddr());
 		BackupResultModel result = analysisBackupResult(new BackupResultModel(), ret);
 		return result;
@@ -520,61 +525,49 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	}
 	
 	@Override
-	public BackupResultModel wholeBackup4Db(MclusterModel mcluster) {
+	public BackupDTO wholeBackup4Db(MclusterModel mcluster) {
 		
-		BackupResultModel backupRet = new BackupResultModel();
+		BackupDTO result = sendBackupCMD(mcluster, new BackupCMD(){
+
+			@Override
+			public BackupDTO invoke(String ip, String user, String pwd) {
+				return pythonService.wholeBackup4Db(ip, user, pwd);
+			}
+			
+		});
 		
-		// 检查备份状态
-		long mclusterId = mcluster.getId();
-		ContainerModel container = selectValidVipContianer(mclusterId, "mclustervip");
-		String ip = container.getIpAddr();
-		ApiResultObject serviceRet = pythonService.checkBackup4Db(ip);
-		backupRet = analysisBackupResult(backupRet, serviceRet);
-		backupRet.setMcluster(mcluster);
-		
-		// 如果备份正则进行则直接返回，其他条件则直接执行备份操作
-		if(BackupStatus.BUILDING.equals(backupRet.getStatus())) {
-			return backupRet;
-		} else {
-			Map<String, Object> params = new HashMap<String,Object>();
-			params.put("id", mclusterId);
-			List<MclusterModel> mclusters = mclusterService.selectValidMclustersByMap(params);
-			String user = mclusters.get(0).getAdminUser();
-			String pwd = mclusters.get(0).getAdminPassword();
-			serviceRet = pythonService.wholeBackup4Db(ip, user, pwd);
-			backupRet = analysisBackupResult(backupRet, serviceRet);
-		}
-		
-		return backupRet;
+		return result;
 	}
 
 	@Override
-	public BackupResultModel incrBackup4Db(MclusterModel mcluster) {
-		// 备份结果
-		BackupResultModel backupRet = new BackupResultModel();
+	public BackupDTO incrBackup4Db(MclusterModel mcluster) {
 		
-		// 检查备份状态
+		BackupDTO result = sendBackupCMD(mcluster, new BackupCMD(){
+
+			@Override
+			public BackupDTO invoke(String ip, String user, String pwd) {
+				return pythonService.incrBackup4Db(ip, user, pwd);
+			}
+			
+		});
+		
+		return result;
+	}
+	
+	public BackupDTO sendBackupCMD(MclusterModel mcluster, BackupCMD backupCMD) {
 		long mclusterId = mcluster.getId();
-		ContainerModel container = selectValidVipContianer(mclusterId, "mclustervip");
-		String ip = container.getIpAddr();
-		ApiResultObject serviceRet = pythonService.checkBackup4Db(ip);
-		backupRet = analysisBackupResult(backupRet, serviceRet);
-		backupRet.setMcluster(mcluster);
-		backupRet.setBackupType(BackupType.INCR.name());
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("id", mclusterId);
+		List<MclusterModel> mclusters = mclusterService.selectValidMclustersByMap(params);
+		String user = mclusters.get(0).getAdminUser();
+		String pwd = mclusters.get(0).getAdminPassword();
 		
-		// 如果备份正则进行则直接返回，其他条件则直接执行备份操作
-		if(BackupStatus.BUILDING.equals(backupRet.getStatus())) {
-			return backupRet;
-		} else {
-			Map<String, Object> params = new HashMap<String,Object>();
-			params.put("id", mclusterId);
-			List<MclusterModel> mclusters = mclusterService.selectValidMclustersByMap(params);
-			String user = mclusters.get(0).getAdminUser();
-			String pwd = mclusters.get(0).getAdminPassword();
-			serviceRet = pythonService.incrBackup4Db(ip, user, pwd);
-			backupRet = analysisBackupResult(backupRet, serviceRet);
-		}
-		return backupRet;
+		ContainerModel container = selectValidVipContianer(mclusterId, "mclustervip");
+		if(null == container)
+			return null;
+		String ip = container.getIpAddr();
+		
+		return backupCMD.invoke(ip, user, pwd);
 	}
 	
 	private static boolean isStopBackup() {
@@ -589,5 +582,8 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		return false;
 	}
 	
+	private interface BackupCMD {
+		public BackupDTO invoke(String ip, String user, String pwd);
+	}
 	
 }
