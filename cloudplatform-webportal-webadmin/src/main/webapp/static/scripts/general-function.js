@@ -199,7 +199,19 @@ function date(format, timestamp) {
 			});
 }
 /* 翻译所有状态信息 */
-function translateStatus(status) {
+var Status={
+			hcluster:{		
+				'0':'未启用',
+				'1':'启用'
+			}
+};
+
+function translateStatus(status, resourceType) {
+	if(resourceType){
+		if(Status[resourceType] && Status[resourceType][status]){
+			return Status[resourceType][status];
+		}
+	}
 	if (status == 0) {
 		return "未审核";
 	} else if (status == 1) {

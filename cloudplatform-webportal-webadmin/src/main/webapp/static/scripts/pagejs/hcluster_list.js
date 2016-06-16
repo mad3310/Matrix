@@ -71,20 +71,17 @@ function queryByPage() {
 				var td5 = $("<td class='hidden-480'>"
 						+ date('Y-m-d H:i:s',array[i].createTime)
 						+ "</td>");
+				var tdContainerIps='<td><span class="td-container-ips text-ellipsis" title="{containerIps}">{containerIps}</span></td>'.replace(/{containerIps}/g,array[i].containerIps);
 				var td6 = $("<td><a>"
-						+ translateStatus(array[i].status)
+						+ translateStatus(array[i].status,'hcluster')
 						+ "</a></td>");
-//				var td7 = $("<td>"
-//						+"<div class=\"hidden-sm hidden-xs  action-buttons\">"
-//						+"<a class=\"red\" href=\"#\" onclick=\"deleteHcluster(this)\" onfocus=\"this.blur();\" title=\"删除\" data-toggle=\"tooltip\" data-placement=\"right\">"
-//					    +"<i class=\"ace-icon fa fa-trash-o bigger-120\"></i>"
-//						+"</a>"
-//						+"</div>"
-//						+ "</td>"
 				var td7 = $("<td>"
 						+"<div class=\"action-buttons\">"
 						+"<a class=\"red\" href=\"#\" onclick=\"deleteHcluster(this)\" onfocus=\"this.blur();\" title=\"删除\" data-toggle=\"tooltip\" data-placement=\"right\">"
 					    +"<i class=\"ace-icon fa fa-trash-o bigger-120\"></i>"
+						+"</a>"
+						+"<a class=\"red\" href=\"#\" onclick=\"modifyHcluster(this)\" onfocus=\"this.blur();\" title=\"编辑\" data-toggle=\"tooltip\" data-placement=\"right\">"
+					    +"<i class=\"ace-icon fa fa-pencil-square-o bigger-120\"></i>"
 						+"</a>"
 						+"</div>"
 						+ "</td>"
@@ -96,7 +93,7 @@ function queryByPage() {
 					var tr = $("<tr></tr>");
 				}
 				
-				tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7);
+				tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(tdContainerIps).append(td6).append(td7);
 				tr.appendTo(tby);
 			}//循环json中的数据 
 			
@@ -169,7 +166,7 @@ function pageControl() {
 	
 //创建Container集群表单验证
 function formValidate() {
-	$("#create-hcluster-form").bootstrapValidator({
+	$("#form-hcluster").bootstrapValidator({
 	  message: '无效的输入',
          feedbackIcons: {
              valid: 'glyphicon glyphicon-ok',
@@ -195,31 +192,66 @@ function formValidate() {
 	                        url: "/hcluster/validate"
 	                    }
 	             }
-         	}	
+         	},
+         	containerIps: {
+                  validators: {
+                	  regexp: {
+                          regexp: /^\d[\d|,|\.\/]*\d$/,
+                          message: '请按提示格式输入'
+                      }
+ 	             }
+          	}
          }
      }).on('error.field.bv', function(e, data) {
-    	 $('#create-hcluster-botton').addClass("disabled");
+    	 $('#botton-hcluster-submit').addClass("disabled");
      }).on('success.field.bv', function(e, data) {
-    	 $('#create-hcluster-botton').removeClass("disabled");
+    	 $('#botton-hcluster-submit').removeClass("disabled");
      });
 }
+var hclusterModalType='';
+function openModalHclusterCreate(){
+	hclusterModalType='create';
+	$('#botton-hcluster-submit').addClass("disabled");
+	$('#modal-hcluster #inputCurrentHclusterId').val('');
+	$('#form-hcluster input').val('')
+	$('#form-hcluster select[name="status"]').val('1');
+	$('#form-hcluster select[name="type"]').select2("val", "");
+	$('#modal-hcluster').modal('show');
+}
 
-function createHcluster(){
-	$.ajax({
-		cache:false,
-		type : "post",
-		url : "/hcluster",
-		data :$('#create-hcluster-form').serialize(),
-		success:function (data){
-			if(error(data)) return;
-			$('#create-hcluster-form').find(":input").not(":button,:submit,:reset,:hidden").val("").removeAttr("checked").removeAttr("selected");
-			$('#create-hcluster-form').data('bootstrapValidator').resetForm();
-			$('#create-hcluster-botton').addClass('disabled');
-			$('#create-hcluster-modal').modal('hide');
-			//延时一秒刷新列表
-			setTimeout("queryByPage()",1000);
-		}
-	});
+function submitHcluster(){
+	if(hclusterModalType==='create'){
+		$.ajax({
+			cache:false,
+			type : "post",
+			url : "/hcluster",
+			data :$('#form-hcluster').serialize(),
+			success:function (data){
+				if(error(data)) return;
+				$('#botton-hcluster-submit').addClass('disabled');
+				$('#modal-hcluster').modal('hide');
+				//延时一秒刷新列表
+				setTimeout("queryByPage()",1000);
+			}
+		});
+	}
+	else if(hclusterModalType==='modify'){
+		var currentHclusterId= $('#modal-hcluster #inputCurrentHclusterId').val();
+		$.ajax({
+			cache:false,
+			type : "post",
+			url : "/hcluster/{hclusterId}".replace('{hclusterId}',currentHclusterId),
+			data :$('#form-hcluster').serialize(),
+			success:function (data){
+				if(error(data)) return;
+				$('#botton-hcluster-submit').addClass('disabled');
+				$('#modal-hcluster').modal('hide');
+				//延时一秒刷新列表
+				setTimeout("queryByPage()",1000);
+			}
+		});
+	}
+	else{}
 }
 
 function deleteHcluster(obj){
@@ -247,6 +279,28 @@ function deleteHcluster(obj){
 			}else{
 				warn("该集群中含有物理机,删除完物理机后,才能执行此操作!",3000);
 			}
+		}
+	});
+}
+
+function modifyHcluster(obj){
+	var tr = $(obj).parents("tr");
+	var hclusterId =tr.find('[name="hcluster_id"]').val();
+	hclusterModalType='modify';
+	$('#botton-hcluster-submit').removeClass("disabled");
+	$.ajax({
+		cache:false,
+		type : "get",
+		url : "/hcluster/detail/{hclusterId}".replace('{hclusterId}',hclusterId),
+		dataType : "json", 
+		success : function(data) {
+			$('#modal-hcluster #inputCurrentHclusterId').val(hclusterId);
+			$('#form-hcluster #hclusterNameAlias').val(data.data.hclusterNameAlias);
+			$('#form-hcluster #hclusterName').val(data.data.hclusterName);
+			$('#form-hcluster #containerIps').val(data.data.containerIps);
+			$('#form-hcluster #isHclusterEnable').val(data.data.status);
+			$('#form-hcluster select[name="type"]').select2("val", data.data.type.split(','));
+			$('#modal-hcluster').modal('show');
 		}
 	});
 }
