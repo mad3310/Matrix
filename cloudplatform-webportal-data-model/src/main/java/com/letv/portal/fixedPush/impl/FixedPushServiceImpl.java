@@ -53,6 +53,7 @@ public class FixedPushServiceImpl implements IFixedPushService{
 
 	public ApiResultObject createMutilContainerPushFixedInfo(List<ContainerModel> containers){
 		ApiResultObject ret = new ApiResultObject();
+		ret.setAnalyzeResult(false);
 		List<ContainerModel> success = new ArrayList<ContainerModel>();
 		for(ContainerModel c:containers) {
 			ret = sendFixedInfo(c.getHostIp(), c.getContainerName(), c.getIpAddr(), "add");
@@ -72,6 +73,7 @@ public class FixedPushServiceImpl implements IFixedPushService{
 	@Override
 	public ApiResultObject deleteMutilContainerPushFixedInfo(List<ContainerModel> containers){
 		ApiResultObject ret = new ApiResultObject();
+		ret.setAnalyzeResult(false);
 		List<ContainerModel> success = new ArrayList<ContainerModel>();
 		for(ContainerModel c:containers) {
 			ret = sendFixedInfo(c.getHostIp(), c.getContainerName(), c.getIpAddr(), "delete");
