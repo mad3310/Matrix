@@ -562,6 +562,9 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("id", mclusterId);
 		List<MclusterModel> mclusters = mclusterService.selectValidMclustersByMap(params);
+		if(null == mclusters || mclusters.isEmpty()) {
+			return null;
+		}
 		String user = mclusters.get(0).getAdminUser();
 		String pwd = mclusters.get(0).getAdminPassword();
 		

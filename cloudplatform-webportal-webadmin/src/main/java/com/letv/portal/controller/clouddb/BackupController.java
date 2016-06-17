@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.letv.common.exception.ValidateException;
 import com.letv.common.paging.impl.Page;
 import com.letv.common.result.ResultObject;
 import com.letv.common.util.HttpUtil;
 import com.letv.common.util.StringUtil;
+import com.letv.portal.model.BackupDTO;
 import com.letv.portal.model.BackupResultModel;
 import com.letv.portal.model.MclusterModel;
 import com.letv.portal.proxy.IBackupProxy;
@@ -48,19 +48,37 @@ public class BackupController {
 	 
 	@RequestMapping(value="/full", method=RequestMethod.GET)   
 	public @ResponseBody ResultObject wholeBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
-		obj.setData(backupProxy.wholeBackup4Db(mcluster));
+		BackupDTO dto = backupProxy.wholeBackup4Db(mcluster);
+		if(null == dto) {
+			obj.setResult(0);
+			obj.addMsg("备份请求异常, 服务器状态不符合备份要求！");
+		} else {
+			obj.setData(dto);
+		}
 		return obj;
 	}
 	
 	@RequestMapping(value="/incr", method=RequestMethod.GET)   
 	public @ResponseBody ResultObject incrBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
-		obj.setData(backupProxy.incrBackup4Db(mcluster));
+		BackupDTO dto = backupProxy.incrBackup4Db(mcluster);
+		if(null == dto) {
+			obj.setResult(0);
+			obj.addMsg("备份请求异常, 服务器状态不符合备份要求！");
+		} else {
+			obj.setData(dto);
+		}
 		return obj;
 	}
 	
 	@RequestMapping(value="/check", method=RequestMethod.GET)   
 	public @ResponseBody ResultObject getBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
-		obj.setData(backupProxy.getBackupStatusByID(mcluster.getId()));
+		BackupResultModel result = backupProxy.getBackupStatusByID(mcluster.getId());
+		if(null == result) {
+			obj.setResult(0);
+			obj.addMsg("服务器请求异常！");
+		} else {
+			obj.setData(result);
+		}
 		return obj;
 	}
 	
