@@ -526,15 +526,16 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	
 	@Override
 	public BackupDTO wholeBackup4Db(MclusterModel mcluster) {
-		
-		BackupDTO result = sendBackupCMD(mcluster, new BackupCMD(){
+		BackupCMD cmd = new BackupCMD(){
 
 			@Override
 			public BackupDTO invoke(String ip, String user, String pwd) {
 				return pythonService.wholeBackup4Db(ip, user, pwd);
 			}
 			
-		});
+		};
+		
+		BackupDTO result = sendBackupCMD(mcluster, cmd);
 		
 		return result;
 	}
@@ -542,14 +543,16 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	@Override
 	public BackupDTO incrBackup4Db(MclusterModel mcluster) {
 		
-		BackupDTO result = sendBackupCMD(mcluster, new BackupCMD(){
+		BackupCMD cmd = new BackupCMD(){
 
 			@Override
 			public BackupDTO invoke(String ip, String user, String pwd) {
 				return pythonService.incrBackup4Db(ip, user, pwd);
 			}
 			
-		});
+		};
+		
+		BackupDTO result = sendBackupCMD(mcluster, cmd);
 		
 		return result;
 	}
