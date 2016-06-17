@@ -11,10 +11,15 @@ package com.letv.common.result;
 public class ApiResultObject {
 	private String result;
 	private String url;
+	private Boolean analyzeResult;//分析后结果
 	
 	public ApiResultObject(String result,String url) {
 		this.result = result;
 		this.url = url;
+	}
+	
+	public ApiResultObject() {
+		
 	}
 	
 	public String getResult() {
@@ -29,4 +34,12 @@ public class ApiResultObject {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	public Boolean getAnalyzeResult() {
+		return analyzeResult;
+	}
+	public void setAnalyzeResult(Boolean analyzeResult) {
+		this.analyzeResult = analyzeResult;
+	}
+	
 }
+

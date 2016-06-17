@@ -27,8 +27,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -126,6 +128,19 @@ public class HttpClient {
     public static String get(String url, int connectionTimeout, int soTimeout) {
         return get(url, connectionTimeout, soTimeout, null, null);
     }
+    
+    /**
+     * 单独传入参数的get请求调用
+     * @param url 不带任何参数的url
+     * @param params 请求参数
+     * @param connectionTimeout 
+     * @param soTimeout
+     * @return
+     * add by lisuxiao 2016-05-09
+     */
+    public static String get(String url, Map<String, String> params, int connectionTimeout, int soTimeout) {
+    	return get(urlJoinParams(url, params), connectionTimeout, soTimeout, null, null);
+    }
 
     public static String get(String url, int connectionTimeout, int soTimeout,
                              String username, String password) {
@@ -160,7 +175,27 @@ public class HttpClient {
         httpclient.getConnectionManager().shutdown();
         return body;
 	}
-
+	
+	/**
+	 * 根据传入的url和参数拼接get请求路径
+	 * @param url 不带任何参数的url
+	 * @param params 请求参数
+	 * @return
+	 * add by lisuxiao 2016-05-09
+	 */
+	private static String urlJoinParams(String url, Map<String, String> params) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(url);
+		buffer.append("?");
+		Set<Entry<String, String>> entrys = params.entrySet();
+		for(Map.Entry<String, String> entry : entrys) {
+			buffer.append(entry.getKey()).append("=").append(entry.getValue());
+			buffer.append("&");
+		}
+		buffer.deleteCharAt(buffer.lastIndexOf("&"));
+		return buffer.toString();
+	}
+	
 	private static String invoke(DefaultHttpClient httpclient,
 			HttpUriRequest httpost) {
 		HttpResponse response = sendRequest(httpclient, httpost);

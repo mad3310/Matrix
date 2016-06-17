@@ -194,4 +194,9 @@ public class GceClusterServiceImpl extends BaseServiceImpl<GceCluster> implement
         this.gceServerService.deleteByClusterId(gceCluster.getId());
         this.gceClusterDao.delete(gceCluster);
     }
+
+	@Override
+	public List<GceCluster> selectValidCluster() {
+		return this.gceClusterDao.selectValidCluster();
+	}
 }

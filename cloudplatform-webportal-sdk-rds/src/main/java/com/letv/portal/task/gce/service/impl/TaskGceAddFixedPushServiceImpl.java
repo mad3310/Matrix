@@ -1,9 +1,11 @@
 package com.letv.portal.task.gce.service.impl;
 
+import com.letv.common.result.ApiResultObject;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.gce.GceContainer;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +30,14 @@ public class TaskGceAddFixedPushServiceImpl extends BaseTask4GceServiceImpl impl
 
 		//执行业务
 		List<GceContainer> containers = super.getContainers(params);
-        boolean flag;
+		ApiResultObject apiResult;
 		for (GceContainer container:containers) {
             if(container.getIpAddr().startsWith("10.")) {
-                flag = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
-                if(!flag) {
+            	apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
+                if(!apiResult.getAnalyzeResult()) {
                     //发送推送失败邮件，流程继续。
                     buildResultToMgr("GCE服务相关系统推送异常", super.getGceCluster(params).getClusterName() +"集群固资系统数据推送失败，请运维人员重新推送", tr.getResult(), null);
-                    tr.setResult("固资系统数据推送失败");
+                    tr.setResult(apiResult.getResult());
                     break;
                 }
             }

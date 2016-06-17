@@ -8,8 +8,8 @@
         <title>控制台-乐视云平台</title>
         <link rel="shortcut icon" href="http://i3.letvimg.com/lc05_lecloud/201601/12/10/21/favicon.ico">
         <link rel="stylesheet" href="/stylesheets/dist/vendor.css">
-        <link rel="stylesheet" href="/stylesheets/dist/common-1463380997464.css">
-        <link rel="stylesheet" href="/stylesheets/dist/style-rds-1463380997464.css">
+        <link rel="stylesheet" href="/stylesheets/dist/common-1465700659110.css">
+        <link rel="stylesheet" href="/stylesheets/dist/style-rds-1465700659110.css">
         </head>
         <style>
         .main .side-bar {
@@ -25,9 +25,9 @@
         width: 100%;
         min-width: 1349px;
         }
-        </style>
+        </style> 
         <body>
-        <%@ include file="../../includes/header.jsp" %>
+        <%@ include file="../../includes/headerRds.jsp" %>
         <div class="main">
         <div ng-include="'/apps/rds/views/side-menu.html'"></div>
         <div class="content-wrapper">
@@ -35,6 +35,8 @@
         </div>
         <div class="clearfix"></div>
         </div>
-        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-main-build-1463380997464.js"></script>
+
+        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-main-build-1465700659110.js"></script>
+
         </body>
         </html>

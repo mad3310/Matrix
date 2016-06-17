@@ -11,6 +11,8 @@
 		<result column="DESCN" property="descn" />
 		<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
 		<result column="TYPE" property="type" />
+		<result column="AREA_ID" property="areaId" />
+		<result column="CONTAINER_IPS" property="containerIps" />
 		
 		<result column="STATUS" property="status" />
 		<result column="DELETED" property="deleted" />
@@ -50,7 +52,8 @@
 	</resultMap>
 	
 	<sql id="Base_Column_List">
-		m.id,m.hcluster_name,m.status,m.type,m.DELETED,m.update_user,m.update_time,m.create_user,m.create_time,m.descn,m.HCLUSTER_NAME_ALIAS
+		m.id,m.hcluster_name,m.status,m.type,m.DELETED,m.update_user,m.update_time,m.create_user,m.create_time,
+		m.descn,m.HCLUSTER_NAME_ALIAS,m.AREA_ID,m.CONTAINER_IPS
 	</sql>
 	
 	
@@ -70,8 +73,14 @@
 			<if test="status != null and status != '' ">
 				and m.STATUS=#{status}
 			</if>
+			<if test="areaId != null and areaId != '' ">
+				and m.AREA_ID=#{areaId}
+			</if>
 			<if test="type != null and type != '' ">
 				and m.TYPE like CONCAT('%',#{type},'%') escape '^'
+			</if>
+			<if test="containerIps != null and containerIps != '' ">
+				and m.CONTAINER_IPS like CONCAT('%',#{containerIps},'%') escape '^'
 			</if>
 			<if test="deleted != null  ">
 				and m.DELETED=#{deleted}
@@ -90,7 +99,7 @@
 			</if>
 		</trim>
 	</sql>
-		<sql id="Example_Page_Where_Clause">
+	<sql id="Example_Page_Where_Clause">
 		where 1=1
 		<trim suffixOverrides=",">
 			<if test="params != null and params.id !=null  ">
@@ -98,6 +107,12 @@
 			</if>
 			<if test="params != null and params.status !=null and params.status != '' ">
 				and m.STATUS=#{params.status}
+			</if>
+			<if test="params != null and params.areaId !=null and params.areaId != '' ">
+				and m.AREA_ID=#{params.areaId}
+			</if>
+			<if test="params != null and params.containerIps !=null and params.containerIps != '' ">
+				and m.CONTAINER_IPS=#{params.containerIps}
 			</if>
 			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''  and params.hclusterName != 'null'">
 				and m.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
@@ -113,9 +128,9 @@
 	<insert id="insert" parameterType="Hcluster">
 		insert into
 		WEBPORTAL_HCLUSTER
-		(HCLUSTER_NAME,STATUS,TYPE,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER,DESCN,HCLUSTER_NAME_ALIAS)
+		(HCLUSTER_NAME,STATUS,TYPE,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER,DESCN,HCLUSTER_NAME_ALIAS,AREA_ID,CONTAINER_IPS)
 		values
-		(#{hclusterName},#{status},#{type},#{deleted},now(),#{createUser},#{updateTime},#{updateUser},#{descn},#{hclusterNameAlias})
+		(#{hclusterName},#{status},#{type},#{deleted},now(),#{createUser},#{updateTime},#{updateUser},#{descn},#{hclusterNameAlias},#{areaId},#{containerIps})
 	</insert>
 	
 	<!-- 物理删除 -->
@@ -203,13 +218,35 @@
 		parameterType="java.lang.String">
 		select count(1) from WEBPORTAL_HCLUSTER m where m.TYPE like CONCAT('%',#{_parameter},'%') escape '^'
 	</select>
-
+	
    <!-- 修改 -->
 	<update id="update" parameterType="Hcluster">
-		update WEBPORTAL_HCLUSTER m set
-		<if test="hclusterName != null  ">
-			m.hclusterName=#{hclusterName}
-		</if>
+		update 
+			WEBPORTAL_HCLUSTER m 
+		<set>
+			<if test="hclusterName != null  ">
+				m.HCLUSTER_NAME=#{hclusterName},
+			</if>
+			<if test="hclusterNameAlias != null ">
+				m.HCLUSTER_NAME_ALIAS=#{hclusterNameAlias},
+			</if>
+			<if test="status != null">
+				m.STATUS=#{status},
+			</if>
+			<if test="areaId != null">
+				m.AREA_ID=#{areaId},
+			</if>
+			<if test="type != null">
+				m.TYPE=#{type},
+			</if>
+			<if test="containerIps != null">
+				m.CONTAINER_IPS=#{containerIps},
+			</if>
+			<if test="updateUser != null  ">
+				m.UPDATE_USER=#{updateUser},
+			</if>
+			m.UPDATE_TIME=now()
+		</set>
 		where m.ID = #{id}
 	</update>
 

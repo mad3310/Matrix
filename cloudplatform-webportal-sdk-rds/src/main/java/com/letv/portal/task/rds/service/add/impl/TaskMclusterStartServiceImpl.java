@@ -102,8 +102,6 @@ public class TaskMclusterStartServiceImpl extends BaseTask4RDSServiceImpl implem
                     break;
                 }
                 if(null != result.getResult() && result.getResult().contains(container.getIpAddr())){
-                    container.setStatus(MclusterStatus.RUNNING.getValue());
-                    this.containerService.updateBySelective(container);
                     tr.setSuccess(true);
                     checkFlag = false;
                 }
@@ -116,11 +114,6 @@ public class TaskMclusterStartServiceImpl extends BaseTask4RDSServiceImpl implem
 	}
 	@Override
 	public void callBack(TaskResult tr) {
-        Long mclusterId = getLongFromObject(((Map<String, Object>) tr.getParams()).get("mclusterId"));
-        MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
-        mcluster.setStatus(MclusterStatus.RUNNING.getValue());
-        this.mclusterService.updateBySelective(mcluster);
-//		super.callBack(tr);
 	}
 
     @Override

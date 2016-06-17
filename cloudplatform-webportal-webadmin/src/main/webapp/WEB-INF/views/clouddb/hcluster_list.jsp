@@ -59,67 +59,11 @@
 		</div>
 		</div>
 	</div>
-	<!-- /.page-header -->
-    <!-- <div class="modal fade" id="hclusteradvancedSearch">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" class="close" data-dismiss="modal">
-    					<span aria-hidden="true"><i class="ace-icon fa fa-times-circle"></i></span>
-    					<span class="sr-only">关闭</span>
-    				</button>
-    				<h4 class="modal-title">高级搜索</h4>
-    			</div>
-    			<div class="modal-body">
-    				<form class="form-horizontal" role="form">          					
-    					<div class="form-group">
-    						<lable class="col-sm-4 control-label" for="PhysicalMechine"><b>物理集群名称</b></lable>
-    						<div class="col-sm-7">
-    							<input type="text" class="form-control" id="PhysicalMechine" placeholder="物理集群名称">
-    						</div>
-    						<label class="control-label"><i class="ace-icon fa fa-info-circle blue bigger-125"></i></label>
-    					</div>
-    					<div class="form-group">
-    						<lable class="col-sm-4 control-label" for="PhyMechineNum"><b>编号</b></lable>
-    						<div class="col-sm-7">
-    							<input type="text" class="form-control" id="PhyMechineNum" placeholder="编号">
-    						</div>
-    						<label class="control-label"><i class="ace-icon fa fa-tag blue bigger-125"></i></label>
-    					</div>
-    					
-    					<div class="form-group">
-    						<lable class="col-sm-4 control-label" for="PhyMechineDate"><b>创建时间</b></lable>
-    						<div class="col-sm-7">
-    							<input type="date" class="form-control" id="PhyMechineDate" placeholder="创建时间">
-    						</div>
-    						<label class="control-label"><i class="ace-icon fa fa-calendar blue bigger-125"></i></label>
-    					</div>
-    					<div class="form-group">
-    						<lable class="col-sm-4 control-label" for="PhyMechineRunState"><b>运行状态</b></lable>
-    						<div class="col-sm-7">
-    							<select class="form-control" id="PhyMechineRunState">
-    								<option value="">运行中</option>
-    								<option value="">未审核</option>
-    								<option value="">。。。</option>
-    							</select>
-    						</div>
-    						<label class="control-label"><i class="ace-icon fa fa-cog blue bigger-125"></i></label>
-    					</div>
-    				</form>
-    			</div>
-    			<div class="modal-footer">
-    			<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">取 消 </button>
-    			<button type="button" class="btn btn-sm btn-info">搜索</button>
-    			</div>
-    		</div>
-    	</div>
-    </div> -->
-	<!-- <div class="row"> -->
 		<div class="widget-box widget-color-blue ui-sortable-handle col-xs-12">
 			<div class="widget-header">
 				<h5 class="widget-title">物理机集群列表</h5>
 				<div class="widget-toolbar no-border">
-					<button class="btn btn-white btn-primary btn-xs" data-toggle="modal" data-target="#create-hcluster-modal">
+					<button class="btn btn-white btn-primary btn-xs" data-toggle="modal" onclick="openModalHclusterCreate()">
 						<i class="ace-icont fa fa-plus"></i>
 						 创建物理机集群
 					</button>
@@ -146,6 +90,7 @@
 								<th>编号</th>
 								<th class="hidden-480">应用业务类型 </th>
 								<th class="hidden-480">创建时间 </th>
+								<th class="hidden-480">集群ip池 </th>
 								<th>当前状态</th>
 								<th>操作</th>
 							</tr>
@@ -176,7 +121,7 @@
 			</ul>
 		</div>
 		
-		<div class="modal fade" id="create-hcluster-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top:157px">
+		<div class="modal fade" id="modal-hcluster" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top:157px">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -184,9 +129,10 @@
             					<span aria-hidden="true"><i class="ace-icon fa fa-times-circle"></i></span>
             					<span class="sr-only">关闭</span>
             				</button>
-            				<h4 class="modal-title">创建物理机集群 </h4>
+            				<!-- <h4 class="modal-title">创建物理机集群 </h4> -->
             		</div>
-					<form id="create-hcluster-form" name="create-hcluster-form" class="form-horizontal" role="form">
+            		<input type="hidden" id="inputCurrentHclusterId">
+					<form id="form-hcluster" name="form_hcluster" class="form-horizontal" role="form">
 						<div class="modal-body">            				
             				<div class="form-group">
 								<label class="col-sm-12 col-xs-12 col-md-4 control-label" for="hclusterNameAlias">物理机集群名称</label>
@@ -209,27 +155,28 @@
 										<i class="ace-icon fa fa-question-circle blue bigger-125"></i>
 									</a>
 								</label>
-							</div>
-							<!-- <div class="form-group">
-								<label class="col-sm-12 col-xs-12 col-md-4 control-label" for="hcluster_name">应用业务类型</label>
+							</div>	
+							
+							<div class="form-group">
+								<label class="col-sm-12 col-xs-12 col-md-4 control-label" for="containerIps">集群ip池</label>
 								<div class="col-sm-10 col-xs-10 col-md-6">
-									<select class="chosen-select" multiple="multiple"
-									name="type" id="typeOption"
-									data-placeholder="请选择应用业务类型...">
-									<option>RDS</option>
-									<option>SLB</option>
-									<option>GCE</option>
-									<option>CBASE</option>
-									<option>OSS</option>
-								</select>
+									<input class="form-control" name="containerIps" id="containerIps" type="text" />
 								</div>
-								<label class="control-label hidden-sm hidden-xs">
-									<a name="popoverHelp" rel="popover" data-container="body" data-toggle="popover" data-placement="right" data-trigger='hover' data-content="请选择应用业务类型..." style="cursor:pointer; text-decoration:none;">
+								<label class="control-label">
+									<a name="popoverHelp" rel="popover" data-container="body" data-toggle="popover" data-placement="right" data-trigger='hover' data-content="多个ip请用,分隔" style="cursor:pointer; text-decoration:none;">
 										<i class="ace-icon fa fa-question-circle blue bigger-125"></i>
 									</a>
 								</label>
-							</div> -->
-							
+							</div>							
+							<div class="form-group">
+								<label class="control-label col-sm-12 col-xs-12 col-md-4  no-padding-right"> 是否启用</label>
+								<div class="col-sm-10 col-xs-10 col-md-6">
+									<select id="isHclusterEnable"  name="status">
+										<option value="1" selected="selected">启用</option>
+										<option value="0">不启用</option>
+									</select>
+								</div>
+							</div>
 							<div class="form-group">
 								<label class="control-label col-sm-12 col-xs-12 col-md-4  no-padding-right"> 应用业务类型</label>
 								<div class="col-sm-10 col-xs-10 col-md-6">
@@ -248,47 +195,16 @@
 								</label>
 							</div>
             			</div>
-					<!-- <div class="col-xs-12">
-						<h4 class="lighter">
-							<a href="#modal-wizard" data-toggle="modal" class="blue">创建物理机集群 </a>
-						</h4>
-						<div class="widget-box">
-							<div class="widget-body">
-								<div class="widget-main">
-									<div class="form-group">
-										<label class="col-sm-4 control-label" for="hcluster_name">物理机集群名称</label>
-										<div class="col-sm-6">
-											<input class="form-control" name="hclusterNameAlias" id="hclusterNameAlias" type="text" />
-										</div>
-										<label class="control-label">
-											<a name="popoverHelp" rel="popover" data-container="body" data-toggle="popover" data-placement="right" data-trigger='hover' data-content="集群名称应能概括此集群的信息，可用汉字!" style="cursor:pointer; text-decoration:none;">
-												<i class="ace-icon fa fa-question-circle blue bigger-125"></i>
-											</a>
-										</label>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-4 control-label" for="hcluster_name">编号</label>
-										<div class="col-sm-6">
-											<input class="form-control" name="hclusterName" id="hclusterName" type="text" />
-										</div>
-										<label class="control-label">
-											<a name="popoverHelp" rel="popover" data-container="body" data-toggle="popover" data-placement="right" data-trigger='hover' data-content="请输入字母数字或'_'." style="cursor:pointer; text-decoration:none;">
-												<i class="ace-icon fa fa-question-circle blue bigger-125"></i>
-											</a>
-										</label>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div> -->
+					
 					<div class="modal-footer">
 						<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">关闭</button>
-						<button id="create-hcluster-botton" type="button" class="btn btn-sm disabled btn-primary" onclick="createHcluster()">创建</button>
+						<button id="botton-hcluster-submit" type="button" class="btn btn-sm disabled btn-primary" onclick="submitHcluster()">提交</button>
 					</div>
 				</form>
 				</div>
 			</div>
 		</div>
+		
 		<div id="dialog-confirm" class="hide">
 			<div id="dialog-confirm-content" class="alert alert-info bigger-110"></div>
 			<div class="space-6"></div>

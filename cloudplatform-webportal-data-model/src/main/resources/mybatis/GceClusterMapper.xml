@@ -172,6 +172,12 @@
 		from WEBPORTAL_GCECLUSTER G where G.STATUS IN(1,7,8,9,13,14)
 	</select>
 	
+	<select id="selectValidCluster" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from WEBPORTAL_GCECLUSTER GCS where GCS.STATUS IN(1,7,8,9,13,14)
+	</select>
+	
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">

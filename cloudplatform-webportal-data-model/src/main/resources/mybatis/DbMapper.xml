@@ -248,6 +248,9 @@
 		<if test="hclusterName != null  and hclusterName != ''">
 			and h.HCLUSTER_NAME like CONCAT('%',#{hclusterName},'%') escape '^'
 		</if>
+		<if test="areaId != null  and areaId != ''">
+			and h.AREA_ID=#{areaId}
+		</if>
 		<include refid="Example_Where_Clause" />
 	</select>
 	<!-- 根据条件查询 -->
@@ -348,6 +351,9 @@
 		join WEBPORTAL_HCLUSTER h on m.HCLUSTER_ID = h.ID
 		<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
 			and h.hCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+		</if>
+		<if test="params != null and params.areaId != null  and params.areaId != ''">
+			and h.AREA_ID=#{params.areaId}
 		</if>
 		<include refid="Example_Page_Where_Clause" />
 		ORDER BY m.CREATE_TIME DESC
