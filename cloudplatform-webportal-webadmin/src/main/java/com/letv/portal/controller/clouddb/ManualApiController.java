@@ -278,6 +278,55 @@ public class ManualApiController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/V1/zabbix/checkAll", method=RequestMethod.GET)
+	public @ResponseBody ResultObject checkAllRdsZabbix(ResultObject result) {
+		List<MclusterModel> mclusters  = this.mclusterService.selectValidMclustersByMap(null);
+		int sum = 0;
+		int success = 0;
+		int fail = 0;
+		StringBuilder builder = new StringBuilder();
+		
+		String loginResult = zabbixPushService.loginZabbix();
+		String auth = "";
+	    if(loginResult!=null && loginResult.contains("_succeess")){
+			String[] auths = loginResult.split("_");
+			auth = auths[0];
+			logger.info("登陆zabbix系统成功");
+		} else {
+			logger.info("登陆zabbix系统失败");
+			return null;
+		}
+		
+		for (MclusterModel mclusterModel : mclusters) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("mclusterId", mclusterModel.getId());
+			map.put("types", new String[]{"mclustervip"});
+			List<ContainerModel> containers = this.containerService.selectWithHClusterNameByMap(map);
+			List<String> ret = null;
+			if(null!=containers && containers.size()!=0) {
+				ret = this.zabbixPushService.getZabbixHostIdByContainerName(containers.get(0).getContainerName(), auth);
+			}
+			
+			if(null!=ret && ret.contains(containers.get(0).getZabbixHosts())) {
+				success++;
+			} else {
+				builder.append(mclusterModel.getId()).append(",");
+				fail ++;
+			}
+			sum++;
+			try {
+				Thread.sleep(100l);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		result.getMsgs().add("check mcluster sum:" + sum);
+		result.getMsgs().add("check mcluster success:" + success);
+		result.getMsgs().add("check mcluster fail:" + fail);
+		result.getMsgs().add("check mcluster fail mclusterIds:[" + builder.toString() +"]");
+		logger.info(result.toString());
+		return result;
+	}
 	@RequestMapping(value = "/V1/rds/fixed/pushAll", method=RequestMethod.GET)
 	public @ResponseBody ResultObject pushAllRdsFixed(ResultObject result) {
 		List<MclusterModel> mclusters  = this.mclusterService.selectValidMclustersByMap(null);
@@ -297,11 +346,17 @@ public class ManualApiController {
 				fail ++;
 			}
 			sum++;
+			try {
+				Thread.sleep(1000l);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage(), e);
+			}
 		}
 		result.getMsgs().add("add mcluster sum:" + sum);
 		result.getMsgs().add("add mcluster success:" + success);
 		result.getMsgs().add("add mcluster fail:" + fail);
 		result.getMsgs().add("add mcluster fail mclusterIds:[" + builder.toString() +"]");
+		logger.info(result.toString());
 		return result;
 	}
 	
@@ -316,9 +371,16 @@ public class ManualApiController {
 			List<GceContainer> containers = this.gceContainerService.selectByGceClusterId(gce.getId());
 			ApiResultObject apiResult = null;
 			for (GceContainer container : containers) {
-				apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
-				if(!apiResult.getAnalyzeResult()) {
+				if(container.getIpAddr().startsWith("10.")) {
+					apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
+				}
+				if(null==apiResult || !apiResult.getAnalyzeResult()) {
 					break;
+				}
+				try {
+					Thread.sleep(500l);
+				} catch (InterruptedException e) {
+					logger.error(e.getMessage(), e);
 				}
 			}
 			if(null!=apiResult && apiResult.getAnalyzeResult()) {
@@ -333,6 +395,7 @@ public class ManualApiController {
 		result.getMsgs().add("add gcecluster success:" + success);
 		result.getMsgs().add("add gcecluster fail:" + fail);
 		result.getMsgs().add("add gcecluster fail gceclusterIds:[" + builder.toString() +"]");
+		logger.info(result.toString());
 		return result;
 	}
 	
@@ -348,9 +411,16 @@ public class ManualApiController {
 			List<SlbContainer> containers = this.slbContainerService.selectBySlbClusterId(slb.getId());
 			ApiResultObject apiResult = null;
 			for (SlbContainer container : containers) {
-				apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
-				if(!apiResult.getAnalyzeResult()) {
+				if(container.getIpAddr().startsWith("10.")) {
+					apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
+				}
+				if(null==apiResult || !apiResult.getAnalyzeResult()) {
 					break;
+				}
+				try {
+					Thread.sleep(500l);
+				} catch (InterruptedException e) {
+					logger.error(e.getMessage(), e);
 				}
 			}
 			if(null!=apiResult && apiResult.getAnalyzeResult()) {
@@ -365,6 +435,7 @@ public class ManualApiController {
 		result.getMsgs().add("add slbcluster success:" + success);
 		result.getMsgs().add("add slbcluster fail:" + fail);
 		result.getMsgs().add("add slbcluster fail slbclusterIds:[" + builder.toString() +"]");
+		logger.info(result.toString());
 		return result;
 	}
 	
