@@ -59,7 +59,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	@Value("${python.db.backup.checked.interval.time}")
 	private long DB_BACKUP_CHECKED_INTERVAL_TIME;
 	@Value("${python.db.backup.checked.term.time}")
-	private static String DB_BACKUP_CHECKED_TERM_TIME;
+	private String DB_BACKUP_CHECKED_TERM_TIME;
 	
 	@Value("${default.backup.ignore}")
 	private String DEFAULT_BACKUP_IGNORE;
@@ -576,7 +576,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		return backupCMD.invoke(ip, user, pwd);
 	}
 	
-	private static boolean isStopBackup() {
+	private boolean isStopBackup() {
 		Date realTime = new Date();
 		String date = CalendarUtil.getDateString(realTime, "yyyy-MM-dd");
 		StringBuffer termTime = new StringBuffer();
