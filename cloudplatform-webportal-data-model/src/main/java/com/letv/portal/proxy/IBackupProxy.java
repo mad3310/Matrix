@@ -44,14 +44,14 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 	 * @param params
 	 * @return
 	 */
-	public BackupDTO wholeBackup4Db(MclusterModel mcluster);
+	public BackupResultModel wholeBackup4Db(BackupResultModel backupRecord);
 	
 	/**
 	 * 增量备份
 	 * @param params
 	 * @return
 	 */
-	public BackupDTO incrBackup4Db(MclusterModel mcluster);
+	public BackupResultModel incrBackup4Db(BackupResultModel backupRecord);
 	
 	/**
 	 * 根据集群状态查询备份状态
@@ -59,5 +59,12 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 	 * @return
 	 */
 	public BackupResultModel getBackupStatusByID(long mclusterId);
+	
+	/**
+	 * 备份状态实时结果
+	 * @param backupRecord
+	 * @return
+	 */
+	public BackupResultModel getBackupResulFromService(BackupResultModel backupRecord);
 	
 }

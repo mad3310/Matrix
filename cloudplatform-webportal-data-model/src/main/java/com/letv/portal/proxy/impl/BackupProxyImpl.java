@@ -165,7 +165,9 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		if(null == container)
 			return null;
 		ApiResultObject ret = pythonService.checkBackup4Db(container.getIpAddr());
-		BackupResultModel result = analysisBackupResult(new BackupResultModel(), ret);
+		BackupResultModel backupResult = new BackupResultModel();
+		backupResult.setStartTime(new Date());
+		BackupResultModel result = analysisBackupResult(backupResult, ret);
 		return result;
 	}
 	
@@ -525,7 +527,9 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	}
 	
 	@Override
-	public BackupDTO wholeBackup4Db(MclusterModel mcluster) {
+	public BackupResultModel wholeBackup4Db(BackupResultModel backupRecord) {
+		
+		
 		BackupCMD cmd = new BackupCMD(){
 
 			@Override
@@ -535,13 +539,13 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			
 		};
 		
-		BackupDTO result = sendBackupCMD(mcluster, cmd);
+		BackupResultModel result = sendBackupCMD(backupRecord, cmd, BackupType.FULL);
 		
 		return result;
 	}
 
 	@Override
-	public BackupDTO incrBackup4Db(MclusterModel mcluster) {
+	public BackupResultModel incrBackup4Db(BackupResultModel backupRecord) {
 		
 		BackupCMD cmd = new BackupCMD(){
 
@@ -552,13 +556,13 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			
 		};
 		
-		BackupDTO result = sendBackupCMD(mcluster, cmd);
+		BackupResultModel result = sendBackupCMD(backupRecord, cmd, BackupType.INCR);
 		
 		return result;
 	}
 	
-	public BackupDTO sendBackupCMD(MclusterModel mcluster, BackupCMD backupCMD) {
-		long mclusterId = mcluster.getId();
+	public BackupResultModel sendBackupCMD(BackupResultModel backupRecord, BackupCMD backupCMD, BackupType backupType) {
+		long mclusterId = backupRecord.getMclusterId();
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("id", mclusterId);
 		List<MclusterModel> mclusters = mclusterService.selectValidMclustersByMap(params);
@@ -573,7 +577,42 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			return null;
 		String ip = container.getIpAddr();
 		
-		return backupCMD.invoke(ip, user, pwd);
+		long backupResultId = backupRecord.getId();
+		BackupResultModel originRecord = backupService.selectById(backupResultId);
+		
+		BackupResultModel serviceBackupRet = getBackupStatusByID(mclusterId);
+		BackupStatus checkStatus = serviceBackupRet.getStatus();
+		
+		// 如果服务器上备份正在进行，更新状态。否则，发送备份操作
+		if(BackupStatus.BUILDING == checkStatus) {
+			originRecord.setStatus(BackupStatus.BUILDING);
+		} else {
+			backupCMD.invoke(ip, user, pwd);
+			originRecord.setStartTime(new Date());
+			BackupStatus status = getBackupStatusByID(mclusterId).getStatus();
+			originRecord.setStatus(status);;
+		}
+		originRecord.setBackupType(backupType.name());
+		backupService.update(originRecord);
+		
+		return originRecord;
+	}
+	
+	@Override
+	public BackupResultModel getBackupResulFromService(BackupResultModel backupRecord) {
+		long mclusterId = backupRecord.getMclusterId();
+		long resultId = backupRecord.getId();
+		BackupResultModel checkResult = getBackupStatusByID(mclusterId);
+		BackupResultModel originRecord = backupService.selectById(resultId);
+		BackupStatus checkStatus = checkResult.getStatus();
+		originRecord.setStatus(checkResult.getStatus());
+		originRecord.setResultDetail(checkResult.getResultDetail());
+		
+		if(BackupStatus.SUCCESS == checkStatus) {
+			originRecord.setEndTime(new Date());
+		}
+		backupService.update(originRecord);
+		return originRecord;
 	}
 	
 	private boolean isStopBackup() {

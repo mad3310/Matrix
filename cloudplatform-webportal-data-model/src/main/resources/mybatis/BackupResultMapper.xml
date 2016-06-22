@@ -81,7 +81,7 @@
 	<!-- 根据id，修改记录 -->
 	<update id="update" parameterType="Db">
 		update WEBPORTAL_BACKUP_RESULT set
-		ID=#{id},MCLUSTER_ID=#{mclusterId},HCLUSTER_ID=#{hclusterId},DB_ID=#{dbId},BACKUP_IP=#{backupIp},START_TIME=#{startTime},END_TIME=#{endTime},STATUS=#{status},RESULT_DETAIL=#{resultDetail},DELETED=#{deleted},CREATE_TIME=#{createTime},CREATE_USER=#{createUser},UPDATE_TIME=#{updateTime},UPDATE_USER=#{updateUser}
+		ID=#{id},MCLUSTER_ID=#{mclusterId},HCLUSTER_ID=#{hclusterId},DB_ID=#{dbId},BACKUP_IP=#{backupIp},START_TIME=#{startTime},END_TIME=#{endTime},STATUS=#{status},RESULT_DETAIL=#{resultDetail},DELETED=#{deleted},CREATE_TIME=#{createTime},CREATE_USER=#{createUser},UPDATE_TIME=#{updateTime},UPDATE_USER=#{updateUser},BACKUP_TYPE=#{backupType}
 		where ID=#{id}
 	</update>
 
@@ -295,4 +295,11 @@
 		order by r.START_TIME desc limit 1
 	</select>
 	
+	<!-- 根据id查询-->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" /> 
+		from WEBPORTAL_BACKUP_RESULT r
+		where r.ID = #{id}
+	</select>
 </mapper>   

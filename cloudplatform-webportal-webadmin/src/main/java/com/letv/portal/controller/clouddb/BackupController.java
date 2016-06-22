@@ -47,8 +47,8 @@ public class BackupController {
 	}
 	 
 	@RequestMapping(value="/full", method=RequestMethod.GET)   
-	public @ResponseBody ResultObject wholeBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
-		BackupDTO dto = backupProxy.wholeBackup4Db(mcluster);
+	public @ResponseBody ResultObject wholeBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {
+		BackupResultModel dto = backupProxy.wholeBackup4Db(mcluster);
 		if(null == dto) {
 			obj.setResult(0);
 			obj.addMsg("备份请求异常, 服务器状态不符合备份要求！");
@@ -59,8 +59,8 @@ public class BackupController {
 	}
 	
 	@RequestMapping(value="/incr", method=RequestMethod.GET)   
-	public @ResponseBody ResultObject incrBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
-		BackupDTO dto = backupProxy.incrBackup4Db(mcluster);
+	public @ResponseBody ResultObject incrBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {
+		BackupResultModel dto = backupProxy.incrBackup4Db(mcluster);
 		if(null == dto) {
 			obj.setResult(0);
 			obj.addMsg("备份请求异常, 服务器状态不符合备份要求！");
@@ -71,8 +71,8 @@ public class BackupController {
 	}
 	
 	@RequestMapping(value="/check", method=RequestMethod.GET)   
-	public @ResponseBody ResultObject getBackup4Db(HttpServletRequest request, MclusterModel mcluster, ResultObject obj) {
-		BackupResultModel result = backupProxy.getBackupStatusByID(mcluster.getId());
+	public @ResponseBody ResultObject getBackup4Db(HttpServletRequest request, BackupResultModel backupRecord, ResultObject obj) {
+		BackupResultModel result = backupProxy.getBackupResulFromService(backupRecord);
 		if(null == result) {
 			obj.setResult(0);
 			obj.addMsg("服务器请求异常！");
