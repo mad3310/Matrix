@@ -3,6 +3,7 @@ package com.letv.portal.service.impl;
 
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -113,25 +114,30 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		String[] indexs = getIndexs(monitorIndexModel.getDetailTable().toLowerCase(), start, end);
 		AndFilterBuilder filterBuilder = FilterBuilders.andFilter(
 				FilterBuilders.termFilter("ip", hostModel.getHostIp()),
-				FilterBuilders.rangeFilter("monitorDate").from(start).to(end));
-		FieldSortBuilder sortBuilder = SortBuilders.fieldSort("monitorDate").order(SortOrder.ASC);
+				FilterBuilders.rangeFilter("timestamp").from(start).to(end));
+		FieldSortBuilder sortBuilder = SortBuilders.fieldSort("timestamp").order(SortOrder.ASC);
 		
 		SearchHits searchHits = ESUtil.getFilterResult(indexs, filterBuilder, sortBuilder, 100000);
 
 		String[] detailNames =  monitorIndexModel.getMonitorPoint().split(",");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 		for (String s : detailNames) {
 			MonitorViewYModel ydata = new MonitorViewYModel();
 			List<List<Object>> datas = new ArrayList<List<Object>>();
-			for (SearchHit hit : searchHits.getHits()) {
-				Map<String, Object> data = hit.getSource();
-				if(data.containsKey(s)) {
-					List<Object> point = new ArrayList<Object>();
-					point.add(data.get("MonitorDate"));
-					point.add(data.get(s));
-					datas.add(point);
+			try {
+				for (SearchHit hit : searchHits.getHits()) {
+					Map<String, Object> data = hit.getSource();
+					if(data.containsKey(s)) {
+						List<Object> point = new ArrayList<Object>();
+						point.add(sdf.parse((String)data.get("timestamp")));
+						point.add(data.get(s));
+						datas.add(point);
+					}
 				}
+			} catch (ParseException e) {
+				logger.error(e.getMessage(), e);
 			}
-			
+
 			ydata.setName(hostModel.getHostIp() +":"+s);
 			ydata.setData(datas);
 			ydatas.add(ydata);

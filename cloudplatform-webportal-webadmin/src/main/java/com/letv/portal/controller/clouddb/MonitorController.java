@@ -1,17 +1,11 @@
 package com.letv.portal.controller.clouddb;
 
-import com.letv.common.result.ResultObject;
-import com.letv.common.util.HttpUtil;
-import com.letv.common.util.StringUtil;
-import com.letv.portal.model.monitor.ClusterModel;
-import com.letv.portal.model.monitor.NodeModel;
-import com.letv.portal.proxy.IContainerProxy;
-import com.letv.portal.proxy.IMonitorProxy;
-import com.letv.portal.python.service.IBuildTaskService;
-import com.letv.portal.service.IContainerService;
-import com.letv.portal.service.IMonitorIndexService;
-import com.letv.portal.service.IMonitorService;
-import com.letv.portal.service.adminoplog.ClassAoLog;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,10 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import com.letv.common.result.ResultObject;
+import com.letv.common.util.HttpUtil;
+import com.letv.common.util.StringUtil;
+import com.letv.portal.model.monitor.ClusterModel;
+import com.letv.portal.model.monitor.NodeModel;
+import com.letv.portal.proxy.IContainerProxy;
+import com.letv.portal.python.service.IBuildTaskService;
+import com.letv.portal.service.IContainerService;
+import com.letv.portal.service.IMonitorIndexService;
+import com.letv.portal.service.IMonitorService;
+import com.letv.portal.service.adminoplog.ClassAoLog;
 /**
  * Program Name: MonitorController <br>
  * Description:  监控<br>
@@ -126,19 +127,6 @@ public class MonitorController {
 	@RequestMapping(value="/{mclusterId}/{chartId}/{strategy}",method=RequestMethod.GET)
 	public @ResponseBody ResultObject mclusterMonitorCharts(@PathVariable Long mclusterId,@PathVariable Long chartId,@PathVariable Integer strategy,ResultObject result) {
 		result.setData(this.monitorService.getMonitorViewData(mclusterId,chartId,strategy));
-		return result;
-	}
-	/**
-	 * 从es取出物理机磁盘使用量示例
-	 * @param hostId
-	 * @param chartId
-	 * @param strategy
-	 * @param result
-	 * @return
-	 */
-	@RequestMapping(value="/{hostId}/{chartId}/{strategy}",method=RequestMethod.GET)
-	public @ResponseBody ResultObject test(@PathVariable Long hostId, @PathVariable Long chartId, @PathVariable Integer strategy, ResultObject result) {
-		result.setData(this.monitorService.getHostDiskMonitorData(hostId, chartId, strategy));
 		return result;
 	}
 	@RequestMapping(value="/topN/{hclusterId}/{chartId}/{monitorName}/{strategy}/{topN}",method=RequestMethod.GET)
