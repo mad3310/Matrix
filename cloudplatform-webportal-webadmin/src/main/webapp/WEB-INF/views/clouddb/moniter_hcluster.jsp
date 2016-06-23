@@ -132,7 +132,7 @@
 <!-- </script> -->
 
 <%-- <script src="${ctx}/static/scripts/highcharts/themes/dark-blue.js"></script> --%>
-<script src="${ctx}/static/scripts/pagejs/moniter_icon.js"></script>
+<script src="${ctx}/static/scripts/pagejs/moniter_hcluster.js"></script>
 <script src="${ctx}/static/ace/js/select2.min.js"></script>
 
 <script type="text/javascript">

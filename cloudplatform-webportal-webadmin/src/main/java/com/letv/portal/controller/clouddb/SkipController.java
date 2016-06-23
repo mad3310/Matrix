@@ -65,9 +65,9 @@ public class SkipController {
 		mav.setViewName("/clouddb/mcluster_detail");
 		return mav;
 	}
-	@RequestMapping(value ="/moniter/icon",method=RequestMethod.GET)
+	@RequestMapping(value ="/moniter/hcluster",method=RequestMethod.GET)
 	public ModelAndView toMoniterIcon(ModelAndView mav,HttpServletRequest request){
-		mav.setViewName("/clouddb/moniter_icon");
+		mav.setViewName("/clouddb/moniter_hcluster");
 		return mav;
 	}
 	/**Methods Name: toList <br>
