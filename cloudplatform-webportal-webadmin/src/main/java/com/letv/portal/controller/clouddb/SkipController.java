@@ -65,6 +65,11 @@ public class SkipController {
 		mav.setViewName("/clouddb/mcluster_detail");
 		return mav;
 	}
+	@RequestMapping(value ="/moniter/hcluster",method=RequestMethod.GET)
+	public ModelAndView toMoniterIcon(ModelAndView mav,HttpServletRequest request){
+		mav.setViewName("/clouddb/moniter_hcluster");
+		return mav;
+	}
 	/**Methods Name: toList <br>
 	 * Description: db页面跳转<br>
 	 * @author name: wujun
