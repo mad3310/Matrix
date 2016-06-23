@@ -5,6 +5,9 @@
 var currentPage = 1; //第几页 
 var recordsPerPage = 15; //每页显示条数
 var currentSelectedLineDbName = 1;
+var timer = null;
+var backup_list = [];
+
 flag = false;
 $(function(){
 	//初始化
@@ -74,8 +77,8 @@ $(".input-group input").each(function(){
 function queryByPage(currentPage, recordsPerPage) {
 	$("#backupTbody tr").remove();
 	if(flag == true){
-		var startTime = $("#startTime").val();
-		var endTime = $("#endTime").val();
+		var startTime = '';
+		var endTime = '';
 		var mclusterName = $("#mclusterName").val();
 		var dbName = $("#dbName").val();
 		
@@ -101,6 +104,8 @@ function queryByPage(currentPage, recordsPerPage) {
 			var $backupTbody = $("#backupTbody");
 			var totalPages = data.data.totalPages;
 			var array = data.data.data;
+			backup_list = array;
+			
 			if(array.length == 0){
 				$("#noData").removeClass("hidden");
 			}else{
@@ -120,32 +125,50 @@ function queryByPage(currentPage, recordsPerPage) {
 		                var td2 = $("<td>"
 		                		+ "<a class=\"link\" class=\"danger\" href=\"/audit/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
 		                		+"</td>");
-		                var td3 = $("<td class='hidden-480'>"
-		                        + date('Y-m-d H:i:s',array[i].startTime)
-		                        + "</td>");
-		                var td4 = $("<td class='hidden-480'>"
-	                            + date('Y-m-d H:i:s',array[i].endTime)
-		                        + "</td>");
 		                if(array[i].status == 'FAILD'){
-		                	var td5 = $("<td> <a>"
+		                	var td5 = $("<td class='status'> <a>"
 								+ translateStatus(array[i].status)
 								+ "</a></td>");
 						}else if(array[i].status == 'BUILDING'){
-							var td5 = $("<td>"
+							var td5 = $("<td class='status'>"
 									+ "<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
 									+ "<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"
 									+ translateStatus(array[i].status)
 									+ "</a>"
 									+ "</td>");
 						}else{
-							var td5 = $("<td> <a>"
+							var td5 = $("<td class='status'> <a>"
 									+ translateStatus(array[i].status)
 									+ "</a></td>");
 						}
 		                
-		                var td6 = $("<td>"
-		                        + array[i].resultDetail
-		                        + "</td>");
+//		                var allBackUpHtml='',addBackUpHtml=''
+//		                	
+//						var allBackUpOs=containerClusterOs(array[i].status,"rds","backup");
+//						var addBackUpOs=containerClusterOs(array[i].status,"rds","backup");
+//						allBackUpHtml=allBackUpOs==0?allBackUpHtml:containerOsHtml("rds","start");
+//		                addBackUpHtml=addBackUpOs==0?addBackUpHtml:containerOsHtml("rds","start");
+		                
+//		                var td6 = "<td data-status='"+array[i].status+"'>"
+//						+"<div class='hidden-sm hidden-xs  action-buttons'>"
+//						+allBackUpHtml+addBackUpHtml
+//						+"</div>"
+//						+'<div class="hidden-md hidden-lg">'
+//						+'<div class="inline pos-rel">'
+//						+'<button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown" data-position="auto">'
+//							+'<i class="ace-icon fa fa-caret-down icon-only bigger-120"></i>'
+//						+'</button>'
+//						+'<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">'
+//							+'<li>'+allBackUpHtml+'</li>'
+//							+'<li>'+addBackUpHtml+'</li>'
+//						+'</ul></div></div>'
+//					+ "</td>";
+		                var td6 = $("<td> " +
+		                		"<a href='javascript:void(0);' class='backup-add'>增量备份</a>&nbsp;&nbsp"
+								+ "<a href='javascript:void(0);' class='backup-all'>全量备份</a>"
+								+ "</td>");
+		                
+		                
 		                if(array[i].status == 'FAILD'){
 							var tr = $("<tr class=\"data-tr default-danger\"></tr>");
 						}else if(array[i].status == 'SUCCESS'){
@@ -153,7 +176,8 @@ function queryByPage(currentPage, recordsPerPage) {
 						}else{
 							var tr = $("<tr class='data-tr'></tr>");
 						}
-		                tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6);
+		                tr.attr("mclusterId",array[i].mclusterId);
+		                tr.append(td1).append(td2).append(td5).append(td6);
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 
@@ -182,6 +206,106 @@ function queryByPage(currentPage, recordsPerPage) {
 		}
 	});
    }
+
+
+function backupInit(){
+	var timer = setInterval (function(){
+		if(backup_list.length>0){
+			UpdateBackupState();
+		}
+	},15000);
+	
+	$("#backupTbody").delegate('.backup-add,.backup-all', 'click', function(){
+		var mclusterId = $(this).parents("tr").attr("mclusterId");
+		var url = "";	
+		getState(mclusterId,function(state){
+			if(state=="BUILDING"){
+				warn("备份中",2000);
+			}else{
+				BackupFunc(mclusterId);
+			}
+		});		
+
+	});
+}
+
+
+function BackupFunc(id){
+	if($(this).hasClass(".backup-add")){
+		url = "/backup/incr?id="+id;
+	}else{
+		url = "/backup/full?id="+id;
+	}
+	$.ajax({ 
+		cache:false,
+		type : "get",
+		url :url,
+		dataType : "json",
+		contentType : "application/json; charset=utf-8",
+		success : function(data) {
+			if(!data.result){
+				warn("获取数据失败",2000);
+			}else{
+				UpdateBackupStateById(id, "BUILDING");
+			}
+		}
+	});
+}
+
+
+function UpdateBackupState(){	
+	backup_list.forEach(function(item,index){
+		if(item.status=="BUILDING"){
+			var mclusterId = item["mclusterId"];
+			getState(mclusterId, function(state){
+				//console.log(mclusterId+"--------"+state);
+				UpdateBackupStateById(mclusterId, state);
+			});
+		}
+	});
+}
+
+
+function UpdateBackupStateById(id,state){
+			
+	var objTr = $("#backupTbody").find("tr[mclusterId='"+id+"']");
+    if(state == 'FAILD'){
+    	objTr.attr("class","data-tr default-danger");
+	}else if(state == 'SUCCESS'){
+		objTr.attr("class","data-tr success");
+	}else{
+		objTr.attr("class","data-tr");
+	}
+    	
+	var obj = objTr.find(".status a");
+	obj.text(translateStatus(state));
+	backup_list.forEach(function(item){
+		if(item.mclusterId==id){
+			item.status = state;
+		}
+	});
+}
+
+
+function getState(id, callback){
+	var state = "";
+	$.ajax({ 
+		cache:false,
+		type : "get",
+		url :"/backup/check?id="+id,
+		dataType : "json",
+		contentType : "application/json; charset=utf-8",
+		success : function(data) {
+			if(data.result==0){
+				state = "ABNORMAL";
+			}else{
+				state = data.data.status;
+			}
+			callback(state);
+		}
+	});
+}
+
 
 function pageControl() {
 	// 首页
@@ -266,4 +390,5 @@ function page_init(){
 	searchAction();
 	pageControl();
 	InitSearchClearButton();
+	backupInit();
 }
