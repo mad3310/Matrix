@@ -6,20 +6,20 @@ function refreshChartForSelect(){
 		$('.queryOption').addClass('collapsed').find('.widget-body').attr('style', 'dispaly:none;');
 		$('.queryOption').find('.widget-header').find('i').attr('class', 'ace-icon fa fa-chevron-down');
 		var qryStr='';
-		var qryStr1=$('.monitorHclusterOption:last').val();var qryStr2=$('.mclusterOption:last').val();var qryStr3=$('#queryTime').val();var qryStr4=$('#monitorPointOption').val();
-		if(qryStr1){
-			var temp=$('.monitorHclusterOption:last option[value="'+qryStr1+'"]').text();
+		var qryHcluster=$('.monitorHclusterOption:last').val();var qryMcluster=$('.mclusterOption:last').val();var qryTime=$('#queryTime').val();var qryPoint=$('#monitorPointOption').val();
+		if(qryHcluster){
+			var temp=$('.monitorHclusterOption:last option[value="'+qryHcluster+'"]').text();
 			qryStr+='<span class="label label-success arrowed">'+temp+'</span>&nbsp;'
 		}
-		if(qryStr2){
-			var temp=$('.mclusterOption:last option[value="'+qryStr2+'"]').text();
+		if(qryMcluster){
+			var temp=$('.mclusterOption:last option[value="'+qryMcluster+'"]').text();
 			qryStr+='<span class="label label-warning arrowed">'+temp+'</span>&nbsp;'
 		}
-		if(qryStr3){
+		if(qryTime){
 			var temp=$('#queryTime').find("option:selected").text();
 			qryStr+='<span class="label label-purple arrowed">'+temp+'</span>&nbsp;'
 		}
-		if(qryStr4){
+		if(qryPoint){
 			var obj=$('#monitorPointOption').val()
 			for(i in obj){
 				var index=obj[i];
@@ -99,8 +99,9 @@ function queryHcluster(){
 function queryMcluster(){
 	//getLoading();
 	var hclusterId = $('.monitorHclusterOption:visible').val();
-	$(".mclusterOption").empty();
-	$(".mclusterOption").append("<option></option>");
+	var mclusterOptionObj = $(".mclusterOption");
+	mclusterOptionObj.empty();
+	mclusterOptionObj.append("<option></option>");
 	$.ajax({
 		cache:false,
 		type:"get",		
@@ -157,100 +158,6 @@ function initCharts(data){
 	draggable(viewDemo);
 }
 
-function initChart(obj,title,ytitle,unit){
-    $(obj).highcharts({
-        chart: {
-            // type: 'areaspline',
-            type:'line',
-            zoomType: 'x',
-            spacingRight: 20
-        },
-        colors:['#ff66cc','#66ff66','#66ffff','#FFBB33','#C9C','#090','#330000','#CCCC00','#66cc99','#ccff66','#996666','#66cc33'],
-        title: {
-            text: title
-        },
-        legend :{
-            borderColor: '#000000',
-            backgroundColor: '#f9f9f9',
-            symbolRadius: '2px',
-            borderRadius: '5px',
-            itemHoverStyle: {
-                Color: '#000000'
-            }
-        },
-        xAxis: {
-            type: 'datetime',
-            tickPixelInterval:150,
-            labels:{
-                rotation:0,
-                align:'right'
-            },
-            dateTimeLabelFormats:{
-                millisecond: '%H:%M:%S.%L',
-                second: '%H:%M:%S',
-                minute: '%H:%M',
-                hour: '%H:%M',
-                day: '%e. %b',
-                week: '%e. %b',
-                month: '%b \'%y',
-                year: '%Y'
-            }
-        },
-        scrollbar:{
-	        enabled:true
-	    },
-        plotOptions: {
-        	lineWidth: 0.1,  
-            fillOpacity: 0.1,
-            // areaspline: {
-            //     marker: {
-            //         enabled: false,
-            //         symbol: 'circle',
-            //         radius: 2,
-            //         states: {
-            //             hover: {
-            //                 enabled: true
-            //             }
-            //         }
-            //     }
-            // },
-            line: {
-                marker: {
-                    enabled: false,
-                    states: {
-                        hover: {
-                            enabled: true
-                        }
-                    }
-                }
-            },
-            series:{
-            	// lineWidth: 0.5,
-            	lineWidth:2,  
-                fillOpacity: 0.5,
-                states:{
-                    hover:{
-                        lineWidthPlus:0
-                    }
-            	}
-        	}
-        },
-        credits:{
-            enabled: false
-        },
-        yAxis: {
-            title: {
-                text: ytitle
-            }
-        },
-        tooltip: {
-            valueSuffix: unit,
-            shared: true,
-            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}B/S</b><br/>'
-        }
-    });
-
-} 
 
 function setChartData(indexId,chart){
 	var mclusterId= $('.mclusterOption').val();

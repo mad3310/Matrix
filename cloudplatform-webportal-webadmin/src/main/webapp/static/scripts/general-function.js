@@ -206,6 +206,102 @@ var Status={
 			}
 };
 
+function initChart(obj,title,ytitle,unit){
+
+    $(obj).highcharts({
+        chart: {
+            // type: 'areaspline',
+            type:'line',
+            zoomType: 'x',
+            spacingRight: 20
+        },
+        colors:['#ff66cc','#66ff66','#66ffff','#FFBB33','#C9C','#090','#330000','#CCCC00','#66cc99','#ccff66','#996666','#66cc33'],
+        title: {
+            text: title
+        },
+        legend :{
+            borderColor: '#000000',
+            backgroundColor: '#f9f9f9',
+            symbolRadius: '2px',
+            borderRadius: '5px',
+            itemHoverStyle: {
+                Color: '#000000'
+            }
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval:150,
+            labels:{
+                rotation:0,
+                align:'right'
+            },
+            dateTimeLabelFormats:{
+                millisecond: '%H:%M:%S.%L',
+                second: '%H:%M:%S',
+                minute: '%H:%M',
+                hour: '%H:%M',
+                day: '%e. %b',
+                week: '%e. %b',
+                month: '%b \'%y',
+                year: '%Y'
+            }
+        },
+        scrollbar:{
+	        enabled:true
+	    },
+        plotOptions: {
+        	lineWidth: 0.1,  
+            fillOpacity: 0.1,
+            // areaspline: {
+            //     marker: {
+            //         enabled: false,
+            //         symbol: 'circle',
+            //         radius: 2,
+            //         states: {
+            //             hover: {
+            //                 enabled: true
+            //             }
+            //         }
+            //     }
+            // },
+            line: {
+                marker: {
+                    enabled: false,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            },
+            series:{
+            	// lineWidth: 0.5,
+            	lineWidth:2,  
+                fillOpacity: 0.5,
+                states:{
+                    hover:{
+                        lineWidthPlus:0
+                    }
+            	}
+        	}
+        },
+        credits:{
+            enabled: false
+        },
+        yAxis: {
+            title: {
+                text: ytitle
+            }
+        },
+        tooltip: {
+            valueSuffix: unit,
+            shared: true,
+            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}B/S</b><br/>'
+        }
+    });
+
+} 
+
 function translateStatus(status, resourceType) {
 	if(resourceType){
 		if(Status[resourceType] && Status[resourceType][status]){
