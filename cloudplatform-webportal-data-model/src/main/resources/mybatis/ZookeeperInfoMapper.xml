@@ -161,7 +161,7 @@
 			<include refid="Base_Column_List" /> 
 			from WEBPORTAL_ZOOKEEPER_INFO zk
 			where STATUS = 'AVAILABLE' and HCLUSTER_ID = #{hclusterId} 
-			order by zk.USED limit #{number}
+			order by zk.USED,zk.NAME limit #{number}
 	</select>
 	
 	

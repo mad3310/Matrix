@@ -62,4 +62,9 @@ public interface IZabbixPushService{
 	 * @author name: wujun
 	 */
 	public String receviceZabbixInfo(ZabbixPushModel zabbixPushModel)throws Exception;
+	
+	/**
+	 * 根据container名称获取zabbix推送的hostId
+	 */
+	public List<String> getZabbixHostIdByContainerName(String containerName, String auth);
 }

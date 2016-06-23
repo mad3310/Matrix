@@ -386,5 +386,20 @@ public class ZabbixPushServiceImpl implements IZabbixPushService{
 	}
 
 	
+	@SuppressWarnings("unchecked")
+	public List<String> getZabbixHostIdByContainerName(String containerName, String auth){
+		List<String> hostIds = new ArrayList<String>();
+		String url = ZABBIX_POST_URL;	
+		String jsonString ="{\"jsonrpc\":\"2.0\",\"method\":\"host.get\",\"params\":{\"output\":\"extend\",\"filter\":{\"host\":\""+containerName+"\"}},\"auth\":\""+auth+"\",\"id\":1}"; 
+		String result = HttpClient.postObject(url, jsonString,null,null);
+		Map<Object, Object> ret = transResult(result);
+		List<Object> list = (List<Object>) ret.get("result");
+		for (Object object : list) {
+			Map<Object, Object> info = (Map<Object, Object>) object;
+			hostIds.add((String) info.get("hostid"));
+		}
+		return hostIds;
+	};
+	
 }
 
