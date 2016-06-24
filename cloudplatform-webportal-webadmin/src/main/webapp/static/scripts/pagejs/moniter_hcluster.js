@@ -181,7 +181,6 @@ function setChartData(indexId,chart){
 		 			chart.series[i].remove(false);
 	 			}
 		 		for(var i=0;i<ydata.length;i++){		
-		 			ydata[i].name = MapIopsName(ydata[i].name);
 		 			chart.addSeries(ydata[i],false);
 	 			}
 		 		chart.redraw();
@@ -190,16 +189,6 @@ function setChartData(indexId,chart){
 	}	
 }
 
-function MapIopsName(str){
-	var ar = str.split(":");
-	if(ar.length!=2)return str;
-	
-	if(ar[1]=="read_iops"){
-		return ar[0]+":每秒读操作次数";
-	}else if(ar[1]=="write_iops"){
-		return ar[0]+":每秒写操作次数";
-	}
-}
 
 function draggable(obj){
 	 $(obj).sortable({
