@@ -388,6 +388,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		}
 		if(result.contains("\"code\": 417") && result.contains("full backup")) {
 			backup.setStatus(BackupStatus.ABNORMAL);
+			backup.setResultDetail(result.substring(result.indexOf("\"errorDetail\": \"")+1, result.lastIndexOf("\"},")));
 			return backup;
 		}
 		backup.setStatus( BackupStatus.FAILD);
