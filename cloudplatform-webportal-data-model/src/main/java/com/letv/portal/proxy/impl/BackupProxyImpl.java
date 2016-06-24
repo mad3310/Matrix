@@ -593,7 +593,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			originRecord.setStatus(status);;
 		}
 		originRecord.setBackupType(backupType.name());
-		backupService.update(originRecord);
+		backupService.insert(originRecord);
 		
 		return originRecord;
 	}
