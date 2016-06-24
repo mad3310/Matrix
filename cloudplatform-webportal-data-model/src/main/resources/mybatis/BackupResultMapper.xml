@@ -20,6 +20,7 @@
 		<result column="CREATE_USER" property="createUser" />
 		<result column="UPDATE_TIME" property="updateTime" />
 		<result column="UPDATE_USER" property="updateUser" />
+		<result column="BACKUP_TYPE" property="backupType"/>
 		
 		<association property="mcluster" javaType="Mcluster">
 			<result column="MCLUSTER_NAME" property="mclusterName" />
@@ -34,7 +35,7 @@
 	</resultMap>
 	
 	<sql id="Base_Column_List">
-		r.ID,r.MCLUSTER_ID,r.HCLUSTER_ID,r.DB_ID,r.BACKUP_IP,r.START_TIME,r.END_TIME,r.STATUS,r.RESULT_DETAIL,r.DELETED,r.CREATE_TIME,r.CREATE_USER,r.UPDATE_TIME,r.UPDATE_USER
+		r.ID,r.MCLUSTER_ID,r.HCLUSTER_ID,r.DB_ID,r.BACKUP_IP,r.START_TIME,r.END_TIME,r.STATUS,r.RESULT_DETAIL,r.DELETED,r.CREATE_TIME,r.CREATE_USER,r.UPDATE_TIME,r.UPDATE_USER,r.BACKUP_TYPE
 	</sql>
 	
 	<!-- 查询条件 -->
@@ -72,15 +73,15 @@
 	<!-- 插入记录 -->
 	<insert id="insert" parameterType="BackupResult" useGeneratedKeys="true" keyProperty="id" >
 		insert into
-		WEBPORTAL_BACKUP_RESULT(MCLUSTER_ID,HCLUSTER_ID,DB_ID,BACKUP_IP,START_TIME,END_TIME,STATUS,RESULT_DETAIL,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER)
+		WEBPORTAL_BACKUP_RESULT(MCLUSTER_ID,HCLUSTER_ID,DB_ID,BACKUP_IP,START_TIME,END_TIME,STATUS,RESULT_DETAIL,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER,BACKUP_TYPE)
 		values(
-		#{mclusterId},#{hclusterId},#{dbId},#{backupIp},#{startTime},#{endTime},#{status},#{resultDetail},#{deleted},#{createTime},#{createUser},#{updateTime},#{updateUser})
+		#{mclusterId},#{hclusterId},#{dbId},#{backupIp},#{startTime},#{endTime},#{status},#{resultDetail},#{deleted},#{createTime},#{createUser},#{updateTime},#{updateUser},#{backupType})
 	</insert>
 
 	<!-- 根据id，修改记录 -->
 	<update id="update" parameterType="Db">
 		update WEBPORTAL_BACKUP_RESULT set
-		ID=#{id},MCLUSTER_ID=#{mclusterId},HCLUSTER_ID=#{hclusterId},DB_ID=#{dbId},BACKUP_IP=#{backupIp},START_TIME=#{startTime},END_TIME=#{endTime},STATUS=#{status},RESULT_DETAIL=#{resultDetail},DELETED=#{deleted},CREATE_TIME=#{createTime},CREATE_USER=#{createUser},UPDATE_TIME=#{updateTime},UPDATE_USER=#{updateUser}
+		ID=#{id},MCLUSTER_ID=#{mclusterId},HCLUSTER_ID=#{hclusterId},DB_ID=#{dbId},BACKUP_IP=#{backupIp},START_TIME=#{startTime},END_TIME=#{endTime},STATUS=#{status},RESULT_DETAIL=#{resultDetail},DELETED=#{deleted},CREATE_TIME=#{createTime},CREATE_USER=#{createUser},UPDATE_TIME=#{updateTime},UPDATE_USER=#{updateUser},BACKUP_TYPE=#{backupType}
 		where ID=#{id}
 	</update>
 
@@ -259,6 +260,7 @@
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
+		select * from(
 		select
 		<include refid="Base_Column_List" />
 		,m.MCLUSTER_NAME,d.DB_NAME
@@ -278,9 +280,26 @@
 		<if test="params != null and !params.isAsc == false">
       		 desc 
     	</if>
+    	) lasted GROUP BY DB_ID ORDER BY START_TIME DESC
     	<if test="page != null">
       		limit #{page.startRowPosition},#{page.recordsPerPage}
     	</if>
 	</select>
+	<!-- 查询最新的备份记录 -->
+	<select id="selectLastedBackupRecord" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from WEBPORTAL_BACKUP_RESULT r
+		<include refid="Example_Where_Clause" />
+		and r.BACKUP_TYPE!='none'
+		order by r.START_TIME desc limit 1
+	</select>
 	
+	<!-- 根据id查询-->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" /> 
+		from WEBPORTAL_BACKUP_RESULT r
+		where r.ID = #{id}
+	</select>
 </mapper>   

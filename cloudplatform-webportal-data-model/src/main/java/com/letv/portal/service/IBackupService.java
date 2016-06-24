@@ -24,5 +24,12 @@ public interface IBackupService extends IBaseService<BackupResultModel> {
 			Map<String, Object> params);
 
 	List<BackupResultModel> selectByMapGroupByMcluster(Map<String, Object> params);
-
+	
+	/**
+	 * 获得最新的备份记录，不包含未进行备份的记录
+	 * @param params               查询条件
+	 * @return BackupResultModel   备份记录
+	 */
+	public BackupResultModel selectLastedBackupRecord(Map<String, Object> params);
+	
 }

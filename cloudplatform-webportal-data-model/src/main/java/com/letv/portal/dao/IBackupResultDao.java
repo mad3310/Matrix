@@ -24,5 +24,7 @@ public interface IBackupResultDao extends IBaseDao<BackupResultModel> {
 			Map<String, Object> params);
 
 	List<BackupResultModel> selectByMapGroupByMcluster(Map<String, Object> params);
+
+	public BackupResultModel selectLastedBackupRecord(Map<String, Object> params);
 	  
 }
