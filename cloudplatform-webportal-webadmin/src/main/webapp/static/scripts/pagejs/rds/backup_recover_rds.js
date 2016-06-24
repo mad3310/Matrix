@@ -177,6 +177,7 @@ function queryByPage(currentPage, recordsPerPage) {
 							var tr = $("<tr class='data-tr'></tr>");
 						}
 		                tr.attr("mclusterId",array[i].mclusterId);
+		                tr.attr("id",array[i].id);
 		                tr.append(td1).append(td2).append(td5).append(td6);
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
@@ -217,12 +218,13 @@ function backupInit(){
 	
 	$("#backupTbody").delegate('.backup-add,.backup-all', 'click', function(){
 		var mclusterId = $(this).parents("tr").attr("mclusterId");
+		var id = $(this).parents("tr").attr("id");
 		var url = "";	
-		getState(mclusterId,function(state){
+		getState(id, mclusterId,function(state){
 			if(state=="BUILDING"){
 				warn("备份中",2000);
 			}else{
-				BackupFunc(mclusterId);
+				BackupFunc(id, mclusterId);
 			}
 		});		
 
@@ -230,11 +232,11 @@ function backupInit(){
 }
 
 
-function BackupFunc(id){
+function BackupFunc(id,mclusterId){
 	if($(this).hasClass(".backup-add")){
-		url = "/backup/incr?id="+id;
+		url = "/backup/incr?id="+id+"&mclusterId="+mclusterId;
 	}else{
-		url = "/backup/full?id="+id;
+		url = "/backup/full?id="+id+"&mclusterId="+mclusterId;
 	}
 	$.ajax({ 
 		cache:false,
@@ -257,9 +259,9 @@ function UpdateBackupState(){
 	backup_list.forEach(function(item,index){
 		if(item.status=="BUILDING"){
 			var mclusterId = item["mclusterId"];
-			getState(mclusterId, function(state){
-				//console.log(mclusterId+"--------"+state);
-				UpdateBackupStateById(mclusterId, state);
+			var id = item["id"];
+			getState(id,mclusterId, function(state){
+				UpdateBackupStateById(id, state);
 			});
 		}
 	});
@@ -268,7 +270,7 @@ function UpdateBackupState(){
 
 function UpdateBackupStateById(id,state){
 			
-	var objTr = $("#backupTbody").find("tr[mclusterId='"+id+"']");
+	var objTr = $("#backupTbody").find("tr[id='"+id+"']");
     if(state == 'FAILD'){
     	objTr.attr("class","data-tr default-danger");
 	}else if(state == 'SUCCESS'){
@@ -280,19 +282,19 @@ function UpdateBackupStateById(id,state){
 	var obj = objTr.find(".status a");
 	obj.text(translateStatus(state));
 	backup_list.forEach(function(item){
-		if(item.mclusterId==id){
+		if(item.id==id){
 			item.status = state;
 		}
 	});
 }
 
 
-function getState(id, callback){
+function getState(id, mclusterId, callback){
 	var state = "";
 	$.ajax({ 
 		cache:false,
 		type : "get",
-		url :"/backup/check?id="+id,
+		url :"/backup/check?id="+id+"&mclusterId="+mclusterId,
 		dataType : "json",
 		contentType : "application/json; charset=utf-8",
 		success : function(data) {
