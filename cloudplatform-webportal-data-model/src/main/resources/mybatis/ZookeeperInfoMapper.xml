@@ -135,6 +135,14 @@
 		</set>
 		where ID=#{id}
 	</update>
+	<update id="plusOneUsedByZookeeperId" parameterType="java.lang.Long">
+		update 
+			WEBPORTAL_ZOOKEEPER_INFO
+		set
+			USED = USED + 1
+		where 
+			ID=#{id}
+	</update>
 
 	<!-- 物理删除 -->
 	<update id="delete" parameterType="ZookeeperInfo">
@@ -161,7 +169,7 @@
 			<include refid="Base_Column_List" /> 
 			from WEBPORTAL_ZOOKEEPER_INFO zk
 			where STATUS = 'AVAILABLE' and HCLUSTER_ID = #{hclusterId} 
-			order by zk.USED limit #{number}
+			order by zk.USED,zk.NAME limit #{number}
 	</select>
 	
 	

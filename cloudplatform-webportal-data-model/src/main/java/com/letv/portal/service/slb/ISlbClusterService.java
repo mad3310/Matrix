@@ -17,4 +17,6 @@ public interface ISlbClusterService extends IBaseService<SlbCluster> {
 	public void asyncClusterCount(Map<String,Object> mm,HclusterModel hcluster);
 
 	public Integer selectValidClusterCount();
+	
+	public List<SlbCluster> selectValidCluster();
 }

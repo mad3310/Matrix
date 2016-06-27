@@ -147,8 +147,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		if(zks == null || zks.size()!=number)
 			throw new ValidateException("zk numbers not sufficient");
 		for (ZookeeperInfo zk : zks) {
-			zk.setUsed(zk.getUsed()+1);
-			this.zookeeperInfoService.updateBySelective(zk);
+			this.zookeeperInfoService.plusOneUsedByZookeeperId(zk.getId());
 		}
 		return zks;
 	}

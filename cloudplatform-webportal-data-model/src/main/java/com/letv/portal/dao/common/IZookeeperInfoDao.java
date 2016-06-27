@@ -12,4 +12,5 @@ public interface IZookeeperInfoDao extends IBaseDao<ZookeeperInfo> {
 
 	List<ZookeeperInfo> selectMinusedZkByHclusterId(Map<String,Object> params);
 
+	void plusOneUsedByZookeeperId(Long zookeeperId);
 }
