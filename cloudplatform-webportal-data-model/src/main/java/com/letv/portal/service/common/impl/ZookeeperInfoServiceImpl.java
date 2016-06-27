@@ -10,6 +10,7 @@ import com.letv.common.exception.ValidateException;
 import com.letv.portal.enumeration.ZookeeperStatus;
 import com.letv.portal.model.HclusterModel;
 import com.letv.portal.service.IHclusterService;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,5 +75,10 @@ public class ZookeeperInfoServiceImpl extends BaseServiceImpl<ZookeeperInfo> imp
 			zk.setUsed(0);
 			this.insert(zk);
 		}
+	}
+
+	@Override
+	public void plusOneUsedByZookeeperId(Long zookeeperId) {
+		this.zookeeperInfoDao.plusOneUsedByZookeeperId(zookeeperId);
 	}
 }
