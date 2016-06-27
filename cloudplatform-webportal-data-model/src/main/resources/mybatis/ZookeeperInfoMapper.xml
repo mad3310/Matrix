@@ -135,6 +135,14 @@
 		</set>
 		where ID=#{id}
 	</update>
+	<update id="plusOneUsedByZookeeperId" parameterType="java.lang.Long">
+		update 
+			WEBPORTAL_ZOOKEEPER_INFO
+		set
+			USED = USED + 1
+		where 
+			ID=#{id}
+	</update>
 
 	<!-- 物理删除 -->
 	<update id="delete" parameterType="ZookeeperInfo">
