@@ -161,12 +161,17 @@ function queryByPage(currentPage, recordsPerPage) {
 //						+'<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">'
 //							+'<li>'+allBackUpHtml+'</li>'
 //							+'<li>'+addBackUpHtml+'</li>'
-//						+'</ul></div></div>'
+//						+'</ul></div></div>'		                		       
 //					+ "</td>";
-		                var td6 = $("<td> " +
+		                var td6 = $("<td><a> " +
+		                		translateStatus(array[i].backupType)
+								+ "</a></td>");
+		                
+		                var td7 = $("<td> " +
 		                		"<a href='javascript:void(0);' class='backup-add'>增量备份</a>&nbsp;&nbsp"
 								+ "<a href='javascript:void(0);' class='backup-all'>全量备份</a>"
 								+ "</td>");
+		               
 		                
 		                
 		                if(array[i].status == 'FAILD'){
@@ -178,7 +183,7 @@ function queryByPage(currentPage, recordsPerPage) {
 						}
 		                tr.attr("mclusterId",array[i].mclusterId);
 		                tr.attr("id",array[i].id);
-		                tr.append(td1).append(td2).append(td5).append(td6);
+		                tr.append(td1).append(td2).append(td5).append(td6).append(td7);
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 

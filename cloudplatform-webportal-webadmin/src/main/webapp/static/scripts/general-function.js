@@ -302,6 +302,7 @@ function initChart(obj,title,ytitle,unit){
 
 } 
 
+
 function translateStatus(status, resourceType) {
 	if(resourceType){
 		if(Status[resourceType] && Status[resourceType][status]){
@@ -348,7 +349,13 @@ function translateStatus(status, resourceType) {
 		return "备份中...";
 	} else if (status == 'ABNORMAL') {
 		return "备份异常";
-	} else if (status == null) {
+	} else if (status == 'INCR') {
+		return "增量";
+	}else if (status == 'FULL') {
+		return "全量";
+	}else if (status == 'NONE') {
+		return "异常";
+	}else if (status == null) {
 		return "未知";
 	}
 }

@@ -68,7 +68,8 @@
 									<td style="width: 20%" class="hidden-480">RDS集群</td>
 									<td style="width: 20%">数据库名称</td>
 									<td style="width: 20%">状态</td>
-									<td style="width: 40%">详情</td>
+									<td style="width: 20%">类型</td>
+									<td style="width: 40%">操作</td>
 								</tr> 
 							</thead>
 							<tbody id="backupTbody">

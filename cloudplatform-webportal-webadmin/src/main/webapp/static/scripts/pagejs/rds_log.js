@@ -92,7 +92,7 @@ function queryByPage(currentPage, recordsPerPage) {
 	getLoading();
 	$.ajax({ 
 		type : "get",
-		url : "/backup?" + "&&startTime=" + startTime + "&&endTime=" + endTime + "&&currentPage=" + currentPage + "&&recordsPerPage=" + recordsPerPage + "&&dbName=" + dbName +"&&mclusterName=" + mclusterName +'&&status=' + backupStatus,
+		url : "/backup/latestLog/list?" + "&&startTime=" + startTime + "&&endTime=" + endTime + "&&currentPage=" + currentPage + "&&recordsPerPage=" + recordsPerPage + "&&dbName=" + dbName +"&&mclusterName=" + mclusterName +'&&status=' + backupStatus,
 		dataType : "json", /*这句可用可不用，没有影响*/
 		contentType : "application/json; charset=utf-8",
 		success : function(data) {
@@ -143,7 +143,11 @@ function queryByPage(currentPage, recordsPerPage) {
 									+ "</a></td>");
 						}
 		                
-		                var td6 = $("<td>"
+		                var td6 = $("<td><a> " +
+		                		translateStatus(array[i].backupType)
+								+ "</a></td>");
+		                
+		                var td7 = $("<td>"
 		                        + array[i].resultDetail
 		                        + "</td>");
 		                if(array[i].status == 'FAILD'){
@@ -153,7 +157,7 @@ function queryByPage(currentPage, recordsPerPage) {
 						}else{
 							var tr = $("<tr class='data-tr'></tr>");
 						}
-		                tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6);
+		                tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7);
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 
