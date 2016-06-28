@@ -96,7 +96,8 @@
 									<td>数据库名称</td>
 									<td class="hidden-480">开始时间</td>
 									<td class="hidden-480">结束时间</td>
-									<td>状态</td>
+									<td style="width: 7%">状态</td>
+									<td style="width: 5%">类型</td>
 									<td>详情</td>
 								</tr> 
 							</thead>
