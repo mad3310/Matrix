@@ -118,7 +118,7 @@ function queryByPage(currentPage, recordsPerPage) {
 		                		+ "<a class=\"link\" href=\"/detail/mcluster/" + array[i].mclusterId +"\">"+FilterNull(mclusterName)+"</a>"
 		                		+"</a></td>");
 		                var td2 = $("<td>"
-		                		+ "<a class=\"link\" class=\"danger\" href=\"/audit/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
+		                		+ "<a class=\"link\" class=\"danger\" href=\"/detail/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
 		                		+"</td>");
 		                var td3 = $("<td class='hidden-480'>"
 		                        + date('Y-m-d H:i:s',array[i].startTime)

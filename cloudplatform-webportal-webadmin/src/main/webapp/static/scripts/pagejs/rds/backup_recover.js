@@ -123,7 +123,7 @@ function queryByPage(currentPage, recordsPerPage) {
 		                		+ "<a class=\"link\" href=\"/detail/mcluster/" + array[i].mclusterId +"\">"+FilterNull(mclusterName)+"</a>"
 		                		+"</a></td>");
 		                var td2 = $("<td>"
-		                		+ "<a class=\"link\" class=\"danger\" href=\"/audit/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
+		                		+ "<a class=\"link\" class=\"danger\" href=\"/detail/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
 		                		+"</td>");
 		                if(array[i].status == 'FAILD'){
 		                	var td5 = $("<td class='status'> <a>"
@@ -217,14 +217,15 @@ function backupInit(){
 	},15000);
 	
 	$("#backupTbody").delegate('.backup-add,.backup-all', 'click', function(){
+
 		var mclusterId = $(this).parents("tr").attr("mclusterId");
 		var id = $(this).parents("tr").attr("id");
-		var url = "";	
+		var This = this;
 		getState(id, mclusterId,function(state){
 			if(state=="BUILDING"){
 				warn("备份中",2000);
 			}else{
-				BackupFunc(id, mclusterId);
+				BackupFunc(id, mclusterId,$(This));
 			}
 		});		
 
@@ -232,12 +233,14 @@ function backupInit(){
 }
 
 
-function BackupFunc(id,mclusterId){
-	if($(this).hasClass(".backup-add")){
+function BackupFunc(id,mclusterId,btnObj){
+	var url = "";
+	if(btnObj.hasClass("backup-add")){
 		url = "/backup/incr?id="+id+"&mclusterId="+mclusterId;
 	}else{
 		url = "/backup/full?id="+id+"&mclusterId="+mclusterId;
 	}
+
 	$.ajax({ 
 		cache:false,
 		type : "get",
