@@ -114,40 +114,41 @@ function queryByPage(currentPage, recordsPerPage) {
 		        		if(array[i].db) {
 		        			dbName = array[i].db.dbName;
 		        		}
-		                var td1 = "<td class='hidden-480'><a>"
+		        		
+		                var rdsCluster = "<td class='hidden-480'><a>"
 		                		+ "<a class=\"link\" href=\"/detail/mcluster/" + array[i].mclusterId +"\">"+FilterNull(mclusterName)+"</a>"
 		                		+"</a></td>";
-		                var td2 = "<td>"
+		                var dataBaseName = "<td>"
 		                		+ "<a class=\"link\" class=\"danger\" href=\"/detail/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
 		                		+"</td>"
-		                var td3 = "<td class='hidden-480'>"
+		                var startTime = "<td class='hidden-480'>"
 		                        + date('Y-m-d H:i:s',array[i].startTime)
 		                        + "</td>";
-		                var td4 = "<td class='hidden-480'>"
+		                var endTime = "<td class='hidden-480'>"
 	                            + date('Y-m-d H:i:s',array[i].endTime)
 		                        + "</td>";
 		                if(array[i].status == 'FAILD'){
-		                	var td5 = "<td> <a>"
+		                	var status = "<td> <a>"
 								+ translateStatus(array[i].status)
 								+ "</a></td>";
 						}else if(array[i].status == 'BUILDING'){
-							var td5 = "<td>"
+							var status = "<td>"
 									+ "<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
 									+ "<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"
 									+ translateStatus(array[i].status)
 									+ "</a>"
 									+ "</td>";
 						}else{
-							var td5 = "<td> <a>"
+							var status = "<td> <a>"
 									+ translateStatus(array[i].status)
 									+ "</a></td>";
 						}
 		                
-		                var td6 = "<td><a> " +
+		                var type = "<td><a> " +
 		                		translateStatus(array[i].backupType)
 								+ "</a></td>";
 		                
-		                var td7 = "<td>"
+		                var info = "<td>"
 		                        + array[i].resultDetail
 		                        + "</td>";
 		                if(array[i].status == 'FAILD'){
@@ -157,7 +158,7 @@ function queryByPage(currentPage, recordsPerPage) {
 						}else{
 							var tr = $("<tr class='data-tr'></tr>");
 						}
-		                tr.append($(td1 + td2 + td3 + td4 + td5 + td6 + td7));
+		                tr.append($(rdsCluster + dataBaseName + startTime + endTime + status + type + info));
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 

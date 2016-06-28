@@ -119,25 +119,25 @@ function queryByPage(currentPage, recordsPerPage) {
 		        		if(array[i].db) {
 		        			dbName = array[i].db.dbName;
 		        		}
-		                var td1 = "<td class='hidden-480'><a>"
+		                var rdsCluster = "<td class='hidden-480'><a>"
 		                		+ "<a class=\"link\" href=\"/detail/mcluster/" + array[i].mclusterId +"\">"+FilterNull(mclusterName)+"</a>"
 		                		+"</a></td>";
-		                var td2 = "<td>"
+		                var dataBaseName = "<td>"
 		                		+ "<a class=\"link\" class=\"danger\" href=\"/detail/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
 		                		+"</td>";
 		                if(array[i].status == 'FAILD'){
-		                	var td5 = "<td class='status'> <a>"
+		                	var status = "<td class='status'> <a>"
 								+ translateStatus(array[i].status)
 								+ "</a></td>";
 						}else if(array[i].status == 'BUILDING'){
-							var td5 = "<td class='status'>"
+							var status = "<td class='status'>"
 									+ "<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
 									+ "<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"
 									+ translateStatus(array[i].status)
 									+ "</a>"
 									+ "</td>";
 						}else{
-							var td5 = "<td class='status'> <a>"
+							var status = "<td class='status'> <a>"
 									+ translateStatus(array[i].status)
 									+ "</a></td>";
 						}
@@ -163,11 +163,11 @@ function queryByPage(currentPage, recordsPerPage) {
 //							+'<li>'+addBackUpHtml+'</li>'
 //						+'</ul></div></div>'		                		       
 //					+ "</td>";
-		                var td6 = "<td><a> " +
+		                var type = "<td><a> " +
 		                		translateStatus(array[i].backupType)
 								+ "</a></td>";
 		                
-		                var td7 = "<td> " +
+		                var info = "<td> " +
 		                		"<a href='javascript:void(0);' class='backup-add'>增量备份</a>&nbsp;&nbsp"
 								+ "<a href='javascript:void(0);' class='backup-all'>全量备份</a>"
 								+ "</td>";
@@ -183,7 +183,7 @@ function queryByPage(currentPage, recordsPerPage) {
 						}
 		                tr.attr("mclusterId",array[i].mclusterId);
 		                tr.attr("id",array[i].id);
-		                tr.append($(td1+td2+td5+td6+td7));
+		                tr.append($(rdsCluster+dataBaseName+status+type+info));
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 
