@@ -156,9 +156,7 @@
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
 		parameterType="java.util.Map">
-		select count(1) from (
-		select count(DB_ID) from (
-		select r.DB_ID, r.START_TIME from WEBPORTAL_BACKUP_RESULT r
+		select count(1) from WEBPORTAL_BACKUP_RESULT r
 		join WEBPORTAL_MCLUSTER_INFO m on r.MCLUSTER_ID = m.ID
 		<if test="mclusterName != null and mclusterName != ''">
 			and m.MCLUSTER_NAME like CONCAT('%',#{mclusterName},'%') escape '^'
@@ -168,8 +166,6 @@
 			and d.DB_NAME like CONCAT('%',#{dbName},'%') escape '^'
 		</if> 
 		<include refid="Example_Where_Clause" />
-		) lasted GROUP BY DB_ID ORDER BY START_TIME DESC
-		) c
 	</select>
 	<!-- 根据条件查询 -->
 	<select id="selectByMap" resultMap="BaseResultMap"
@@ -264,6 +260,50 @@
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
+		select
+		<include refid="Base_Column_List" />
+		,m.MCLUSTER_NAME,d.DB_NAME
+		from WEBPORTAL_BACKUP_RESULT r
+		join WEBPORTAL_MCLUSTER_INFO m on r.MCLUSTER_ID = m.ID
+		<if test="params != null and params.mclusterName != null  and params.mclusterName != ''">
+			and m.MCLUSTER_NAME like CONCAT('%',#{params.mclusterName},'%') escape '^'
+		</if>
+		join WEBPORTAL_DB d on r.DB_ID = d.ID
+		<if test="params != null and params.dbName != null and params.dbName != ''">
+			and d.DB_NAME like CONCAT('%',#{params.dbName},'%') escape '^'
+		</if> 
+		<include refid="Example_Page_Where_Clause" />
+		<if test="params != null and params.orderBy != null  ">
+      		 order by r.${params.orderBy}
+    	</if>
+		<if test="params != null and !params.isAsc == false">
+      		 desc 
+    	</if>
+    	<if test="page != null">
+      		limit #{page.startRowPosition},#{page.recordsPerPage}
+    	</if>
+	</select>
+	<!-- 查询最新的备份记录 -->
+	<select id="selectLastedBackupRecord" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from WEBPORTAL_BACKUP_RESULT r
+		<include refid="Example_Where_Clause" />
+		and r.BACKUP_TYPE!='none'
+		order by r.START_TIME desc limit 1
+	</select>
+	
+	<!-- 根据id查询-->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" /> 
+		from WEBPORTAL_BACKUP_RESULT r
+		where r.ID = #{id}
+	</select>
+
+	<!-- 最新日志分页：根据条件查询 -->
+	<select id="selectLatestLogPageByParams" resultMap="BaseResultMap"
+		parameterType="com.letv.common.dao.QueryParam">
 		select * from(
 		select
 		<include refid="Base_Column_List" />
@@ -289,21 +329,23 @@
       		limit #{page.startRowPosition},#{page.recordsPerPage}
     	</if>
 	</select>
-	<!-- 查询最新的备份记录 -->
-	<select id="selectLastedBackupRecord" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select
-		<include refid="Base_Column_List" />
-		from WEBPORTAL_BACKUP_RESULT r
-		<include refid="Example_Where_Clause" />
-		and r.BACKUP_TYPE!='none'
-		order by r.START_TIME desc limit 1
-	</select>
 	
-	<!-- 根据id查询-->
-	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select
-		<include refid="Base_Column_List" /> 
-		from WEBPORTAL_BACKUP_RESULT r
-		where r.ID = #{id}
+	<!-- 最新日志总记录数 -->
+	<select id="selectLatestLogCountByParams" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		select count(1) from (
+			select count(DB_ID) from (
+				select r.DB_ID, r.START_TIME from WEBPORTAL_BACKUP_RESULT r
+				join WEBPORTAL_MCLUSTER_INFO m on r.MCLUSTER_ID = m.ID
+				<if test="mclusterName != null and mclusterName != ''">
+					and m.MCLUSTER_NAME like CONCAT('%',#{mclusterName},'%') escape '^'
+				</if> 
+				join WEBPORTAL_DB d on r.DB_ID = d.ID
+				<if test="dbName != null and dbName != ''">
+					and d.DB_NAME like CONCAT('%',#{dbName},'%') escape '^'
+				</if> 
+				<include refid="Example_Where_Clause" />
+			) lasted GROUP BY DB_ID ORDER BY START_TIME DESC
+		) c
 	</select>
 </mapper>   

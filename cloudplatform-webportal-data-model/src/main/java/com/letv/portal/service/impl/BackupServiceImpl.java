@@ -15,7 +15,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
+import com.letv.common.dao.QueryParam;
 import com.letv.common.exception.CommonException;
+import com.letv.common.paging.impl.Page;
 import com.letv.common.util.CalendarUtil;
 import com.letv.portal.dao.IBackupResultDao;
 import com.letv.portal.enumeration.BackupStatus;
@@ -133,6 +135,16 @@ public class BackupServiceImpl extends BaseServiceImpl<BackupResultModel> implem
 		ret.append(tomrrowDay).append(" ").append(date);
 		Date futureBackupDate = CalendarUtil.parseDate(ret.toString(), "yyyy-MM-dd HH:mm:ss");
 		return futureBackupDate;
+	}
+
+	@Override
+	public Page selectLatestLogPageByParams(Page page, Map<String, Object> params) {
+		QueryParam param = new QueryParam();
+		param.setPage(page);
+		param.setParams(params);
+		page.setData(backupResultDao.selectLatestLogPageByParams(param));
+		page.setTotalRecords(backupResultDao.selectLatestLogCountByParams(params));
+		return page;
 	}
 	
 }

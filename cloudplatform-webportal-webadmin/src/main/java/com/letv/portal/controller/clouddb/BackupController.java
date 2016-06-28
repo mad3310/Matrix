@@ -45,6 +45,17 @@ public class BackupController {
 		obj.setData(this.backupService.selectPageByParams(page, params));
 		return obj;
 	}
+	
+	@RequestMapping(value="/latestLog/list", method=RequestMethod.GET)   
+	public @ResponseBody ResultObject latestLog(HttpServletRequest request, Page page, ResultObject obj) {
+		Map<String,Object> params = HttpUtil.requestParam2Map(request);
+		params.put("dbName", StringUtil.transSqlCharacter(request.getParameter("dbName")));
+		params.put("mclusterName", StringUtil.transSqlCharacter(request.getParameter("mclusterName")));
+		params.put("orderBy", "START_TIME");
+		params.put("isAsc", true);
+		obj.setData(backupService.selectLatestLogPageByParams(page, params));
+		return obj;
+	}
 	 
 	@RequestMapping(value="/full", method=RequestMethod.GET)   
 	public @ResponseBody ResultObject wholeBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {

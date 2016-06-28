@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.letv.common.dao.IBaseDao;
+import com.letv.common.dao.QueryParam;
 import com.letv.portal.model.BackupResultModel;
 
 /**Program Name: IBackupResultDao <br>
@@ -26,5 +27,9 @@ public interface IBackupResultDao extends IBaseDao<BackupResultModel> {
 	List<BackupResultModel> selectByMapGroupByMcluster(Map<String, Object> params);
 
 	public BackupResultModel selectLastedBackupRecord(Map<String, Object> params);
+
+	public List<BackupResultModel> selectLatestLogPageByParams(QueryParam param);
+
+	public int selectLatestLogCountByParams(Map<String, Object> params);
 	  
 }
