@@ -119,27 +119,27 @@ function queryByPage(currentPage, recordsPerPage) {
 		        		if(array[i].db) {
 		        			dbName = array[i].db.dbName;
 		        		}
-		                var td1 = $("<td class='hidden-480'><a>"
+		                var td1 = "<td class='hidden-480'><a>"
 		                		+ "<a class=\"link\" href=\"/detail/mcluster/" + array[i].mclusterId +"\">"+FilterNull(mclusterName)+"</a>"
-		                		+"</a></td>");
-		                var td2 = $("<td>"
+		                		+"</a></td>";
+		                var td2 = "<td>"
 		                		+ "<a class=\"link\" class=\"danger\" href=\"/detail/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
-		                		+"</td>");
+		                		+"</td>";
 		                if(array[i].status == 'FAILD'){
-		                	var td5 = $("<td class='status'> <a>"
+		                	var td5 = "<td class='status'> <a>"
 								+ translateStatus(array[i].status)
-								+ "</a></td>");
+								+ "</a></td>";
 						}else if(array[i].status == 'BUILDING'){
-							var td5 = $("<td class='status'>"
+							var td5 = "<td class='status'>"
 									+ "<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
 									+ "<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"
 									+ translateStatus(array[i].status)
 									+ "</a>"
-									+ "</td>");
+									+ "</td>";
 						}else{
-							var td5 = $("<td class='status'> <a>"
+							var td5 = "<td class='status'> <a>"
 									+ translateStatus(array[i].status)
-									+ "</a></td>");
+									+ "</a></td>";
 						}
 		                
 //		                var allBackUpHtml='',addBackUpHtml=''
@@ -163,14 +163,14 @@ function queryByPage(currentPage, recordsPerPage) {
 //							+'<li>'+addBackUpHtml+'</li>'
 //						+'</ul></div></div>'		                		       
 //					+ "</td>";
-		                var td6 = $("<td><a> " +
+		                var td6 = "<td><a> " +
 		                		translateStatus(array[i].backupType)
-								+ "</a></td>");
+								+ "</a></td>";
 		                
-		                var td7 = $("<td> " +
+		                var td7 = "<td> " +
 		                		"<a href='javascript:void(0);' class='backup-add'>增量备份</a>&nbsp;&nbsp"
 								+ "<a href='javascript:void(0);' class='backup-all'>全量备份</a>"
-								+ "</td>");
+								+ "</td>";
 		               
 		                
 		                
@@ -183,7 +183,7 @@ function queryByPage(currentPage, recordsPerPage) {
 						}
 		                tr.attr("mclusterId",array[i].mclusterId);
 		                tr.attr("id",array[i].id);
-		                tr.append(td1).append(td2).append(td5).append(td6).append(td7);
+		                tr.append($(td1+td2+td5+td6+td7));
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 
