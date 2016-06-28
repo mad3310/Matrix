@@ -182,6 +182,9 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			backup.setDbId(dbModels.get(0).getId());
 			if(null != container) 
 				backup.setBackupIp(container.getIpAddr());
+			Date date = new Date();
+			backup.setStartTime(date);
+			backup.setEndTime(date);
 			backup.setBackupType(BackupType.NONE.name());
 			backup.setStatus(BackupStatus.ABNORMAL);
 			backup.setResultDetail("backup doesn't execute, Because there is a complete backup task is not performed");
@@ -591,9 +594,10 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			backupCMD.invoke(ip, user, pwd);
 			originRecord.setStartTime(new Date());
 			BackupStatus status = getBackupStatusByID(mclusterId).getStatus();
-			originRecord.setStatus(status);;
+			originRecord.setStatus(status);
 		}
 		originRecord.setBackupType(backupType.name());
+		
 		backupService.insert(originRecord);
 		
 		return originRecord;
