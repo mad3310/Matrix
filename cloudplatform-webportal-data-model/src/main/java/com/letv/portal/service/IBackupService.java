@@ -3,6 +3,8 @@ package com.letv.portal.service;
 import java.util.List;
 import java.util.Map;
 
+import com.letv.common.dao.QueryParam;
+import com.letv.common.paging.impl.Page;
 import com.letv.portal.model.BackupResultModel;
 import com.letv.portal.model.StrategyModel;
 
@@ -38,4 +40,11 @@ public interface IBackupService extends IBaseService<BackupResultModel> {
 	 */
 	public StrategyModel selectLastedBackupRecord4Strategy(Map<String, Object> params);
 	
+	/**
+	 * 获得最新的备份记录分页
+	 * @param page
+	 * @param params
+	 * @return
+	 */
+	public Page selectLatestLogPageByParams(Page page, Map<String, Object> params);
 }
