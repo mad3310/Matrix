@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.letv.portal.model.BackupResultModel;
+import com.letv.portal.model.StrategyModel;
 
 /**Program Name: IBackupService <br>
  * Description:  <br>
@@ -31,5 +32,10 @@ public interface IBackupService extends IBaseService<BackupResultModel> {
 	 * @return BackupResultModel   备份记录
 	 */
 	public BackupResultModel selectLastedBackupRecord(Map<String, Object> params);
+
+	/**
+	 * 获得最近备份成功的记录
+	 */
+	public StrategyModel selectLastedBackupRecord4Strategy(Map<String, Object> params);
 	
 }
