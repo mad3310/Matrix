@@ -1,5 +1,6 @@
 package com.letv.portal.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,13 +10,17 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
 import com.letv.common.exception.CommonException;
+import com.letv.common.util.CalendarUtil;
 import com.letv.portal.dao.IBackupResultDao;
+import com.letv.portal.enumeration.BackupStatus;
 import com.letv.portal.model.BackupResultModel;
+import com.letv.portal.model.StrategyModel;
 import com.letv.portal.python.service.IPythonService;
 import com.letv.portal.service.IBackupService;
 
@@ -35,7 +40,12 @@ public class BackupServiceImpl extends BaseServiceImpl<BackupResultModel> implem
 	private IBackupResultDao backupResultDao;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-
+	
+	@Value("${strategy.backup.reserve.days}")
+	private int STRATEGY_BACKUP_RESERVE_DAYS;
+	@Value("${strategy.backup.period}")
+	private String STRATEGY_BACKUP_PERIOD;
+	
 	public BackupServiceImpl() {
 		super(BackupResultModel.class);
 	}
@@ -90,4 +100,39 @@ public class BackupServiceImpl extends BaseServiceImpl<BackupResultModel> implem
 	public BackupResultModel selectLastedBackupRecord(Map<String, Object> params) {
 		return backupResultDao.selectLastedBackupRecord(params);
 	}
+
+	@Override
+	public StrategyModel selectLastedBackupRecord4Strategy(Map<String, Object> params) {
+		
+		BackupResultModel backupRet = selectLastedBackupRecord(params);
+		
+		StrategyModel result = new StrategyModel();
+		result.setReserveDays(STRATEGY_BACKUP_RESERVE_DAYS);
+		result.setBackupPeriod(STRATEGY_BACKUP_PERIOD);
+		
+		if(null != backupRet) {
+			Date startTime = backupRet.getStartTime();
+			result.setBackupDate(startTime);
+			result.setFutureBackupDate(getFutureBackupDate(startTime));
+		} else {
+			result.setBackupDate(null);
+			result.setFutureBackupDate(CalendarUtil.startOfDayTomorrow().getTime());
+		}
+			
+		return result;
+	}
+	
+	/*
+	 * 根据当前备份开始时间计算下一次备份时间
+	 */
+	private Date getFutureBackupDate(Date startDate) {
+		Date tomorrowDate = CalendarUtil.startOfDayTomorrow().getTime();
+		String tomrrowDay = CalendarUtil.getDateString(tomorrowDate, "yyyy-MM-dd");
+		String date = CalendarUtil.getDateString(startDate, "HH:mm:ss");
+		StringBuffer ret = new StringBuffer();
+		ret.append(tomrrowDay).append(" ").append(date);
+		Date futureBackupDate = CalendarUtil.parseDate(ret.toString(), "yyyy-MM-dd HH:mm:ss");
+		return futureBackupDate;
+	}
+	
 }

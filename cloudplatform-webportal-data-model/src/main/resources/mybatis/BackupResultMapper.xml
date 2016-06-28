@@ -156,7 +156,9 @@
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
 		parameterType="java.util.Map">
-		select count(1) from WEBPORTAL_BACKUP_RESULT r
+		select count(1) from (
+		select count(DB_ID) from (
+		select r.DB_ID, r.START_TIME from WEBPORTAL_BACKUP_RESULT r
 		join WEBPORTAL_MCLUSTER_INFO m on r.MCLUSTER_ID = m.ID
 		<if test="mclusterName != null and mclusterName != ''">
 			and m.MCLUSTER_NAME like CONCAT('%',#{mclusterName},'%') escape '^'
@@ -166,6 +168,8 @@
 			and d.DB_NAME like CONCAT('%',#{dbName},'%') escape '^'
 		</if> 
 		<include refid="Example_Where_Clause" />
+		) lasted GROUP BY DB_ID ORDER BY START_TIME DESC
+		) c
 	</select>
 	<!-- 根据条件查询 -->
 	<select id="selectByMap" resultMap="BaseResultMap"
