@@ -105,7 +105,7 @@ function queryByPage(currentPage, recordsPerPage, callBack) {
 			var totalPages = data.data.totalPages;
 			var array = data.data.data;
 			backup_list = array;
-			console.log(backup_list);
+
 			if(array.length == 0){
 				$("#noData").removeClass("hidden");
 			}else{
