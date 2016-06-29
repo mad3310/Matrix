@@ -39,17 +39,19 @@
 					
 				</div>
 				<script type="text/javascript">
-					$(function () {
+					$(function () {						
 		                $('#startTime').datetimepicker({
 		            		viewMode: 'days',
 		            		format: 'L',
 		            		locale: 'zh-cn'
 		            	});
+		                
 		                $('#endTime').datetimepicker({
 		            		viewMode: 'days',
 		            		format: 'L',
 		            		locale: 'zh-cn'
-		            	});
+		            	});		             
+		                
 		            });
 				</script>
 				<div class="form-group col-xs-12 col-sm-6 col-md-3">

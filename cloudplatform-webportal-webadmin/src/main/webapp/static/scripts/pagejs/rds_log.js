@@ -149,7 +149,7 @@ function queryByPage(currentPage, recordsPerPage) {
 								+ "</a></td>";
 		                
 		                var info = "<td>"
-		                        + array[i].resultDetail
+		                        + (array[i].resultDetail=="null"?"":array[i].resultDetail)
 		                        + "</td>";
 		                if(array[i].status == 'FAILD'){
 							var tr = $("<tr class=\"data-tr default-danger\"></tr>");

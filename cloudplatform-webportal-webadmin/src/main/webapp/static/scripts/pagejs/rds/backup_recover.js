@@ -74,7 +74,7 @@ $(".input-group input").each(function(){
         }
     });
 });
-function queryByPage(currentPage, recordsPerPage) {
+function queryByPage(currentPage, recordsPerPage, callBack) {
 	$("#backupTbody tr").remove();
 	if(flag == true){
 		var startTime = '';
@@ -105,7 +105,7 @@ function queryByPage(currentPage, recordsPerPage) {
 			var totalPages = data.data.totalPages;
 			var array = data.data.data;
 			backup_list = array;
-			
+
 			if(array.length == 0){
 				$("#noData").removeClass("hidden");
 			}else{
@@ -198,6 +198,10 @@ function queryByPage(currentPage, recordsPerPage) {
 				$("#totalRows").html(data.data.totalRecords);
 				$("#totalPage").html(totalPages);
 			}
+			
+			if(callBack){
+				callBack();
+			}
 		},
 		error : function(XMLHttpRequest,textStatus, errorThrown) {
 			$.gritter.add({
@@ -226,13 +230,19 @@ function backupInit(){
 		var mclusterId = $(this).parents("tr").attr("mclusterId");
 		var id = $(this).parents("tr").attr("id");
 		var This = this;
-		getState(id, mclusterId,function(state){
-			if(state=="BUILDING"){
-				warn("备份中",2000);
-			}else{
-				BackupFunc(id, mclusterId,$(This));
-			}
-		});		
+		
+		queryByPage(currentPage,recordsPerPage,function(){
+			
+			getState(id, mclusterId,function(state){
+				if(state=="BUILDING"){
+					warn("备份中",2000);
+				}else{
+					BackupFunc(id, mclusterId,$(This));
+				}
+			});	
+			
+		});
+	
 
 	});
 }
