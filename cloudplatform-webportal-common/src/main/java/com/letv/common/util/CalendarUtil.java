@@ -417,8 +417,4 @@ public final class CalendarUtil {
             return cal;
         }
         
-        public static void main(String[] args) {
-			System.out.println(getDayOfWeek(new Date()));
-		}
-        
 }
