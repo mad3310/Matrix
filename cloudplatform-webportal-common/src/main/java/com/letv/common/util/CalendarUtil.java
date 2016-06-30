@@ -389,7 +389,7 @@ public final class CalendarUtil {
 	public static int getDayOfWeek(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		int day = Calendar.DAY_OF_WEEK - 1;
+		int day = cal.get(Calendar.DAY_OF_WEEK) - 1;
 		if(day == 0)
 			return 7;
 		return day;
@@ -416,4 +416,9 @@ public final class CalendarUtil {
             cal = truncateDay(cal);
             return cal;
         }
+        
+        public static void main(String[] args) {
+			System.out.println(getDayOfWeek(new Date()));
+		}
+        
 }
