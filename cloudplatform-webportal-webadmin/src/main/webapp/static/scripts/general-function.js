@@ -206,9 +206,6 @@ var Status={
 			}
 };
 
-function getLocalTime(utcTime){
-}
-
 function initChart(obj,title,ytitle,unit){
 
     $(obj).highcharts({
@@ -216,8 +213,7 @@ function initChart(obj,title,ytitle,unit){
             // type: 'areaspline',
             type:'line',
             zoomType: 'x',
-            spacingRight: 20,
-            relativeTo: 'chart'
+            spacingRight: 20
         },
         colors:['#ff66cc','#66ff66','#66ffff','#FFBB33','#C9C','#090','#330000','#CCCC00','#66cc99','#ccff66','#996666','#66cc33'],
         title: {
