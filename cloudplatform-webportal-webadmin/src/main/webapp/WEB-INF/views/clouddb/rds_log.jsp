@@ -35,8 +35,7 @@
 					<span class="time-range-title hidden-md hidden-lg">结束时间：</span>
 					<div class="date-unit">
 						<input type='text' class="form-control datetimepicker" id='endTime' />
-					</div>
-					
+					</div>	
 				</div>
 				<script type="text/javascript">
 					$(function () {						
