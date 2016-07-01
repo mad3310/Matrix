@@ -1,31 +1,58 @@
 package com.letv.portal.task.gce.service.impl;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
-import com.letv.portal.enumeration.GceType;
 import com.letv.portal.model.HostModel;
-import com.letv.portal.model.gce.GceCluster;
-import com.letv.portal.model.gce.GceServer;
-import com.letv.portal.model.image.Image;
+import com.letv.portal.model.elasticcalc.gce.EcGce;
+import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
+import com.letv.portal.model.elasticcalc.gce.EcGcePackageCluster;
+import com.letv.portal.model.elasticcalc.gce.EcGcePackageImage;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
 import com.letv.portal.python.service.IGcePythonService;
-import com.letv.portal.service.image.IImageService;
-
+/**
+ * 购买GCE：创建集群
+ * @author linzhanbo .
+ * @since 2016年6月30日, 下午1:03:38 .
+ * @version 1.0 .
+ */
 @Service("taskGceClusterCreateService")
 public class TaskGceClusterCreateServiceImpl extends BaseTask4GceServiceImpl implements IBaseTaskService{
 	
+	@Autowired
+	private IGcePythonService gcePythonService;
+	
+	private final static String  CONTAINER_MEMORY_SIZE = "2147483648";
+	
+	@Override
+	public TaskResult execute(Map<String, Object> params) throws Exception {
+		TaskResult tr = super.execute(params);
+		if(!tr.isSuccess())
+			return tr;
+		EcGce gce = super.getGce(params);
+		EcGcePackage gcePackage = super.getGcePackage(params);
+		EcGcePackageImage image = super.getGcePackageImage(params);
+		EcGcePackageCluster cluster = super.getGcePackageCluster(params);
+		HostModel host = super.getHost(cluster.getHclusterId());
+		Map<String,String> props = new HashMap<String,String>();
+		props.put("containerClusterName", cluster.getClusterName());
+		props.put("componentType", gce.getType());
+		props.put("image", gcePackage.getGceImageName());
+		props.put("networkMode",image.getNetType());
+		props.put("memory",gce.getMemorySize()!=null?String.valueOf(gce.getMemorySize()):CONTAINER_MEMORY_SIZE);
+		props.put("nodeCount",String.valueOf(gce.getInstanceNum()));
+		
+		ApiResultObject resultObject = this.gcePythonService.createContainer(props,host.getHostIp(),host.getName(),host.getPassword());
+		tr = analyzeRestServiceResult(resultObject);
+		tr.setParams(params);
+		return tr;
+	}
+	/*
 	@Autowired
 	private IGcePythonService gcePythonService;
 	@Autowired
@@ -104,5 +131,6 @@ public class TaskGceClusterCreateServiceImpl extends BaseTask4GceServiceImpl imp
 		tr.setParams(params);
 		return tr;
 	}
+	*/
 	
 }

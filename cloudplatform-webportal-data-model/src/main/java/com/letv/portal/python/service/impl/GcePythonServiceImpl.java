@@ -19,6 +19,20 @@ public class GcePythonServiceImpl implements IGcePythonService{
 	private final static String URL_HEAD = "http://";
 	private final static String URL_PORT = ":8888";	
 	private final static String URL_CHECK_PORT = ":6666";
+	@Override
+	public ApiResultObject checkGCEPackageMirrorCreateStatus(Map<String,String> params,String serverIp,String serverPort) {
+		StringBuffer url = new StringBuffer();//eg:"http://10.75.139.35:9999/image/BuildQuery"
+		url.append(URL_HEAD).append(serverIp).append(":").append(serverPort).append("/image/BuildQuery");
+		String result = HttpClient.post(url.toString(), params);
+		return new ApiResultObject(result,url.toString());
+	}
+	@Override
+	public ApiResultObject createGCEPackageMirror(Map<String,String> params,String serverIp,String serverPort) {
+		StringBuffer url = new StringBuffer();//eg:"http://10.75.139.35:9999/image/BuildPush"
+		url.append(URL_HEAD).append(serverIp).append(":").append(serverPort).append("/image/BuildPush");
+		String result = HttpClient.post(url.toString(), params);
+		return new ApiResultObject(result,url.toString());
+	}
 	
 	@Override
 	public ApiResultObject createContainer(Map<String,String> params,String ip,String username,String password) {

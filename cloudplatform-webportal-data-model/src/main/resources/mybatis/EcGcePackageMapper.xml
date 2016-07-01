@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IGcePackageDao">
+	<resultMap id="BaseResultMap" type="EcGcePackage">
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="VERSION" property="version" jdbcType="VARCHAR" />
+		<result column="SUFFIX" property="suffix" jdbcType="VARCHAR" />
+		<result column="BUCKETNAME" property="bucketName" jdbcType="VARCHAR" />
+		<result column="KEY" property="key" jdbcType="VARCHAR" />
+		<result column="PORT_FORWARD" property="portForward" jdbcType="VARCHAR" />
+		<result column="GCE_ID" property="gceId" jdbcType="BIGINT" />
+		<result column="GCECLUSTER_ID" property="gceclusterId"
+			jdbcType="BIGINT" />
+		<result column="GCE_IMAGE_NAME" property="gceImageName"
+			jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="TINYINT" />
+		<result column="DELETED" property="deleted" jdbcType="TINYINT" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		`ID`, `VERSION`, `SUFFIX`, `BUCKETNAME`, `KEY`, `PORT_FORWARD`, `GCE_ID`,
+		`GCECLUSTER_ID`, `GCE_IMAGE_NAME`,
+		`STATUS`, `DELETED`, `CREATE_TIME`, `UPDATE_TIME`, `CREATE_USER`, `UPDATE_USER`
+	</sql>
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE_PACKAGE
+		where `ID` = #{id,jdbcType=BIGINT}
+	</select>
+	<insert id="insert" parameterType="EcGcePackage"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into `EC_GCE_PACKAGE`
+		(
+		`VERSION`,
+		`SUFFIX`,
+		`BUCKETNAME`,
+		`KEY`,
+		`PORT_FORWARD`,
+		`GCE_ID`,
+		`GCECLUSTER_ID`,
+		`GCE_IMAGE_NAME`,
+		`STATUS`,
+		`DELETED`,
+		`CREATE_TIME`,
+		`UPDATE_TIME`,
+		`CREATE_USER`,
+		`UPDATE_USER`
+		)
+		values
+		(#{version,jdbcType=VARCHAR},
+		#{suffix,jdbcType=VARCHAR},
+		#{bucketName,jdbcType=VARCHAR},
+		#{key,jdbcType=VARCHAR},
+		#{portForward,jdbcType=VARCHAR},
+		#{gceId,jdbcType=BIGINT},
+		#{gceclusterId,jdbcType=BIGINT},
+		#{gceImageName,jdbcType=VARCHAR},
+		#{status,jdbcType=TINYINT},
+		#{deleted,jdbcType=TINYINT},
+		now(),
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{createUser,jdbcType=BIGINT},
+		#{updateUser,jdbcType=BIGINT}
+		)
+	</insert>
+	<!-- 更新记录 -->
+	<update id="update" parameterType="EcGcePackage">
+		update `EC_GCE_PACKAGE`
+		set
+		`VERSION` = #{version,jdbcType=VARCHAR},
+		`SUFFIX` =
+		#{suffix,jdbcType=VARCHAR},
+		`BUCKETNAME` =
+		#{bucketName,jdbcType=VARCHAR},
+		`KEY` = #{key,jdbcType=VARCHAR},
+		`PORT_FORWARD` = #{portForward,jdbcType=VARCHAR},
+		`GCE_ID` =
+		#{gceId,jdbcType=BIGINT},
+		`GCECLUSTER_ID` =
+		#{gceclusterId,jdbcType=BIGINT},
+		`GCE_IMAGE_NAME` =
+		#{gceImageName,jdbcType=VARCHAR},
+		`STATUS` =
+		#{status,jdbcType=TINYINT},
+		`DELETED` = #{deleted,jdbcType=TINYINT},
+		`UPDATE_TIME` = now(),
+		`UPDATE_USER` =
+		#{updateUser,jdbcType=BIGINT}
+		where `ID` =#{id}
+	</update>
+	<update id="updateBySelective" parameterType="EcGcePackage">
+		update `EC_GCE_PACKAGE`
+		<set>
+			<if test="version != null  ">
+				`VERSION` = #{version,jdbcType=VARCHAR},
+			</if>
+			<if test="suffix != null  ">
+				`SUFFIX` = #{suffix,jdbcType=VARCHAR},
+			</if>
+			<if test="bucketName != null  ">
+				`BUCKETNAME` = #{bucketName,jdbcType=VARCHAR},
+			</if>
+			<if test="key != null  ">
+				`KEY` = #{key,jdbcType=VARCHAR},
+			</if>
+			<if test="portForward != null  ">
+				`PORT_FORWARD` = #{portForward,jdbcType=VARCHAR},
+			</if>
+			<if test="gceId != null ">
+				`GCE_ID` = #{gceId,jdbcType=BIGINT},
+			</if>
+			<if test="gceclusterId != null ">
+				`GCECLUSTER_ID` = #{gceclusterId,jdbcType=BIGINT},
+			</if>
+			<if test="gceImageName != null  ">
+				`GCE_IMAGE_NAME` = #{gceImageName,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null  ">
+				`STATUS` = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="deleted != null  ">
+				`DELETED` = #{deleted,jdbcType=TINYINT},
+			</if>
+			`UPDATE_TIME` = now(),
+			<if test="updateUser != null  ">
+				`UPDATE_USER` = #{updateUser,jdbcType=BIGINT}
+			</if>
+		</set>
+		where `ID` =#{id}
+	</update>
+</mapper>

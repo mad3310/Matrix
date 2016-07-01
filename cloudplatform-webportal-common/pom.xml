@@ -201,6 +201,29 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+        <!-- AWS 3S 相关 Lynzabo begin -->
+		<dependency>
+			<groupId>aws-java-sdk</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>httpclient</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>httpcore</groupId>
+			<artifactId>httpcore</artifactId>
+		</dependency>
+		<!-- AWS 3S 相关 Lynzabo  end -->
     </dependencies>
 
 

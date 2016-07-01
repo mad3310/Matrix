@@ -15,6 +15,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.letv.common.exception.TaskExecuteException;
+import com.letv.portal.enumeration.DbStatus;
+import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.model.task.TaskChain;
 import com.letv.portal.model.task.TaskChainIndex;
 import com.letv.portal.model.task.TaskExecuteStatus;
@@ -194,11 +196,11 @@ public class TaskEngine extends ApplicationObjectSupport implements ITaskEngine{
 		IBaseTaskService baseTask = null;
 		TaskResult tr = new TaskResult();
 		try {
+			//修改当前环节状态为TaskExecuteStatus.DOING，剩下的环节状态为TaskExecuteStatus.UNDO
 			tc = beforeExecute(tc);
-			
 			if(tc == null)
 				throw new TaskExecuteException("execute TaskChain is null");
-			
+			//使用环节实例中环节详细ID获取该环节详细定义信息，后面使用该里面的beanName
 			TemplateTaskDetail ttd = this.templateTaskDetailService.selectById(tc.getTaskDetailId());
 			
 			if(ttd == null)
@@ -209,6 +211,7 @@ public class TaskEngine extends ApplicationObjectSupport implements ITaskEngine{
 			Map<String,Object> params = transToMap(paramStr);
 			
 			baseTask = (IBaseTaskService)getApplicationContext().getBean(taskBeanName);
+			//将params传入进去，修改当前GCE状态为DbStatus.BUILDDING，GCE集群状态为MclusterStatus.BUILDDING
 			baseTask.beforExecute(params);
 			tr.setParams(params);
 			tr = baseTask.execute(params);

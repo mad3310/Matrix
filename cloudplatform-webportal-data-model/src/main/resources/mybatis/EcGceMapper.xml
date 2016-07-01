@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IGceDao">
+	<resultMap id="BaseResultMap" type="EcGce">
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="GCE_NAME" property="gceName" jdbcType="VARCHAR" />
+		<result column="DESCN" property="descn" jdbcType="VARCHAR" />
+		<result column="AREA_ID" property="areaId" jdbcType="BIGINT" />
+		<result column="HCLUSTER_ID" property="hclusterId" jdbcType="BIGINT" />
+		<result column="TYPE" property="type" jdbcType="VARCHAR" />
+		<result column="LOG_ID" property="logId" jdbcType="BIGINT" />
+		<result column="MEMORY_SIZE" property="memorySize" jdbcType="BIGINT" />
+		<result column="INSTANCE_NUM" property="instanceNum" jdbcType="TINYINT" />
+		<result column="STATUS" property="status" jdbcType="TINYINT" />
+		<result column="DELETED" property="deleted" jdbcType="TINYINT" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, GCE_NAME, DESCN, AREA_ID, HCLUSTER_ID, TYPE, LOG_ID,
+		MEMORY_SIZE,
+		INSTANCE_NUM,
+		STATUS, DELETED, CREATE_TIME, UPDATE_TIME,
+		CREATE_USER, UPDATE_USER
+	</sql>
+	<!-- 根据id查询 -->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE
+		where
+		ID = #{id}
+	</select>
+	<insert id="insert" parameterType="EcGce" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into EC_GCE (ID, GCE_NAME, DESCN,
+		AREA_ID,
+		HCLUSTER_ID, TYPE,
+		LOG_ID, MEMORY_SIZE, INSTANCE_NUM,
+		STATUS, DELETED,
+		CREATE_TIME,
+		UPDATE_TIME, CREATE_USER, UPDATE_USER
+		)
+		values
+		(#{id,jdbcType=BIGINT}, #{gceName,jdbcType=VARCHAR},
+		#{descn,jdbcType=VARCHAR},
+		#{areaId,jdbcType=BIGINT},
+		#{hclusterId,jdbcType=BIGINT}, #{type,jdbcType=VARCHAR},
+		#{logId,jdbcType=BIGINT}, #{memorySize,jdbcType=BIGINT},
+		#{instanceNum,jdbcType=TINYINT},
+		#{status,jdbcType=TINYINT},
+		#{deleted,jdbcType=TINYINT}, now(),
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{createUser,jdbcType=BIGINT}, #{updateUser,jdbcType=BIGINT}
+		)
+	</insert>
+	
+</mapper>

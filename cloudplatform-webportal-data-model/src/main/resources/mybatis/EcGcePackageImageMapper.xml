@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IGcePackageImageDao">
+	<resultMap id="BaseResultMap" type="EcGcePackageImage">
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="URL" property="url" jdbcType="VARCHAR" />
+		<result column="OWNER" property="owner" jdbcType="BIGINT" />
+		<result column="NET_TYPE" property="netType" jdbcType="VARCHAR" />
+		<result column="GCE_ID" property="gceId" jdbcType="BIGINT" />
+		<result column="GCE_PACKAGE_ID" property="gcePackageId"
+			jdbcType="BIGINT" />
+		<result column="STATUS" property="status" jdbcType="TINYINT" />
+		<result column="DELETED" property="deleted" jdbcType="TINYINT" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, NAME, URL, OWNER, NET_TYPE, GCE_ID, GCE_PACKAGE_ID,
+		STATUS, DELETED,
+		CREATE_TIME,
+		UPDATE_TIME, CREATE_USER, UPDATE_USER
+	</sql>
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE_PACKAGE_IMAGE
+		where ID = #{id,jdbcType=BIGINT}
+	</select>
+	<insert id="insert" parameterType="EcGcePackageImage"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into EC_GCE_PACKAGE_IMAGE
+		(NAME, URL,
+		OWNER, NET_TYPE, GCE_ID,
+		GCE_PACKAGE_ID, STATUS, DELETED,
+		CREATE_TIME, UPDATE_TIME, CREATE_USER,
+		UPDATE_USER)
+		values
+		(#{name,jdbcType=VARCHAR},
+		#{url,jdbcType=VARCHAR},
+		#{owner,jdbcType=BIGINT}, #{netType,jdbcType=VARCHAR},
+		#{gceId,jdbcType=BIGINT},
+		#{gcePackageId,jdbcType=BIGINT},
+		#{status,jdbcType=TINYINT},
+		#{deleted,jdbcType=TINYINT},
+		now(),
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{createUser,jdbcType=BIGINT},
+		#{updateUser,jdbcType=BIGINT})
+	</insert>
+	<!-- 更新记录 -->
+	<update id="update" parameterType="EcGcePackageImage">
+		update EC_GCE_PACKAGE_IMAGE
+		set NAME = #{name,jdbcType=VARCHAR},
+		URL = #{url,jdbcType=VARCHAR},
+		OWNER = #{owner,jdbcType=BIGINT},
+		NET_TYPE =
+		#{netType,jdbcType=VARCHAR},
+		GCE_ID = #{gceId,jdbcType=BIGINT},
+		GCE_PACKAGE_ID = #{gcePackageId,jdbcType=BIGINT},
+		STATUS =
+		#{status,jdbcType=TINYINT},
+		DELETED = #{deleted,jdbcType=TINYINT},
+		CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+		UPDATE_TIME = now(),
+		CREATE_USER = #{createUser,jdbcType=BIGINT},
+		UPDATE_USER =
+		#{updateUser,jdbcType=BIGINT}
+		where ID = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>
