@@ -13,11 +13,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -120,7 +119,8 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		SearchHits searchHits = ESUtil.getFilterResult(indexs, filterBuilder, sortBuilder, 100000);
 
 		String[] detailNames =  monitorIndexModel.getMonitorPoint().split(",");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		for (String s : detailNames) {
 			MonitorViewYModel ydata = new MonitorViewYModel();
 			List<List<Object>> datas = new ArrayList<List<Object>>();
