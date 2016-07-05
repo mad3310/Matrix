@@ -1,8 +1,7 @@
 package com.letv.portal.proxy;
 
-import java.util.Map;
+import java.util.Date;
 
-import com.letv.portal.model.BackupDTO;
 import com.letv.portal.model.BackupResultModel;
 import com.letv.portal.model.MclusterModel;
 
@@ -21,12 +20,19 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 	 * @param stage
 	 */
 	public void backupTask(int stage);
+	/**
+	 * 备份任务
+	 * @param count 每个集群启动的备份数量
+	 * @param waitMaxTime 一个数据库备份等待最大时间
+	 * @param backupTime 备份日期
+	 */
+	public void backupTask(Integer count, Integer waitMaxTime, Date backupTime);
 	
 	/**Methods Name: wholeBackup4Db <br>
 	 * Description: 数据库备份 <br>
 	 * @author name: liuhao1
 	 */
-	public void backup4Db(MclusterModel mcluster);
+	public Boolean backup4Db(MclusterModel mcluster, Date backupDate);
 	
 	/**Methods Name: checkBackupStatus <br>
 	 * Description: 检查某备份结果<br>
