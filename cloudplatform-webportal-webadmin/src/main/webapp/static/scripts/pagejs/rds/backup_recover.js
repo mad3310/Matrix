@@ -394,17 +394,13 @@ function searchAction(){
 }
 
 function InitSearchClearButton(){
-	var inputDbNameEl=$("#dbName"),
-	inputmclusterNameEl=$("#mclusterName"),
-	selectBackupStatusEl=$('#backupStatus'),
-	startTimeEl=$('#startTime').data("DateTimePicker"),
-	endTimeEl=$('#endTime').data("DateTimePicker");
+	var inputDbNameEl=$("#dbName");
+	inputmclusterNameEl=$("#mclusterName");
+	selectBackupStatusEl=$('#backupStatus');
 	$("#btnSearchClear").on('click',function(e){
 		inputDbNameEl.val("");
 		inputmclusterNameEl.val("");
 		selectBackupStatusEl.val("");
-		startTimeEl.date(null);
-		endTimeEl.date(null);
 		queryByPage(currentPage, recordsPerPage);
 	});
 }
