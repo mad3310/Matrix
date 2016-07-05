@@ -85,7 +85,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		params.put("type", "rds");
 		List<HclusterModel> hclusters = this.hclusterService.selectByMap(params);
 		//最大等待时间为空时，默认60分钟
-		final Integer waitTime = null==waitMaxTime||waitMaxTime==0 ? 60 : waitMaxTime;
+		final Integer waitTime = null==waitMaxTime||waitMaxTime<=0 ? 60 : waitMaxTime;
 		//备份日期为空时，默认当前时间
 		final Date backupDate = null==backupTime ? new Date() : backupTime;
 		for (final HclusterModel hcluster : hclusters) {
