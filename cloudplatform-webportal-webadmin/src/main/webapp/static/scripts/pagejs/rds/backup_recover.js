@@ -229,28 +229,26 @@ function backupInit(){
 
 		var mclusterId = $(this).parents("tr").attr("mclusterId");
 		var id = $(this).parents("tr").attr("id");
-		var This = this;
+		var index = $(this).parents("tr").index();
+		var type = "full";
 		
-		queryByPage(currentPage,recordsPerPage,function(){
-			
-			getState(id, mclusterId,function(state){
-				if(state=="BUILDING"){
-					warn("备份中",2000);
-				}else{
-					BackupFunc(id, mclusterId,$(This));
-				}
-			});	
-			
-		});
-	
+		if($(this).hasClass("backup-add")){
+			type = "incr";
+		}
+		
+		if(backup_list[index].status=="BUILDING"){
+			warn("备份中",2000);
+		}else{
+			BackupFunc(id, mclusterId, type);
+		}
 
 	});
 }
 
 
-function BackupFunc(id,mclusterId,btnObj){
+function BackupFunc(id,mclusterId,type){
 	var url = "";
-	if(btnObj.hasClass("backup-add")){
+	if(type=="incr"){
 		url = "/backup/incr?id="+id+"&mclusterId="+mclusterId;
 	}else{
 		url = "/backup/full?id="+id+"&mclusterId="+mclusterId;
@@ -266,7 +264,8 @@ function BackupFunc(id,mclusterId,btnObj){
 			if(!data.result){
 				warn("获取数据失败",2000);
 			}else{
-				UpdateBackupStateById(id, "BUILDING");
+				queryByPage(currentPage,recordsPerPage);
+				UpdateBackupState();
 			}
 		}
 	});
@@ -289,6 +288,8 @@ function UpdateBackupState(){
 function UpdateBackupStateById(id,state){
 			
 	var objTr = $("#backupTbody").find("tr[id='"+id+"']");
+	var obj = objTr.find(".status a");
+	//color
     if(state == 'FAILD'){
     	objTr.attr("class","data-tr default-danger");
 	}else if(state == 'SUCCESS'){
@@ -296,9 +297,13 @@ function UpdateBackupStateById(id,state){
 	}else{
 		objTr.attr("class","data-tr");
 	}
-    	
-	var obj = objTr.find(".status a");
-	obj.text(translateStatus(state));
+    //icon
+    if(state == 'BUILDING'){
+    	obj.html(translateStatus("<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"+state));
+    }else{
+    	obj.text(translateStatus(state));
+    }
+    
 	backup_list.forEach(function(item){
 		if(item.id==id){
 			item.status = state;
@@ -389,17 +394,13 @@ function searchAction(){
 }
 
 function InitSearchClearButton(){
-	var inputDbNameEl=$("#dbName"),
-	inputmclusterNameEl=$("#mclusterName"),
-	selectBackupStatusEl=$('#backupStatus'),
-	startTimeEl=$('#startTime').data("DateTimePicker"),
-	endTimeEl=$('#endTime').data("DateTimePicker");
+	var inputDbNameEl=$("#dbName");
+	inputmclusterNameEl=$("#mclusterName");
+	selectBackupStatusEl=$('#backupStatus');
 	$("#btnSearchClear").on('click',function(e){
 		inputDbNameEl.val("");
 		inputmclusterNameEl.val("");
 		selectBackupStatusEl.val("");
-		startTimeEl.date(null);
-		endTimeEl.date(null);
 		queryByPage(currentPage, recordsPerPage);
 	});
 }

@@ -1,8 +1,9 @@
 var xAxis_min,xAxis_max;
 function refreshChartForSelect(){
 	var iw=document.body.clientWidth;
-	if(iw>767){//md&&lg
+	if(iw>767){//md&&lgchart
 	}else{
+		
 		$('.queryOption').addClass('collapsed').find('.widget-body').attr('style', 'dispaly:none;');
 		$('.queryOption').find('.widget-header').find('i').attr('class', 'ace-icon fa fa-chevron-down');
 		var qryStr='';
@@ -174,19 +175,30 @@ function setChartData(indexId,chart){
 			dataType : "json", 
 			contentType : "application/json; charset=utf-8",
 			success:function(data){	
+				chart.zoom();
 				chart.hideLoading();
 		 		if(error(data)) return;
 		 		var ydata = data.data;
+		 		
+		 		
 		 		for(var i=chart.series.length-1;i>=0;i--){
 		 			chart.series[i].remove(false);
 	 			}
-		 		for(var i=0;i<ydata.length;i++){		
+		 		for(var i=0;i<ydata.length;i++){	 			
+		 			getLocalTime(ydata[i]);
 		 			chart.addSeries(ydata[i],false);
 	 			}
 		 		chart.redraw();
 			}
 		});
 	}	
+}
+
+function getLocalTime(timeArray){
+	for(var i=0;i<timeArray.length;++i){
+		var date = new Date(timeArray[i][0]);
+		timeArray[i][0] = date;
+	}
 }
 
 
