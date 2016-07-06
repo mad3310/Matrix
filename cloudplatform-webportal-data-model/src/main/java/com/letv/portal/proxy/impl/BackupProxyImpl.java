@@ -198,22 +198,23 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	
 	// 保存未进行备份的数据
 	private void saveBackup(List<MclusterModel> mclusters) {
+		BackupResultModel backup = new BackupResultModel();
+		Date date = new Date();
+		backup.setStartTime(date);
+		backup.setEndTime(date);
+		backup.setBackupType(BackupType.NONE.name());
+		backup.setStatus(BackupStatus.ABNORMAL);
+		backup.setResultDetail("backup doesn't execute, because over the backup time!");
 		for(MclusterModel mcluster : mclusters) {
 			ContainerModel container = selectValidVipContianer(mcluster.getId(), "mclustervip");
 			List<DbModel> dbModels = dbService.selectDbByMclusterId(mcluster.getId());
-			BackupResultModel backup = new BackupResultModel();
-			backup.setMclusterId(mcluster.getId());
-			backup.setHclusterId(mcluster.getHclusterId());
-			backup.setDbId(dbModels.get(0).getId());
-			if(null != container) 
+			if(container != null && !dbModels.isEmpty())  {//数据节点异常，忽略备份
+				backup.setMclusterId(mcluster.getId());
+				backup.setHclusterId(mcluster.getHclusterId());
+				backup.setDbId(dbModels.get(0).getId());
 				backup.setBackupIp(container.getIpAddr());
-			Date date = new Date();
-			backup.setStartTime(date);
-			backup.setEndTime(date);
-			backup.setBackupType(BackupType.NONE.name());
-			backup.setStatus(BackupStatus.ABNORMAL);
-			backup.setResultDetail("backup doesn't execute, Because there is a complete backup task is not performed");
-	        backupService.insert(backup);
+		        backupService.insert(backup);
+			}
 		}
 	}
 	
