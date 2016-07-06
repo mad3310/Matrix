@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -101,6 +103,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		return this.monitorDao;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<MonitorViewYModel> getHostDiskMonitorData(Long hostId, Long chartId, Integer strategy) {
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
@@ -124,13 +127,19 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		for (String s : detailNames) {
 			MonitorViewYModel ydata = new MonitorViewYModel();
 			List<List<Object>> datas = new ArrayList<List<Object>>();
+			String[] layer = s.split("\\.");
 			try {
 				for (SearchHit hit : searchHits.getHits()) {
 					Map<String, Object> data = hit.getSource();
-					if(data.containsKey(s)) {
+					Date d = sdf.parse((String)data.get("timestamp"));
+					int j = layer.length-1;
+					for(int i=0; i<j; i++) {//适配“user.system”这类map嵌套取值
+						data = (Map<String, Object>) data.get(layer[i]);
+					}
+					if(data.containsKey(layer[j])) {
 						List<Object> point = new ArrayList<Object>();
-						point.add(sdf.parse((String)data.get("timestamp")));
-						point.add(data.get(s));
+						point.add(d);
+						point.add(data.get(layer[j]));
 						datas.add(point);
 					}
 				}
@@ -238,13 +247,23 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
         endTime.setTime(end);
         List<String> list = new ArrayList<String>();
         while(true) {
-            list.add(indexPrefix +"_"+ DataFormat.compactDate(startTime.getTime()));
+        	String indexName = indexPrefix +"_"+ DataFormat.compactDate(startTime.getTime());
+        	if(isExistsIndex(indexName)) {
+        		list.add(indexName);
+        	}
             startTime.add(Calendar.DATE, 1);
             if (startTime.compareTo(endTime) > 0) {
                 break;
             }
         }
         return list.toArray(new String[list.size()]);
+    }
+    
+    //判断索引是否存在
+    private boolean isExistsIndex(String indexName){
+        IndicesExistsResponse response = ESUtil.getClient().admin().indices().exists( 
+                        new IndicesExistsRequest().indices(new String[]{indexName})).actionGet();
+        return response.isExists();
     }
 
     @Override
