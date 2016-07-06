@@ -225,7 +225,8 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("mclusterId", mcluster.getId());
 		BackupResultModel result = backupService.selectLastedBackupRecord(params);
-		if(!analRet.getStatus().equals(result.getStatus())) {
+		//只有buiding状态才进行更新
+		if(BackupStatus.BUILDING.equals(result.getStatus())) {
 			result.setStatus(analRet.getStatus());
 			result.setResultDetail(analRet.getResultDetail());
 			result.setEndTime(new Date());
@@ -256,6 +257,9 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 				backup.setDbId(dbModel.getId());
 				backup.setBackupIp(container.getIpAddr());
 				backup.setStartTime(date);
+				if(!BackupStatus.BUILDING.equals(backup.getStatus())) {
+					backup.setEndTime(new Date());
+				}
 	            this.backupService.insert(backup);
 	        }
 			return true;
@@ -325,17 +329,17 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		} else {
 			BackupStatus status = lastedBackupResult.getStatus();
 			String backpType = lastedBackupResult.getBackupType();
-			// 备份失败
-			if(BackupStatus.FAILD.equals(status)) {
+			
+			if(BackupStatus.SUCCESS.equals(status)) {// 备份成功
+				result = executeBackupByWeek(ip, user, pwd, backupDate);
+			} else {// 备份失败
 				if(BackupType.FULL.name().equals(backpType)) {
 					result = pythonService.wholeBackup4Db(ip, user, pwd);
 					result.setBackupType(BackupType.FULL);
 				} else {
 					result = executeBackupByWeek(ip, user, pwd, backupDate);
 				}
-			} else {
-				// 备份成功
-				result = executeBackupByWeek(ip, user, pwd, backupDate);
+				
 			}
 		}
 		return result;
