@@ -296,7 +296,7 @@ function initChart(obj,title,ytitle,unit){
         tooltip: {
             valueSuffix: unit,
             shared: true,
-            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}B/S</b><br/>'
+            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
         }
     });
 
