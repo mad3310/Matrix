@@ -28,7 +28,7 @@ public class ESUtil {
     private static TransportClient client;
 
     static {
-        Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name","matrixlogs")//.put("cluster.name","elasticsearch")
+        Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name","es_matrix_monitor")//.put("cluster.name","elasticsearch")
                 .put("client.transport.sniff",true) //自动探测其他节点，加入到机器列表
                 .put("client", true)
                 .put("data",false)
@@ -36,9 +36,9 @@ public class ESUtil {
         /*client = new TransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress("10.58.185.86", 9300));*/
         client = new TransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress("10.140.62.34", 9300))
-                .addTransportAddress(new InetSocketTransportAddress("10.140.62.32", 9300))
-                .addTransportAddress(new InetSocketTransportAddress("10.140.62.31", 9300));
+                .addTransportAddress(new InetSocketTransportAddress("10.140.65.12", 9300))
+                .addTransportAddress(new InetSocketTransportAddress("10.140.65.13", 9300))
+                .addTransportAddress(new InetSocketTransportAddress("10.140.65.14", 9300));
 
     }
 
