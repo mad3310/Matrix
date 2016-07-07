@@ -65,6 +65,11 @@ public class SkipController {
 		mav.setViewName("/clouddb/mcluster_detail");
 		return mav;
 	}
+	@RequestMapping(value ="/moniter/hcluster",method=RequestMethod.GET)
+	public ModelAndView toMoniterIcon(ModelAndView mav,HttpServletRequest request){
+		mav.setViewName("/clouddb/moniter_hcluster");
+		return mav;
+	}
 	/**Methods Name: toList <br>
 	 * Description: db页面跳转<br>
 	 * @author name: wujun
@@ -221,13 +226,13 @@ public class SkipController {
 
 	@RequestMapping(value="/list/backup",method=RequestMethod.GET)
 	public ModelAndView toBackupView(ModelAndView mav){
-		mav.setViewName("/clouddb/backup_recover");
+		mav.setViewName("/clouddb/rds_log");
 		return mav;
 	}
 	
 	@RequestMapping(value="/list/rds/backup",method=RequestMethod.GET)
 	public ModelAndView toBackupRdsView(ModelAndView mav){
-		mav.setViewName("/clouddb/backup_recover_rds");
+		mav.setViewName("/clouddb/backup_recover");
 		return mav;
 	}
 	
