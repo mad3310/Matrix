@@ -1,8 +1,36 @@
 package com.letv.portal.service.impl;
 
 
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
+import org.elasticsearch.index.query.AndFilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.letv.common.dao.IBaseDao;
-import com.letv.common.exception.CommonException;
 import com.letv.common.util.DataFormat;
 import com.letv.common.util.ESUtil;
 import com.letv.mms.cache.ICacheService;
@@ -10,37 +38,23 @@ import com.letv.mms.cache.factory.CacheFactory;
 import com.letv.portal.constant.Constant;
 import com.letv.portal.dao.IMonitorDao;
 import com.letv.portal.model.ContainerModel;
+import com.letv.portal.model.HostModel;
 import com.letv.portal.model.MonitorDetailModel;
 import com.letv.portal.model.MonitorIndexModel;
 import com.letv.portal.model.monitor.MonitorErrorModel;
 import com.letv.portal.model.monitor.MonitorViewYModel;
 import com.letv.portal.model.monitor.mysql.MysqlDbSpaceMonitor;
 import com.letv.portal.service.IContainerService;
+import com.letv.portal.service.IHostService;
 import com.letv.portal.service.IMonitorIndexService;
 import com.letv.portal.service.IMonitorService;
-import com.letv.portal.service.monitor.mysql.*;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.AndFilterBuilder;
-import org.elasticsearch.index.query.BoolFilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
-import java.text.DecimalFormat;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.letv.portal.service.monitor.mysql.IMysqlDbSpaceMonitorService;
+import com.letv.portal.service.monitor.mysql.IMysqlGaleraMonitorService;
+import com.letv.portal.service.monitor.mysql.IMysqlHealthMonitorService;
+import com.letv.portal.service.monitor.mysql.IMysqlInnoDBMonitorService;
+import com.letv.portal.service.monitor.mysql.IMysqlKeyBufferMonitorService;
+import com.letv.portal.service.monitor.mysql.IMysqlResourceMonitorService;
+import com.letv.portal.service.monitor.mysql.IMysqlTableSpaceMonitorService;
 
 @Service("monitorService")
 public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> implements IMonitorService {
@@ -74,6 +88,9 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 	private String jdbcUrl;
 	@Value("${monitor.statistics.cycle}")
 	private int cycleTime;
+	
+	@Autowired
+	private IHostService hostService;
 
     private ICacheService<?> cacheService = CacheFactory.getCache();
 	
@@ -86,29 +103,79 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		return this.monitorDao;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<MonitorViewYModel> getMonitorViewData(Long mclusterId,Long chartId,Integer strategy) {
+	public List<MonitorViewYModel> getHostDiskMonitorData(Long hostId, Long chartId, Integer strategy) {
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
-	    Map<String, Object> map = new HashMap<String, Object>();
-	    map.put("mclusterId", mclusterId);
-	    List<ContainerModel> containers = this.containerService.selectNodeContainersByMap(map);	  
+		HostModel hostModel = this.hostService.selectById(hostId);
 	    
 	    MonitorIndexModel monitorIndexModel  = this.monitorIndexService.selectById(chartId);	   
 	    Date end = new Date();
-	    String[] detailNames =  monitorIndexModel.getMonitorPoint().split(",");
+	    Date start = getStartDate(end, strategy);
 	    
-		Map<String, Object> params = new HashMap<String, Object>();
+		String[] indexs = getIndexs(monitorIndexModel.getDetailTable().toLowerCase(), start, end);
+		AndFilterBuilder filterBuilder = FilterBuilders.andFilter(
+				FilterBuilders.termFilter("ip", hostModel.getHostIp()),
+				FilterBuilders.rangeFilter("timestamp").from(start).to(end));
+		FieldSortBuilder sortBuilder = SortBuilders.fieldSort("timestamp").order(SortOrder.ASC);
+		
+		SearchHits searchHits = ESUtil.getFilterResult(indexs, filterBuilder, sortBuilder, 100000);
 
+		String[] detailNames =  monitorIndexModel.getMonitorPoint().split(",");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		for (String s : detailNames) {
+			MonitorViewYModel ydata = new MonitorViewYModel();
+			List<List<Object>> datas = new ArrayList<List<Object>>();
+			String[] layer = s.split("\\.");
+			try {
+				for (SearchHit hit : searchHits.getHits()) {
+					Map<String, Object> data = hit.getSource();
+					Date d = sdf.parse((String)data.get("timestamp"));
+					int j = layer.length-1;
+					for(int i=0; i<j; i++) {//适配“user.system”这类map嵌套取值
+						data = (Map<String, Object>) data.get(layer[i]);
+					}
+					if(data.containsKey(layer[j])) {
+						List<Object> point = new ArrayList<Object>();
+						point.add(d);
+						point.add(data.get(layer[j]));
+						datas.add(point);
+					}
+				}
+			} catch (ParseException e) {
+				logger.error(e.getMessage(), e);
+			}
+
+			ydata.setName(hostModel.getHostIp() +":"+s);
+			ydata.setData(datas);
+			ydatas.add(ydata);
+		}
+		return ydatas;
+	}
+	@Override
+	public List<MonitorViewYModel> getMonitorViewData(Long mclusterId,Long chartId,Integer strategy) {
+		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("mclusterId", mclusterId);
+		List<ContainerModel> containers = this.containerService.selectNodeContainersByMap(map);	  
+		
+		MonitorIndexModel monitorIndexModel  = this.monitorIndexService.selectById(chartId);	   
+		Date end = new Date();
+		String[] detailNames =  monitorIndexModel.getMonitorPoint().split(",");
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		
 		params.put("dbName", monitorIndexModel.getDetailTable());
 		params.put("start", getStartDate(end,strategy));
 		params.put("end", end);
-
+		
 		for (ContainerModel c : containers) {
 			for (String s : detailNames) {
 				MonitorViewYModel ydata = new MonitorViewYModel();
 				params.put("ip", c.getIpAddr());
 				params.put("detailName", s);
-
+				
 				List<MonitorDetailModel> list = this.monitorDao.selectDateTime(params);
 				List<List<Object>> datas = new ArrayList<List<Object>>();
 				for (MonitorDetailModel monitorDetail : list) {
@@ -180,13 +247,23 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
         endTime.setTime(end);
         List<String> list = new ArrayList<String>();
         while(true) {
-            list.add(indexPrefix +"_"+ DataFormat.compactDate(startTime.getTime()));
+        	String indexName = indexPrefix +"_"+ DataFormat.compactDate(startTime.getTime());
+        	if(isExistsIndex(indexName)) {
+        		list.add(indexName);
+        	}
             startTime.add(Calendar.DATE, 1);
             if (startTime.compareTo(endTime) > 0) {
                 break;
             }
         }
         return list.toArray(new String[list.size()]);
+    }
+    
+    //判断索引是否存在
+    private boolean isExistsIndex(String indexName){
+        IndicesExistsResponse response = ESUtil.getClient().admin().indices().exists( 
+                        new IndicesExistsRequest().indices(new String[]{indexName})).actionGet();
+        return response.isExists();
     }
 
     @Override
