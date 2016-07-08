@@ -33,7 +33,7 @@ public enum AWSS3Util {
 	INSTANCE;
 	private final static Logger logger = LoggerFactory
 			.getLogger(AWSS3Util.class);
-
+	//FIXME	线程安全？
 	public static AWSS3Util getInstance(AWS3SConn conn) {
 		INSTANCE.conn = conn;
 		return INSTANCE;
@@ -118,13 +118,11 @@ public enum AWSS3Util {
 					+ ase.getStatusCode() + " ,ErrorCode:" + ase.getErrorCode()
 					+ " ,ErrorMsg: " + ase.getMessage();
 			logger.error(errorMsg);
-			ase.printStackTrace();
-			throw new ServiceException(errorMsg);
+			throw new ServiceException(errorMsg,ase);
 		} catch (Exception ace) {
 			String errorMsg = "删除AWS S3 bucket请求连接失败: " + ace.getMessage();
 			logger.error(errorMsg);
-			ace.printStackTrace();
-			throw new CommonException(errorMsg);
+			throw new CommonException(errorMsg,ace);
 		}
 	}
 
@@ -172,13 +170,11 @@ public enum AWSS3Util {
 					+ ase.getStatusCode() + " ,ErrorCode:" + ase.getErrorCode()
 					+ " ,ErrorMsg: " + ase.getMessage();
 			logger.error(errorMsg);
-			ase.printStackTrace();
-			throw new ServiceException(errorMsg);
+			throw new ServiceException(errorMsg,ase);
 		} catch (Exception ace) {
 			String errorMsg = "创建AWS S3 bucket请求连接失败: " + ace.getMessage();
 			logger.error(errorMsg);
-			ace.printStackTrace();
-			throw new CommonException(errorMsg);
+			throw new CommonException(errorMsg,ace);
 		}
 	}
 	/**
@@ -206,13 +202,11 @@ public enum AWSS3Util {
 					+ " ,ErrorCode:" + ase.getErrorCode() + " ,ErrorMsg: "
 					+ ase.getMessage();
 			logger.error(errorMsg);
-			ase.printStackTrace();
-			throw new ServiceException(errorMsg);
+			throw new ServiceException(errorMsg,ase);
 		} catch (Exception ace) {
 			String errorMsg = "请求连接失败: " + ace.getMessage();
 			logger.error(errorMsg);
-			ace.printStackTrace();
-			throw new CommonException(errorMsg);
+			throw new CommonException(errorMsg,ace);
 		}
 	}
 	/**

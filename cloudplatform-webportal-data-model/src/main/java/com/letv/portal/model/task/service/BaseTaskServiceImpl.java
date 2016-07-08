@@ -138,7 +138,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		try {
 			jsonResult = resultMapper.readValue(params, Map.class);
 		}catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return jsonResult;
 	}
@@ -151,7 +151,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		try {
 			jsonResult = resultMapper.writeValueAsString(params);
 		}catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return jsonResult;
 	}

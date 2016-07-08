@@ -359,29 +359,9 @@ public class JavassistFilterPropertyHandler implements FilterPropertyHandler {
 		try {
 			clazz = cc.toClass();
 			proxyMixInAnnotationMap.put(hashCodeOfStringArray(names), clazz);
-			// JsonIgnoreProperties ignoreProperties = (JsonIgnoreProperties)
-			// clazz
-			// .getAnnotation(JsonIgnoreProperties.class);
-
-			// EntityHelper.print(ignoreProperties);
-			//
-			// EntityHelper.print(clazz);
-
-			// try {
-			// Object instance = clazz.newInstance();
-			// EntityHelper.print(instance);
-			//
-			// } catch (InstantiationException e) {
-			// e.printStackTrace();
-			// } catch (IllegalAccessException e) {
-			// e.printStackTrace();
-			// }
 		} catch (CannotCompileException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
-
-		// right
-		// mthd.getMethodInfo().addAttribute(attr);
 
 		return clazz;
 
@@ -431,48 +411,6 @@ public class JavassistFilterPropertyHandler implements FilterPropertyHandler {
 	public ObjectMapper createObjectMapper(Method method) {
 		return createObjectMapper(getProxyMixInAnnotation(method));
 	}
-
-	// /**
-	// * 将结果输出到response <br>
-	// * 2013-10-25 下午2:28:40
-	// *
-	// * @param objectMapper
-	// * @param response
-	// * @param object
-	// */
-	// private void writeJson(ObjectMapper objectMapper, HttpServletResponse
-	// response, Object object) {
-	// response.setContentType("application/json");
-	//
-	// JsonEncoding encoding = getJsonEncoding(response.getCharacterEncoding());
-	// JsonGenerator jsonGenerator = null;
-	// try {
-	// jsonGenerator = objectMapper.getJsonFactory().createJsonGenerator(
-	// response.getOutputStream(), encoding);
-	// } catch (IOException e1) {
-	// e1.printStackTrace();
-	// }
-	//
-	// // A workaround for JsonGenerators not applying serialization features
-	// // https://github.com/FasterXML/jackson-databind/issues/12
-	// if (objectMapper.isEnabled(SerializationFeature.INDENT_OUTPUT)) {
-	// jsonGenerator.useDefaultPrettyPrinter();
-	// }
-	//
-	// try {
-	// objectMapper.writeValue(jsonGenerator, object);
-	// } catch (JsonProcessingException ex) {
-	// LOGGER.error(ex);
-	//
-	// throw new HttpMessageNotWritableException("Could not write JSON: " +
-	// ex.getMessage(),
-	// ex);
-	// } catch (IOException e) {
-	// LOGGER.error(e);
-	// // e.printStackTrace();
-	// }
-	//
-	// }
 
 	/**
 	 * <br>

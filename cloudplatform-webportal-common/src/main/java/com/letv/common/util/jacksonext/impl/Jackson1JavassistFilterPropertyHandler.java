@@ -373,7 +373,7 @@ public class Jackson1JavassistFilterPropertyHandler implements
 			clazz = cc.toClass();
 			proxyMixInAnnotationMap.put(hashCodeOfStringArray(names), clazz);
 		} catch (CannotCompileException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 		return clazz;
 

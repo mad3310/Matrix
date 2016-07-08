@@ -168,7 +168,7 @@ public class ECGceController {
 		} catch (Exception e) {
 			String errMsg = "获取GCE的版本容器信息失败，服务器出错，出错原因：" + e.getMessage();
 			logger.error(errMsg,e);
-			callbackResult.setResult(3);
+			callbackResult.setResult(0);
 			callbackResult.setAlertMessage(errMsg);
 			return callbackResult;
 		}

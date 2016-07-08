@@ -424,8 +424,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		try {
 			saveFileToLocal(file);
 		} catch (IllegalStateException | IOException e) {
-			e.printStackTrace();
-			throw new CommonException("上传应用失败"+e.getMessage());
+			throw new CommonException("上传应用失败"+e.getMessage(),e);
 		}
 		String key = gcePackage.getCreateUser()+"_"+gce.getId()+"_"+gcePackage.getVersion();//"createUserId_gceId_version";//不考虑创建GCE和上传包的人不同情况
 		String filePath = this.MATRIX_GCE_FILE_DEFAULT_LOCAL+"/" + fileName;

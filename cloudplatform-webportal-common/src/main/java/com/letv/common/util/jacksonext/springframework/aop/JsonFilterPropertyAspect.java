@@ -65,9 +65,7 @@ public class JsonFilterPropertyAspect {
 			returnVal = filterPropertyHandler.filterProperties(method,
 					returnVal);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
-			;
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 		}
 		return returnVal;
 	}
