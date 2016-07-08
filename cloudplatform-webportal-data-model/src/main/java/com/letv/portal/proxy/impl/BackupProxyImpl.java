@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.email.bean.MailMessage;
+import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.common.util.CalendarUtil;
 import com.letv.portal.enumeration.BackupStatus;
@@ -614,6 +615,10 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		
 		BackupResultModel serviceBackupRet = getBackupStatusByID(mclusterId);
 		BackupStatus checkStatus = serviceBackupRet.getStatus();
+		
+		if(BackupType.INCR.equals(backupType) && BackupStatus.ABNORMAL.equals(serviceBackupRet.getStatus())) {
+			throw new ValidateException("请先进行全量备份！");
+		}
 		
 		// 如果数据库记录或服务器上备份正在进行，返回空; 否则，发送备份操作
 		if(BackupStatus.BUILDING.equals(originRecord.getStatus()) || BackupStatus.BUILDING == checkStatus) {

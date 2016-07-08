@@ -490,7 +490,7 @@ public class PythonServiceImpl implements IPythonService{
 	private BackupDTO executeBackup4Db(String ip, String name, String pwd, Map<String, String> params) {
 		StringBuffer url = new StringBuffer();
 		url.append(URL_HEAD).append(ip).append(URL_PORT).append("/backup");
-		String result = HttpClient.post(url.toString(), params, name, pwd);
+		String result = HttpClient.post(url.toString(), params, 5000, 10000, name, pwd);
 		return new BackupDTO(result, url.toString());
 	}
 	
