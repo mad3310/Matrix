@@ -13,6 +13,7 @@ import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.common.util.HttpClient;
 import com.letv.portal.enumeration.DbUserRoleStatus;
+import com.letv.portal.model.BackupDTO;
 import com.letv.portal.model.DbUserModel;
 import com.letv.portal.model.HostModel;
 import com.letv.portal.python.service.IPythonService;
@@ -450,20 +451,11 @@ public class PythonServiceImpl implements IPythonService{
 		String result = HttpClient.get(url.toString(),1000,1000);
 		return new ApiResultObject(result, url.toString());
 	}
-
-	@Override
-	public ApiResultObject wholeBackup4Db(String ipAddr,String name, String password) {
-		StringBuffer url = new StringBuffer();
-		url.append(URL_HEAD).append(ipAddr).append(URL_PORT).append("/backup");
-		String result = HttpClient.get(url.toString(),1000,5000,name,password);
-		return new ApiResultObject(result, url.toString());
-	}
-
-	@Override
+	
 	public ApiResultObject checkBackup4Db(String ipAddr) {
 		StringBuffer url = new StringBuffer();
 		url.append(URL_HEAD).append(ipAddr).append(URL_PORT).append("/backup/check");
-		String result = HttpClient.get(url.toString(),1000,10000);
+		String result = HttpClient.get(url.toString(),5000,10000);
 		return new ApiResultObject(result, url.toString());
 	}
 	@Override
@@ -475,5 +467,32 @@ public class PythonServiceImpl implements IPythonService{
 		String result = HttpClient.post(url.toString(), params, 1000, 1000, null, null);
 		return new ApiResultObject(result, url.toString());
 	}
+	
+	@Override
+	public BackupDTO wholeBackup4Db(String ip, String name, String pwd) {
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("backup_type", "full");
+		return executeBackup4Db(ip, name, pwd, params);
+	}
+	
+	@Override
+	public BackupDTO incrBackup4Db(String ip, String name, String pwd) {
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("backup_type", "incr");
+		return executeBackup4Db(ip, name, pwd, params);
+	}
+	
+	/*
+	 * 根据给定的map参数执行备份操作
+	 */
+	private BackupDTO executeBackup4Db(String ip, String name, String pwd, Map<String, String> params) {
+		StringBuffer url = new StringBuffer();
+		url.append(URL_HEAD).append(ip).append(URL_PORT).append("/backup");
+		String result = HttpClient.post(url.toString(), params, 5000, 10000, name, pwd);
+		return new BackupDTO(result, url.toString());
+	}
+	
 
 }

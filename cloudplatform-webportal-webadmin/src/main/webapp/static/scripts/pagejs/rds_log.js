@@ -114,38 +114,43 @@ function queryByPage(currentPage, recordsPerPage) {
 		        		if(array[i].db) {
 		        			dbName = array[i].db.dbName;
 		        		}
-		                var td1 = $("<td class='hidden-480'><a>"
+		        		
+		                var rdsCluster = "<td class='hidden-480'><a>"
 		                		+ "<a class=\"link\" href=\"/detail/mcluster/" + array[i].mclusterId +"\">"+FilterNull(mclusterName)+"</a>"
-		                		+"</a></td>");
-		                var td2 = $("<td>"
-		                		+ "<a class=\"link\" class=\"danger\" href=\"/audit/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
-		                		+"</td>");
-		                var td3 = $("<td class='hidden-480'>"
+		                		+"</a></td>";
+		                var dataBaseName = "<td>"
+		                		+ "<a class=\"link\" class=\"danger\" href=\"/detail/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
+		                		+"</td>"
+		                var startTime = "<td class='hidden-480'>"
 		                        + date('Y-m-d H:i:s',array[i].startTime)
-		                        + "</td>");
-		                var td4 = $("<td class='hidden-480'>"
+		                        + "</td>";
+		                var endTime = "<td class='hidden-480'>"
 	                            + date('Y-m-d H:i:s',array[i].endTime)
-		                        + "</td>");
+		                        + "</td>";
 		                if(array[i].status == 'FAILD'){
-		                	var td5 = $("<td> <a>"
+		                	var status = "<td> <a>"
 								+ translateStatus(array[i].status)
-								+ "</a></td>");
+								+ "</a></td>";
 						}else if(array[i].status == 'BUILDING'){
-							var td5 = $("<td>"
+							var status = "<td>"
 									+ "<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
 									+ "<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"
 									+ translateStatus(array[i].status)
 									+ "</a>"
-									+ "</td>");
+									+ "</td>";
 						}else{
-							var td5 = $("<td> <a>"
+							var status = "<td> <a>"
 									+ translateStatus(array[i].status)
-									+ "</a></td>");
+									+ "</a></td>";
 						}
 		                
-		                var td6 = $("<td>"
-		                        + array[i].resultDetail
-		                        + "</td>");
+		                var type = "<td><a> " +
+		                		translateStatus(array[i].backupType)
+								+ "</a></td>";
+		                
+		                var info = "<td>"
+		                        + (!array[i].resultDetail?"":array[i].resultDetail)
+		                        + "</td>";
 		                if(array[i].status == 'FAILD'){
 							var tr = $("<tr class=\"data-tr default-danger\"></tr>");
 						}else if(array[i].status == 'SUCCESS'){
@@ -153,7 +158,7 @@ function queryByPage(currentPage, recordsPerPage) {
 						}else{
 							var tr = $("<tr class='data-tr'></tr>");
 						}
-		                tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6);
+		                tr.append($(rdsCluster + dataBaseName + startTime + endTime + status + type + info));
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 
@@ -182,6 +187,13 @@ function queryByPage(currentPage, recordsPerPage) {
 		}
 	});
    }
+
+function backupInit(){
+	var timer = setInterval (function(){
+		queryByPage(currentPage, recordsPerPage);
+	},15000);
+}
+
 
 function pageControl() {
 	// 首页

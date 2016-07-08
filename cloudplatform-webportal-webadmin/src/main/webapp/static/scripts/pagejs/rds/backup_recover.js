@@ -5,6 +5,9 @@
 var currentPage = 1; //第几页 
 var recordsPerPage = 15; //每页显示条数
 var currentSelectedLineDbName = 1;
+var timer = null;
+var backup_list = [];
+
 flag = false;
 $(function(){
 	//初始化
@@ -71,7 +74,7 @@ $(".input-group input").each(function(){
         }
     });
 });
-function queryByPage(currentPage, recordsPerPage) {
+function queryByPage(currentPage, recordsPerPage, callBack) {
 	$("#backupTbody tr").remove();
 	if(flag == true){
 		var startTime = '';
@@ -92,7 +95,7 @@ function queryByPage(currentPage, recordsPerPage) {
 	getLoading();
 	$.ajax({ 
 		type : "get",
-		url : "/backup?" + "&&startTime=" + startTime + "&&endTime=" + endTime + "&&currentPage=" + currentPage + "&&recordsPerPage=" + recordsPerPage + "&&dbName=" + dbName +"&&mclusterName=" + mclusterName +'&&status=' + backupStatus,
+		url : "/backup/latestLog/list?" + "&&startTime=" + startTime + "&&endTime=" + endTime + "&&currentPage=" + currentPage + "&&recordsPerPage=" + recordsPerPage + "&&dbName=" + dbName +"&&mclusterName=" + mclusterName +'&&status=' + backupStatus,
 		dataType : "json", /*这句可用可不用，没有影响*/
 		contentType : "application/json; charset=utf-8",
 		success : function(data) {
@@ -101,6 +104,8 @@ function queryByPage(currentPage, recordsPerPage) {
 			var $backupTbody = $("#backupTbody");
 			var totalPages = data.data.totalPages;
 			var array = data.data.data;
+			backup_list = array;
+
 			if(array.length == 0){
 				$("#noData").removeClass("hidden");
 			}else{
@@ -114,50 +119,61 @@ function queryByPage(currentPage, recordsPerPage) {
 		        		if(array[i].db) {
 		        			dbName = array[i].db.dbName;
 		        		}
-		                var td1 = $("<td class='hidden-480'><a>"
+		                var rdsCluster = "<td class='hidden-480'><a>"
 		                		+ "<a class=\"link\" href=\"/detail/mcluster/" + array[i].mclusterId +"\">"+FilterNull(mclusterName)+"</a>"
-		                		+"</a></td>");
-		                var td2 = $("<td>"
-		                		+ "<a class=\"link\" class=\"danger\" href=\"/audit/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
-		                		+"</td>");
+		                		+"</a></td>";
+		                var dataBaseName = "<td>"
+		                		+ "<a class=\"link\" class=\"danger\" href=\"/detail/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
+		                		+"</td>";
 		                if(array[i].status == 'FAILD'){
-		                	var td5 = $("<td> <a>"
+		                	var status = "<td class='status'> <a>"
 								+ translateStatus(array[i].status)
-								+ "</a></td>");
+								+ "</a></td>";
 						}else if(array[i].status == 'BUILDING'){
-							var td5 = $("<td>"
+							var status = "<td class='status'>"
 									+ "<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
 									+ "<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"
 									+ translateStatus(array[i].status)
 									+ "</a>"
-									+ "</td>");
+									+ "</td>";
 						}else{
-							var td5 = $("<td> <a>"
+							var status = "<td class='status'> <a>"
 									+ translateStatus(array[i].status)
-									+ "</a></td>");
+									+ "</a></td>";
 						}
 		                
-		                var allBackUpHtml='',addBackUpHtml=''
-		                	
-						var allBackUpOs=containerClusterOs(array[i].status,"rds","backup");
-						var addBackUpOs=containerClusterOs(array[i].status,"rds","backup");
-						allBackUpHtml=allBackUpOs==0?allBackUpHtml:containerOsHtml("rds","start");
-		                addBackUpHtml=addBackUpOs==0?addBackUpHtml:containerOsHtml("rds","start");
+//		                var allBackUpHtml='',addBackUpHtml=''
+//		                	
+//						var allBackUpOs=containerClusterOs(array[i].status,"rds","backup");
+//						var addBackUpOs=containerClusterOs(array[i].status,"rds","backup");
+//						allBackUpHtml=allBackUpOs==0?allBackUpHtml:containerOsHtml("rds","start");
+//		                addBackUpHtml=addBackUpOs==0?addBackUpHtml:containerOsHtml("rds","start");
 		                
-		                var td6 = "<td data-status='"+array[i].status+"'>"
-						+"<div class='hidden-sm hidden-xs  action-buttons'>"
-						+allBackUpHtml+addBackUpHtml
-						+"</div>"
-						+'<div class="hidden-md hidden-lg">'
-						+'<div class="inline pos-rel">'
-						+'<button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown" data-position="auto">'
-							+'<i class="ace-icon fa fa-caret-down icon-only bigger-120"></i>'
-						+'</button>'
-						+'<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">'
-							+'<li>'+allBackUpHtml+'</li>'
-							+'<li>'+addBackUpHtml+'</li>'
-						+'</ul></div></div>'
-					+ "</td>";
+//		                var td6 = "<td data-status='"+array[i].status+"'>"
+//						+"<div class='hidden-sm hidden-xs  action-buttons'>"
+//						+allBackUpHtml+addBackUpHtml
+//						+"</div>"
+//						+'<div class="hidden-md hidden-lg">'
+//						+'<div class="inline pos-rel">'
+//						+'<button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown" data-position="auto">'
+//							+'<i class="ace-icon fa fa-caret-down icon-only bigger-120"></i>'
+//						+'</button>'
+//						+'<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">'
+//							+'<li>'+allBackUpHtml+'</li>'
+//							+'<li>'+addBackUpHtml+'</li>'
+//						+'</ul></div></div>'		                		       
+//					+ "</td>";
+		                var type = "<td><a> " +
+		                		translateStatus(array[i].backupType)
+								+ "</a></td>";
+		                
+		                var info = "<td> " +
+		                		"<a href='javascript:void(0);' class='backup-add'>增量备份</a>&nbsp;&nbsp"
+								+ "<a href='javascript:void(0);' class='backup-all'>全量备份</a>"
+								+ "</td>";
+		               
+		                
+		                
 		                if(array[i].status == 'FAILD'){
 							var tr = $("<tr class=\"data-tr default-danger\"></tr>");
 						}else if(array[i].status == 'SUCCESS'){
@@ -165,7 +181,9 @@ function queryByPage(currentPage, recordsPerPage) {
 						}else{
 							var tr = $("<tr class='data-tr'></tr>");
 						}
-		                tr.append(td1).append(td2).append(td5).append(td6);
+		                tr.attr("mclusterId",array[i].mclusterId);
+		                tr.attr("id",array[i].id);
+		                tr.append($(rdsCluster+dataBaseName+status+type+info));
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 
@@ -179,6 +197,10 @@ function queryByPage(currentPage, recordsPerPage) {
 				$("#currentPage").html(currentPage);
 				$("#totalRows").html(data.data.totalRecords);
 				$("#totalPage").html(totalPages);
+			}
+			
+			if(callBack){
+				callBack();
 			}
 		},
 		error : function(XMLHttpRequest,textStatus, errorThrown) {
@@ -194,6 +216,121 @@ function queryByPage(currentPage, recordsPerPage) {
 		}
 	});
    }
+
+
+function backupInit(){
+	var timer = setInterval (function(){
+		if(backup_list.length>0){
+			UpdateBackupState();
+		}
+	},15000);
+	
+	$("#backupTbody").delegate('.backup-add,.backup-all', 'click', function(){
+
+		var mclusterId = $(this).parents("tr").attr("mclusterId");
+		var id = $(this).parents("tr").attr("id");
+		var index = $(this).parents("tr").index();
+		var type = "full";
+		
+		if($(this).hasClass("backup-add")){
+			type = "incr";
+		}
+		
+		if(backup_list[index].status=="BUILDING"){
+			warn("备份中",2000);
+		}else{
+			BackupFunc(id, mclusterId, type);
+		}
+
+	});
+}
+
+
+function BackupFunc(id,mclusterId,type){
+	var url = "";
+	if(type=="incr"){
+		url = "/backup/incr?id="+id+"&mclusterId="+mclusterId;
+	}else{
+		url = "/backup/full?id="+id+"&mclusterId="+mclusterId;
+	}
+
+	$.ajax({ 
+		cache:false,
+		type : "get",
+		url :url,
+		dataType : "json",
+		contentType : "application/json; charset=utf-8",
+		success : function(data) {
+			if(!data.result){
+				warn("获取数据失败",2000);
+			}else{
+				queryByPage(currentPage,recordsPerPage);
+				UpdateBackupState();
+			}
+		}
+	});
+}
+
+
+function UpdateBackupState(){	
+	backup_list.forEach(function(item,index){
+		if(item.status=="BUILDING"){
+			var mclusterId = item["mclusterId"];
+			var id = item["id"];
+			getState(id,mclusterId, function(state){
+				UpdateBackupStateById(id, state);
+			});
+		}
+	});
+}
+
+
+function UpdateBackupStateById(id,state){
+			
+	var objTr = $("#backupTbody").find("tr[id='"+id+"']");
+	var obj = objTr.find(".status a");
+	//color
+    if(state == 'FAILD'){
+    	objTr.attr("class","data-tr default-danger");
+	}else if(state == 'SUCCESS'){
+		objTr.attr("class","data-tr success");
+	}else{
+		objTr.attr("class","data-tr");
+	}
+    //icon
+    if(state == 'BUILDING'){
+    	obj.html(translateStatus("<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"+state));
+    }else{
+    	obj.text(translateStatus(state));
+    }
+    
+	backup_list.forEach(function(item){
+		if(item.id==id){
+			item.status = state;
+		}
+	});
+}
+
+
+function getState(id, mclusterId, callback){
+	var state = "";
+	$.ajax({ 
+		cache:false,
+		type : "get",
+		url :"/backup/check?id="+id+"&mclusterId="+mclusterId,
+		dataType : "json",
+		contentType : "application/json; charset=utf-8",
+		success : function(data) {
+			if(data.result==0){
+				state = "ABNORMAL";
+			}else{
+				state = data.data.status;
+			}
+			callback(state);
+		}
+	});
+}
+
 
 function pageControl() {
 	// 首页
@@ -257,17 +394,13 @@ function searchAction(){
 }
 
 function InitSearchClearButton(){
-	var inputDbNameEl=$("#dbName"),
-	inputmclusterNameEl=$("#mclusterName"),
-	selectBackupStatusEl=$('#backupStatus'),
-	startTimeEl=$('#startTime').data("DateTimePicker"),
-	endTimeEl=$('#endTime').data("DateTimePicker");
+	var inputDbNameEl=$("#dbName");
+	inputmclusterNameEl=$("#mclusterName");
+	selectBackupStatusEl=$('#backupStatus');
 	$("#btnSearchClear").on('click',function(e){
 		inputDbNameEl.val("");
 		inputmclusterNameEl.val("");
 		selectBackupStatusEl.val("");
-		startTimeEl.date(null);
-		endTimeEl.date(null);
 		queryByPage(currentPage, recordsPerPage);
 	});
 }
@@ -278,4 +411,5 @@ function page_init(){
 	searchAction();
 	pageControl();
 	InitSearchClearButton();
+	backupInit();
 }

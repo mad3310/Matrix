@@ -16,6 +16,10 @@ import com.letv.common.paging.impl.Page;
 import com.letv.common.result.ResultObject;
 import com.letv.common.util.HttpUtil;
 import com.letv.common.util.StringUtil;
+import com.letv.portal.model.BackupDTO;
+import com.letv.portal.model.BackupResultModel;
+import com.letv.portal.model.MclusterModel;
+import com.letv.portal.proxy.IBackupProxy;
 import com.letv.portal.service.IBackupService;
 import com.letv.portal.service.adminoplog.ClassAoLog;
 
@@ -26,6 +30,8 @@ public class BackupController {
 	
 	@Autowired
 	private IBackupService backupService;
+	@Autowired
+	private IBackupProxy backupProxy;
 	
 	private final static Logger logger = LoggerFactory.getLogger(BackupController.class);
 		
@@ -37,6 +43,53 @@ public class BackupController {
 		params.put("orderBy", "START_TIME");
 		params.put("isAsc", true);
 		obj.setData(this.backupService.selectPageByParams(page, params));
+		return obj;
+	}
+	
+	@RequestMapping(value="/latestLog/list", method=RequestMethod.GET)   
+	public @ResponseBody ResultObject latestLog(HttpServletRequest request, Page page, ResultObject obj) {
+		Map<String,Object> params = HttpUtil.requestParam2Map(request);
+		params.put("dbName", StringUtil.transSqlCharacter(request.getParameter("dbName")));
+		params.put("mclusterName", StringUtil.transSqlCharacter(request.getParameter("mclusterName")));
+		params.put("orderBy", "START_TIME");
+		params.put("isAsc", true);
+		obj.setData(backupService.selectLatestLogPageByParams(page, params));
+		return obj;
+	}
+	 
+	@RequestMapping(value="/full", method=RequestMethod.GET)   
+	public @ResponseBody ResultObject wholeBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {
+		BackupResultModel dto = backupProxy.wholeBackup4Db(mcluster);
+		if(null == dto) {
+			obj.setResult(0);
+			obj.addMsg("备份请求异常, 服务器状态不符合备份要求！");
+		} else {
+			obj.setData(dto);
+		}
+		return obj;
+	}
+	
+	@RequestMapping(value="/incr", method=RequestMethod.GET)   
+	public @ResponseBody ResultObject incrBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {
+		BackupResultModel dto = backupProxy.incrBackup4Db(mcluster);
+		if(null == dto) {
+			obj.setResult(0);
+			obj.addMsg("备份请求异常, 服务器状态不符合备份要求！");
+		} else {
+			obj.setData(dto);
+		}
+		return obj;
+	}
+	
+	@RequestMapping(value="/check", method=RequestMethod.GET)   
+	public @ResponseBody ResultObject getBackup4Db(HttpServletRequest request, BackupResultModel backupRecord, ResultObject obj) {
+		BackupResultModel result = backupProxy.getBackupResulFromService(backupRecord);
+		if(null == result) {
+			obj.setResult(0);
+			obj.addMsg("服务器请求异常！");
+		} else {
+			obj.setData(result);
+		}
 		return obj;
 	}
 	

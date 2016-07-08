@@ -24,7 +24,35 @@
 		</div>
 		<div class="widget-body">
 			<div class="input-group col-sm-12 col-xs-12 col-md-12">
-
+				<div class="form-group time-range-unit-header col-xs-12 col-sm-12 col-md-12">
+					<span class="time-range-title hidden-480">选择时间范围：</span>
+					<span class="time-range-title hidden-md hidden-lg">开始时间：</span>
+					<div class="date-unit">
+						<input type='text' class="form-control datetimepicker" id='startTime' />
+					</div>
+					<br class="hidden-md hidden-lg">
+					<span class="date-step-span hidden-480">至</span>
+					<span class="time-range-title hidden-md hidden-lg">结束时间：</span>
+					<div class="date-unit">
+						<input type='text' class="form-control datetimepicker" id='endTime' />
+					</div>	
+				</div>
+				<script type="text/javascript">
+					$(function () {						
+		                $('#startTime').datetimepicker({
+		            		viewMode: 'days',
+		            		format: 'L',
+		            		locale: 'zh-cn'
+		            	});
+		                
+		                $('#endTime').datetimepicker({
+		            		viewMode: 'days',
+		            		format: 'L',
+		            		locale: 'zh-cn'
+		            	});		             
+		                
+		            });
+				</script>
 				<div class="form-group col-xs-12 col-sm-6 col-md-3">
 					<input id="dbName" type="input" class="form-control"
 						placeholder="请输入数据库名称">
@@ -65,10 +93,13 @@
 									<td style="width: 20%">结束时间</td>
 									<td style="width: 10%">状态</td>
 									<td style="width: 20%">详情</td> -->
-									<td style="width: 20%" class="hidden-480">RDS集群</td>
-									<td style="width: 20%">数据库名称</td>
-									<td style="width: 20%">状态</td>
-									<td style="width: 40%">详情</td>
+									<td class="hidden-480">RDS集群</td>
+									<td>数据库名称</td>
+									<td class="hidden-480">开始时间</td>
+									<td class="hidden-480">结束时间</td>
+									<td style="width: 7%">状态</td>
+									<td style="width: 5%">类型</td>
+									<td>详情</td>
 								</tr> 
 							</thead>
 							<tbody id="backupTbody">
@@ -101,4 +132,4 @@
 <!-- js -->
 <script src="${ctx}/static/scripts/moment/2.9.0/moment-with-locales.min.js"></script>
 <script src="${ctx}/static/scripts/bootstrap/datetimepicker/bootstrap-datetimepicker.js"></script>
-<script src="${ctx}/static/scripts/pagejs/rds/backup_recover_rds.js"></script>
+<script src="${ctx}/static/scripts/pagejs/rds_log.js"></script>
