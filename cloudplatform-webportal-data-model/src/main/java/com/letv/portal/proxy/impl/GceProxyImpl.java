@@ -4,6 +4,7 @@ package com.letv.portal.proxy.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import com.letv.portal.model.HostModel;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
 import com.letv.portal.model.elasticcalc.gce.EcGceExt;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
+import com.letv.portal.model.elasticcalc.gce.EcGcePackageContainer;
 import com.letv.portal.model.gce.GceCluster;
 import com.letv.portal.model.gce.GceContainer;
 import com.letv.portal.model.gce.GceServer;
@@ -49,6 +51,7 @@ import com.letv.portal.python.service.IGcePythonService;
 import com.letv.portal.python.service.IPythonService;
 import com.letv.portal.service.IBaseService;
 import com.letv.portal.service.IHostService;
+import com.letv.portal.service.elasticcalc.gce.IGcePackageContainerService;
 import com.letv.portal.service.elasticcalc.gce.IGcePackageService;
 import com.letv.portal.service.elasticcalc.gce.IGceService;
 import com.letv.portal.service.gce.IGceClusterService;
@@ -70,6 +73,8 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	private IGceService gceService;
 	@Autowired
 	private IGcePackageService gcePackageService;
+	@Autowired
+	private IGcePackageContainerService gcePackageContainerService;
 	
 	@Autowired
 	private IGcePythonService gcePythonService;
@@ -368,18 +373,28 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		gce.setGceName(StringEscapeUtils.escapeHtml(gce.getGceName()));
 		if(!StringUtils.isEmpty(gce.getDescn()))
 			gce.setDescn(StringEscapeUtils.escapeHtml(gce.getDescn()));
-		//2.保存GCE信息到LogStash
+		//2.校验该GCE是否已经存在
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("gceName", gce.getGceName());
+		exParams.put("hclusterId", gce.getHclusterId());
+		exParams.put("areaId", gce.getAreaId());
+		exParams.put("createUser", gce.getCreateUser());
+		Integer existLength = this.gceService.selectByMapCount(exParams);
+		if(existLength>0){
+			throw new ValidateException(MessageFormat.format("{0}应用已存在", gce.getGceName()));
+		}
+		//3.保存GCE信息到LogStash
 		LogServer log = new LogServer();
 		log.setLogName(gce.getGceName());
 		log.setHclusterId(gce.getHclusterId());
 		log.setCreateUser(gce.getCreateUser());
 		log.setType("logstash");
 		this.logServerService.save(log);
-		//3.保存GCE信息
+		//4.保存GCE信息
 		gce.setLogId(log.getId());
 		gce.setStatus(GceStatus.AVAILABLE.getValue());//可用
 		this.gceService.insert(gce);
-		//4.保存GCE扩展服务信息
+		//5.保存GCE扩展服务信息
 		if(gceExt!=null && (gceExt.getOcsId().longValue()!=0L) && (gceExt.getRdsId().longValue()!=0L)){
 			gceExt.setGceId(gce.getId());
 			this.gceService.saveGceExt(gceExt);
@@ -388,11 +403,21 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	@Transactional//任意异常都回滚
 	@Override
 	public void uploadPackage(MultipartFile file, EcGcePackage gcePackage) {
-		// TODO Auto-generated method stub
 		//1.校验该GCE是否存在
-		EcGce gce = this.gceService.selectById(gcePackage.getGceId());
-		if(gce == null)
-			throw new ValidateException("该GCE应用不存在");
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("gceName", gcePackage.getGceName());
+		exParams.put("createUser", gcePackage.getCreateUser());
+		exParams.put("deleted", false);
+		EcGce gce = null;
+		List<EcGce> list = this.gceService.selectByMap(exParams);
+		if(list == null || list.size()<=0){
+			throw new ValidateException(MessageFormat.format("{0}应用不存在", gcePackage.getGceName()));
+		}
+		gce = list.get(0);
+		if(gce.getStatus()==GceStatus.NOTAVAILABLE.getValue()){
+			throw new ValidateException(MessageFormat.format("{0}应用不可用", gce.getGceName()));
+		}
+		gcePackage.setGceId(gce.getId());
 		//2.接收文件，保存文件到s3上
 		String fileName = file.getOriginalFilename();
 		String suffix = fileName.substring(fileName.lastIndexOf("."));//.war
@@ -408,7 +433,6 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		AWS3SConn conn = builder.setEndpoint(this.AWSS3ENDPOINT).setAccessKey(this.AWSS3ACCESSKEY)
 				.setSecretKey(this.AWSS3SECRETKEY).build();
 		AWSS3Util.getInstance(conn).upload(this.AWSS3BUCKETNAME,key,filePath);
-		removeFileFromLocal(fileName);
 		//3.保存GcePackage到数据库
 		gcePackage.setSuffix(suffix);
 		gcePackage.setBucketName(this.AWSS3BUCKETNAME);
@@ -421,6 +445,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		params.put("gceId", gce.getId());
 		params.put("gceName", gce.getGceName());
 		params.put("buyNum", gce.getInstanceNum());
+		params.put("type", gce.getType().trim().toLowerCase());
 		
 		//TODO 往集合里put后何作用
 		LogServer logServer = this.logServerService.selectById(gce.getLogId());
@@ -436,20 +461,18 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 			}
 		}
 		//TODO 往集合里put后何用途
-		params.put("isCreateLog", true);
+		/*params.put("isCreateLog", true);
 		params.put("isConfig", false);
-		params.put("isContinue", false);
+		params.put("isContinue", false);*/
 		//4.创建GCE应用包流程
 		this.taskEngine.run(GCE_BUY_PROCESS, params);
+		//5.删除暂存在本地的文件
+		removeFileFromLocal(fileName);
 	}
 	
 	private File saveFileToLocal(MultipartFile file) throws IllegalStateException, IOException {
         String fileName = file.getOriginalFilename(); 
-        try {
-			fileName = new String(fileName.getBytes("ISO8859-1"),"UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
+        fileName = new String(fileName.getBytes("ISO8859-1"),"UTF-8");
         File targetFile = new File(MATRIX_GCE_FILE_DEFAULT_LOCAL, fileName);  
         if(!targetFile.exists()){  
             targetFile.mkdirs();  
@@ -457,8 +480,57 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
         file.transferTo(targetFile);  
 		return targetFile;
 	}
-	private boolean removeFileFromLocal(String fileName) {
+	private void removeFileFromLocal(String fileName) {
 		File targetFile = new File(MATRIX_GCE_FILE_DEFAULT_LOCAL, fileName);  
-		return targetFile.delete();
+		targetFile.delete();
+	}
+
+	@Override
+	public List<EcGcePackageContainer> getGcepackageContainers(
+			EcGcePackage gcePackage) {
+		//1.校验该GCE是否存在
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("gceName", gcePackage.getGceName());
+		exParams.put("createUser", gcePackage.getCreateUser());
+		exParams.put("deleted", false);
+		EcGce gce = null;
+		List<EcGce> list = this.gceService.selectByMap(exParams);
+		if(list == null || list.size()<=0){
+			throw new ValidateException(MessageFormat.format("{0}应用不存在", gcePackage.getGceName()));
+		}
+		gce = list.get(0);
+		if(gce.getStatus()==GceStatus.NOTAVAILABLE.getValue()){
+			throw new ValidateException(MessageFormat.format("{0}应用不可用", gce.getGceName()));
+		}
+		//2.校验该版本是否存在
+		Map<String,Object> ex2Params = new HashMap<String,Object>();
+		ex2Params.put("gceId", gce.getId());
+		ex2Params.put("createUser", gcePackage.getCreateUser());
+		ex2Params.put("version", gcePackage.getVersion());
+		ex2Params.put("deleted", false);
+		EcGcePackage ecGcePackage = null;
+		List<EcGcePackage> list2 = this.gcePackageService.selectByMap(ex2Params);
+		if(list2 == null || list2.size()<=0){
+			throw new ValidateException(MessageFormat.format("{0}应用{1}版本不存在", gcePackage.getGceName(),gcePackage.getVersion()));
+		}
+		ecGcePackage = list2.get(0);
+		Integer gcepackStatus = ecGcePackage.getStatus();
+		if(gcepackStatus!=GcePackageStatus.NORMAL.getValue()){//NORMAL为部署成功
+			if(gcepackStatus==GcePackageStatus.BUILDFAIL.getValue()){
+				throw new ValidateException(MessageFormat.format("{0}应用版本{1}部署失败", gce.getGceName(),gcePackage.getVersion()));
+			}else{
+				throw new CommonException(MessageFormat.format("{0}应用版本{1}正在部署中", gce.getGceName(),gcePackage.getVersion()));
+			}
+		}
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("gceId", gce.getId());
+		map.put("createUser", gcePackage.getCreateUser());
+		map.put("gcePackageId", ecGcePackage.getId());
+		map.put("deleted", false);
+		List<EcGcePackageContainer> containers = this.gcePackageContainerService.selectByMap(map);
+		if(list2 == null || list2.size()<=0){
+			throw new ValidateException(MessageFormat.format("{0}应用{1}版本容器列表为空", gcePackage.getGceName(),gcePackage.getVersion()));
+		}
+		return containers;
 	}
 }

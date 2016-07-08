@@ -5,6 +5,8 @@
  */
 package com.letv.portal.model.elasticcalc.gce;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.letv.common.model.BaseModel;
 
 /**
@@ -13,6 +15,7 @@ import com.letv.common.model.BaseModel;
  * @since 2016年6月27日, 下午3:33:19 .
  * @version 1.0 .
  */
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class EcGcePackageContainer extends BaseModel {
 
 	private static final long serialVersionUID = -5070819205246981080L;
@@ -114,7 +117,7 @@ public class EcGcePackageContainer extends BaseModel {
 	/**
 	 * GCE主键
 	 */
-	private String gceId;
+	private Long gceId;
 
 	/**
 	 * GCE应用版本ID
@@ -124,12 +127,7 @@ public class EcGcePackageContainer extends BaseModel {
 	/**
 	 * GCE集群ID
 	 */
-	private Long gceclusterId;
-
-	/**
-	 * STATUS
-	 */
-	private Integer status;
+	private Long gcePackageClusterId;
 
 	/**
 	 * 对应zabbix删除container时候需要的标识
@@ -146,6 +144,11 @@ public class EcGcePackageContainer extends BaseModel {
 	 */
 	private String logBindHostPort;
 
+	/**
+	 * STATUS
+	 */
+	private Integer status;
+	
 	public String getContainerName() {
 		return containerName;
 	}
@@ -298,11 +301,11 @@ public class EcGcePackageContainer extends BaseModel {
 		this.containerUuid = containerUuid;
 	}
 
-	public String getGceId() {
+	public Long getGceId() {
 		return gceId;
 	}
 
-	public void setGceId(String gceId) {
+	public void setGceId(Long gceId) {
 		this.gceId = gceId;
 	}
 
@@ -314,12 +317,12 @@ public class EcGcePackageContainer extends BaseModel {
 		this.gcePackageId = gcePackageId;
 	}
 
-	public Long getGceclusterId() {
-		return gceclusterId;
+	public Long getGcePackageClusterId() {
+		return gcePackageClusterId;
 	}
 
-	public void setGceclusterId(Long gceclusterId) {
-		this.gceclusterId = gceclusterId;
+	public void setGcePackageClusterId(Long gcePackageClusterId) {
+		this.gcePackageClusterId = gcePackageClusterId;
 	}
 
 	public Integer getStatus() {

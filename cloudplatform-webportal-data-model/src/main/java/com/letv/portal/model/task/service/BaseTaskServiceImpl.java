@@ -85,7 +85,32 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		return tr;
 		
 	}
-	
+	@Override
+	@SuppressWarnings("unchecked")
+	public TaskResult analyzeComplexRestServiceResult(ApiResultObject resultObject){
+		TaskResult tr = new TaskResult();
+		Map<String, Object> map = transToMap(resultObject.getResult());
+		if(map == null) {
+			tr.setSuccess(false);
+			tr.setResult("api connect failed");
+			return tr;
+		}
+		Map<String,Object> meta = (Map<String, Object>) map.get("meta");
+		Map<String,Object> response = null;
+		//如果meta的code为200，再判断response的code
+		boolean isSucess = Constant.PYTHON_API_RESPONSE_SUCCESS.equals(String.valueOf(meta.get("code")));
+		if(isSucess) {
+			response = (Map<String, Object>) map.get("response");
+			isSucess = Constant.PYTHON_API_RESULT_SUCCESS.equals(String.valueOf(response.get("code")));
+		}
+		if(isSucess) {
+			tr.setResult((String) response.get("message"));
+		} else {
+			tr.setResult((String) meta.get("errorType") +",the api url:" + resultObject.getUrl());
+		}
+		tr.setSuccess(isSucess);
+		return tr;
+	}
 	public void buildResultToMgr(String buildType,String result,String detail,String to){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("buildType", buildType);

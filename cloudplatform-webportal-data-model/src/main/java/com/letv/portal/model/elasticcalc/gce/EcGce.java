@@ -5,7 +5,6 @@
  */
 package com.letv.portal.model.elasticcalc.gce;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -102,7 +101,7 @@ public class EcGce extends BaseModel {
 		return memorySize;
 	}
 	//TODO
-	@NumberLimit(limits = {1,5},message = "购买数量必须在1-5之中")
+	@NumberLimit(limits = {1,2,3,4,5},message = "购买数量必须在1-5之中")
 	public Integer getInstanceNum() {
 		return instanceNum;
 	}

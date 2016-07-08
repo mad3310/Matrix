@@ -1,14 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IGceExtDao" >
-  <insert id="insert" parameterType="EcGceExt" useGeneratedKeys="true" keyProperty="id">
-    insert into EC_GCE_EXT (ID, GCE_ID, RDS_ID, 
-      OCS_ID, DELETED, CREATE_TIME, 
-      UPDATE_TIME, CREATE_USER, UPDATE_USER
-      )
-    values (#{id,jdbcType=BIGINT}, #{gceId,jdbcType=BIGINT}, #{rdsId,jdbcType=BIGINT}, 
-      #{ocsId,jdbcType=BIGINT}, #{deleted,jdbcType=TINYINT}, now(), 
-      #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT}, #{updateUser,jdbcType=BIGINT}
-      )
-  </insert>
+<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IGceExtDao">
+	<resultMap id="BaseResultMap" type="EcGceExt">
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="GCE_ID" property="gceId" jdbcType="BIGINT" />
+		<result column="RDS_ID" property="rdsId" jdbcType="BIGINT" />
+		<result column="OCS_ID" property="ocsId" jdbcType="BIGINT" />
+		<result column="DELETED" property="deleted" jdbcType="TINYINT" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, GCE_ID, RDS_ID, OCS_ID, DELETED, CREATE_TIME,
+		UPDATE_TIME,
+		CREATE_USER, UPDATE_USER
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null and id != '' ">
+				and ID=#{id}
+			</if>
+			<if test="gceId != null and gceId != ''  ">
+				and GCE_ID=#{gceId}
+			</if>
+			<if test="rdsId != null and rdsId != ''  ">
+				and RDS_ID=#{rdsId}
+			</if>
+			<if test="ocsId != null and ocsId != ''  ">
+				and OCS_ID=#{ocsId}
+			</if>
+			<if test="deleted != null and deleted != ''  ">
+				and DELETED=#{deleted}
+			</if>
+			<if test="createTime != null and createTime != ''  ">
+				and CREATE_TIME=#{createTime}
+			</if>
+			<if test="updateTime != null and updateTime != ''  ">
+				and UPDATE_TIME=#{updateTime}
+			</if>
+			<if test="createUser != null and createUser != ''  ">
+				and CREATE_USER=#{createUser}
+			</if>
+			<if test="updateUser != null and updateUser != ''  ">
+				and UPDATE_USER=#{updateUser}
+			</if>
+		</trim>
+	</sql>
+	<!-- 根据条件查询 -->
+	<select id="selectByMap" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE_EXT
+		<include refid="Example_Where_Clause" />
+	</select>
+	<insert id="insert" parameterType="EcGceExt" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into EC_GCE_EXT (ID, GCE_ID, RDS_ID,
+		OCS_ID,
+		DELETED, CREATE_TIME,
+		UPDATE_TIME, CREATE_USER, UPDATE_USER
+		)
+		values
+		(#{id,jdbcType=BIGINT}, #{gceId,jdbcType=BIGINT},
+		#{rdsId,jdbcType=BIGINT},
+		#{ocsId,jdbcType=BIGINT},
+		#{deleted,jdbcType=TINYINT}, now(),
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{createUser,jdbcType=BIGINT}, #{updateUser,jdbcType=BIGINT}
+		)
+	</insert>
 </mapper>

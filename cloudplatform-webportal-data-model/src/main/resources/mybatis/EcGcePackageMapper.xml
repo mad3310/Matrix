@@ -21,15 +21,43 @@
 		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		`ID`, `VERSION`, `SUFFIX`, `BUCKETNAME`, `KEY`, `PORT_FORWARD`, `GCE_ID`,
+		`ID`, `VERSION`, `SUFFIX`, `BUCKETNAME`, `KEY`,
+		`PORT_FORWARD`, `GCE_ID`,
 		`GCECLUSTER_ID`, `GCE_IMAGE_NAME`,
-		`STATUS`, `DELETED`, `CREATE_TIME`, `UPDATE_TIME`, `CREATE_USER`, `UPDATE_USER`
+		`STATUS`,
+		`DELETED`, `CREATE_TIME`, `UPDATE_TIME`, `CREATE_USER`, `UPDATE_USER`
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null and id != '' ">
+				and ID=#{id}
+			</if>
+			<if test="version != null  and version != '' and version != 'null'">
+				and VERSION=#{version}
+			</if>
+			<if test="gceId != null and gceId != '' ">
+				and GCE_ID=#{gceId}
+			</if>
+			<if test="createUser != null and createUser != '' ">
+				and CREATE_USER=#{createUser}
+			</if>
+		</trim>
 	</sql>
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
 		from EC_GCE_PACKAGE
 		where `ID` = #{id,jdbcType=BIGINT}
+	</select>
+	<!-- 根据条件查询 -->
+	<select id="selectByMap" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE_PACKAGE
+		<include refid="Example_Where_Clause" />
 	</select>
 	<insert id="insert" parameterType="EcGcePackage"
 		useGeneratedKeys="true" keyProperty="id">

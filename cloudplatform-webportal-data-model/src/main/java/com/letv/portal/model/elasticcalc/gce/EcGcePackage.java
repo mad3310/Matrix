@@ -70,6 +70,10 @@ public class EcGcePackage extends BaseModel {
 	 * 状态
 	 */
 	private Integer status;
+	/**
+	 * GCE名称	数据库无该字段，添加该字段只是为了方便前端validate
+	 */
+	private String gceName;
 
 	@GcePackageVersionFormatLimit(message = "版本号规范必须为x.x.x.x，例如1.1.1.12")
 	public String getVersion() {
@@ -112,7 +116,6 @@ public class EcGcePackage extends BaseModel {
 		this.portForward = portForward;
 	}
 	
-	@NotNull(message = "GCE ID号不能为空")
 	public Long getGceId() {
 		return gceId;
 	}
@@ -143,6 +146,14 @@ public class EcGcePackage extends BaseModel {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	@NotNull(message="GCE名称为空")
+	public String getGceName() {
+		return gceName;
+	}
+
+	public void setGceName(String gceName) {
+		this.gceName = gceName;
 	}
 
 }

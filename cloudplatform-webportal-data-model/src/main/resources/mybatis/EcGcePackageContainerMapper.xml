@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IGcePackageContainerDao">
+	<resultMap id="BaseResultMap" type="EcGcePackageContainer">
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="CONTAINER_NAME" property="containerName"
+			jdbcType="VARCHAR" />
+		<result column="MOUNT_DIR" property="mountDir" jdbcType="VARCHAR" />
+		<result column="ZOOKEEPER_ID" property="zookeeperId" jdbcType="VARCHAR" />
+		<result column="IP_ADDR" property="ipAddr" jdbcType="VARCHAR" />
+		<result column="GATE_ADDR" property="gateAddr" jdbcType="VARCHAR" />
+		<result column="IP_MASK" property="ipMask" jdbcType="VARCHAR" />
+		<result column="TYPE" property="type" jdbcType="VARCHAR" />
+		<result column="DISK_SIZE" property="diskSize" jdbcType="INTEGER" />
+		<result column="CORES_NUMBER" property="coresNumber" jdbcType="INTEGER" />
+		<result column="CPU_SPEED" property="cpuSpeed" jdbcType="INTEGER" />
+		<result column="MEMORY_SIZE" property="memorySize" jdbcType="INTEGER" />
+		<result column="HOST_ID" property="hostId" jdbcType="BIGINT" />
+		<result column="HOST_IP" property="hostIp" jdbcType="VARCHAR" />
+		<result column="BIND_CONTAINER_PORT" property="bindContainerPort"
+			jdbcType="VARCHAR" />
+		<result column="BIND_HOST_PORT" property="bindHostPort"
+			jdbcType="VARCHAR" />
+		<result column="BIND_HOST_IP" property="bindHostIp" jdbcType="VARCHAR" />
+		<result column="BIND_PROTOCOL" property="bindProtocol"
+			jdbcType="VARCHAR" />
+		<result column="MGR_BIND_HOST_PORT" property="mgrBindHostPort"
+			jdbcType="VARCHAR" />
+		<result column="CONTAINER_UUID" property="containerUuid"
+			jdbcType="VARCHAR" />
+		<result column="GCE_ID" property="gceId" jdbcType="BIGINT" />
+		<result column="GCE_PACKAGE_ID" property="gcePackageId"
+			jdbcType="BIGINT" />
+		<result column="GCE_PACKAGE_CLUSTER_ID" property="gcePackageClusterId"
+			jdbcType="BIGINT" />
+		<result column="ZABBIXHOSTS" property="zabbixhosts" jdbcType="VARCHAR" />
+		<result column="SERVICE_TYPE" property="serviceType" jdbcType="TINYINT" />
+		<result column="LOG_BIND_HOST_PORT" property="logBindHostPort"
+			jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="TINYINT" />
+		<result column="DELETED" property="deleted" jdbcType="TINYINT" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, CONTAINER_NAME, MOUNT_DIR, ZOOKEEPER_ID, IP_ADDR, GATE_ADDR, IP_MASK,
+		TYPE, DISK_SIZE,
+		CORES_NUMBER, CPU_SPEED, MEMORY_SIZE, HOST_ID, HOST_IP, BIND_CONTAINER_PORT,
+		BIND_HOST_PORT,
+		BIND_HOST_IP, BIND_PROTOCOL, MGR_BIND_HOST_PORT, CONTAINER_UUID, GCE_ID,
+		GCE_PACKAGE_ID,
+		GCE_PACKAGE_CLUSTER_ID, ZABBIXHOSTS, SERVICE_TYPE, LOG_BIND_HOST_PORT, STATUS, DELETED,
+		CREATE_TIME, UPDATE_TIME, CREATE_USER, UPDATE_USER
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="gceId != null and gceId != '' ">
+				and GCE_ID=#{gceId}
+			</if>
+			<if test="gcePackageId != null and gcePackageId != '' ">
+				and GCE_PACKAGE_ID=#{gcePackageId}
+			</if>
+			<if test="createUser != null and createUser != '' ">
+				and CREATE_USER=#{createUser}
+			</if>
+		</trim>
+	</sql>
+	<!-- 根据条件查询 -->
+	<select id="selectByMap" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE_PACKAGE_CONTAINER
+		<include refid="Example_Where_Clause" />
+	</select>
+	<insert id="insert" parameterType="EcGcePackageContainer"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		EC_GCE_PACKAGE_CONTAINER (CONTAINER_NAME, MOUNT_DIR,
+		ZOOKEEPER_ID,
+		IP_ADDR, GATE_ADDR,
+		IP_MASK, TYPE, DISK_SIZE,
+		CORES_NUMBER, CPU_SPEED,
+		MEMORY_SIZE,
+		HOST_ID, HOST_IP, BIND_CONTAINER_PORT,
+		BIND_HOST_PORT,
+		BIND_HOST_IP, BIND_PROTOCOL,
+		MGR_BIND_HOST_PORT, CONTAINER_UUID,
+		GCE_ID,
+		GCE_PACKAGE_ID, GCE_PACKAGE_CLUSTER_ID, ZABBIXHOSTS,
+		SERVICE_TYPE, LOG_BIND_HOST_PORT, STATUS,
+		DELETED, CREATE_TIME,
+		UPDATE_TIME,
+		CREATE_USER, UPDATE_USER)
+		values
+		(#{containerName,jdbcType=VARCHAR},
+		#{mountDir,jdbcType=VARCHAR},
+		#{zookeeperId,jdbcType=VARCHAR}, #{ipAddr,jdbcType=VARCHAR},
+		#{gateAddr,jdbcType=VARCHAR},
+		#{ipMask,jdbcType=VARCHAR},
+		#{type,jdbcType=VARCHAR},
+		#{diskSize,jdbcType=INTEGER},
+		#{coresNumber,jdbcType=INTEGER}, #{cpuSpeed,jdbcType=INTEGER},
+		#{memorySize,jdbcType=INTEGER},
+		#{hostId,jdbcType=BIGINT},
+		#{hostIp,jdbcType=VARCHAR},
+		#{bindContainerPort,jdbcType=VARCHAR},
+		#{bindHostPort,jdbcType=VARCHAR}, #{bindHostIp,jdbcType=VARCHAR},
+		#{bindProtocol,jdbcType=VARCHAR},
+		#{mgrBindHostPort,jdbcType=VARCHAR},
+		#{containerUuid,jdbcType=VARCHAR}, #{gceId,jdbcType=BIGINT},
+		#{gcePackageId,jdbcType=BIGINT},
+		#{gcePackageClusterId,jdbcType=BIGINT},
+		#{zabbixhosts,jdbcType=VARCHAR},
+		#{serviceType,jdbcType=TINYINT},
+		#{logBindHostPort,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+		#{deleted,jdbcType=TINYINT}, now(),
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{createUser,jdbcType=BIGINT},
+		#{updateUser,jdbcType=BIGINT})
+	</insert>
+</mapper>

@@ -144,7 +144,11 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
         </dependency>
-
+        <!-- 定义JsonFilterPropertyAspect时报错，兼容aspectjweaver添加 -->
+		<dependency>
+              <groupId>org.aspectj</groupId>
+              <artifactId>aspectjrt</artifactId>
+          </dependency>
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
@@ -224,6 +228,10 @@
 			<artifactId>httpcore</artifactId>
 		</dependency>
 		<!-- AWS 3S 相关 Lynzabo  end -->
+		<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+        </dependency>
     </dependencies>
 
 

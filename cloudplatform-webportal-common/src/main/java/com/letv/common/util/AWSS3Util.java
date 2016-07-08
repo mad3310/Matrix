@@ -86,13 +86,11 @@ public enum AWSS3Util {
 			String errorMsg = "上传失败: StatusCode:" + ase.getStatusCode()
 					+ " ,ErrorCode:" + ase.getErrorCode() + " ,ErrorMsg: "
 					+ ase.getMessage();
-			logger.error(errorMsg);
-			ase.printStackTrace();
+			logger.error(errorMsg,ase);
 			throw new ServiceException(errorMsg);
 		} catch (Exception ace) {
 			String errorMsg = "上传请求连接失败: " + ace.getMessage();
-			logger.error(errorMsg);
-			ace.printStackTrace();
+			logger.error(errorMsg,ace);
 			throw new CommonException(errorMsg);
 		}
 	}

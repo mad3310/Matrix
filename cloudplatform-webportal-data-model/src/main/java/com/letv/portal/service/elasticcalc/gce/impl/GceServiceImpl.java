@@ -5,10 +5,13 @@
  */
 package com.letv.portal.service.elasticcalc.gce.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
@@ -49,6 +52,17 @@ public class GceServiceImpl extends BaseServiceImpl<EcGce> implements
 	@Override
 	public void saveGceExt(EcGceExt gceExt) {
 		this.gceExtDao.insert(gceExt);
+	}
+
+	@Override
+	public EcGceExt selectGceExtByGceId(Long gceId) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("gceId", gceId);
+		List<EcGceExt> ecGceExts = this.gceExtDao.selectByMap(params);
+		if(ecGceExts != null && ecGceExts.size()>0){
+			return ecGceExts.get(0);
+		}
+		return null;
 	}
 
 }

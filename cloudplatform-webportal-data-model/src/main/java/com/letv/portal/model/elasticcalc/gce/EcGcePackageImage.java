@@ -5,6 +5,8 @@
  */
 package com.letv.portal.model.elasticcalc.gce;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.letv.common.model.BaseModel;
 
 /**
@@ -13,6 +15,7 @@ import com.letv.common.model.BaseModel;
  * @since 2016年6月27日, 下午3:17:13 .
  * @version 1.0 .
  */
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class EcGcePackageImage extends BaseModel {
 
 	private static final long serialVersionUID = 6600794159350222116L;

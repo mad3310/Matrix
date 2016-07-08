@@ -198,8 +198,22 @@ public class HttpClient {
 	
 	private static String invoke(DefaultHttpClient httpclient,
 			HttpUriRequest httpost) {
-		HttpResponse response = sendRequest(httpclient, httpost);
-		String body = paseResponse(response);
+		HttpResponse response = null;
+		String body = null;
+		try {
+			response = sendRequest(httpclient, httpost);
+			body = paseResponse(response);
+		} catch (IOException e) {
+			e.printStackTrace();
+			body = "{"
+					+ "\"meta\": {"
+					+ "\"code\": 400"
+					+ "},"
+					+ "\"response\": {"
+					+ "\"message\": \""+e.getMessage()+"\""
+					+ "}"
+					+ "}";
+		}
 		return body;
 	}
 
@@ -231,15 +245,9 @@ public class HttpClient {
 	}
 
 	private static HttpResponse sendRequest(DefaultHttpClient httpclient,
-			HttpUriRequest httpost) {
+			HttpUriRequest httpost) throws ClientProtocolException, IOException {
 		logger.info("execute post...");
-		HttpResponse response = null;
-
-		try {
-			response = httpclient.execute(httpost);
-		} catch (ClientProtocolException e) {
-		} catch (IOException e) {
-		}
+		HttpResponse response = httpclient.execute(httpost);
 		return response;
 	}
 	private static HttpPost postForm(String url, Map<String, String> params) {

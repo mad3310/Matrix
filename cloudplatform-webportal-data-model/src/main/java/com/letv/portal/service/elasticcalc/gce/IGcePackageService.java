@@ -27,6 +27,6 @@ public interface IGcePackageService extends IBaseService<EcGcePackage> {
 	 * @since 2016年6月29日, 上午10:01:22 .
 	 * @version 1.0 .
 	 */
-	Map<String, Object> save(EcGce gce, EcGcePackage gcePackage);
+	public Map<String, Object> save(EcGce gce, EcGcePackage gcePackage);
 
 }
