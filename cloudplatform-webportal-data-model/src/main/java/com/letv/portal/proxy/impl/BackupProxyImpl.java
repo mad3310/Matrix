@@ -681,6 +681,16 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	}
 	
 	public BackupResultModel sendBackupCMD(BackupResultModel backupRecord, BackupCMD backupCMD, BackupType backupType) {
+		long backupResultId = backupRecord.getId();
+		BackupResultModel originRecord = backupService.selectById(backupResultId);
+		
+		//判断所属物理机集群是否已升级，没有升级，返回null
+		long hclusterId = originRecord.getHclusterId();
+		HclusterModel hclusterModel = this.hclusterService.selectById(hclusterId);
+		if(!hclusterModel.getUpgrade()) {
+			return null;
+		}
+		
 		long mclusterId = backupRecord.getMclusterId();
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("id", mclusterId);
@@ -695,9 +705,6 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 		if(null == container)
 			return null;
 		String ip = container.getIpAddr();
-		
-		long backupResultId = backupRecord.getId();
-		BackupResultModel originRecord = backupService.selectById(backupResultId);
 		
 		BackupResultModel serviceBackupRet = getBackupStatusByID(mclusterId);
 		BackupStatus checkStatus = serviceBackupRet.getStatus();
