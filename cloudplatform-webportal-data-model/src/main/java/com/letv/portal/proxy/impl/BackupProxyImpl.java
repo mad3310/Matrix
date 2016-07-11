@@ -93,11 +93,97 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			this.threadPoolTaskExecutor.execute(new Runnable() {
 				@Override
 				public void run() {
-					backupByHcluster(count, hcluster, waitTime, backupDate);
+					if(null != hcluster.getUpgrade() && hcluster.getUpgrade()) {//已升级，调用新接口
+						logger.debug("{}集群备份接口已升级，调用新接口", hcluster.getHclusterName());
+						backupByHcluster(count, hcluster, waitTime, backupDate);
+					} else {//未升级，调用老接口
+						logger.debug("{}集群备份接口未升级，调用老接口", hcluster.getHclusterName());
+						oldBackupByHcluster(count, hcluster);
+					}
 				}
 			});
 		}
 	}
+	
+	/******old method start*******/
+	private void oldBackupByHcluster(int count,HclusterModel hcluster) {
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("hclusterId", hcluster.getId());
+
+        List<MclusterModel> mclusters = this.mclusterService.selectValidMclustersByMap(params);
+        List<MclusterModel> backups = new ArrayList<MclusterModel>();
+
+        while(mclusters != null && !mclusters.isEmpty()) {
+            try {
+                for (int i = 0;i<count;i++) {
+                    if(mclusters.size()<i+1)
+                        break;
+                    backups.add(mclusters.get(i));
+                    this.wholeBackup4Db(mclusters.get(i));
+                }
+                mclusters.removeAll(backups);
+                backups.clear();
+				Thread.sleep(DB_BACKUP_INTERVAL_TIME);
+			} catch (Exception e) {
+                logger.error("db backup exception:{}",e.getMessage());
+			}
+		}
+	}
+	
+	private void wholeBackup4Db(MclusterModel mcluster) {
+		Date date = new Date();
+		if(mcluster == null)
+			return;
+		ContainerModel container = this.selectValidVipContianer(mcluster.getId(), "mclustervip");
+		List<DbModel> dbModels = this.dbService.selectDbByMclusterId(mcluster.getId());
+		if(container == null || dbModels.isEmpty())  {
+			//发送告知邮件，数据有问题。
+			return;
+		}
+		
+		BackupResultModel backup = this.wholeBackup4Db(mcluster,container);
+		
+		for (DbModel dbModel : dbModels) {
+			//将备份记录写入数据库。
+			backup.setMclusterId(mcluster.getId());
+			backup.setHclusterId(mcluster.getHclusterId());
+			backup.setDbId(dbModel.getId());
+			backup.setBackupIp(container.getIpAddr());
+			backup.setStartTime(date);
+			backup.setBackupType(BackupType.FULL.name());
+			if(!BackupStatus.BUILDING.equals(backup.getStatus())) {
+				backup.setEndTime(new Date());
+			}
+            try {
+                this.backupService.insert(backup);
+            } catch (Exception e) {
+                logger.error("backupService.insert exception:{}",e.getMessage());
+                this.backupService.insert(backup);
+            }
+        }
+	}
+	
+	private BackupResultModel wholeBackup4Db(MclusterModel mcluster,ContainerModel container){
+		BackupResultModel backupResult = new BackupResultModel();
+		if(DEFAULT_BACKUP_IGNORE.contains(mcluster.getMclusterName())) {
+			backupResult.setStatus(BackupStatus.FAILD);
+			backupResult.setResultDetail("Ignore  backup on current mcluster.");
+			return backupResult;
+		}
+		ApiResultObject result = this.pythonService.oldWholeBackup4Db(container.getIpAddr(),mcluster.getAdminUser(),mcluster.getAdminPassword());
+		String resultMessage = result.getResult();
+		if(StringUtils.isNullOrEmpty(resultMessage)) {
+			backupResult.setStatus(BackupStatus.FAILD);
+			backupResult.setResultDetail("backup api result is null:" + result.getUrl());
+		} else if(resultMessage.contains("\"code\": 200")) {
+			backupResult.setStatus(BackupStatus.BUILDING);
+		} else {
+			backupResult.setStatus(BackupStatus.FAILD);
+			backupResult.setResultDetail(resultMessage + ":" + result.getUrl());
+		}
+		return backupResult;
+	}
+	/******old method end******/
 	
 	private void backupByHcluster(int count,HclusterModel hcluster, Integer waitTime, Date backupDate) {
 		Map<String, Object> params = new HashMap<String,Object>();
