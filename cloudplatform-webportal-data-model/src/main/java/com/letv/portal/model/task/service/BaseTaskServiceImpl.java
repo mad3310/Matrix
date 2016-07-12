@@ -7,6 +7,7 @@ import java.util.Map;
 import com.letv.common.exception.ValidateException;
 import com.letv.portal.model.common.ZookeeperInfo;
 import com.letv.portal.service.common.IZookeeperInfoService;
+
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.email.bean.MailMessage;
@@ -66,7 +68,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	public TaskResult analyzeRestServiceResult(ApiResultObject resultObject){
 		TaskResult tr = new TaskResult();
 		Map<String, Object> map = transToMap(resultObject.getResult());
-		if(map == null) {
+		if(CollectionUtils.isEmpty(map)) {
 			tr.setSuccess(false);
 			tr.setResult("api connect failed:" + resultObject.getUrl());
 			return tr;
@@ -90,7 +92,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	public TaskResult analyzeComplexRestServiceResult(ApiResultObject resultObject){
 		TaskResult tr = new TaskResult();
 		Map<String, Object> map = transToMap(resultObject.getResult());
-		if(map == null) {
+		if(CollectionUtils.isEmpty(map)) {
 			tr.setSuccess(false);
 			tr.setResult("api connect failed");
 			return tr;

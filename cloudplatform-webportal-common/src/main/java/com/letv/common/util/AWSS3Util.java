@@ -33,7 +33,7 @@ public enum AWSS3Util {
 	INSTANCE;
 	private final static Logger logger = LoggerFactory
 			.getLogger(AWSS3Util.class);
-	//FIXME	线程安全？
+
 	public static AWSS3Util getInstance(AWS3SConn conn) {
 		INSTANCE.conn = conn;
 		return INSTANCE;

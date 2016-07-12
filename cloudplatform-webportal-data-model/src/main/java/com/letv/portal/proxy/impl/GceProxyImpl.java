@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -383,6 +384,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		if(existLength>0){
 			throw new ValidateException(MessageFormat.format("{0}应用已存在", gce.getGceName()));
 		}
+		//TODO 待自主实现ELK时候进行修改，目前不影响
 		//3.保存GCE信息到LogStash
 		LogServer log = new LogServer();
 		log.setLogName(gce.getGceName());
@@ -395,9 +397,13 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		gce.setStatus(GceStatus.AVAILABLE.getValue());//可用
 		this.gceService.insert(gce);
 		//5.保存GCE扩展服务信息
-		if(gceExt!=null && (gceExt.getOcsId().longValue()!=0L) && (gceExt.getRdsId().longValue()!=0L)){
-			gceExt.setGceId(gce.getId());
-			this.gceService.saveGceExt(gceExt);
+		if(gceExt!=null){
+			long ocsId = gceExt.getOcsId().longValue();
+			long rdsId = gceExt.getRdsId().longValue();
+			if(ocsId != 0L && rdsId != 0L){
+				gceExt.setGceId(gce.getId());
+				this.gceService.saveGceExt(gceExt);
+			}
 		}
 	}
 	@Transactional//任意异常都回滚
@@ -410,7 +416,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		exParams.put("deleted", false);
 		EcGce gce = null;
 		List<EcGce> list = this.gceService.selectByMap(exParams);
-		if(list == null || list.size()<=0){
+		if(CollectionUtils.isEmpty(list)){
 			throw new ValidateException(MessageFormat.format("{0}应用不存在", gcePackage.getGceName()));
 		}
 		gce = list.get(0);
@@ -445,8 +451,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		params.put("gceName", gce.getGceName());
 		params.put("buyNum", gce.getInstanceNum());
 		params.put("type", gce.getType().trim().toLowerCase());
-		
-		//TODO 往集合里put后何作用
+		//TODO 待自主实现ELK时候进行修改，目前不影响
 		LogServer logServer = this.logServerService.selectById(gce.getLogId());
 		if(logServer != null) {
 			LogCluster logCluster = this.logClusterService.selectById(logServer.getLogClusterId());
@@ -459,7 +464,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 				params.put("logParams", logParams);
 			}
 		}
-		//TODO 往集合里put后何用途
+		//TODO 暂留下来，以后调整时直接修改
 		/*params.put("isCreateLog", true);
 		params.put("isConfig", false);
 		params.put("isContinue", false);*/

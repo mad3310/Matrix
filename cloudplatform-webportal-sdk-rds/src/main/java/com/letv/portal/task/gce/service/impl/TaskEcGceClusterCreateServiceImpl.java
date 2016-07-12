@@ -65,10 +65,11 @@ public class TaskEcGceClusterCreateServiceImpl extends BaseTaskEcGceServiceImpl
 		String serverName = (String) params.get("serviceName");
 		logger.debug("请求Python服务创建[" + serverName + "]应用容器，请求参数: "
 				+ props.toString());
-		ApiResultObject resultObject = this.gcePythonService.createContainer(
-				props, host.getHostIp(), host.getName(), host.getPassword());
-		// ApiResultObject resultObject =
-		// this.gcePythonService.createContainer(props,"10.154.156.129",host.getName(),host.getPassword());
+		/*ApiResultObject resultObject = this.gcePythonService.createContainer(
+				props, host.getHostIp(), host.getName(), host.getPassword());*/
+		//TODO	与致新联调，测试环境地址
+		ApiResultObject resultObject =
+		this.gcePythonService.createContainer(props,"10.154.156.129",host.getName(),host.getPassword());
 		tr = analyzeRestServiceResult(resultObject);
 		if (tr.isSuccess()) {
 			logger.debug("请求创建集群成功");

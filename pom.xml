@@ -762,11 +762,11 @@
 
                 <webportal.local.http>http://10.154.238.29</webportal.local.http>
                 <webportal.admin.http>http://10.154.238.198</webportal.admin.http>
-                <webportal.api.http>http://10.150.149.31:8080</webportal.api.http>
+                <webportal.api.http>http://10.154.255.133:8080</webportal.api.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
-                <webportal.errormail.to>lisuxiao@letv.com</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com</service.notice.email.to>
+                <webportal.errormail.to>linzhanbo@le.com</webportal.errormail.to>
+                <service.notice.email.to>linzhanbo@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -807,7 +807,7 @@
                 <openstack.neutron.router.user.private.name>__user_private_router</openstack.neutron.router.user.private.name>
             
             	<!-- GCE dynamic allocation -->
-            	<matrix.gce.file.default.local>d:/webportal</matrix.gce.file.default.local>
+            	<matrix.gce.file.default.local>/tmp/gceFile</matrix.gce.file.default.local>
             	<matrix.gce.awss3.endpoint>http://s3.lecloud.com</matrix.gce.awss3.endpoint>
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>

@@ -203,7 +203,7 @@ public class TaskEngine extends ApplicationObjectSupport implements ITaskEngine{
 			//使用环节实例中环节详细ID获取该环节详细定义信息，后面使用该里面的beanName
 			TemplateTaskDetail ttd = this.templateTaskDetailService.selectById(tc.getTaskDetailId());
 			
-			if(ttd == null)
+			if(null == ttd)
 				throw new TaskExecuteException("execute TemplateTaskDetail is null by id");
 
 			String taskBeanName = ttd.getBeanName();

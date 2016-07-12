@@ -79,12 +79,13 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 				break;
 			} else {
 				logger.debug(System.currentTimeMillis()+" 检查集群[" + serverName + "]创建状态");
-				/*resultObject = gcePythonService
-						.checkContainerCreateStatus(gceCluster.getClusterName(),
-								"10.154.156.129",host.getName(),host.getPassword());*/
+				//TODO	与致新联调，测试环境地址
 				resultObject = gcePythonService
 						.checkContainerCreateStatus(gceCluster.getClusterName(),
-								host.getHostIp(),host.getName(),host.getPassword());
+								"10.154.156.129",host.getName(),host.getPassword());
+				/*resultObject = gcePythonService
+						.checkContainerCreateStatus(gceCluster.getClusterName(),
+								host.getHostIp(),host.getName(),host.getPassword());*/
 				tr = analyzeComplexRestServiceResult(resultObject);
 			}
 			Thread.sleep(checkInterval);

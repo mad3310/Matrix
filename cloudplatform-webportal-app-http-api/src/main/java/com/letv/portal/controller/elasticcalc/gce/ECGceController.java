@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.letv.common.exception.CommonException;
 import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ResultObject;
 import com.letv.common.session.SessionServiceImpl;
 import com.letv.common.util.jacksonext.annotation.ExcludeProperty;
-import com.letv.common.util.jacksonext.annotation.IncludeProperty;
 import com.letv.common.util.jacksonext.annotation.JsonFilterProperties;
 import com.letv.portal.enumeration.HclusterStatus;
 import com.letv.portal.model.HclusterModel;
@@ -85,21 +84,10 @@ public class ECGceController {
 		hclusterModel.setType("GCE");
 		List<HclusterModel> hcModels = hclusterService
 				.selectHclusterByStatus(hclusterModel);
-		if (hcModels == null || hcModels.size() <= 0) {
-			logger.error("无可用集群");
-			callbackResult.setResult(0);
-			callbackResult.setAlertMessage("无可用集群");
-			return callbackResult;
-		}
+		if(CollectionUtils.isEmpty(hcModels))
+			throw new ValidateException("无可用集群");
 		gce.setHclusterId(hcModels.get(0).getId());
-		try {
-			gceProxy.createGce(gce, gceExt);
-		} catch (Exception e) {
-			logger.error("创建GCE失败:" + e.getMessage(),e);
-			callbackResult.setResult(0);
-			callbackResult.setAlertMessage(e.getMessage());
-			return callbackResult;
-		}
+		gceProxy.createGce(gce, gceExt);
 		callbackResult.setData(gce);
 		logger.debug("创建GCE成功! ID:{},Name:{}", gce.getId(), gce.getGceName());
 		return callbackResult;
@@ -120,14 +108,7 @@ public class ECGceController {
 			return new ResultObject(bindResult.getAllErrors());
 		}
 		gcePackage.setCreateUser(this.sessionService.getSession().getUserId());
-		try {
-			gceProxy.uploadPackage(file, gcePackage);
-		} catch (Exception e) {
-			logger.error("上传应用部署包失败:" + e.getMessage(),e);
-			callbackResult.setResult(0);
-			callbackResult.setAlertMessage(e.getMessage());
-			return callbackResult;
-		}
+		gceProxy.uploadPackage(file, gcePackage);
 		callbackResult.setData(gcePackage);
 		logger.debug("上传GCE应用部署包成功! GCE名称:{},版本号:{}", gcePackage.getGceName(),
 				gcePackage.getVersion());
@@ -136,11 +117,11 @@ public class ECGceController {
 
 	@JsonFilterProperties(excluses = {
 			@ExcludeProperty(pojo = ResultObject.class, names = { "callback" }),
-			@ExcludeProperty(pojo = EcGcePackageContainer.class, names = { "status",
-					"gcePackageClusterId", "containerName", "mountDir",
-					"hostIp"/* 所属物理机IP */, "gceId", "hostId", "gcePackageId",
-					"id", "deleted","createUser","createTime" }) })
-	@RequestMapping(value = "/getContainers", method = RequestMethod.POST)
+			@ExcludeProperty(pojo = EcGcePackageContainer.class, names = {
+					"status", "gcePackageClusterId", "containerName",
+					"mountDir", "hostIp"/* 所属物理机IP */, "gceId", "hostId",
+					"gcePackageId", "id", "deleted", "createUser", "createTime" }) })
+	@RequestMapping(value = "/containers", method = RequestMethod.GET)
 	public @ResponseBody ResultObject getContainers(
 			@Valid EcGcePackage gcePackage, BindingResult bindResult,
 			ResultObject callbackResult) {
@@ -150,28 +131,8 @@ public class ECGceController {
 			return new ResultObject(bindResult.getAllErrors());
 		}
 		gcePackage.setCreateUser(this.sessionService.getSession().getUserId());
-		List<EcGcePackageContainer> containers = null;
-		try {
-			containers = gceProxy.getGcepackageContainers(gcePackage);
-		} catch (ValidateException e) {
-			String errMsg = "获取GCE的版本容器信息失败:" + e.getMessage();
-			logger.debug(errMsg);
-			callbackResult.setResult(0);
-			callbackResult.setAlertMessage(errMsg);
-			return callbackResult;
-		} catch (CommonException e) {
-			String errMsg = "获取GCE的版本容器信息失败，服务正在部署中";
-			logger.debug(errMsg);
-			callbackResult.setResult(2);
-			callbackResult.setAlertMessage(errMsg);
-			return callbackResult;
-		} catch (Exception e) {
-			String errMsg = "获取GCE的版本容器信息失败，服务器出错，出错原因：" + e.getMessage();
-			logger.error(errMsg,e);
-			callbackResult.setResult(0);
-			callbackResult.setAlertMessage(errMsg);
-			return callbackResult;
-		}
+		List<EcGcePackageContainer> containers = gceProxy
+				.getGcepackageContainers(gcePackage);
 		callbackResult.setData(containers);
 		logger.debug("获取GCE应用部署包容器列表成功! GCE名称:{},版本号:{}",
 				gcePackage.getGceName(), gcePackage.getVersion());
