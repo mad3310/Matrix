@@ -27,7 +27,7 @@
         }
         </style> 
         <body>
-        <%@ include file="../../includes/headerRds.jsp" %>
+        <div ng-include="'/apps/rds/views/headerRds.html'"></div>
         <div class="main">
         <div ng-include="'/apps/rds/views/side-menu.html'"></div>
         <div class="content-wrapper">
@@ -35,6 +35,7 @@
         </div>
         <div class="clearfix"></div>
         </div>
+
 
         <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-main-build-1468391861456.js"></script>
 

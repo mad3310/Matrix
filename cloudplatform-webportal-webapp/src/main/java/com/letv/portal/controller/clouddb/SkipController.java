@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -186,8 +188,14 @@ public class SkipController {
 	}
 	
 	@RequestMapping(value ="/rds",method=RequestMethod.GET)
-	public ModelAndView toRDS(ModelAndView mav){
-		mav.setViewName("/rds/index");
+	public ModelAndView toRDS(@RequestParam(value="lang",required=false) String lang,ModelAndView mav){
+		if(StringUtils.isEmpty(lang)){
+			String defaultLang = "zh-cn";
+			mav.setViewName("redirect:/rds?lang="+defaultLang);
+		}else{
+			mav.addObject("lang", lang);
+			mav.setViewName("/rds/index");
+		}
 		return mav;
 	}
 	
