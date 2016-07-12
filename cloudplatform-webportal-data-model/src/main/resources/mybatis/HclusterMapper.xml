@@ -194,7 +194,6 @@
 		n.DESCN descn,
 		n.HOST_NAME_ALIAS hostNameAlias,
 		n.STATUS status,
-		n.UPGRADE upgrade,
 		n.DELETED deleted,
 		n.CREATE_TIME createTime,
 		n.CREATE_USER createUser,
