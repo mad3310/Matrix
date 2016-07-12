@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.letv.common.exception.ValidateException;
 import com.letv.common.util.DataFormat;
+import com.letv.common.util.HttpUtil;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.service.IContainerService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -200,7 +202,21 @@ public class CronJobsController {
 		logger.info("db backup");
 		if(count ==0 || count<0)
 			count = 5;
-		this.backupProxy.backupTask(count);
+		
+		Map<String,Object> params = HttpUtil.requestParam2Map(request);
+		String backupDate = null==params.get("backupDate") ? null : (String)params.get("backupDate") ;
+		Integer backupMaxTime = null==params.get("backupMaxTime") ? null : Integer.parseInt((String)params.get("backupMaxTime"));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Date d = new Date();
+		try {
+			if(null != backupDate) {
+				d = sdf.parse(backupDate);
+			}
+		} catch (ParseException e) {
+			logger.error(e.getMessage(), e);
+		}
+		this.backupProxy.backupTask(count, backupMaxTime, d);
 		return obj;
 	}
 
