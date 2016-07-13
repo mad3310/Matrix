@@ -129,6 +129,11 @@ public class MonitorController {
 		result.setData(this.monitorService.getMonitorViewData(mclusterId,chartId,strategy));
 		return result;
 	}
+	@RequestMapping(value="/cluster/{mclusterId}/{chartId}/{strategy}",method=RequestMethod.GET)
+	public @ResponseBody ResultObject getContainerMonitorDataFromEs(@PathVariable Long mclusterId,@PathVariable Long chartId,@PathVariable Integer strategy,ResultObject result) {
+		result.setData(this.monitorService.getContainerMonitorDataFromEs(mclusterId, chartId, strategy));
+		return result;
+	}
 	@RequestMapping(value="/topN/{hclusterId}/{chartId}/{monitorName}/{strategy}/{topN}",method=RequestMethod.GET)
 	public @ResponseBody ResultObject mclusterMonitorChartsTopN(@PathVariable Long hclusterId,@PathVariable Long chartId,@PathVariable String monitorName,@PathVariable Integer strategy,@PathVariable Integer topN,ResultObject result) {
 		result.setData(this.monitorService.getMonitorTopNViewData(hclusterId, chartId,monitorName, strategy, topN));
