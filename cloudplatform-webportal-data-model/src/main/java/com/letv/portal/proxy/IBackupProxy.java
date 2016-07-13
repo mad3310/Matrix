@@ -1,5 +1,7 @@
 package com.letv.portal.proxy;
 
+import java.util.Date;
+
 import com.letv.portal.model.BackupResultModel;
 import com.letv.portal.model.MclusterModel;
 
@@ -18,13 +20,19 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 	 * @param stage
 	 */
 	public void backupTask(int stage);
+	/**
+	 * 备份任务
+	 * @param count 每个集群启动的备份数量
+	 * @param waitMaxTime 一个数据库备份等待最大时间
+	 * @param backupTime 备份日期
+	 */
+	public void backupTask(Integer count, Integer waitMaxTime, Date backupTime);
 	
 	/**Methods Name: wholeBackup4Db <br>
-	 * Description: 数据库全量备份 <br>
+	 * Description: 数据库备份 <br>
 	 * @author name: liuhao1
 	 */
-	public void wholeBackup4Db(MclusterModel mcluster) throws Exception;
-
+	public Boolean backup4Db(MclusterModel mcluster, Date backupDate);
 	
 	/**Methods Name: checkBackupStatus <br>
 	 * Description: 检查某备份结果<br>
@@ -37,5 +45,32 @@ public interface IBackupProxy extends IBaseProxy<BackupResultModel> {
 
 	public void backupTaskReport();
 	
+	/**
+	 * 全量备份
+	 * @param params
+	 * @return
+	 */
+	public BackupResultModel wholeBackup4Db(BackupResultModel backupRecord);
+	
+	/**
+	 * 增量备份
+	 * @param params
+	 * @return
+	 */
+	public BackupResultModel incrBackup4Db(BackupResultModel backupRecord);
+	
+	/**
+	 * 根据集群状态查询备份状态
+	 * @param mclusterId
+	 * @return
+	 */
+	public BackupResultModel getBackupStatusByID(long mclusterId);
+	
+	/**
+	 * 备份状态实时结果
+	 * @param backupRecord
+	 * @return
+	 */
+	public BackupResultModel getBackupResulFromService(BackupResultModel backupRecord);
 	
 }

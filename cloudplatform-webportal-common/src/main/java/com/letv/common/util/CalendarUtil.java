@@ -380,6 +380,20 @@ public final class CalendarUtil {
 		Calendar c = CalendarUtil.getDateFromDate(d, days);
 		return CalendarUtil.getDateString(c, format);
 	}
+	
+	/**
+	 * 获得当前日期属于星期几
+	 * @param date
+	 * @return {星期一 ：1, 星期二： 2 ... 星期日： 7}
+	 */
+	public static int getDayOfWeek(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int day = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		if(day == 0)
+			return 7;
+		return day;
+	}
 
         public static Calendar getDayStart() {
             Calendar cal = Calendar.getInstance();
@@ -402,4 +416,5 @@ public final class CalendarUtil {
             cal = truncateDay(cal);
             return cal;
         }
+        
 }

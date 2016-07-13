@@ -32,8 +32,14 @@ public class HclusterModel extends BaseModel{
 	@Length(max=1000)
 	@Pattern(regexp = "^[0-9.,/]*$", message = "只能包含字母，数字，斜杠（/）和小数点（.）")
 	private String containerIps;//集群ip池
+	private Boolean upgrade;//集群升级标识
 	
-	
+	public Boolean getUpgrade() {
+		return upgrade;
+	}
+	public void setUpgrade(Boolean upgrade) {
+		this.upgrade = upgrade;
+	}
 	public String getContainerIps() {
 		return containerIps;
 	}

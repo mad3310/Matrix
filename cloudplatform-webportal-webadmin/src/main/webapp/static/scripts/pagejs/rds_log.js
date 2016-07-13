@@ -74,8 +74,8 @@ $(".input-group input").each(function(){
 function queryByPage(currentPage, recordsPerPage) {
 	$("#backupTbody tr").remove();
 	if(flag == true){
-		var startTime = '';
-		var endTime = '';
+		var startTime = $("#startTime").val();
+		var endTime = $("#endTime").val();
 		var mclusterName = $("#mclusterName").val();
 		var dbName = $("#dbName").val();
 		
@@ -114,50 +114,43 @@ function queryByPage(currentPage, recordsPerPage) {
 		        		if(array[i].db) {
 		        			dbName = array[i].db.dbName;
 		        		}
-		                var td1 = $("<td class='hidden-480'><a>"
+		        		
+		                var rdsCluster = "<td class='hidden-480'><a>"
 		                		+ "<a class=\"link\" href=\"/detail/mcluster/" + array[i].mclusterId +"\">"+FilterNull(mclusterName)+"</a>"
-		                		+"</a></td>");
-		                var td2 = $("<td>"
-		                		+ "<a class=\"link\" class=\"danger\" href=\"/audit/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
-		                		+"</td>");
+		                		+"</a></td>";
+		                var dataBaseName = "<td>"
+		                		+ "<a class=\"link\" class=\"danger\" href=\"/detail/db/"+array[i].dbId+"\">"+FilterNull(dbName)+"</a>"
+		                		+"</td>"
+		                var startTime = "<td class='hidden-480'>"
+		                        + date('Y-m-d H:i:s',array[i].startTime)
+		                        + "</td>";
+		                var endTime = "<td class='hidden-480'>"
+	                            + date('Y-m-d H:i:s',array[i].endTime)
+		                        + "</td>";
 		                if(array[i].status == 'FAILD'){
-		                	var td5 = $("<td> <a>"
+		                	var status = "<td> <a>"
 								+ translateStatus(array[i].status)
-								+ "</a></td>");
+								+ "</a></td>";
 						}else if(array[i].status == 'BUILDING'){
-							var td5 = $("<td>"
+							var status = "<td>"
 									+ "<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
 									+ "<i class=\"ace-icon fa fa-spinner fa-spin dark bigger-125\" />"
 									+ translateStatus(array[i].status)
 									+ "</a>"
-									+ "</td>");
+									+ "</td>";
 						}else{
-							var td5 = $("<td> <a>"
+							var status = "<td> <a>"
 									+ translateStatus(array[i].status)
-									+ "</a></td>");
+									+ "</a></td>";
 						}
 		                
-		                var allBackUpHtml='',addBackUpHtml=''
-		                	
-						var allBackUpOs=containerClusterOs(array[i].status,"rds","backup");
-						var addBackUpOs=containerClusterOs(array[i].status,"rds","backup");
-						allBackUpHtml=allBackUpOs==0?allBackUpHtml:containerOsHtml("rds","start");
-		                addBackUpHtml=addBackUpOs==0?addBackUpHtml:containerOsHtml("rds","start");
+		                var type = "<td><a> " +
+		                		translateStatus(array[i].backupType)
+								+ "</a></td>";
 		                
-		                var td6 = "<td data-status='"+array[i].status+"'>"
-						+"<div class='hidden-sm hidden-xs  action-buttons'>"
-						+allBackUpHtml+addBackUpHtml
-						+"</div>"
-						+'<div class="hidden-md hidden-lg">'
-						+'<div class="inline pos-rel">'
-						+'<button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown" data-position="auto">'
-							+'<i class="ace-icon fa fa-caret-down icon-only bigger-120"></i>'
-						+'</button>'
-						+'<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">'
-							+'<li>'+allBackUpHtml+'</li>'
-							+'<li>'+addBackUpHtml+'</li>'
-						+'</ul></div></div>'
-					+ "</td>";
+		                var info = "<td>"
+		                        + (!array[i].resultDetail?"":array[i].resultDetail)
+		                        + "</td>";
 		                if(array[i].status == 'FAILD'){
 							var tr = $("<tr class=\"data-tr default-danger\"></tr>");
 						}else if(array[i].status == 'SUCCESS'){
@@ -165,7 +158,7 @@ function queryByPage(currentPage, recordsPerPage) {
 						}else{
 							var tr = $("<tr class='data-tr'></tr>");
 						}
-		                tr.append(td1).append(td2).append(td5).append(td6);
+		                tr.append($(rdsCluster + dataBaseName + startTime + endTime + status + type + info));
 		                tr.appendTo($backupTbody);
 					   //$('[name = "dbRefuseStatus"]').popover();
 				}//循环json中的数据 
@@ -194,6 +187,13 @@ function queryByPage(currentPage, recordsPerPage) {
 		}
 	});
    }
+
+function backupInit(){
+	var timer = setInterval (function(){
+		queryByPage(currentPage, recordsPerPage);
+	},15000);
+}
+
 
 function pageControl() {
 	// 首页
