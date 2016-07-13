@@ -105,7 +105,6 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		return this.monitorDao;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<MonitorViewYModel> getHostDiskMonitorData(Long hostId, Long chartId, Integer strategy) {
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
@@ -124,37 +123,53 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		SearchHits searchHits = ESUtil.getFilterResult(indexs, filterBuilder, sortBuilder, 100000);
 
 		String[] detailNames =  monitorIndexModel.getMonitorPoint().split(",");
+		
+		ydatas = getMonitorViewYModels(detailNames, searchHits, hostModel.getHostIp());
+		return ydatas;
+	}
+	
+	//utc字符串转换为Date
+	private Date transferUtcToDate(String time) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Date d;
+		try {
+			d = sdf.parse(time);
+		} catch (ParseException e) {
+			throw new CommonException("Utc日期格式化出错");
+		}
+		return d;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<MonitorViewYModel> getMonitorViewYModels(String[] detailNames, SearchHits searchHits, String ip) {
+		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
 		for (String s : detailNames) {
 			MonitorViewYModel ydata = new MonitorViewYModel();
 			List<List<Object>> datas = new ArrayList<List<Object>>();
 			String[] layer = s.split("\\.");
-			try {
-				for (SearchHit hit : searchHits.getHits()) {
-					Map<String, Object> data = hit.getSource();
-					Date d = sdf.parse((String)data.get("timestamp"));
-					int j = layer.length-1;
-					for(int i=0; i<j; i++) {//适配“user.system”这类map嵌套取值
-						data = (Map<String, Object>) data.get(layer[i]);
-					}
-					if(data.containsKey(layer[j])) {
-						List<Object> point = new ArrayList<Object>();
-						point.add(d);
-						point.add(data.get(layer[j]));
-						datas.add(point);
-					}
+			for (SearchHit hit : searchHits.getHits()) {
+				Map<String, Object> data = hit.getSource();
+				Date d = transferUtcToDate((String)data.get("timestamp"));
+				int j = layer.length-1;
+				for(int i=0; i<j; i++) {//适配“user.system”这类map嵌套取值
+					data = (Map<String, Object>) data.get(layer[i]);
 				}
-			} catch (ParseException e) {
-				throw new CommonException("监控日期格式化出错");
+				if(data.containsKey(layer[j])) {
+					List<Object> point = new ArrayList<Object>();
+					point.add(d);
+					point.add(data.get(layer[j]));
+					datas.add(point);
+				}
 			}
 
-			ydata.setName(hostModel.getHostIp() +":"+s);
+			ydata.setName(ip +":"+s);
 			ydata.setData(datas);
 			ydatas.add(ydata);
 		}
 		return ydatas;
 	}
+	
 	@Override
 	public List<MonitorViewYModel> getMonitorViewData(Long mclusterId,Long chartId,Integer strategy) {
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
@@ -194,7 +209,6 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		return ydatas;
 	}
 
-    @SuppressWarnings("unchecked")
 	public List<MonitorViewYModel> getContainerMonitorDataFromEs(Long mclusterId,Long chartId,Integer strategy) {
         List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -207,9 +221,6 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
        Date end = new Date();
        Date start = getStartDate(end, strategy);
        
-
-       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
        long tbefore = System.currentTimeMillis();
        
        String[] indexs = getIndexs(monitorIndexModel.getDetailTable().toLowerCase(), start, end);
@@ -221,34 +232,8 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
                    .must(FilterBuilders.rangeFilter("timestamp").from(start).to(end));
     	   SearchHits searchHits = ESUtil.getFilterResult(indexs, must, sortBuilder, 100000);
     	   
-           for(String s : detailNames) {
-               	MonitorViewYModel ydata = new MonitorViewYModel();
-
-               	List<List<Object>> datas = new ArrayList<List<Object>>();
-                
-               	String[] layer = s.split("\\.");
-	   			try {
-	   				for (SearchHit hit : searchHits.getHits()) {
-	   					Map<String, Object> data = hit.getSource();
-	   					Date d = sdf.parse((String)data.get("timestamp"));
-	   					int j = layer.length-1;
-	   					for(int i=0; i<j; i++) {//适配“user.system”这类map嵌套取值
-	   						data = (Map<String, Object>) data.get(layer[i]);
-	   					}
-	   					if(data.containsKey(layer[j])) {
-	   						List<Object> point = new ArrayList<Object>();
-	   						point.add(d);
-	   						point.add(data.get(layer[j]));
-	   						datas.add(point);
-	   					}
-	   				}
-	   			} catch (ParseException e) {
-	   				throw new CommonException("监控日期格式化出错");
-	   			} 
-                ydata.setName(c.getIpAddr() +":"+s);
-                ydata.setData(datas);
-                ydatas.add(ydata);
-            }
+    	   List<MonitorViewYModel> subYdatas = getMonitorViewYModels(detailNames, searchHits, c.getIpAddr());
+    	   ydatas.addAll(subYdatas);
        }
        logger.debug("all searchHits time:{}",System.currentTimeMillis()-tbefore);
        return ydatas;
