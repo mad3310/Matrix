@@ -8,8 +8,8 @@
         <title>控制台-乐视云平台</title>
         <link rel="shortcut icon" href="http://i3.letvimg.com/lc05_lecloud/201601/12/10/21/favicon.ico">
         <link rel="stylesheet" href="/stylesheets/dist/vendor.css">
-        <link rel="stylesheet" href="/stylesheets/dist/common-1465700659110.css">
-        <link rel="stylesheet" href="/stylesheets/dist/style-rds-1465700659110.css">
+        <link rel="stylesheet" href="/stylesheets/dist/common-1468391861456.css">
+        <link rel="stylesheet" href="/stylesheets/dist/style-rds-1468391861456.css">
         </head>
         <style>
         .main .side-bar {
@@ -36,7 +36,7 @@
         <div class="clearfix"></div>
         </div>
 
-        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-main-build-1465700659110.js"></script>
+        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-main-build-1468391861456.js"></script>
 
         </body>
         </html>
