@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="/stylesheets/dist/vendor.css">
         <link rel="stylesheet" href="/stylesheets/dist/common-1468484220168.css">
         <link rel="stylesheet" href="/stylesheets/dist/style-rds-1468484220168.css">
+
         </head>
         <style>
         .main .side-bar {
@@ -35,8 +36,8 @@
         </div>
         <div class="clearfix"></div>
         </div>
-
+		
         <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-${lang}-main-build-1468484220168.js"></script>
-
+		
         </body>
         </html>
