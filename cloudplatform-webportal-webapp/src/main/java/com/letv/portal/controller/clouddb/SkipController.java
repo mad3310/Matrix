@@ -198,6 +198,7 @@ public class SkipController {
 		}
 		return mav;
 	}
+
 	
 	private void isAuthorityDb(Long dbId) {
 		if(dbId == null)
