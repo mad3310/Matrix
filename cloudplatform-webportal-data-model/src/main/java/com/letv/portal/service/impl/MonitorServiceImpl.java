@@ -1,6 +1,7 @@
 package com.letv.portal.service.impl;
 
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -106,7 +107,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 	}
 
 	@Override
-	public List<MonitorViewYModel> getHostDiskMonitorData(Long hostId, Long chartId, Integer strategy) {
+	public List<MonitorViewYModel> getHostMonitorDataFromEs(Long hostId, Long chartId, Integer strategy) {
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
 		HostModel hostModel = this.hostService.selectById(hostId);
 	    
@@ -158,7 +159,15 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 				if(data.containsKey(layer[j])) {
 					List<Object> point = new ArrayList<Object>();
 					point.add(d);
-					point.add(data.get(layer[j]));
+					Object o = data.get(layer[j]);
+					if(o instanceof Double && (double)o<1) {
+						BigDecimal b = new BigDecimal((double)o);
+						b = b.setScale(2, BigDecimal.ROUND_HALF_UP);
+						point.add(b);
+					} else {
+						point.add(o);
+					}
+					
 					datas.add(point);
 				}
 			}
@@ -209,7 +218,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		return ydatas;
 	}
 
-	public List<MonitorViewYModel> getContainerMonitorDataFromEs(Long mclusterId,Long chartId,Integer strategy) {
+	public List<MonitorViewYModel> getMclusterMonitorDataFromEs(Long mclusterId,Long chartId,Integer strategy) {
         List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("mclusterId", mclusterId);
@@ -221,11 +230,8 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
        Date end = new Date();
        Date start = getStartDate(end, strategy);
        
-       long tbefore = System.currentTimeMillis();
-       
        String[] indexs = getIndexs(monitorIndexModel.getDetailTable().toLowerCase(), start, end);
        FieldSortBuilder sortBuilder = SortBuilders.fieldSort("timestamp").order(SortOrder.ASC);
-       
        
        for (ContainerModel c : containers) {
     	   BoolFilterBuilder must = FilterBuilders.boolFilter().must(FilterBuilders.termFilter("node_name", c.getIpAddr().toLowerCase()))
@@ -235,7 +241,6 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
     	   List<MonitorViewYModel> subYdatas = getMonitorViewYModels(detailNames, searchHits, c.getIpAddr());
     	   ydatas.addAll(subYdatas);
        }
-       logger.debug("all searchHits time:{}",System.currentTimeMillis()-tbefore);
        return ydatas;
     }
     private  String[] getIndexs(String indexPrefix,Date start,Date end) {

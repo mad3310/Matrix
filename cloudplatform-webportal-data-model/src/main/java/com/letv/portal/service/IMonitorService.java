@@ -8,14 +8,27 @@ import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.MonitorDetailModel;
 import com.letv.portal.model.MonitorIndexModel;
 import com.letv.portal.model.monitor.MonitorErrorModel;
-import com.letv.portal.model.monitor.MonitorViewModel;
 import com.letv.portal.model.monitor.MonitorViewYModel;
 
 public interface IMonitorService extends IBaseService<MonitorDetailModel>{
 	
 	List<MonitorViewYModel> getMonitorViewData(Long MclusterId,Long chartId,Integer strategy);
-	List<MonitorViewYModel> getContainerMonitorDataFromEs(Long MclusterId,Long chartId,Integer strategy);
-	List<MonitorViewYModel> getHostDiskMonitorData(Long MclusterId,Long chartId,Integer strategy);
+	/**
+	 * 从es中获取集群监控信息
+	 * @param mclusterId 集群id
+	 * @param chartId 监控项id
+	 * @param strategy 时长策略
+	 * @return
+	 */
+	List<MonitorViewYModel> getMclusterMonitorDataFromEs(Long mclusterId,Long chartId,Integer strategy);
+	/**
+	 * 从es中获取物理机监控信息
+	 * @param hostId 主机id
+	 * @param chartId 监控项id
+	 * @param strategy 时长策略
+	 * @return
+	 */
+	List<MonitorViewYModel> getHostMonitorDataFromEs(Long hostId, Long chartId, Integer strategy);
 	List<MonitorViewYModel>  getMonitorTopNViewData(Long hclusterId, Long chartId,String monitorName, Integer strategy,Integer topN);
 	void syncMonitorFromDbToEs(String dbName,int strategy);
     void syncMonitorFromDbToEs(String dbName,Date start,Date end);

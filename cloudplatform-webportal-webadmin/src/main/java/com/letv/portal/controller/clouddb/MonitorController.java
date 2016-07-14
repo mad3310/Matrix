@@ -129,9 +129,17 @@ public class MonitorController {
 		result.setData(this.monitorService.getMonitorViewData(mclusterId,chartId,strategy));
 		return result;
 	}
+	/**
+	 * 获取集群监控信息
+	 * @param mclusterId 集群id
+	 * @param chartId 监控项id
+	 * @param strategy 时间策略
+	 * @param result
+	 * @return
+	 */
 	@RequestMapping(value="/cluster/{mclusterId}/{chartId}/{strategy}",method=RequestMethod.GET)
-	public @ResponseBody ResultObject getContainerMonitorDataFromEs(@PathVariable Long mclusterId,@PathVariable Long chartId,@PathVariable Integer strategy,ResultObject result) {
-		result.setData(this.monitorService.getContainerMonitorDataFromEs(mclusterId, chartId, strategy));
+	public @ResponseBody ResultObject getMclusterMonitorDataFromEs(@PathVariable Long mclusterId,@PathVariable Long chartId,@PathVariable Integer strategy,ResultObject result) {
+		result.setData(this.monitorService.getMclusterMonitorDataFromEs(mclusterId, chartId, strategy));
 		return result;
 	}
 	@RequestMapping(value="/topN/{hclusterId}/{chartId}/{monitorName}/{strategy}/{topN}",method=RequestMethod.GET)
