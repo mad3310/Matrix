@@ -32,7 +32,7 @@ public class HostMonitorController {
 	 */
 	@RequestMapping(value="/{hostId}/{chartId}/{strategy}", method=RequestMethod.GET)
 	public @ResponseBody ResultObject getHostDiskMonitorFromES(@PathVariable Long hostId, @PathVariable Long chartId, @PathVariable Integer strategy, ResultObject result) {
-		result.setData(this.monitorService.getHostDiskMonitorData(hostId, chartId, strategy));
+		result.setData(this.monitorService.getHostMonitorDataFromEs(hostId, chartId, strategy));
 		return result;
 	}
 
