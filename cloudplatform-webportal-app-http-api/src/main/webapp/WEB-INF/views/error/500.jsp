@@ -11,7 +11,7 @@
 	Exception ex = (Exception) request.getAttribute("Exception");
 	ResultObject callbackResult = new ResultObject();
 	if(ex instanceof CommonException){
-		callbackResult.setResult(2);
+		callbackResult.setResult(3);
 		callbackResult.setAlertMessage(ex.getMessage());
 	//ValidateException可以归属到else返回，但为了表示和DefaultMappingExceptionResolver
 	//类doResolveException对ValidateException做了特殊处理保持一致，因此在这里分开
@@ -28,6 +28,6 @@
 	map.put("alertMessage", callbackResult.getAlertMessage());
 	map.put("msgs", new Object[]{});
 	String json = JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
-	out.print(json);
 	out.flush();
 %>
+<%=json%>

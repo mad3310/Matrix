@@ -15,12 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
-import com.letv.portal.dao.elasticcalc.gce.IGceDao;
-import com.letv.portal.dao.elasticcalc.gce.IGceExtDao;
+import com.letv.portal.dao.elasticcalc.gce.IEcGceDao;
+import com.letv.portal.dao.elasticcalc.gce.IEcGceExtDao;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
 import com.letv.portal.model.elasticcalc.gce.EcGceExt;
-import com.letv.portal.service.elasticcalc.gce.IGceService;
-import com.letv.portal.service.gce.IGceClusterService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceClusterService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceService;
 import com.letv.portal.service.impl.BaseServiceImpl;
 
 /**
@@ -30,35 +30,35 @@ import com.letv.portal.service.impl.BaseServiceImpl;
  * @since 2016年6月28日, 下午2:20:20 .
  * @version 1.0 .
  */
-@Service("gceService")
-public class GceServiceImpl extends BaseServiceImpl<EcGce> implements
-		IGceService {
+@Service("ecGceService")
+public class EcGceServiceImpl extends BaseServiceImpl<EcGce> implements
+		IEcGceService {
 	@Resource
-	private IGceDao gceDao;
+	private IEcGceDao ecGceDao;
 	@Resource
-	private IGceExtDao gceExtDao;
+	private IEcGceExtDao ecGceExtDao;
 	@Autowired
-	private IGceClusterService gceClusterService;
+	private IEcGceClusterService ecGceClusterService;
 	
-	public GceServiceImpl() {
+	public EcGceServiceImpl() {
 		super(EcGce.class);
 	}
 
 	@Override
 	public IBaseDao<EcGce> getDao() {
-		return this.gceDao;
+		return this.ecGceDao;
 	}
 
 	@Override
-	public void saveGceExt(EcGceExt gceExt) {
-		this.gceExtDao.insert(gceExt);
+	public void insertGceExt(EcGceExt gceExt) {
+		this.ecGceExtDao.insert(gceExt);
 	}
 
 	@Override
 	public EcGceExt selectGceExtByGceId(Long gceId) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("gceId", gceId);
-		List<EcGceExt> ecGceExts = this.gceExtDao.selectByMap(params);
+		List<EcGceExt> ecGceExts = this.ecGceExtDao.selectByMap(params);
 		if(ecGceExts != null && ecGceExts.size()>0){
 			return ecGceExts.get(0);
 		}

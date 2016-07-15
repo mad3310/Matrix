@@ -17,14 +17,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.letv.common.result.ApiResultObject;
-import com.letv.portal.enumeration.GcePackageImageStatus;
+import com.letv.portal.enumeration.GceImageStatus;
+import com.letv.portal.model.elasticcalc.gce.EcGceImage;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageImage;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
 import com.letv.portal.python.service.IGcePythonService;
-import com.letv.portal.service.elasticcalc.gce.IGcePackageImageService;
-import com.letv.portal.service.elasticcalc.gce.IGcePackageService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceImageService;
+import com.letv.portal.service.elasticcalc.gce.IEcGcePackageService;
 
 /**
  * 购买GCE：检查镜像创建状态
@@ -42,9 +42,9 @@ public class TaskEcGceMirrorCheckStatusService extends BaseTaskEcGceServiceImpl
 	@Autowired
 	private IGcePythonService gcePythonService;
 	@Autowired
-	private IGcePackageImageService gcePackageImageService;
+	private IEcGceImageService ecGceImageService;
 	@Autowired
-	private IGcePackageService gcePackageService;
+	private IEcGcePackageService ecGcePackageService;
 	@Value("${matrix.gce.mirror.build.server.ip}")
 	private String MIRRORBUILDSERVERIP;
 	@Value("${matrix.gce.mirror.build.server.port}")
@@ -69,50 +69,36 @@ public class TaskEcGceMirrorCheckStatusService extends BaseTaskEcGceServiceImpl
 			return tr;
 
 		EcGcePackage gcePackage = super.getGcePackage(params);
-		// EcGce gce = super.getGce(params);
-		/*
-		 * EcGcePackageCluster gcePackageCluster = super
-		 * .getGcePackageCluster(params);
-		 */
-		// HostModel host = super.getHost(gce.getHclusterId());
-		EcGcePackageImage image = super.getGcePackageImage(params);
-		// 返回结果
-		ApiResultObject resultObject = null;
+		EcGceImage image = super.getGceImage(params);
 		// 请求参数
 		Map<String, String> props = new HashMap<String, String>();
 		props.put("repo_name", image.getUrl());
 		props.put("app_version", gcePackage.getVersion());
-
-		long beginTime = System.currentTimeMillis();
-		tr.setSuccess(false);
-		while (!tr.isSuccess()) {
-			// 循环的第一次肯定不会进该if，因为代码开头Assert.isTrue过，所以resultObject.url必然在轮训后有值
-			if (System.currentTimeMillis() - beginTime > checkTimeout) {
-				tr.setSuccess(false);
-				tr.setResult("check time over:" + resultObject.getUrl());
-				break;
-			} else {
-				logger.debug(System.currentTimeMillis() + " 检查镜像[" + serverName
-						+ "]创建状态");
-				resultObject = gcePythonService
-						.checkGCEPackageMirrorCreateStatus(props,
-								MIRRORBUILDSERVERIP, MIRRORBUILDSERVERPORT);
-				tr = analyzeComplexRestServiceResult(resultObject);
-			}
-			Thread.sleep(checkInterval);
-		}
+		tr = super.polling(tr,checkInterval,checkTimeout,serverName,props);
 		if (tr.isSuccess()) {
 			logger.debug("镜像 " + image.getUrl() + " 创建成功");
 			// 当镜像可用的时候，往应用包的镜像名称字段添加镜像URL
-			image.setStatus(GcePackageImageStatus.AVAILABLE.getValue());
+			image.setStatus(GceImageStatus.AVAILABLE.getValue());
 			image.setUpdateUser(image.getCreateUser());
-			gcePackageImageService.update(image);
+			ecGceImageService.update(image);
 			gcePackage.setGceImageName(image.getUrl() + ":"
 					+ gcePackage.getVersion());// 镜像URL：repo_name:1.10.10.10
 			gcePackage.setUpdateUser(gcePackage.getCreateUser());
-			gcePackageService.updateBySelective(gcePackage);
+			ecGcePackageService.updateBySelective(gcePackage);
 		}
 		tr.setParams(params);
 		return tr;
+	}
+	@Override
+	public ApiResultObject pollingTask(Object... params) {
+		//从调用polling时候的赋值中获取
+		String serverName = (String) params[0];
+		Map<String, String> props = (Map<String, String>) params[1];
+		logger.debug(System.currentTimeMillis() + " 检查镜像[" + serverName
+				+ "]创建状态");
+		ApiResultObject  resultObject = gcePythonService
+				.checkGCEPackageMirrorCreateStatus(props,
+						MIRRORBUILDSERVERIP, MIRRORBUILDSERVERPORT);
+		return resultObject;
 	}
 }

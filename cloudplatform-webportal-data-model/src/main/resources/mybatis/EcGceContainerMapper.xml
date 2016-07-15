@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IGcePackageContainerDao">
-	<resultMap id="BaseResultMap" type="EcGcePackageContainer">
+<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IEcGceContainerDao">
+	<resultMap id="BaseResultMap" type="EcGceContainer">
 		<id column="ID" property="id" jdbcType="BIGINT" />
 		<result column="CONTAINER_NAME" property="containerName"
 			jdbcType="VARCHAR" />
@@ -31,7 +31,7 @@
 		<result column="GCE_ID" property="gceId" jdbcType="BIGINT" />
 		<result column="GCE_PACKAGE_ID" property="gcePackageId"
 			jdbcType="BIGINT" />
-		<result column="GCE_PACKAGE_CLUSTER_ID" property="gcePackageClusterId"
+		<result column="GCE_CLUSTER_ID" property="gceClusterId"
 			jdbcType="BIGINT" />
 		<result column="ZABBIXHOSTS" property="zabbixhosts" jdbcType="VARCHAR" />
 		<result column="SERVICE_TYPE" property="serviceType" jdbcType="TINYINT" />
@@ -51,7 +51,7 @@
 		BIND_HOST_PORT,
 		BIND_HOST_IP, BIND_PROTOCOL, MGR_BIND_HOST_PORT, CONTAINER_UUID, GCE_ID,
 		GCE_PACKAGE_ID,
-		GCE_PACKAGE_CLUSTER_ID, ZABBIXHOSTS, SERVICE_TYPE, LOG_BIND_HOST_PORT, STATUS, DELETED,
+		GCE_CLUSTER_ID, ZABBIXHOSTS, SERVICE_TYPE, LOG_BIND_HOST_PORT, STATUS, DELETED,
 		CREATE_TIME, UPDATE_TIME, CREATE_USER, UPDATE_USER
 	</sql>
 	<!-- 查询条件 -->
@@ -74,13 +74,13 @@
 		parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
-		from EC_GCE_PACKAGE_CONTAINER
+		from EC_GCE_CONTAINER
 		<include refid="Example_Where_Clause" />
 	</select>
-	<insert id="insert" parameterType="EcGcePackageContainer"
+	<insert id="insert" parameterType="EcGceContainer"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into
-		EC_GCE_PACKAGE_CONTAINER (CONTAINER_NAME, MOUNT_DIR,
+		EC_GCE_CONTAINER (CONTAINER_NAME, MOUNT_DIR,
 		ZOOKEEPER_ID,
 		IP_ADDR, GATE_ADDR,
 		IP_MASK, TYPE, DISK_SIZE,
@@ -91,7 +91,7 @@
 		BIND_HOST_IP, BIND_PROTOCOL,
 		MGR_BIND_HOST_PORT, CONTAINER_UUID,
 		GCE_ID,
-		GCE_PACKAGE_ID, GCE_PACKAGE_CLUSTER_ID, ZABBIXHOSTS,
+		GCE_PACKAGE_ID, GCE_CLUSTER_ID, ZABBIXHOSTS,
 		SERVICE_TYPE, LOG_BIND_HOST_PORT, STATUS,
 		DELETED, CREATE_TIME,
 		UPDATE_TIME,
@@ -114,7 +114,7 @@
 		#{mgrBindHostPort,jdbcType=VARCHAR},
 		#{containerUuid,jdbcType=VARCHAR}, #{gceId,jdbcType=BIGINT},
 		#{gcePackageId,jdbcType=BIGINT},
-		#{gcePackageClusterId,jdbcType=BIGINT},
+		#{gceClusterId,jdbcType=BIGINT},
 		#{zabbixhosts,jdbcType=VARCHAR},
 		#{serviceType,jdbcType=TINYINT},
 		#{logBindHostPort,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},

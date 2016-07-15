@@ -3,7 +3,6 @@ package com.letv.portal.proxy.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +34,9 @@ import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.enumeration.SlbStatus;
 import com.letv.portal.model.HostModel;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
+import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 import com.letv.portal.model.elasticcalc.gce.EcGceExt;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageContainer;
 import com.letv.portal.model.gce.GceCluster;
 import com.letv.portal.model.gce.GceContainer;
 import com.letv.portal.model.gce.GceServer;
@@ -52,9 +51,9 @@ import com.letv.portal.python.service.IGcePythonService;
 import com.letv.portal.python.service.IPythonService;
 import com.letv.portal.service.IBaseService;
 import com.letv.portal.service.IHostService;
-import com.letv.portal.service.elasticcalc.gce.IGcePackageContainerService;
-import com.letv.portal.service.elasticcalc.gce.IGcePackageService;
-import com.letv.portal.service.elasticcalc.gce.IGceService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceContainerService;
+import com.letv.portal.service.elasticcalc.gce.IEcGcePackageService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceService;
 import com.letv.portal.service.gce.IGceClusterService;
 import com.letv.portal.service.gce.IGceContainerService;
 import com.letv.portal.service.gce.IGceServerService;
@@ -71,11 +70,11 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	@Autowired
 	private IGceServerService gceServerService;
 	@Autowired
-	private IGceService gceService;
+	private IEcGceService ecGceService;
 	@Autowired
-	private IGcePackageService gcePackageService;
+	private IEcGcePackageService ecGcePackageService;
 	@Autowired
-	private IGcePackageContainerService gcePackageContainerService;
+	private IEcGceContainerService ecGceContainerService;
 	
 	@Autowired
 	private IGcePythonService gcePythonService;
@@ -380,33 +379,23 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		exParams.put("hclusterId", gce.getHclusterId());
 		exParams.put("areaId", gce.getAreaId());
 		exParams.put("createUser", gce.getCreateUser());
-		Integer existLength = this.gceService.selectByMapCount(exParams);
+		Integer existLength = this.ecGceService.selectByMapCount(exParams);
 		if(existLength>0){
 			throw new ValidateException(MessageFormat.format("{0}应用已存在", gce.getGceName()));
 		}
-		//TODO 待自主实现ELK时候进行修改，目前不影响
-		//3.保存GCE信息到LogStash
-		LogServer log = new LogServer();
-		log.setLogName(gce.getGceName());
-		log.setHclusterId(gce.getHclusterId());
-		log.setCreateUser(gce.getCreateUser());
-		log.setType("logstash");
-		this.logServerService.save(log);
 		//4.保存GCE信息
-		gce.setLogId(log.getId());
 		gce.setStatus(GceStatus.AVAILABLE.getValue());//可用
-		this.gceService.insert(gce);
+		this.ecGceService.insert(gce);
 		//5.保存GCE扩展服务信息
 		if(gceExt!=null){
 			long ocsId = gceExt.getOcsId().longValue();
 			long rdsId = gceExt.getRdsId().longValue();
 			if(ocsId != 0L && rdsId != 0L){
 				gceExt.setGceId(gce.getId());
-				this.gceService.saveGceExt(gceExt);
+				this.ecGceService.insertGceExt(gceExt);
 			}
 		}
 	}
-	@Transactional//任意异常都回滚
 	@Override
 	public void uploadPackage(MultipartFile file, EcGcePackage gcePackage) {
 		//1.校验该GCE是否存在
@@ -415,7 +404,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		exParams.put("createUser", gcePackage.getCreateUser());
 		exParams.put("deleted", false);
 		EcGce gce = null;
-		List<EcGce> list = this.gceService.selectByMap(exParams);
+		List<EcGce> list = this.ecGceService.selectByMap(exParams);
 		if(CollectionUtils.isEmpty(list)){
 			throw new ValidateException(MessageFormat.format("{0}应用不存在", gcePackage.getGceName()));
 		}
@@ -432,7 +421,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		} catch (IllegalStateException | IOException e) {
 			throw new CommonException("上传应用失败"+e.getMessage(),e);
 		}
-		String key = gcePackage.getCreateUser()+"_"+gce.getId()+"_"+gcePackage.getVersion();//"createUserId_gceId_version";//不考虑创建GCE和上传包的人不同情况
+		String key = MessageFormat.format("{0}_{1}_{2}", gcePackage.getCreateUser(),gce.getId(),gcePackage.getVersion());//不考虑创建GCE和上传包的人不同情况
 		String filePath = this.MATRIX_GCE_FILE_DEFAULT_LOCAL+"/" + fileName;
 		AWS3SConn.ConnBuilder builder = new AWS3SConn.ConnBuilder();
 		AWS3SConn conn = builder.setEndpoint(this.AWSS3ENDPOINT).setAccessKey(this.AWSS3ACCESSKEY)
@@ -443,7 +432,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		gcePackage.setBucketName(this.AWSS3BUCKETNAME);
 		gcePackage.setKey(key);
 		gcePackage.setStatus(GcePackageStatus.BUILDDING.getValue());
-		Map<String,Object> gcePackageParams = this.gcePackageService.save(gce,gcePackage);
+		Map<String,Object> gcePackageParams = this.ecGcePackageService.insertGceAndGcePackage(gce,gcePackage);
 		
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.putAll(gcePackageParams);
@@ -451,19 +440,6 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		params.put("gceName", gce.getGceName());
 		params.put("buyNum", gce.getInstanceNum());
 		params.put("type", gce.getType().trim().toLowerCase());
-		//TODO 待自主实现ELK时候进行修改，目前不影响
-		LogServer logServer = this.logServerService.selectById(gce.getLogId());
-		if(logServer != null) {
-			LogCluster logCluster = this.logClusterService.selectById(logServer.getLogClusterId());
-			if(logCluster != null){
-				Map<String,Object> logParams = new HashMap<String, Object>();
-				logParams.put("logClusterId", logCluster.getId());
-				logParams.put("logId", logServer.getId());
-				logParams.put("serviceName", logServer.getLogName());
-				logParams.put("clusterName", logCluster.getClusterName());
-				params.put("logParams", logParams);
-			}
-		}
 		//TODO 暂留下来，以后调整时直接修改
 		/*params.put("isCreateLog", true);
 		params.put("isConfig", false);
@@ -490,7 +466,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	}
 
 	@Override
-	public List<EcGcePackageContainer> getGcepackageContainers(
+	public List<EcGceContainer> getGcepackageContainers(
 			EcGcePackage gcePackage) {
 		//1.校验该GCE是否存在
 		Map<String,Object> exParams = new HashMap<String,Object>();
@@ -498,7 +474,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		exParams.put("createUser", gcePackage.getCreateUser());
 		exParams.put("deleted", false);
 		EcGce gce = null;
-		List<EcGce> list = this.gceService.selectByMap(exParams);
+		List<EcGce> list = this.ecGceService.selectByMap(exParams);
 		if(list == null || list.size()<=0){
 			throw new ValidateException(MessageFormat.format("{0}应用不存在", gcePackage.getGceName()));
 		}
@@ -513,7 +489,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		ex2Params.put("version", gcePackage.getVersion());
 		ex2Params.put("deleted", false);
 		EcGcePackage ecGcePackage = null;
-		List<EcGcePackage> list2 = this.gcePackageService.selectByMap(ex2Params);
+		List<EcGcePackage> list2 = this.ecGcePackageService.selectByMap(ex2Params);
 		if(list2 == null || list2.size()<=0){
 			throw new ValidateException(MessageFormat.format("{0}应用{1}版本不存在", gcePackage.getGceName(),gcePackage.getVersion()));
 		}
@@ -531,7 +507,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		map.put("createUser", gcePackage.getCreateUser());
 		map.put("gcePackageId", ecGcePackage.getId());
 		map.put("deleted", false);
-		List<EcGcePackageContainer> containers = this.gcePackageContainerService.selectByMap(map);
+		List<EcGceContainer> containers = this.ecGceContainerService.selectByMap(map);
 		if(list2 == null || list2.size()<=0){
 			throw new ValidateException(MessageFormat.format("{0}应用{1}版本容器列表为空", gcePackage.getGceName(),gcePackage.getVersion()));
 		}

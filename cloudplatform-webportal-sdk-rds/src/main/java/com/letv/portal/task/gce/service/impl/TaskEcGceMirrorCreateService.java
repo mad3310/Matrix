@@ -15,14 +15,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.result.ApiResultObject;
-import com.letv.portal.enumeration.GcePackageImageStatus;
+import com.letv.portal.enumeration.GceImageStatus;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
+import com.letv.portal.model.elasticcalc.gce.EcGceImage;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageImage;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
 import com.letv.portal.python.service.IGcePythonService;
-import com.letv.portal.service.elasticcalc.gce.IGcePackageImageService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceImageService;
 
 /**
  * 购买GCE：创建镜像
@@ -39,7 +39,7 @@ public class TaskEcGceMirrorCreateService extends BaseTaskEcGceServiceImpl
 	@Autowired
 	private IGcePythonService gcePythonService;
 	@Autowired
-	private IGcePackageImageService gcePackageImageService;
+	private IEcGceImageService ecGceImageService;
 	@Value("${matrix.gce.awss3.endpoint}")
 	private String AWSS3ENDPOINT;
 	@Value("${matrix.gce.awss3.accessKey}")
@@ -64,9 +64,6 @@ public class TaskEcGceMirrorCreateService extends BaseTaskEcGceServiceImpl
 			return tr;
 		EcGcePackage gcePackage = super.getGcePackage(params);
 		EcGce gce = super.getGce(params);
-		/*EcGcePackageCluster gcePackageCluster = super
-				.getGcePackageCluster(params);
-		HostModel host = super.getHost(gce.getHclusterId());*/
 
 		// 请求参数
 		Map<String, String> props = new HashMap<String, String>();
@@ -101,17 +98,17 @@ public class TaskEcGceMirrorCreateService extends BaseTaskEcGceServiceImpl
 		tr = analyzeRestServiceResult(resultObject);
 		if (tr.isSuccess()) {
 			logger.debug("请求创建成功");
-			EcGcePackageImage image = new EcGcePackageImage();
+			EcGceImage image = new EcGceImage();
 			image.setName(serverName);
 			image.setUrl(distMirrorUrl.toString());
 			image.setOwner(gcePackage.getCreateUser());
 			image.setNetType("ip");//TODO 沟通过，只有IP
 			image.setGceId(gce.getId());
 			image.setGcePackageId(gcePackage.getId());
-			image.setStatus(GcePackageImageStatus.NOTAVAILABLE.getValue());
+			image.setStatus(GceImageStatus.NOTAVAILABLE.getValue());
 			image.setCreateUser(gcePackage.getCreateUser());
-			this.gcePackageImageService.insert(image);
-			params.put("gcePackageImageId", image.getId());
+			this.ecGceImageService.insert(image);
+			params.put("gceImageId", image.getId());
 		}
 		tr.setParams(params);
 		return tr;

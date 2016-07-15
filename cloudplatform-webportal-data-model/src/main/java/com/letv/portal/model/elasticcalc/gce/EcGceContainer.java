@@ -16,7 +16,7 @@ import com.letv.common.model.BaseModel;
  * @version 1.0 .
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class EcGcePackageContainer extends BaseModel {
+public class EcGceContainer extends BaseModel {
 
 	private static final long serialVersionUID = -5070819205246981080L;
 	/**
@@ -127,7 +127,7 @@ public class EcGcePackageContainer extends BaseModel {
 	/**
 	 * GCE集群ID
 	 */
-	private Long gcePackageClusterId;
+	private Long gceClusterId;
 
 	/**
 	 * 对应zabbix删除container时候需要的标识
@@ -316,13 +316,13 @@ public class EcGcePackageContainer extends BaseModel {
 	public void setGcePackageId(Long gcePackageId) {
 		this.gcePackageId = gcePackageId;
 	}
-
-	public Long getGcePackageClusterId() {
-		return gcePackageClusterId;
+	
+	public Long getGceClusterId() {
+		return gceClusterId;
 	}
 
-	public void setGcePackageClusterId(Long gcePackageClusterId) {
-		this.gcePackageClusterId = gcePackageClusterId;
+	public void setGceClusterId(Long gceClusterId) {
+		this.gceClusterId = gceClusterId;
 	}
 
 	public Integer getStatus() {

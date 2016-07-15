@@ -6,14 +6,14 @@
 package com.letv.portal.dao.elasticcalc.gce;
 
 import com.letv.common.dao.IBaseDao;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageContainer;
+import com.letv.portal.model.elasticcalc.gce.EcGce;
 
 /**
- * IGcePackageContainerDao
+ * IEcGceDao
  * @author linzhanbo .
- * @since 2016年7月1日, 下午1:07:04 .
+ * @since 2016年6月28日, 下午2:24:30 .
  * @version 1.0 .
  */
-public interface IGcePackageContainerDao extends IBaseDao<EcGcePackageContainer> {
+public interface IEcGceDao extends IBaseDao<EcGce> {
 
 }

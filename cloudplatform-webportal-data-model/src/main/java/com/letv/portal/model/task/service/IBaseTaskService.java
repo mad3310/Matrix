@@ -32,6 +32,29 @@ public interface IBaseTaskService {
 	 * @version 1.0 .
 	 */
 	public TaskResult analyzeComplexRestServiceResult(ApiResultObject resultObject);
+	/**
+	 * 轮询执行
+	 * @param tr
+	 * @param interval
+	 * @param timeout
+	 * @param params	可选参数
+	 * @return
+	 * @throws InterruptedException
+	 * @author linzhanbo .
+	 * @since 2016年7月15日, 上午9:39:32 .
+	 * @version 1.0 .
+	 */
+	public TaskResult polling(TaskResult tr,long interval,long timeout,Object... params) throws InterruptedException;
+	/**
+	 * 轮询执行的任务
+	 * @param params	可选参数
+	 * @return
+	 * @throws InterruptedException
+	 * @author linzhanbo .
+	 * @since 2016年7月15日, 上午9:39:44 .
+	 * @version 1.0 .
+	 */
+	public ApiResultObject pollingTask(Object... params) throws InterruptedException;
 	
 	/**
 	 * 通用参数验证

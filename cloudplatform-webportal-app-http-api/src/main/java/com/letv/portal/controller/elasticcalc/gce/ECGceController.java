@@ -33,7 +33,7 @@ import com.letv.portal.model.HclusterModel;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
 import com.letv.portal.model.elasticcalc.gce.EcGceExt;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageContainer;
+import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 import com.letv.portal.proxy.IGceProxy;
 import com.letv.portal.service.IHclusterService;
 
@@ -117,7 +117,7 @@ public class ECGceController {
 
 	@JsonFilterProperties(excluses = {
 			@ExcludeProperty(pojo = ResultObject.class, names = { "callback" }),
-			@ExcludeProperty(pojo = EcGcePackageContainer.class, names = {
+			@ExcludeProperty(pojo = EcGceContainer.class, names = {
 					"status", "gcePackageClusterId", "containerName",
 					"mountDir", "hostIp"/* 所属物理机IP */, "gceId", "hostId",
 					"gcePackageId", "id", "deleted", "createUser", "createTime" }) })
@@ -131,7 +131,7 @@ public class ECGceController {
 			return new ResultObject(bindResult.getAllErrors());
 		}
 		gcePackage.setCreateUser(this.sessionService.getSession().getUserId());
-		List<EcGcePackageContainer> containers = gceProxy
+		List<EcGceContainer> containers = gceProxy
 				.getGcepackageContainers(gcePackage);
 		callbackResult.setData(containers);
 		logger.debug("获取GCE应用部署包容器列表成功! GCE名称:{},版本号:{}",

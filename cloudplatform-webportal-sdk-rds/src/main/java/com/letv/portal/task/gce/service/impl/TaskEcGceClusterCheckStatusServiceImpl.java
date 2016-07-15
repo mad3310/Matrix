@@ -17,14 +17,14 @@ import com.letv.common.result.ApiResultObject;
 import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.HostModel;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageCluster;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageContainer;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageImage;
+import com.letv.portal.model.elasticcalc.gce.EcGceCluster;
+import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
+import com.letv.portal.model.elasticcalc.gce.EcGceImage;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
 import com.letv.portal.python.service.IGcePythonService;
 import com.letv.portal.service.IHostService;
-import com.letv.portal.service.elasticcalc.gce.IGcePackageContainerService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceContainerService;
 /**
  * 购买GCE：检查集群创建状态
  * @author linzhanbo .
@@ -41,7 +41,7 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 	@Autowired
 	private IHostService hostService;
 	@Autowired
-	private IGcePackageContainerService gcePackageContainerService;
+	private IEcGceContainerService ecGceContainerService;
     @Autowired
     private IFixedPushService fixedPushService;
 	
@@ -62,77 +62,29 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 		TaskResult tr = super.execute(params);
 		if (!tr.isSuccess())
 			return tr;
-		EcGcePackageImage image = super.getGcePackageImage(params);
-		// 返回结果
-		ApiResultObject resultObject = null;
+		EcGceImage image = super.getGceImage(params);
 		
-		EcGcePackageCluster gceCluster = super.getGcePackageCluster(params);
+		EcGceCluster gceCluster = super.getGceCluster(params);
 		HostModel host = super.getHost(gceCluster.getHclusterId());
-
-		long beginTime = System.currentTimeMillis();
-		tr.setSuccess(false);
-		while (!tr.isSuccess()) {
-			// 循环的第一次肯定不会进该if，因为代码开头Assert.isTrue过，所以resultObject.url必然在轮训后有值
-			if (System.currentTimeMillis() - beginTime > checkTimeout) {
-				tr.setSuccess(false);
-				tr.setResult("check time over:" + resultObject.getUrl());
-				break;
-			} else {
-				logger.debug(System.currentTimeMillis()+" 检查集群[" + serverName + "]创建状态");
-				//TODO	与致新联调，测试环境地址
-				resultObject = gcePythonService
-						.checkContainerCreateStatus(gceCluster.getClusterName(),
-								"10.154.156.129",host.getName(),host.getPassword());
-				/*resultObject = gcePythonService
-						.checkContainerCreateStatus(gceCluster.getClusterName(),
-								host.getHostIp(),host.getName(),host.getPassword());*/
-				tr = analyzeComplexRestServiceResult(resultObject);
-			}
-			Thread.sleep(checkInterval);
-		}
+		tr = super.polling(tr, checkInterval, checkTimeout,serverName,gceCluster,host);
 		if (tr.isSuccess()) {
 			logger.debug("创建集群成功");
-			/*{
-			  "meta": {
-			    "code": 200
-			  },
-			  "response": {
-			    "code": "000000",
-			    "containers": [
-			      {
-			        "containerName": "d-jty-30_2_web6_lynzabo_test-n-1",
-			        "zookeeperId": null,
-			        "ipAddr": "10.154.255.183",
-			        "hostIp": "10.154.156.131",
-			        "mountDir": "{u'/var/log': u'/srv/docker/vfs/dir/0048092efb0f2bf3f32d5a040c1a509c68e1987c851a5c5e8fc5ba1fe424323d'}",
-			        "containerClusterName": "30_2_web6_lynzabo_test",
-			        "netMask": "255.255.0.0",
-			        "memory": 1073741824,
-			        "gateAddr": "10.154.0.1",
-			        "type": "jetty"
-			      },
-			      {
-			        "containerName": "d-jty-30_2_web6_lynzabo_test-n-2",
-			        "zookeeperId": null,
-			        "ipAddr": "10.154.255.180",
-			        "hostIp": "10.154.156.36",
-			        "mountDir": "{u'/var/log': u'/srv/docker/vfs/dir/e65e355e9ee302aa8fe38e78f0d196510a10d21a5a0a535cfb839548ec03197f'}",
-			        "containerClusterName": "30_2_web6_lynzabo_test",
-			        "netMask": "255.255.0.0",
-			        "memory": 1073741824,
-			        "gateAddr": "10.154.0.1",
-			        "type": "jetty"
-			      }
-			    ]
-			  }
-			}*/
-			List<Map> containers = (List<Map>)((Map)transToMap(resultObject.getResult()).get("response")).get("containers");
+			//只需判断关键属性containers属性
+			Map<String,Object> response = (Map<String, Object>) tr.getParams();
+			Object containersObj = response.get("containers");
+			if(null == containersObj){
+				tr.setSuccess(false);
+				tr.setResult("get 'containers' data error:"+tr.getResult());
+				tr.setParams(params);
+				return tr;
+			}
+			List<Map> containers = (List<Map>)containersObj;
 			for (Map map : containers) {
-				EcGcePackageContainer container = new EcGcePackageContainer();
+				EcGceContainer container = new EcGceContainer();
 				BeanUtils.populate(container, map);
 				container.setGceId(gceCluster.getGceId());
 				container.setGcePackageId(gceCluster.getGcePackageId());
-				container.setGcePackageClusterId(gceCluster.getId());
+				container.setGceClusterId(gceCluster.getId());
 				container.setIpMask(image.getNetType());
 				container.setStatus(MclusterStatus.RUNNING.getValue());
 				container.setCreateUser(image.getCreateUser());
@@ -141,7 +93,7 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 				if(null != hostModel) {
 					container.setHostId(hostModel.getId());
 				}
-				this.gcePackageContainerService.insert(container);
+				this.ecGceContainerService.insert(container);
 				ApiResultObject apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
                 if(!apiResult.getAnalyzeResult()) {
                     //发送推送失败邮件，流程继续。
@@ -166,6 +118,22 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
             	super.rollBack(tr);
             }
         }
+	}
+	@Override
+	public ApiResultObject pollingTask(Object... params) {
+		//从调用polling时候的赋值中获取
+		String serverName = (String) params[0];
+		EcGceCluster gceCluster = (EcGceCluster) params[1];
+		HostModel host = (HostModel) params[2];
+		logger.debug(System.currentTimeMillis()+" 检查集群[" + serverName + "]创建状态");
+		//TODO	与致新联调，测试环境地址
+		ApiResultObject resultObject = gcePythonService
+				.checkContainerCreateStatus(gceCluster.getClusterName(),
+						"10.154.156.129",host.getName(),host.getPassword());
+		/*ApiResultObject resultObject = gcePythonService
+				.checkContainerCreateStatus(gceCluster.getClusterName(),
+						host.getHostIp(),host.getName(),host.getPassword());*/
+		return resultObject;
 	}
 
 }

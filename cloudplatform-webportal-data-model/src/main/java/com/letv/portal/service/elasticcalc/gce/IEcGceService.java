@@ -10,13 +10,13 @@ import com.letv.portal.model.elasticcalc.gce.EcGceExt;
 import com.letv.portal.service.IBaseService;
 
 /**
- * IGceServerService
+ * IEcGceService
  * 
  * @author linzhanbo .
  * @since 2016年6月28日, 下午2:18:02 .
  * @version 1.0 .
  */
-public interface IGceService extends IBaseService<EcGce> {
+public interface IEcGceService extends IBaseService<EcGce> {
 	/**
 	 * 保存GCE扩展
 	 * @param gceExt
@@ -24,7 +24,7 @@ public interface IGceService extends IBaseService<EcGce> {
 	 * @since 2016年7月6日, 下午1:00:36 .
 	 * @version 1.0 .
 	 */
-	public void saveGceExt(EcGceExt gceExt);
+	public void insertGceExt(EcGceExt gceExt);
 	/**
 	 * 使用gceId查询GCE扩展
 	 * @param gceId

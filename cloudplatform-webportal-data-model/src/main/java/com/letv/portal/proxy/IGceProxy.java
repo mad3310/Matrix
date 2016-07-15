@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
 import com.letv.portal.model.elasticcalc.gce.EcGceExt;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
-import com.letv.portal.model.elasticcalc.gce.EcGcePackageContainer;
+import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 import com.letv.portal.model.gce.GceServer;
 
 public interface IGceProxy extends IBaseProxy<GceServer> {
@@ -44,5 +44,5 @@ public interface IGceProxy extends IBaseProxy<GceServer> {
 	 * @since 2016年7月5日, 下午6:01:27 .
 	 * @version 1.0 .
 	 */
-	public List<EcGcePackageContainer> getGcepackageContainers(EcGcePackage gcePackage);
+	public List<EcGceContainer> getGcepackageContainers(EcGcePackage gcePackage);
 }

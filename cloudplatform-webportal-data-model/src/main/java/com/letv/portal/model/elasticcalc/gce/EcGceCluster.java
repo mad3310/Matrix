@@ -16,7 +16,7 @@ import com.letv.common.model.BaseModel;
  * @version 1.0 .
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class EcGcePackageCluster extends BaseModel {
+public class EcGceCluster extends BaseModel {
 
 	private static final long serialVersionUID = 465468652039937084L;
 	/**

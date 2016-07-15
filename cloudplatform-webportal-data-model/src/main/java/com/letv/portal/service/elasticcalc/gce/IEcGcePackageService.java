@@ -12,12 +12,12 @@ import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
 import com.letv.portal.service.IBaseService;
 
 /**
- * IGcePackageService
+ * IEcGcePackageService
  * @author linzhanbo .
  * @since 2016年6月29日, 上午9:48:54 .
  * @version 1.0 .
  */
-public interface IGcePackageService extends IBaseService<EcGcePackage> {
+public interface IEcGcePackageService extends IBaseService<EcGcePackage> {
 	/**
 	 * 保存该GCE应用部署包
 	 * @param gce
@@ -27,6 +27,6 @@ public interface IGcePackageService extends IBaseService<EcGcePackage> {
 	 * @since 2016年6月29日, 上午10:01:22 .
 	 * @version 1.0 .
 	 */
-	public Map<String, Object> save(EcGce gce, EcGcePackage gcePackage);
+	public Map<String, Object> insertGceAndGcePackage(EcGce gce, EcGcePackage gcePackage);
 
 }
