@@ -26,8 +26,10 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.email.bean.MailMessage;
 import com.letv.common.exception.ApiNotFoundException;
+import com.letv.common.exception.CommonException;
 import com.letv.common.exception.MatrixException;
 import com.letv.common.exception.OauthException;
+import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ResultObject;
 import com.letv.common.session.Session;
 import com.letv.common.session.SessionServiceImpl;
@@ -62,14 +64,15 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
     		e = ((MatrixException) e).getE();
     	}
 		e = transE(e);
-		if(e instanceof OauthException) {
+		if(e instanceof OauthException || e instanceof CommonException || e instanceof ValidateException) {
 			//do not send email.
+			logger.debug(e.getMessage());
 		} else if(Boolean.valueOf(ERROR_MAIL_ENABLED) ) {
 			String stackTraceStr = com.letv.common.util.ExceptionUtils.getRootCauseStackTrace(e);
 			String exceptionMessage = e.getMessage();
 			sendErrorMail(req,error +":" +exceptionMessage,stackTraceStr);
+			logger.error(error, e);
 		}
-    	logger.error(error, e);
     	String viewName = determineViewName(e, req);
 		if (viewName == null) 
 			return null;
@@ -87,6 +90,7 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
 			}
 			ModelAndView mav =  getModelAndView(viewName, e, req);
 			mav.addObject("exception", error);
+			mav.addObject("Exception", e);
 			return mav;
 		}
     }
