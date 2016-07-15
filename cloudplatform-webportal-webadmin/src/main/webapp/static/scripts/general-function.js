@@ -206,11 +206,10 @@ var Status={
 			}
 };
 
-function initChart(obj,title,ytitle,unit){
-
-    $(obj).highcharts({
+function initChart(obj,title,ytitle,unit, option){
+	
+	var configObj = {
         chart: {
-            // type: 'areaspline',
             type:'line',
             zoomType: 'x',
             spacingRight: 20
@@ -252,18 +251,6 @@ function initChart(obj,title,ytitle,unit){
         plotOptions: {
         	lineWidth: 0.1,  
             fillOpacity: 0.1,
-            // areaspline: {
-            //     marker: {
-            //         enabled: false,
-            //         symbol: 'circle',
-            //         radius: 2,
-            //         states: {
-            //             hover: {
-            //                 enabled: true
-            //             }
-            //         }
-            //     }
-            // },
             line: {
                 marker: {
                     enabled: false,
@@ -275,7 +262,6 @@ function initChart(obj,title,ytitle,unit){
                 }
             },
             series:{
-            	// lineWidth: 0.5,
             	lineWidth:2,  
                 fillOpacity: 0.5,
                 states:{
@@ -298,10 +284,27 @@ function initChart(obj,title,ytitle,unit){
             shared: true,
             pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>'
         }
-    });
+	};
+	
+	$.extend(true, configObj, option);
+	
+    $(obj).highcharts(configObj);
 
 } 
 
+
+//formatter: function() { 
+//console.log(this);
+//var pointArray = this.points;
+//var pointStr = "";
+//pointArray.forEach(function(item){
+//	var color = item.series.color;
+//	var name = item.series.name;
+//	var y = item.y;
+//	pointStr += '<span style="color:'+color+'">\u25CF</span> '+name+': <b>'+TransUnit(y)+'</b><br/>'
+//});
+//
+//return pointStr;
 
 function translateStatus(status, resourceType) {
 	if(resourceType){

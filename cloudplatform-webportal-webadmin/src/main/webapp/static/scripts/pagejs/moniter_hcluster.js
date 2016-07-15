@@ -148,7 +148,38 @@ function initCharts(data){
 	var div = $(viewDemo).find('[name="data-chart"]');
 	$(div).attr("id",data.id);
 	//init div to chart
-	initChart(div,data.titleText,data.yAxisText,data.tooltipSuffix);
+	//console.log(data.id);
+//	var num = 12.12345;
+//	num.toFixed(2);
+//	console.log(num.toFixed(2));
+//	console.log(num);
+	
+	var obj = {
+			tooltip:{
+				formatter: function() { 
+				var pointArray = this.points;
+				var pointStr = "";
+				pointArray.forEach(function(item){
+					var color = item.series.color;
+					var name = item.series.name;
+					var y = item.y;
+					pointStr += '<span style="color:'+color+'">\u25CF</span> '+name+': <b>'+getUnitByMonitorPoint(y,data.id)+'</b><br/>'
+				});
+				
+				return pointStr;	
+				}
+			},
+	
+	        yAxis: {
+	            labels: {
+	                formatter:function(){
+	                	return getUnitByMonitorPoint(this.value,data.id);
+	                }
+	             }
+	        }
+	};
+	
+	initChart(div,data.titleText,data.yAxisText,data.tooltipSuffix,obj);
 	
 	/*隐藏图表*/
 	$('div[name="monitor-view"]').each(function(){
@@ -159,6 +190,52 @@ function initCharts(data){
 	draggable(viewDemo);
 }
 
+function getUnitByMonitorPoint(data, monitorPoint){
+	//53	磁盘使用量
+	//54	磁盘每秒读写速率
+	//55	节点数量
+	//56	内存
+	//57	cpu
+	if(monitorPoint==53 || monitorPoint==56){//监控内存大小    G
+		return TransUnit(data);
+	}else if(monitorPoint==54){//监控读写速率     kb/s
+		return TransUnit(data)+"/s";
+	}else if(monitorPoint==55){//节点数量      个
+		return data+"个";
+	}else if(monitorPoint==57){//cpu使用率	   100%
+		return (data*100).toFixed(2)+"%";
+	}else{
+		return data;
+	}
+	
+}
+
+function legendTranslate(str){
+	var strArray = str.split(":");
+	if(!strArray || strArray.length!=2)return str;
+	var ip = strArray[0];
+	var title = strArray[1];
+	if(title=="total"){
+		return ip+":总量";
+	}else if(title=="used"){
+		return ip+":使用";
+	}else if(title=="free"){
+		return ip+":空闲";
+	}else if(title=="read_iops"){
+		return ip+":磁盘读速率";
+	}else if(title=="write_iops"){
+		return ip+":磁盘写速率";
+	}else if(title=="container_count"){
+		return ip+":节点个数";
+	}else if(title=="total.user"){
+		return ip+":用户使用率";
+	}else if(title=="total.system"){
+		return ip+":系统使用率";
+	}else{
+		return str;
+	}
+
+}
 
 function setChartData(indexId,chart){
 	var mclusterId= $('.mclusterOption').val();
@@ -186,6 +263,7 @@ function setChartData(indexId,chart){
 	 			}
 		 		for(var i=0;i<ydata.length;i++){	 			
 		 			getLocalTime(ydata[i]);
+		 			ydata[i].name = legendTranslate(ydata[i].name);
 		 			chart.addSeries(ydata[i],false);
 	 			}
 		 		chart.redraw();
