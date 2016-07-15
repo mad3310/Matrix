@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.letv.portal.dao.log.IEsContainerDao">
+
+	<resultMap id="BaseResultMap" type="EsContainer">
+	    <result column="ID" property="id" />
+	    <result column="CONTAINER_NAME" property="containerName" />
+	    <result column="MOUNT_DIR" property="mountDir" />
+	    <result column="HOST_ID" property="hostId" />
+	    <result column="HOST_IP" property="hostIp" />
+	    <result column="ESCLUSTER_ID" property="esClusterId" />
+	    <result column="IP_ADDR" property="ipAddr" />
+	    <result column="GATE_ADDR" property="gateAddr" />
+	    <result column="IP_MASK" property="ipMask" />
+	    <result column="STATUS" property="status" />
+	    <result column="ZOOKEEPER_IP" property="zookeeperIp" />
+	    <result column="DISK_SIZE" property="diskSize" />
+	    <result column="CORES_NUMBER" property="coresNumber" />
+	    <result column="CPU_SPEED" property="cpuSpeed" />
+	    <result column="MEMORY_SIZE" property="memorySize" />
+	    <result column="CONTAINER_UUID" property="containerUuid" />
+	    <result column="ZABBIXHOSTS" property="zabbixhosts" />
+	    <result column="BIND_CONTAINER_PORT" property="bindContainerPort" />
+	    <result column="BIND_HOST_PORT" property="bindHostPort" />
+	    <result column="BIND_HOST_IP" property="bindHostIp" />
+	    <result column="BIND_PROTOCOL" property="bindProtocol" />
+	    <result column="MGR_BIND_HOST_PORT" property="mgrBindHostPort" />
+	    <result column="DELETED" property="deleted" />
+	    <result column="CREATE_TIME" property="createTime" />
+	    <result column="UPDATE_TIME" property="updateTime" />
+	    <result column="CREATE_USER" property="createUser" />
+	    <result column="UPDATE_USER" property="updateUser" />
+	    
+	    <association property="esCluster" javaType="EsCluster">
+			<result column="ESCLUSTER_NAME" property="esClusterName" />
+		</association>
+	</resultMap>
+
+	
+	<sql id="Base_Column_List">
+	    container.ID,container.CONTAINER_NAME,container.MOUNT_DIR,container.HOST_ID,container.HOST_IP,
+	    container.ESCLUSTER_ID,container.IP_ADDR,container.GATE_ADDR,container.IP_MASK,container.STATUS,
+	    container.ZOOKEEPER_IP,container.DISK_SIZE,container.CORES_NUMBER,container.CPU_SPEED,
+	    container.MEMORY_SIZE,container.CONTAINER_UUID,container.ZABBIXHOSTS,container.BIND_CONTAINER_PORT,
+	    container.BIND_HOST_PORT,container.BIND_HOST_IP,container.BIND_PROTOCOL,container.MGR_BIND_HOST_PORT,
+	    container.DELETED,container.CREATE_TIME,container.UPDATE_TIME,container.CREATE_USER,
+	    container.UPDATE_USER
+	</sql>
+	
+	<insert id="insert" parameterType="EsContainer" useGeneratedKeys="true" keyProperty="id" >
+	    insert into DA_ESCONTAINER 
+	        (CONTAINER_NAME,MOUNT_DIR,HOST_ID,HOST_IP,ESCLUSTER_ID,IP_ADDR,GATE_ADDR,IP_MASK,STATUS,ZOOKEEPER_IP,DISK_SIZE,CORES_NUMBER,CPU_SPEED,MEMORY_SIZE,CONTAINER_UUID,ZABBIXHOSTS,BIND_CONTAINER_PORT,BIND_HOST_PORT,BIND_HOST_IP,BIND_PROTOCOL,MGR_BIND_HOST_PORT,DELETED,CREATE_TIME,UPDATE_TIME,CREATE_USER,UPDATE_USER) 
+	    values
+	        (#{containerName},#{mountDir},#{hostId},#{hostIp},#{esClusterId},#{ipAddr},#{gateAddr},#{ipMask},#{status},#{zookeeperIp},#{diskSize},#{coresNumber},#{cpuSpeed},#{memorySize},#{containerUuid},#{zabbixhosts},#{bindContainerPort},#{bindHostPort},#{bindHostIp},#{bindProtocol},#{mgrBindHostPort},#{deleted},now(),#{updateTime},#{createUser},#{updateUser})
+	</insert>
+	
+	<sql id="Common_Where_Clause">
+	    where 1=1
+	    <trim suffixOverrides=",">
+	        <if test="id != null ">
+	            and container.ID=#{id}
+	        </if>
+	        <if test="containerName != null ">
+	            and container.CONTAINER_NAME=#{containerName}
+	        </if>
+	        <if test="mountDir != null ">
+	            and container.MOUNT_DIR=#{mountDir}
+	        </if>
+	        <if test="hostId != null ">
+	            and container.HOST_ID=#{hostId}
+	        </if>
+	        <if test="hostIp != null ">
+	            and container.HOST_IP=#{hostIp}
+	        </if>
+	        <if test="esclusterId != null ">
+	            and container.ESCLUSTER_ID=#{esclusterId}
+	        </if>
+	        <if test="ipAddr != null ">
+	            and container.IP_ADDR=#{ipAddr}
+	        </if>
+	        <if test="gateAddr != null ">
+	            and container.GATE_ADDR=#{gateAddr}
+	        </if>
+	        <if test="ipMask != null ">
+	            and container.IP_MASK=#{ipMask}
+	        </if>
+	        <if test="status != null ">
+	            and container.STATUS=#{status}
+	        </if>
+	        <if test="zookeeperIp != null ">
+	            and container.ZOOKEEPER_IP=#{zookeeperIp}
+	        </if>
+	        <if test="diskSize != null ">
+	            and container.DISK_SIZE=#{diskSize}
+	        </if>
+	        <if test="coresNumber != null ">
+	            and container.CORES_NUMBER=#{coresNumber}
+	        </if>
+	        <if test="cpuSpeed != null ">
+	            and container.CPU_SPEED=#{cpuSpeed}
+	        </if>
+	        <if test="memorySize != null ">
+	            and container.MEMORY_SIZE=#{memorySize}
+	        </if>
+	        <if test="containerUuid != null ">
+	            and container.CONTAINER_UUID=#{containerUuid}
+	        </if>
+	        <if test="zabbixhosts != null ">
+	            and container.ZABBIXHOSTS=#{zabbixhosts}
+	        </if>
+	        <if test="bindContainerPort != null ">
+	            and container.BIND_CONTAINER_PORT=#{bindContainerPort}
+	        </if>
+	        <if test="bindHostPort != null ">
+	            and container.BIND_HOST_PORT=#{bindHostPort}
+	        </if>
+	        <if test="bindHostIp != null ">
+	            and container.BIND_HOST_IP=#{bindHostIp}
+	        </if>
+	        <if test="bindProtocol != null ">
+	            and container.BIND_PROTOCOL=#{bindProtocol}
+	        </if>
+	        <if test="mgrBindHostPort != null ">
+	            and container.MGR_BIND_HOST_PORT=#{mgrBindHostPort}
+	        </if>
+	        <if test="deleted != null ">
+	            and container.DELETED=#{deleted}
+	        </if>
+	        <if test="createTime != null ">
+	            and container.CREATE_TIME=#{createTime}
+	        </if>
+	        <if test="updateTime != null ">
+	            and container.UPDATE_TIME=#{updateTime}
+	        </if>
+	        <if test="createUser != null ">
+	            and container.CREATE_USER=#{createUser}
+	        </if>
+	        <if test="updateUser != null ">
+	            and container.UPDATE_USER=#{updateUser}
+	        </if>
+	    </trim>
+	</sql>
+	
+	<!--根据id，有选择的修改记录 -->
+	<update id="updateBySelective" parameterType="EsContainer">
+		update DA_ESCONTAINER
+		<set>
+			<if test="containerName != null  and containerName != '' ">
+				CONTAINER_NAME=#{containerName},
+			</if>
+			<if test="mountDir != null  ">
+				MOUNT_DIR=#{mountDir},
+			</if>
+			<if test="zookeeperIp != null  ">
+				ZOOKEEPER_IP=#{zookeeperIp},
+			</if>
+			<if test="ipAddr != null  ">
+				IP_ADDR=#{ipAddr},
+			</if>
+			<if test="gateAddr != null  ">
+				GATE_ADDR=#{gateAddr},
+			</if>
+			<if test="ipMask != null  ">
+				IP_MASK=#{ipMask},
+			</if>
+			<if test="diskSize != null  ">
+				DISK_SIZE=#{diskSize},
+			</if>
+			<if test="coresNumber != null  ">
+				CORES_NUMBER=#{coresNumber},
+			</if>
+			<if test="memorySize != null  ">
+				MEMORY_SIZE=#{memorySize},
+			</if>
+			<if test="cpuSpeed != null  ">
+				CPU_SPEED=#{cpuSpeed},
+			</if>
+			<if test="hostId != null  ">
+				HOST_ID=#{hostId},
+			</if>
+			<if test="hostIp != null  ">
+				HOST_IP=#{hostIp},
+			</if>
+			<if test="esClusterId != null  ">
+				ESCLUSTER_ID=#{esClusterId},
+			</if>
+			<if test="containerUuid != null  ">
+				CONTAINER_UUID=#{containerUuid},
+			</if>
+			<if test="status != null  ">
+				STATUS=#{status},
+			</if>
+			<if test="deleted != null  ">
+				DELETED=#{deleted},
+			</if>
+			<if test="createTime != null  ">
+				CREATE_TIME=#{createTime},
+			</if>
+			<if test="createUser != null  ">
+				CREATE_USER=#{createUser},
+			</if>
+				UPDATE_TIME=now(),
+			<if test="updateUser != null  ">
+				UPDATE_USER=#{updateUser}
+			</if>
+			<if test="zabbixHosts != null  ">
+				ZABBIXHOSTS=#{zabbixHosts}
+			</if>
+		</set>
+		where ID=#{id}
+	</update>
+	
+	<select id="selectContainerByLogClusterId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+			<include refid="Base_Column_List" />
+		from 
+			DA_ESCONTAINER container
+		where 
+			container.ESCLUSTER_ID=#{esClusterId}
+	</select>
+	<select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+			<include refid="Base_Column_List" />
+		from 
+			DA_ESCONTAINER container
+		where 
+			container.CONTAINER_NAME=#{containerName}
+	</select>
+	
+	<select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
+	    select
+	        <include refid="Base_Column_List" />
+	    from
+	        DA_ESCONTAINER container
+	        <include refid="Common_Where_Clause" />
+	</select>
+</mapper>   
