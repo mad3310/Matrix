@@ -44,6 +44,14 @@ public class EsServer extends BaseModel {
 	 */
 	private Long memorySize;
 	/*
+	 * 存储大小
+	 */
+	private Long storageSize;
+	/*
+	 *节点数量 
+	 */
+	private Integer nodeCount;
+	/*
 	 * es节点
 	 */
 	private List<EsContainer> esContainers;
@@ -102,6 +110,18 @@ public class EsServer extends BaseModel {
 	}
 	public void setEsContainers(List<EsContainer> esContainers) {
 		this.esContainers = esContainers;
+	}
+	public Long getStorageSize() {
+		return storageSize;
+	}
+	public void setStorageSize(Long storageSize) {
+		this.storageSize = storageSize;
+	}
+	public Integer getNodeCount() {
+		return nodeCount;
+	}
+	public void setNodeCount(Integer nodeCount) {
+		this.nodeCount = nodeCount;
 	}
 	
 }

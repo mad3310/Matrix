@@ -10,6 +10,8 @@
 	    <result column="HCLUSTER_ID" property="hclusterId" />
 	    <result column="ESCLUSTER_ID" property="esClusterId" />
 	    <result column="MEMORY_SIZE" property="memorySize" />
+	    <result column="STORAGE_SIZE" property="storageSize" />
+	    <result column="NODE_COUNT" property="nodeCount" />
 	    <result column="STATUS" property="status" jdbcType="TINYINT" typeHandler="com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler"/>
 	    <result column="DELETED" property="deleted" />
 	    <result column="CREATE_TIME" property="createTime" />
@@ -25,7 +27,7 @@
 	</resultMap>
 	
 	<sql id="Base_Column_List">
-	    es.ID,es.ES_NAME,es.HCLUSTER_ID,es.ESCLUSTER_ID,es.MEMORY_SIZE,es.STATUS,es.DELETED,
+	    es.ID,es.ES_NAME,es.HCLUSTER_ID,es.ESCLUSTER_ID,es.MEMORY_SIZE,es.STORAGE_SIZE,es.NODE_COUNT,es.STATUS,es.DELETED,
 	    es.CREATE_TIME,es.UPDATE_TIME,es.CREATE_USER,es.UPDATE_USER,es.DESCN
 	</sql>
 	
@@ -33,9 +35,9 @@
     <!-- 如果代码中未指定createUser，则赋默认值，否则按代码中指定createUser -->
 	<insert id="insert" parameterType="EsServer" useGeneratedKeys="true" keyProperty="id" >
 	    insert into DA_ES 
-	        (ES_NAME,HCLUSTER_ID,ESCLUSTER_ID,MEMORY_SIZE,STATUS,DELETED,CREATE_TIME,CREATE_USER,DESCN) 
+	        (ES_NAME,HCLUSTER_ID,ESCLUSTER_ID,MEMORY_SIZE,STORAGE_SIZE,NODE_COUNT,STATUS,DELETED,CREATE_TIME,CREATE_USER,DESCN) 
 	    values
-	        (#{esName},#{hclusterId},#{esClusterId},#{memorySize},
+	        (#{esName},#{hclusterId},#{esClusterId},#{memorySize},#{storageSize},#{nodeCount},
 	        #{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
 	        #{deleted},
 	        now(),
@@ -61,46 +63,11 @@
 	        <if test="memorySize != null ">
 	            and es.MEMORY_SIZE=#{memorySize}
 	        </if>
-	        <if test="status != null ">
-	            and es.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
+	        <if test="storageSize != null ">
+	            and es.STORAGE_SIZE=#{storageSize}
 	        </if>
-	        <if test="deleted != null ">
-	            and es.DELETED=#{deleted}
-	        </if>
-	        <if test="createTime != null ">
-	            and es.CREATE_TIME=#{createTime}
-	        </if>
-	        <if test="updateTime != null ">
-	            and es.UPDATE_TIME=#{updateTime}
-	        </if>
-	        <if test="createUser != null ">
-	            and es.CREATE_USER=#{createUser}
-	        </if>
-	        <if test="updateUser != null ">
-	            and es.UPDATE_USER=#{updateUser}
-	        </if>
-	        <if test="descn != null ">
-	            and es.DESCN=#{descn}
-	        </if>
-	    </trim>
-	</sql>
-	<sql id="Simple_Where_Clause">
-    	where 1=1
-	    <trim suffixOverrides=",">
-	        <if test="id != null ">
-	            and es.ID=#{id}
-	        </if>
-	        <if test="esName != null and esName != '' ">
-	            and es.ES_NAME=#{esName}
-	        </if>
-	        <if test="hclusterId != null ">
-	            and es.HCLUSTER_ID=#{hclusterId}
-	        </if>
-	        <if test="esClusterId != null ">
-	            and es.ESCLUSTER_ID=#{esClusterId}
-	        </if>
-	        <if test="memorySize != null ">
-	            and es.MEMORY_SIZE=#{memorySize}
+	        <if test="nodeCount != null ">
+	            and es.NODE_COUNT=#{nodeCount}
 	        </if>
 	        <if test="status != null ">
 	            and es.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
@@ -140,6 +107,12 @@
 			</if>
 			<if test="memorySize != null ">
 	            MEMORY_SIZE=#{memorySize},
+	        </if>
+			<if test="storageSize != null ">
+	            STORAGE_SIZE=#{storageSize},
+	        </if>
+			<if test="nodeCount != null ">
+	            NODE_COUNT=#{nodeCount},
 	        </if>
 			<if test="status != null  ">
 				STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
@@ -185,8 +158,12 @@
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
 		parameterType="java.util.Map">
-		select count(1) from DA_ES es
-		<include refid="Simple_Where_Clause" />
+		select 
+			count(1) 
+		from 
+			DA_ES es
+		where
+			es.ES_NAME=#{esName} and es.CREATE_USER=#{createUser}
 	</select>
 	
 </mapper>   

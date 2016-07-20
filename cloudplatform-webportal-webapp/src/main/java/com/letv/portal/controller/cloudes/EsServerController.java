@@ -23,8 +23,6 @@ import com.letv.portal.service.es.IEsServerService;
 @RequestMapping("/es")
 public class EsServerController {
 	
-	@Autowired(required=false)
-	private SessionServiceImpl sessionService;
 	@Autowired
 	private IEsServerService esServerService;
 	@Autowired
@@ -41,8 +39,6 @@ public class EsServerController {
 			logger.error("校验参数不合法");
 			return new ResultObject(bindResult.getAllErrors());
 		}
-		esServer.setHclusterId(48l);
-		esServer.setCreateUser(this.sessionService.getSession().getUserId());
 		this.esProxy.insertAndBuild(esServer);
 		logger.debug("创建ES成功! ID:{},Name:{}", esServer.getId(), esServer.getEsName());
 		return obj;

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.letv.common.exception.ValidateException;
+import com.letv.common.session.SessionServiceImpl;
 import com.letv.portal.model.es.EsServer;
 import com.letv.portal.model.task.service.ITaskEngine;
 import com.letv.portal.proxy.IEsProxy;
@@ -30,6 +31,8 @@ public class EsProxyImpl extends BaseProxyImpl<EsServer> implements IEsProxy{
 	private ITaskEngine taskEngine;
 	@Autowired
 	private IHostService hostService;
+	@Autowired(required=false)
+	private SessionServiceImpl sessionService;
 	
 	
 	@Override
@@ -37,11 +40,10 @@ public class EsProxyImpl extends BaseProxyImpl<EsServer> implements IEsProxy{
 		//1.参数转换防止XSS跨站漏洞
 		esServer.setEsName(StringEscapeUtils.escapeHtml(esServer.getEsName()));
 		esServer.setDescn(StringEscapeUtils.escapeHtml(esServer.getDescn()));
-		//2.校验该GCE是否已经存在
+		//2.校验该用户下ES名称是否已经存在
 		Map<String,Object> exParams = new HashMap<String,Object>();
 		exParams.put("esName", esServer.getEsName());
-		exParams.put("hclusterId", esServer.getHclusterId());
-		exParams.put("createUser", esServer.getCreateUser());
+		exParams.put("createUser", this.sessionService.getSession().getUserId());
 		Integer existLength = this.esServerService.selectByMapCount(exParams);
 		if(existLength>0){
 			throw new ValidateException(MessageFormat.format("{0}应用已存在", esServer.getEsName()));
