@@ -17,6 +17,7 @@
 								<option value="CBASE">CBASE</option>
 								<option value="OSS">OSS</option>
 								<option value="LOG">LOG</option>
+								<option value="ES">ES</option>
 							</select>
 						</div>
 						<div class=" form-group col-xs-5 col-sm-5">
