@@ -2,8 +2,14 @@ package com.letv.portal.model.es;
 
 import java.util.List;
 
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
 import com.letv.common.model.BaseModel;
 import com.letv.portal.enumeration.EsStatus;
+import com.letv.portal.validation.annotation.IdValid;
 
 public class EsServer extends BaseModel {
 	
@@ -12,7 +18,7 @@ public class EsServer extends BaseModel {
 	/*
 	 * es名称
 	 */
-	private String EsName;
+	private String esName;
 	/*
 	 * 状态
 	 */
@@ -54,11 +60,14 @@ public class EsServer extends BaseModel {
 	public void setEsClusterId(Long esClusterId) {
 		this.esClusterId = esClusterId;
 	}
+	
+	@NotBlank
+    @Pattern(regexp = "^[a-zA-Z_][a-zA-Z_0-9]{1,15}$",message = "内容必须以字母开头，允许字母数字下划线，长度在2-16字节内")
 	public String getEsName() {
-		return EsName;
+		return esName;
 	}
 	public void setEsName(String esName) {
-		EsName = esName;
+		this.esName = esName;
 	}
 	public EsStatus getStatus() {
 		return status;
@@ -66,12 +75,16 @@ public class EsServer extends BaseModel {
 	public void setStatus(EsStatus status) {
 		this.status = status;
 	}
+	
+	@Length(max = 50)
 	public String getDescn() {
 		return descn;
 	}
 	public void setDescn(String descn) {
 		this.descn = descn;
 	}
+	
+	@IdValid(service = "hclusterService",message = "物理机集群id不合法")
 	public Long getHclusterId() {
 		return hclusterId;
 	}

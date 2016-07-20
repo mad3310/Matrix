@@ -26,6 +26,7 @@ public class TaskEsClusterInitOneContainerServiceImpl extends BaseTask4EsService
 	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
+		logger.debug("初始化ES集群");
 		TaskResult tr = super.execute(params);
 		if(!tr.isSuccess())
 			return tr;
@@ -43,7 +44,9 @@ public class TaskEsClusterInitOneContainerServiceImpl extends BaseTask4EsService
 		ApiResultObject result = this.esPythonService.initEsCluster(nodeIp1, map, username, password);
 		
 		tr = analyzeRestServiceResult(result);
-		
+		if (tr.isSuccess()) {
+			logger.debug("初始化ES集群成功");
+		}
 		tr.setParams(params);
 		return tr;
 	}

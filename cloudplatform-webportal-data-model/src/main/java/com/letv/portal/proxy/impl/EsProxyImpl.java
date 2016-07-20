@@ -1,6 +1,8 @@
 package com.letv.portal.proxy.impl;
 
 
+import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -31,16 +33,22 @@ public class EsProxyImpl extends BaseProxyImpl<EsServer> implements IEsProxy{
 	
 	
 	@Override
-	public void insertAndBuild(EsServer esServer) {	
-		if(null == esServer)
-			throw new ValidateException("参数不合法");
-		
-		//参数转换防止XSS跨站漏洞
+	public void insertAndBuild(EsServer esServer) {
+		//1.参数转换防止XSS跨站漏洞
 		esServer.setEsName(StringEscapeUtils.escapeHtml(esServer.getEsName()));
 		esServer.setDescn(StringEscapeUtils.escapeHtml(esServer.getDescn()));
-		
+		//2.校验该GCE是否已经存在
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("esName", esServer.getEsName());
+		exParams.put("hclusterId", esServer.getHclusterId());
+		exParams.put("createUser", esServer.getCreateUser());
+		Integer existLength = this.esServerService.selectByMapCount(exParams);
+		if(existLength>0){
+			throw new ValidateException(MessageFormat.format("{0}应用已存在", esServer.getEsName()));
+		}
+		//4.保存ES和ES集群信息
 		Map<String,Object> params = this.esServerService.insertEsServerAndCluster(esServer);
-		
+		//5.走创建ES流程
 		this.taskEngine.run("ES_BUY", params);
 	}
 

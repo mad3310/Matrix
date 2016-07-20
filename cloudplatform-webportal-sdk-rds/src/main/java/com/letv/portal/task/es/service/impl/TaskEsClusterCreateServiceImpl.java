@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
@@ -34,6 +35,7 @@ public class TaskEsClusterCreateServiceImpl extends BaseTask4EsServiceImpl imple
 	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception{
+		logger.debug("创建ES集群");
 		TaskResult tr = super.execute(params);
 		if(!tr.isSuccess())
 			return tr;
@@ -42,25 +44,26 @@ public class TaskEsClusterCreateServiceImpl extends BaseTask4EsServiceImpl imple
 		HostModel host = super.getHost(esCluster.getHclusterId());
 		EsServer esServer = super.getEsServer(params);
 		
-		
 		//从数据库获取image
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("dictionaryName", "ES");
 		map.put("purpose", "default");
 		map.put("isUsed", "1");
 		List<Image> images = this.imageService.selectByMap(map);
-		if(null==images || images.size()!=1)
+		if(CollectionUtils.isEmpty(images) || images.size()!=1)
 			throw new ValidateException("get Image had error, params :" + map.toString());
 		
 		map.clear();
 		map.put("containerClusterName", esCluster.getClusterName());
 		map.put("componentType", "elasticsearch");
 		map.put("memory", esServer.getMemorySize()==null ? CONTAINER_MEMORY_SIZE : esServer.getMemorySize().toString());
-		map.put("networkMode", "bridge");
+		map.put("networkMode", "ip");
 		map.put("image", images.get(0).getUrl());
 		ApiResultObject result = this.esPythonService.createContainer(map,host.getHostIp(),host.getName(),host.getPassword());
 		tr = analyzeRestServiceResult(result);
-		
+		if (tr.isSuccess()) {
+			logger.debug("请求创建ES集群成功");
+		}
 		tr.setParams(params);
 		return tr;
 	}

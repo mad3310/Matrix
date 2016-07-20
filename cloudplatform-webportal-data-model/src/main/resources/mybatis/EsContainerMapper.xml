@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.letv.portal.dao.log.IEsContainerDao">
+<mapper namespace="com.letv.portal.dao.es.IEsContainerDao">
 
 	<resultMap id="BaseResultMap" type="EsContainer">
 	    <result column="ID" property="id" />
@@ -14,14 +14,14 @@
 	    <result column="IP_ADDR" property="ipAddr" />
 	    <result column="GATE_ADDR" property="gateAddr" />
 	    <result column="IP_MASK" property="ipMask" />
-	    <result column="STATUS" property="status" />
+	    <result column="STATUS" property="status" jdbcType="TINYINT" typeHandler="com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler"/>
 	    <result column="ZOOKEEPER_IP" property="zookeeperIp" />
 	    <result column="DISK_SIZE" property="diskSize" />
 	    <result column="CORES_NUMBER" property="coresNumber" />
 	    <result column="CPU_SPEED" property="cpuSpeed" />
 	    <result column="MEMORY_SIZE" property="memorySize" />
 	    <result column="CONTAINER_UUID" property="containerUuid" />
-	    <result column="ZABBIXHOSTS" property="zabbixhosts" />
+	    <result column="ZABBIXHOSTS" property="zabbixHosts" />
 	    <result column="BIND_CONTAINER_PORT" property="bindContainerPort" />
 	    <result column="BIND_HOST_PORT" property="bindHostPort" />
 	    <result column="BIND_HOST_IP" property="bindHostIp" />
@@ -32,10 +32,6 @@
 	    <result column="UPDATE_TIME" property="updateTime" />
 	    <result column="CREATE_USER" property="createUser" />
 	    <result column="UPDATE_USER" property="updateUser" />
-	    
-	    <association property="esCluster" javaType="EsCluster">
-			<result column="ESCLUSTER_NAME" property="esClusterName" />
-		</association>
 	</resultMap>
 
 	
@@ -51,9 +47,15 @@
 	
 	<insert id="insert" parameterType="EsContainer" useGeneratedKeys="true" keyProperty="id" >
 	    insert into DA_ESCONTAINER 
-	        (CONTAINER_NAME,MOUNT_DIR,HOST_ID,HOST_IP,ESCLUSTER_ID,IP_ADDR,GATE_ADDR,IP_MASK,STATUS,ZOOKEEPER_IP,DISK_SIZE,CORES_NUMBER,CPU_SPEED,MEMORY_SIZE,CONTAINER_UUID,ZABBIXHOSTS,BIND_CONTAINER_PORT,BIND_HOST_PORT,BIND_HOST_IP,BIND_PROTOCOL,MGR_BIND_HOST_PORT,DELETED,CREATE_TIME,UPDATE_TIME,CREATE_USER,UPDATE_USER) 
+	        (CONTAINER_NAME,MOUNT_DIR,HOST_ID,HOST_IP,ESCLUSTER_ID,IP_ADDR,GATE_ADDR,IP_MASK,STATUS,ZOOKEEPER_IP,DISK_SIZE,
+	        CORES_NUMBER,CPU_SPEED,MEMORY_SIZE,CONTAINER_UUID,ZABBIXHOSTS,BIND_CONTAINER_PORT,BIND_HOST_PORT,BIND_HOST_IP,BIND_PROTOCOL,
+	        MGR_BIND_HOST_PORT,DELETED,CREATE_TIME,CREATE_USER) 
 	    values
-	        (#{containerName},#{mountDir},#{hostId},#{hostIp},#{esClusterId},#{ipAddr},#{gateAddr},#{ipMask},#{status},#{zookeeperIp},#{diskSize},#{coresNumber},#{cpuSpeed},#{memorySize},#{containerUuid},#{zabbixhosts},#{bindContainerPort},#{bindHostPort},#{bindHostIp},#{bindProtocol},#{mgrBindHostPort},#{deleted},now(),#{updateTime},#{createUser},#{updateUser})
+	        (#{containerName},#{mountDir},#{hostId},#{hostIp},#{esClusterId},#{ipAddr},#{gateAddr},#{ipMask},
+	        #{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
+	        #{zookeeperIp},#{diskSize},#{coresNumber},#{cpuSpeed},#{memorySize},#{containerUuid},#{zabbixHosts},
+	        #{bindContainerPort},#{bindHostPort},#{bindHostIp},#{bindProtocol},#{mgrBindHostPort},#{deleted},
+	        NOW(),#{createUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler})
 	</insert>
 	
 	<sql id="Common_Where_Clause">
@@ -87,7 +89,7 @@
 	            and container.IP_MASK=#{ipMask}
 	        </if>
 	        <if test="status != null ">
-	            and container.STATUS=#{status}
+	            and container.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
 	        </if>
 	        <if test="zookeeperIp != null ">
 	            and container.ZOOKEEPER_IP=#{zookeeperIp}
@@ -107,8 +109,8 @@
 	        <if test="containerUuid != null ">
 	            and container.CONTAINER_UUID=#{containerUuid}
 	        </if>
-	        <if test="zabbixhosts != null ">
-	            and container.ZABBIXHOSTS=#{zabbixhosts}
+	        <if test="zabbixHosts != null ">
+	            and container.ZABBIXHOSTS=#{zabbixHosts}
 	        </if>
 	        <if test="bindContainerPort != null ">
 	            and container.BIND_CONTAINER_PORT=#{bindContainerPort}
@@ -190,21 +192,14 @@
 				CONTAINER_UUID=#{containerUuid},
 			</if>
 			<if test="status != null  ">
-				STATUS=#{status},
+				STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
 			</if>
 			<if test="deleted != null  ">
 				DELETED=#{deleted},
 			</if>
-			<if test="createTime != null  ">
-				CREATE_TIME=#{createTime},
-			</if>
-			<if test="createUser != null  ">
-				CREATE_USER=#{createUser},
-			</if>
 				UPDATE_TIME=now(),
-			<if test="updateUser != null  ">
-				UPDATE_USER=#{updateUser}
-			</if>
+				<!-- 如果代码中未指定updateUser，则赋默认值，否则按代码中指定updateUser -->
+				UPDATE_USER=#{updateUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler}
 			<if test="zabbixHosts != null  ">
 				ZABBIXHOSTS=#{zabbixHosts}
 			</if>
@@ -213,6 +208,14 @@
 	</update>
 	
 	<select id="selectContainerByLogClusterId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+			<include refid="Base_Column_List" />
+		from 
+			DA_ESCONTAINER container
+		where 
+			container.ESCLUSTER_ID=#{esClusterId}
+	</select>
+	<select id="selectContainersByEsClusterId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
 			<include refid="Base_Column_List" />
 		from 
@@ -236,4 +239,6 @@
 	        DA_ESCONTAINER container
 	        <include refid="Common_Where_Clause" />
 	</select>
+	
+	
 </mapper>   

@@ -1,5 +1,6 @@
 package com.letv.portal.task.es.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import com.letv.portal.model.es.EsCluster;
 import com.letv.portal.model.es.EsContainer;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
+import com.letv.portal.model.task.service.IBaseTaskService.Task;
 import com.letv.portal.python.service.IEsPythonService;
 import com.letv.portal.service.IHostService;
 import com.letv.portal.service.es.IEsClusterService;
@@ -37,6 +39,7 @@ public class TaskEsInitZookeeperServiceImpl extends BaseTask4EsServiceImpl imple
 
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
+		logger.debug("配置Zookeeper地址");
 		TaskResult tr = super.execute(params);
 		if(!tr.isSuccess())
 			return tr;
@@ -44,27 +47,32 @@ public class TaskEsInitZookeeperServiceImpl extends BaseTask4EsServiceImpl imple
 		EsCluster esCluster = super.getEsCluster(params);
 
 		List<EsContainer> containers = super.getContainers(params);
-		List<ZookeeperInfo> zks = super.selectMinusedZkByHclusterId(esCluster.getHclusterId(), 3);
+		final List<ZookeeperInfo> zks = super.selectMinusedZkByHclusterId(esCluster.getHclusterId(), 3);
 
-		Map<String, String> zkParm = new HashMap<String,String>();
+		final Map<String, String> zkParm = new HashMap<String,String>();
 		zkParm.put("zkAddress", zks.get(0).getIp());
 		zkParm.put("zkPort", zks.get(0).getPort());
 		
-		for (int i = 0; i < containers.size()-1; i++) {
-			EsContainer container = containers.get(i);
-			String nodeIp = container.getIpAddr();
-			ApiResultObject resultObject = this.esPythonService.initZookeeper(nodeIp, zkParm);
-
-			tr = analyzeRestServiceResult(resultObject);
-			if(!tr.isSuccess()) {
-				tr.setResult("the" + (i+1) +"node error:" + tr.getResult());
-				break;
-			} else {
-				container.setZookeeperIp(zks.get(0).getIp());
-				this.esContainerService.updateBySelective(container);
-			}
+		List<Task> tasks = new ArrayList<Task>();
+		for(final EsContainer container:containers){
+			Task task = new Task<ApiResultObject>() {
+				@Override
+				public ApiResultObject onExec() {
+					String nodeIp = container.getIpAddr();
+					return TaskEsInitZookeeperServiceImpl.this.esPythonService.initZookeeper(nodeIp,zkParm);
+				}
+				@Override
+				public void onSuccess(ApiResultObject apiResult, TaskResult tr) {
+					container.setZookeeperIp(zks.get(0).getIp());
+					TaskEsInitZookeeperServiceImpl.this.esContainerService.updateBySelective(container);
+				}
+			};
+			tasks.add(task);
 		}
-
+		tr = super.synchroExecuteTasks(tasks,tr);
+		if (tr.isSuccess()) {
+			logger.debug("配置Zookeeper地址成功");
+		}
 		tr.setParams(params);
 		return tr;
 	}

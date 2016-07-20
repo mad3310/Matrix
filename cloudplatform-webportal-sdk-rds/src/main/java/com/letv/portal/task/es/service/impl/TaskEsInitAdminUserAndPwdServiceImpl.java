@@ -1,5 +1,6 @@
 package com.letv.portal.task.es.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,24 +26,27 @@ public class TaskEsInitAdminUserAndPwdServiceImpl extends BaseTask4EsServiceImpl
 	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
+		logger.debug("配置ES-Manager集群管理管理员用户名、密码");
 		TaskResult tr = super.execute(params);
 		if(!tr.isSuccess())
 			return tr;
-		
-		EsCluster cluster = super.getEsCluster(params);
+		final EsCluster cluster = super.getEsCluster(params);
 		List<EsContainer> containers = super.getContainers(params);
-		for (int i = 0; i < containers.size()-1; i++) {
-			EsContainer container = containers.get(i);
-			String nodeIp = container.getIpAddr();
-			ApiResultObject resultObject = this.esPythonService.initUserAndPwd4Manager(nodeIp, cluster.getAdminUser(), cluster.getAdminPassword());
-
-			tr = analyzeRestServiceResult(resultObject);
-			if(!tr.isSuccess()) {
-				tr.setResult("the" + (i+1) +"node error:" + tr.getResult());
-				break;
-			} 
+		List<Task> tasks = new ArrayList<Task>();
+		for(final EsContainer container:containers){
+			Task task = new Task<ApiResultObject>() {
+				@Override
+				public ApiResultObject onExec() {
+					String nodeIp = container.getIpAddr();
+					return TaskEsInitAdminUserAndPwdServiceImpl.this.esPythonService.initUserAndPwd4Manager(nodeIp, cluster.getAdminUser(), cluster.getAdminPassword());
+				}
+			};
+			tasks.add(task);
 		}
-		
+		tr = super.synchroExecuteTasks(tasks,tr);
+		if (tr.isSuccess()) {
+			logger.debug("配置ES-Manager集群管理管理员用户名、密码成功");
+		}
 		tr.setParams(params);
 		return tr;
 	}

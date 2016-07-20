@@ -9,36 +9,37 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
-import com.letv.portal.dao.log.ILogContainerDao;
-import com.letv.portal.model.log.LogContainer;
+import com.letv.portal.dao.es.IEsContainerDao;
+import com.letv.portal.model.es.EsContainer;
+import com.letv.portal.service.es.IEsContainerService;
 import com.letv.portal.service.impl.BaseServiceImpl;
-import com.letv.portal.service.log.ILogContainerService;
 
 @Service("esContainerService")
-public class EsContainerServiceImpl extends BaseServiceImpl<LogContainer> implements ILogContainerService{
+public class EsContainerServiceImpl extends BaseServiceImpl<EsContainer> implements IEsContainerService{
 	
 	private final static Logger logger = LoggerFactory.getLogger(EsContainerServiceImpl.class);
 	
 	@Resource
-	private ILogContainerDao logContainerDao;
+	private IEsContainerDao esContainerDao;
 
 	public EsContainerServiceImpl() {
-		super(LogContainer.class);
+		super(EsContainer.class);
 	}
 
 	@Override
-	public IBaseDao<LogContainer> getDao() {
-		return this.logContainerDao;
+	public IBaseDao<EsContainer> getDao() {
+		return this.esContainerDao;
 	}
 
 	@Override
-	public List<LogContainer> selectByLogClusterId(Long logClusterId) {
-		return this.logContainerDao.selectContainerByLogClusterId(logClusterId);
+	public List<EsContainer> selectContainersByEsClusterId(Long esClusterId) {
+		return esContainerDao.selectContainersByEsClusterId(esClusterId);
 	}
 
 	@Override
-	public LogContainer selectByName(String containerName) {
-		return this.logContainerDao.selectByName(containerName);
+	public EsContainer selectByName(String containerName) {
+		return null;
 	}
+
 
 }

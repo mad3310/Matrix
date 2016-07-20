@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mappes.dtd">
-<mapper namespace="com.letv.portal.dao.log.IEsServerDao">
+<mapper namespace="com.letv.portal.dao.es.IEsServerDao">
 
 	<resultMap id="BaseResultMap" type="EsServer">
 	    <result column="ID" property="id" />
@@ -10,7 +10,7 @@
 	    <result column="HCLUSTER_ID" property="hclusterId" />
 	    <result column="ESCLUSTER_ID" property="esClusterId" />
 	    <result column="MEMORY_SIZE" property="memorySize" />
-	    <result column="STATUS" property="status" />
+	    <result column="STATUS" property="status" jdbcType="TINYINT" typeHandler="com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler"/>
 	    <result column="DELETED" property="deleted" />
 	    <result column="CREATE_TIME" property="createTime" />
 	    <result column="UPDATE_TIME" property="updateTime" />
@@ -29,11 +29,18 @@
 	    es.CREATE_TIME,es.UPDATE_TIME,es.CREATE_USER,es.UPDATE_USER,es.DESCN
 	</sql>
 	
+    <!-- 添加 -->
+    <!-- 如果代码中未指定createUser，则赋默认值，否则按代码中指定createUser -->
 	<insert id="insert" parameterType="EsServer" useGeneratedKeys="true" keyProperty="id" >
 	    insert into DA_ES 
-	        (ES_NAME,HCLUSTER_ID,ESCLUSTER_ID,MEMORY_SIZE,STATUS,DELETED,CREATE_TIME,UPDATE_TIME,CREATE_USER,UPDATE_USER,DESCN) 
+	        (ES_NAME,HCLUSTER_ID,ESCLUSTER_ID,MEMORY_SIZE,STATUS,DELETED,CREATE_TIME,CREATE_USER,DESCN) 
 	    values
-	        (#{esName},#{hclusterId},#{esClusterId},#{memorySize},#{status},#{deleted},now(),#{updateTime},#{createUser},#{updateUser},#{descn})
+	        (#{esName},#{hclusterId},#{esClusterId},#{memorySize},
+	        #{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
+	        #{deleted},
+	        now(),
+	        #{createUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler},
+	        #{descn})
 	</insert>
 	
 	<sql id="Common_Where_Clause">
@@ -55,7 +62,48 @@
 	            and es.MEMORY_SIZE=#{memorySize}
 	        </if>
 	        <if test="status != null ">
-	            and es.STATUS=#{status}
+	            and es.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
+	        </if>
+	        <if test="deleted != null ">
+	            and es.DELETED=#{deleted}
+	        </if>
+	        <if test="createTime != null ">
+	            and es.CREATE_TIME=#{createTime}
+	        </if>
+	        <if test="updateTime != null ">
+	            and es.UPDATE_TIME=#{updateTime}
+	        </if>
+	        <if test="createUser != null ">
+	            and es.CREATE_USER=#{createUser}
+	        </if>
+	        <if test="updateUser != null ">
+	            and es.UPDATE_USER=#{updateUser}
+	        </if>
+	        <if test="descn != null ">
+	            and es.DESCN=#{descn}
+	        </if>
+	    </trim>
+	</sql>
+	<sql id="Simple_Where_Clause">
+    	where 1=1
+	    <trim suffixOverrides=",">
+	        <if test="id != null ">
+	            and es.ID=#{id}
+	        </if>
+	        <if test="esName != null and logName != '' ">
+	            and es.ES_NAME=#{esName}
+	        </if>
+	        <if test="hclusterId != null ">
+	            and es.HCLUSTER_ID=#{hclusterId}
+	        </if>
+	        <if test="esClusterId != null ">
+	            and es.ESCLUSTER_ID=#{esClusterId}
+	        </if>
+	        <if test="memorySize != null ">
+	            and es.MEMORY_SIZE=#{memorySize}
+	        </if>
+	        <if test="status != null ">
+	            and es.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
 	        </if>
 	        <if test="deleted != null ">
 	            and es.DELETED=#{deleted}
@@ -84,17 +132,17 @@
 			<if test="esName != null  ">
 				ES_NAME=#{esName},
 			</if>
-			<if test="logClusterId != null  ">
-				LOGCLUSTER_ID=#{logClusterId},
-			</if>
 			<if test="hclusterId != null  ">
 				HCLUSTER_ID=#{hclusterId},
+			</if>
+			<if test="esClusterId != null  ">
+				ESCLUSTER_ID=#{esClusterId},
 			</if>
 			<if test="type != null  ">
 				TYPE=#{type},
 			</if>
 			<if test="status != null  ">
-				STATUS=#{status},
+				STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
 			</if>
 			<if test="descn != null  ">
 				DESCN=#{descn},
@@ -108,16 +156,9 @@
 			<if test="deleted != null  ">
 				DELETED=#{deleted},
 			</if>
-			<if test="createTime != null  ">
-				CREATE_TIME=#{createTime},
-			</if>
-			<if test="createUser != null  ">
-				CREATE_USER=#{createUser},
-			</if>
-				UPDATE_TIME=#{updateTime},
-			<if test="updateUser != null  ">
-				UPDATE_USER=#{updateUser},
-			</if>
+				UPDATE_TIME=now(),
+				<!-- 如果代码中未指定updateUser，则赋默认值，否则按代码中指定updateUser -->
+				UPDATE_USER=#{updateUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler}
 		</set>
 		where ID=#{id}
 	</update>
@@ -147,5 +188,11 @@
 	        <include refid="Common_Where_Clause" />
 	</select>
 	
+	<!-- 列表总数 -->
+	<select id="selectByMapCount" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		select count(1) from DA_ES es
+		<include refid="Simple_Where_Clause" />
+	</select>
 	
 </mapper>   

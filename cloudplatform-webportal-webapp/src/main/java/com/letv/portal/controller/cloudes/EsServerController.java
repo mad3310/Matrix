@@ -1,10 +1,13 @@
 package com.letv.portal.controller.cloudes;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,12 +35,16 @@ public class EsServerController {
 	
 	
 	@RequestMapping(method=RequestMethod.POST)   
-	public @ResponseBody ResultObject save(EsServer esServer, ResultObject obj) {
-		if(null == esServer || StringUtils.isEmpty(esServer.getEsName())){
-			throw new ValidateException("参数不合法");
+	public @ResponseBody ResultObject save(@Valid EsServer esServer, BindingResult bindResult, ResultObject obj) {
+		logger.debug("创建ES");
+		if (bindResult.hasErrors()) {
+			logger.error("校验参数不合法");
+			return new ResultObject(bindResult.getAllErrors());
 		}
+		esServer.setHclusterId(48l);
 		esServer.setCreateUser(this.sessionService.getSession().getUserId());
 		this.esProxy.insertAndBuild(esServer);
+		logger.debug("创建ES成功! ID:{},Name:{}", esServer.getId(), esServer.getEsName());
 		return obj;
 	}
 	

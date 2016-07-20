@@ -1,12 +1,15 @@
 package com.letv.portal.model.task.service;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-import com.letv.common.exception.ValidateException;
-import com.letv.portal.model.common.ZookeeperInfo;
-import com.letv.portal.service.common.IZookeeperInfoService;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -14,14 +17,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.email.bean.MailMessage;
+import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.portal.constant.Constant;
 import com.letv.portal.model.UserModel;
+import com.letv.portal.model.common.ZookeeperInfo;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.service.IUserService;
+import com.letv.portal.service.common.IZookeeperInfoService;
 
 @Component("baseTaskService")
 public  class BaseTaskServiceImpl implements IBaseTaskService{
@@ -166,4 +173,67 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	public void beforExecute(Map<String, Object> params) {
 		// TODO Auto-generated method stub
 	}
+	
+	@Override
+	public TaskResult synchroExecuteTasks(List<Task> tasks,TaskResult tr) {
+		if(!tr.isSuccess())
+			return tr;
+		if(CollectionUtils.isEmpty(tasks)){
+			tr.setSuccess(false);
+			tr.setResult("there is no available tasks");
+			return tr;
+		}
+		//是否继续
+		boolean isContinue = true;
+		// 创建一个弹性伸缩线程池
+		ExecutorService pool = Executors.newCachedThreadPool();
+		Map<Future,Task> onions = new HashMap<Future, IBaseTaskService.Task>();
+		for(Task task:tasks){
+			Future future = pool.submit(task);
+			onions.put(future, task);
+		}
+		OUT:
+		while(isContinue){
+			IUT:
+			for(Future future:onions.keySet()){
+				if(future.isDone()){
+					ApiResultObject apiResult = null;
+					try {
+						apiResult = (ApiResultObject) future.get();
+					} catch (InterruptedException | ExecutionException e) {
+						tr.setResult("Gets the Task object's execute method returns a value failed:"+e.getMessage());
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
+					if(null == apiResult){
+						tr.setResult("The Task object's execute method returns a value that is null");
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
+					tr = analyzeRestServiceResult(apiResult);
+					if(!tr.isSuccess()) {
+						tr.setResult(MessageFormat.format("the {0} error:{1}",apiResult.getUrl(),tr.getResult()));
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}else{
+						//成功后执行回调
+						onions.get(future).onSuccess(apiResult,tr);
+					}
+					onions.remove(future);
+					break IUT;
+				}
+			}
+			if(onions.size()<=0){
+				isContinue = false;
+				break OUT;
+			}
+		}
+		// 关闭线程池
+		pool.shutdown();
+		return tr;
+	}
+	
 }

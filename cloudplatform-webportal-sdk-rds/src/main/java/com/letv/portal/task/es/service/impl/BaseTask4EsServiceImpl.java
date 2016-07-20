@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.exception.ValidateException;
@@ -68,7 +69,7 @@ public class BaseTask4EsServiceImpl extends BaseTaskServiceImpl implements IBase
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
 		TaskResult tr = new TaskResult();
-		if(params == null || params.isEmpty() || params.get("esParams") == null) {
+		if(CollectionUtils.isEmpty(params)) {
 			tr.setResult("params is not valid.");
 			tr.setSuccess(false);
 		}
@@ -94,8 +95,8 @@ public class BaseTask4EsServiceImpl extends BaseTaskServiceImpl implements IBase
 			es.setStatus(EsStatus.NORMAL);
 			cluster.setStatus(MclusterStatus.RUNNING);
 			Map<String, Object> emailParams = new HashMap<String,Object>();
-			emailParams.put("logName", es.getEsName());
-			this.email4User(emailParams, es.getCreateUser(),"log/createLog.ftl");
+			emailParams.put("esName", es.getEsName());
+			this.email4User(emailParams, es.getCreateUser(),"es/createEs.ftl");
 		} else {
 			es.setStatus(EsStatus.BUILDFAIL);
 			cluster.setStatus(MclusterStatus.BUILDFAIL);
@@ -147,7 +148,7 @@ public class BaseTask4EsServiceImpl extends BaseTaskServiceImpl implements IBase
 		if(esClusterId == null)
 			throw new ValidateException("params's esClusterId is null");
 		
-		List<EsContainer> esContainers = this.esContainerService.selectByEsClusterId(esClusterId);
+		List<EsContainer> esContainers = this.esContainerService.selectContainersByEsClusterId(esClusterId);
 		if(null == esContainers || esContainers.isEmpty())
 			throw new ValidateException("esContainers is null by esClusterId:" + esClusterId);
 		return esContainers;

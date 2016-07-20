@@ -1,5 +1,7 @@
 package com.letv.portal.task.es.service.impl;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import com.letv.portal.model.es.EsCluster;
 import com.letv.portal.model.es.EsContainer;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
+import com.letv.portal.model.task.service.IBaseTaskService.Task;
 import com.letv.portal.python.service.IEsPythonService;
 
 @Service("taskEsContainersInitService")
@@ -29,33 +32,37 @@ public class TaskEsContainersInitServiceImpl extends BaseTask4EsServiceImpl impl
 	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
+		logger.debug("初始化node");
 		TaskResult tr = super.execute(params);
 		if(!tr.isSuccess())
 			return tr;
 		
-		EsCluster cluster = super.getEsCluster(params);
-		List<EsContainer> containers = super.getContainers(params);
+		final EsCluster cluster = super.getEsCluster(params);
+		final List<EsContainer> containers = super.getContainers(params);
 		
-		String username = cluster.getAdminUser();
-		String password = cluster.getAdminPassword();
+		final String username = cluster.getAdminUser();
+		final String password = cluster.getAdminPassword();
 		
-		Map<String,String> map = new HashMap<String,String>();
+		final Map<String,String> map = new HashMap<String,String>();
 		
-		
-		for (int i = 0; i < containers.size()-1; i++) {
-			EsContainer container = containers.get(i);
-			String nodeIp = container.getIpAddr();
-			map.put("dataNodeIp", nodeIp);
-			map.put("dataNodeName", container.getContainerName());
-			ApiResultObject resultObject = this.esPythonService.initEsContainer(nodeIp, map, username, password);
-
-			tr = analyzeRestServiceResult(resultObject);
-			if(!tr.isSuccess()) {
-				tr.setResult("the" + (i+1) +"node error:" + tr.getResult());
-				break;
-			} 
+		List<Task> tasks = new ArrayList<Task>();
+		for(final EsContainer container:containers){
+			Task task = new Task<ApiResultObject>() {
+				@Override
+				public ApiResultObject onExec() {
+					int index = containers.indexOf(container)+1;
+					String nodeIp = container.getIpAddr();
+					map.put("dataNodeIp", nodeIp);
+					map.put("dataNodeName", MessageFormat.format("d-logs-{0}-n-{1}", cluster.getClusterName(),index));
+					return TaskEsContainersInitServiceImpl.this.esPythonService.initEsContainer(nodeIp, map, username, password);
+				}
+			};
+			tasks.add(task);
 		}
-		
+		tr = super.synchroExecuteTasks(tasks,tr);
+		if (tr.isSuccess()) {
+			logger.debug("初始化node成功");
+		}
 		tr.setParams(params);
 		return tr;
 	}

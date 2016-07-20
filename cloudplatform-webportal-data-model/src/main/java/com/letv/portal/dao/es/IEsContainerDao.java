@@ -7,7 +7,7 @@ import com.letv.portal.model.es.EsContainer;
 
 public interface IEsContainerDao extends IBaseDao<EsContainer> {
 
-	public List<EsContainer> selectContainerByEsClusterId(Long clusterId);
+	public List<EsContainer> selectContainersByEsClusterId(Long clusterId);
 
 	public EsContainer selectByName(String containerName);
 }

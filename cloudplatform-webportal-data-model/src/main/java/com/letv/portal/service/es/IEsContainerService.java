@@ -7,7 +7,7 @@ import com.letv.portal.service.IBaseService;
 
 public interface IEsContainerService extends IBaseService<EsContainer> {
 	
-	public List<EsContainer> selectByEsClusterId(Long esClusterId);
+	public List<EsContainer> selectContainersByEsClusterId(Long esClusterId);
 
 	public EsContainer selectByName(String containerName);
 }

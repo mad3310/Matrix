@@ -25,9 +25,9 @@ public class EsContainer extends BaseModel {
 	private String containerUuid;//调用container用的UUID
 	private String zabbixHosts;//对应zabbix删除container时候需要的标识
 	private String bindContainerPort;//容器内部服务端口
-	private String bingHostPort;//物理机映射端口
-	private String bingHostIp;//物理机映射IP
-	private String bingProtocol;//
+	private String bindHostPort;//物理机映射端口
+	private String bindHostIp;//物理机映射IP
+	private String bindProtocol;//
 	private String mgrBindHostPort;//物理机映射端口
 	
 	public String getContainerName() {
@@ -132,23 +132,23 @@ public class EsContainer extends BaseModel {
 	public void setBindContainerPort(String bindContainerPort) {
 		this.bindContainerPort = bindContainerPort;
 	}
-	public String getBingHostPort() {
-		return bingHostPort;
+	public String getBindHostPort() {
+		return bindHostPort;
 	}
-	public void setBingHostPort(String bingHostPort) {
-		this.bingHostPort = bingHostPort;
+	public void setBindHostPort(String bindHostPort) {
+		this.bindHostPort = bindHostPort;
 	}
-	public String getBingHostIp() {
-		return bingHostIp;
+	public String getBindHostIp() {
+		return bindHostIp;
 	}
-	public void setBingHostIp(String bingHostIp) {
-		this.bingHostIp = bingHostIp;
+	public void setBindHostIp(String bindHostIp) {
+		this.bindHostIp = bindHostIp;
 	}
-	public String getBingProtocol() {
-		return bingProtocol;
+	public String getBindProtocol() {
+		return bindProtocol;
 	}
-	public void setBingProtocol(String bingProtocol) {
-		this.bingProtocol = bingProtocol;
+	public void setBindProtocol(String bindProtocol) {
+		this.bindProtocol = bindProtocol;
 	}
 	public String getMgrBindHostPort() {
 		return mgrBindHostPort;

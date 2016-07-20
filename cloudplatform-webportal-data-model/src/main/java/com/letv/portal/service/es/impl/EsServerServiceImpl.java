@@ -65,16 +65,18 @@ public class EsServerServiceImpl extends BaseServiceImpl<EsServer> implements IE
 		clusterName.append(esServer.getCreateUser()).append("_").append(ES_CODE).append("_").append(esServer.getEsName());
 		
 		/*function 验证clusterName是否存在*/
-		Boolean isExist= this.esClusterService.isExistByName(clusterName.toString());
-		if(isExist) {
-			throw new ValidateException("集群名称不允许重复!");
+		int i = 0;
+		boolean isExist = true;
+		while(isExist) {
+			isExist= this.esClusterService.isExistByName(clusterName.toString());
+			if(isExist)
+				clusterName.append(++i);
 		}
 		
 		EsCluster esCluster = new EsCluster();
 		esCluster.setHclusterId(esServer.getHclusterId());
 		esCluster.setClusterName(clusterName.toString());
 		esCluster.setStatus(MclusterStatus.BUILDDING);
-		esCluster.setCreateUser(esServer.getCreateUser());
 		esCluster.setAdminUser("root");
 		esCluster.setAdminPassword(clusterName.toString());
 		
@@ -97,7 +99,7 @@ public class EsServerServiceImpl extends BaseServiceImpl<EsServer> implements IE
 		List<EsServer> esServers = (List<EsServer>) page.getData();
 		
 		for(EsServer esServer : esServers){
-			List<EsContainer> esContainers = this.esContainerService.selectByEsClusterId(esServer.getEsClusterId());
+			List<EsContainer> esContainers = this.esContainerService.selectContainersByEsClusterId(esServer.getEsClusterId());
 			esServer.setEsContainers(esContainers);
 		}
 		page.setData(esServers);
@@ -106,7 +108,7 @@ public class EsServerServiceImpl extends BaseServiceImpl<EsServer> implements IE
 	
 	public EsServer selectById(Long id){
 		EsServer esServer = this.esServerDao.selectById(id);
-		List<EsContainer> esContainers = this.esContainerService.selectByEsClusterId(esServer.getEsClusterId());
+		List<EsContainer> esContainers = this.esContainerService.selectContainersByEsClusterId(esServer.getEsClusterId());
 		esServer.setEsContainers(esContainers);
 		return esServer;
 	}

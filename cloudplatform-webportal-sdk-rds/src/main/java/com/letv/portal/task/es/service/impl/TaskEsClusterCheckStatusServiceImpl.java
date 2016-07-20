@@ -40,6 +40,7 @@ public class TaskEsClusterCheckStatusServiceImpl extends BaseTask4EsServiceImpl 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception{
+		logger.debug("检查ES集群创建状态，获取创建的所有containers");
 		TaskResult tr = super.execute(params);
 		if(!tr.isSuccess())
 			return tr;
@@ -47,7 +48,6 @@ public class TaskEsClusterCheckStatusServiceImpl extends BaseTask4EsServiceImpl 
 		HostModel host = super.getHost(esCluster.getHclusterId());
 		
 		Long start = new Date().getTime();
-		
 		ApiResultObject result = null;
 		
 		do {
@@ -62,9 +62,11 @@ public class TaskEsClusterCheckStatusServiceImpl extends BaseTask4EsServiceImpl 
 			}
 		} while (!tr.isSuccess());
 		
-		
 		if(tr.isSuccess()) {
-			List<Map> containers = (List<Map>)((Map)transToMap(result.getResult()).get("response")).get("containers");
+			logger.debug("创建ES集群成功");
+			//respMap肯定不为空，否则analyzeRestServiceResult会报错，如果containers为空，不会进下面for
+			Map respMap = (Map)transToMap(result.getResult()).get("response");
+			List<Map> containers = (List<Map>)(respMap.get("containers"));
 			for (Map map : containers) {
 				EsContainer container = new EsContainer();
 				BeanUtils.populate(container, map);
@@ -76,7 +78,7 @@ public class TaskEsClusterCheckStatusServiceImpl extends BaseTask4EsServiceImpl 
 				if(null != hostModel) {
 					container.setHostId(hostModel.getId());
 				}
-				List<Map> portBindings = (List<Map>) map.get("port_bindings");
+				/*List<Map> portBindings = (List<Map>) map.get("port_bindings");
 				StringBuffer hostPort = new StringBuffer();
 				StringBuffer containerPort = new StringBuffer();
 				StringBuffer protocol = new StringBuffer();
@@ -91,7 +93,7 @@ public class TaskEsClusterCheckStatusServiceImpl extends BaseTask4EsServiceImpl 
 				}
 				container.setBingHostPort(hostPort.length()>0?hostPort.substring(0, hostPort.length()-1):hostPort.toString());
 				container.setBindContainerPort(containerPort.length()>0?containerPort.substring(0, containerPort.length()-1):containerPort.toString());
-				container.setBingProtocol(protocol.length()>0?protocol.substring(0, protocol.length()-1):protocol.toString());
+				container.setBingProtocol(protocol.length()>0?protocol.substring(0, protocol.length()-1):protocol.toString());*/
 				
 				this.esContainerService.insert(container);
 			}
