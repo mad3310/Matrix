@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.SchedulingTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -45,7 +46,8 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
     private IZookeeperInfoService zookeeperInfoService;
 
 	private final static Logger logger = LoggerFactory.getLogger(BaseTaskServiceImpl.class);
-	
+	@Autowired
+	private SchedulingTaskExecutor threadPoolTaskExecutor;
 	@Override
 	public TaskResult validator(Map<String, Object> params) throws Exception {
 		TaskResult tr = new TaskResult();
@@ -186,10 +188,10 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		//是否继续
 		boolean isContinue = true;
 		// 创建一个弹性伸缩线程池
-		ExecutorService pool = Executors.newCachedThreadPool();
 		Map<Future,Task> onions = new HashMap<Future, IBaseTaskService.Task>();
 		for(Task task:tasks){
-			Future future = pool.submit(task);
+			//使用全局线程池
+			Future future = threadPoolTaskExecutor.submit(task);
 			onions.put(future, task);
 		}
 		OUT:
@@ -231,8 +233,6 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 				break OUT;
 			}
 		}
-		// 关闭线程池
-		pool.shutdown();
 		return tr;
 	}
 	

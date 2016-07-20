@@ -57,6 +57,9 @@ public class TaskEsClusterCreateServiceImpl extends BaseTask4EsServiceImpl imple
 		map.put("containerClusterName", esCluster.getClusterName());
 		map.put("componentType", "elasticsearch");
 		map.put("memory", esServer.getMemorySize()==null ? CONTAINER_MEMORY_SIZE : esServer.getMemorySize().toString());
+		/*if(params.get("buyNum") != null) {
+		}*/
+		map.put("nodeCount",String.valueOf(4));
 		map.put("networkMode", "ip");
 		map.put("image", images.get(0).getUrl());
 		ApiResultObject result = this.esPythonService.createContainer(map,host.getHostIp(),host.getName(),host.getPassword());
