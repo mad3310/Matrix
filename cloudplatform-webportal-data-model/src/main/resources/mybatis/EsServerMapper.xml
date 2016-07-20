@@ -90,7 +90,7 @@
 	        <if test="id != null ">
 	            and es.ID=#{id}
 	        </if>
-	        <if test="esName != null and logName != '' ">
+	        <if test="esName != null and esName != '' ">
 	            and es.ES_NAME=#{esName}
 	        </if>
 	        <if test="hclusterId != null ">
@@ -129,7 +129,7 @@
 	<update id="updateBySelective" parameterType="EsServer">
 		update DA_ES
 		<set>
-			<if test="esName != null  ">
+			 <if test="esName != null and esName != '' ">
 				ES_NAME=#{esName},
 			</if>
 			<if test="hclusterId != null  ">
@@ -138,23 +138,17 @@
 			<if test="esClusterId != null  ">
 				ESCLUSTER_ID=#{esClusterId},
 			</if>
-			<if test="type != null  ">
-				TYPE=#{type},
-			</if>
+			<if test="memorySize != null ">
+	            MEMORY_SIZE=#{memorySize},
+	        </if>
 			<if test="status != null  ">
 				STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
 			</if>
-			<if test="descn != null  ">
-				DESCN=#{descn},
-			</if>
-			<if test="ip != null  ">
-				IP=#{ip},
-			</if>
-			<if test="accessUrl != null  ">
-				ACCESS_URL=#{accessUrl},
-			</if>
 			<if test="deleted != null  ">
 				DELETED=#{deleted},
+			</if>
+			<if test="descn != null  ">
+				DESCN=#{descn},
 			</if>
 				UPDATE_TIME=now(),
 				<!-- 如果代码中未指定updateUser，则赋默认值，否则按代码中指定updateUser -->
