@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.letv.common.exception.ValidateException;
-import com.letv.portal.model.common.ZookeeperInfo;
-import com.letv.portal.service.common.IZookeeperInfoService;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -14,14 +11,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.email.bean.MailMessage;
+import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.portal.constant.Constant;
 import com.letv.portal.model.UserModel;
+import com.letv.portal.model.common.ZookeeperInfo;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.service.IUserService;
+import com.letv.portal.service.common.IZookeeperInfoService;
 
 @Component("baseTaskService")
 public  class BaseTaskServiceImpl implements IBaseTaskService{
@@ -66,7 +67,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	public TaskResult analyzeRestServiceResult(ApiResultObject resultObject){
 		TaskResult tr = new TaskResult();
 		Map<String, Object> map = transToMap(resultObject.getResult());
-		if(map == null) {
+		if(CollectionUtils.isEmpty(map)) {
 			tr.setSuccess(false);
 			tr.setResult("api connect failed:" + resultObject.getUrl());
 			return tr;
@@ -85,7 +86,33 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		return tr;
 		
 	}
-	
+	@Override
+	@SuppressWarnings("unchecked")
+	public TaskResult analyzeComplexRestServiceResult(ApiResultObject resultObject){
+		TaskResult tr = new TaskResult();
+		Map<String, Object> map = transToMap(resultObject.getResult());
+		if(CollectionUtils.isEmpty(map)) {
+			tr.setSuccess(false);
+			tr.setResult("api connect failed");
+			return tr;
+		}
+		Map<String,Object> meta = (Map<String, Object>) map.get("meta");
+		Map<String,Object> response = null;
+		//如果meta的code为200，再判断response的code
+		boolean isSucess = Constant.PYTHON_API_RESPONSE_SUCCESS.equals(String.valueOf(meta.get("code")));
+		if(isSucess) {
+			response = (Map<String, Object>) map.get("response");
+			isSucess = Constant.PYTHON_API_RESULT_SUCCESS.equals(String.valueOf(response.get("code")));
+		}
+		if(isSucess) {
+			tr.setResult((String) response.get("message"));
+			tr.setParams(response);
+		} else {
+			tr.setResult((String) meta.get("errorType") +",the api url:" + resultObject.getUrl());
+		}
+		tr.setSuccess(isSucess);
+		return tr;
+	}
 	public void buildResultToMgr(String buildType,String result,String detail,String to){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("buildType", buildType);
@@ -147,7 +174,8 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		if(zks == null || zks.size()!=number)
 			throw new ValidateException("zk numbers not sufficient");
 		for (ZookeeperInfo zk : zks) {
-			this.zookeeperInfoService.plusOneUsedByZookeeperId(zk.getId());
+			zk.setUsed(zk.getUsed()+1);
+			this.zookeeperInfoService.updateBySelective(zk);
 		}
 		return zks;
 	}
@@ -165,5 +193,31 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	@Override
 	public void beforExecute(Map<String, Object> params) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public TaskResult polling(TaskResult tr, long interval, long timeout,Object... params) throws InterruptedException {
+		// 返回结果
+		ApiResultObject resultObject = null;
+		long beginTime = System.currentTimeMillis();
+		tr.setSuccess(false);
+		while (!tr.isSuccess()) {
+			// 循环的第一次肯定不会进该if，因为代码开头Assert.isTrue过，所以resultObject.url必然在轮训后有值
+			if (System.currentTimeMillis() - beginTime > timeout) {
+				tr.setSuccess(false);
+				tr.setResult("check time over:" + resultObject.getUrl());
+				break;
+			} else {
+				resultObject = pollingTask(params);
+				tr = analyzeComplexRestServiceResult(resultObject);
+			}
+			Thread.sleep(interval);
+		}
+		return tr;
+	}
+
+	@Override
+	public ApiResultObject pollingTask(Object... params) {
+		return null;
 	}
 }

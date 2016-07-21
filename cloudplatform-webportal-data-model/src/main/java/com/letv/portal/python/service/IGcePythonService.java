@@ -13,7 +13,27 @@ import com.letv.common.result.ApiResultObject;
  * Modified Date: <br>
  */
 public interface IGcePythonService {
-	
+	/**
+	 * 检查GCE部署包镜像创建状态
+	 * @param params
+	 * @param serverIp
+	 * @param serverPort
+	 * @return
+	 * @author linzhanbo .
+	 * @since 2016年6月30日, 下午3:02:40 .
+	 * @version 1.0 .
+	 */
+	public ApiResultObject checkGCEPackageMirrorCreateStatus(Map<String,String> params,String serverIp,String serverPort);
+	/**
+	 * 创建GCE部署包镜像
+	 * @param params
+	 * @param serverIp
+	 * @return
+	 * @author linzhanbo .
+	 * @since 2016年6月30日, 下午3:00:23 .
+	 * @version 1.0 .
+	 */
+	public ApiResultObject createGCEPackageMirror(Map<String,String> params,String serverIp,String serverPort);
 	/**Methods Name: createContainer <br>
 	 * Description: 创建container，执行一次,传入mclusterName<br>
 	 * @author name: liuhao1
@@ -117,4 +137,5 @@ public interface IGcePythonService {
 	public ApiResultObject startMoxi(String ip,String port);
 
 	public String checkClusterCount(String hostIp, String name, String password);
+	
 }
