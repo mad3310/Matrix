@@ -148,11 +148,6 @@ function initCharts(data){
 	var div = $(viewDemo).find('[name="data-chart"]');
 	$(div).attr("id",data.id);
 	//init div to chart
-	//console.log(data.id);
-//	var num = 12.12345;
-//	num.toFixed(2);
-//	console.log(num.toFixed(2));
-//	console.log(num);
 	
 	var obj = {
 			tooltip:{
