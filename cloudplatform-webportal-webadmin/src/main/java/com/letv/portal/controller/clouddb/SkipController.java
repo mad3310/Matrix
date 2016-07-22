@@ -196,9 +196,9 @@ public class SkipController {
 		mav.setViewName("/clouddb/mcluster_monitor_view");
 		return mav;
 	}
-	@RequestMapping(value="/view/mcluster/monitor_node",method=RequestMethod.GET)
+	@RequestMapping(value="/view/mcluster/monitor/res",method=RequestMethod.GET)
 	public ModelAndView toMonitorCotainerViewNode(ModelAndView mav){
-		mav.setViewName("/clouddb/mcluster_monitor_view_node");
+		mav.setViewName("/clouddb/mcluster_monitor_view_res");
 		return mav;
 	}
 	@RequestMapping(value="/view/mcluster/monitor/topN",method=RequestMethod.GET)
