@@ -6,20 +6,20 @@ function refreshChartForSelect(){
 		$('.queryOption').addClass('collapsed').find('.widget-body').attr('style', 'dispaly:none;');
 		$('.queryOption').find('.widget-header').find('i').attr('class', 'ace-icon fa fa-chevron-down');
 		var qryStr='';
-		var qryStr1=$('.monitorHclusterOption:last').val();var qryStr2=$('.mclusterOption:last').val();var qryStr3=$('#queryTime').val();var qryStr4=$('#monitorPointOption').val();
-		if(qryStr1){
-			var temp=$('.monitorHclusterOption:last option[value="'+qryStr1+'"]').text();
+		var monitorHclusterOptionStr=$('.monitorHclusterOption:last').val();var mclusterOptionStr=$('.mclusterOption:last').val();var queryTimeStr=$('#queryTime').val();var monitorPointOptionStr=$('#monitorPointOption').val();
+		if(monitorHclusterOptionStr){
+			var temp=$('.monitorHclusterOption:last option[value="'+monitorHclusterOptionStr+'"]').text();
 			qryStr+='<span class="label label-success arrowed">'+temp+'</span>&nbsp;'
 		}
-		if(qryStr2){
-			var temp=$('.mclusterOption:last option[value="'+qryStr2+'"]').text();
+		if(mclusterOptionStr){
+			var temp=$('.mclusterOption:last option[value="'+mclusterOptionStr+'"]').text();
 			qryStr+='<span class="label label-warning arrowed">'+temp+'</span>&nbsp;'
 		}
-		if(qryStr3){
+		if(queryTimeStr){
 			var temp=$('#queryTime').find("option:selected").text();
 			qryStr+='<span class="label label-purple arrowed">'+temp+'</span>&nbsp;'
 		}
-		if(qryStr4){
+		if(monitorPointOptionStr){
 			var obj=$('#monitorPointOption').val()
 			for(i in obj){
 				var index=obj[i];
