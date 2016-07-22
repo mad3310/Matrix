@@ -38,12 +38,12 @@ public class TaskEsInitAdminUserAndPwdServiceImpl extends BaseTask4EsServiceImpl
 				@Override
 				public ApiResultObject onExec() {
 					String nodeIp = container.getIpAddr();
-					return TaskEsInitAdminUserAndPwdServiceImpl.this.esPythonService.initUserAndPwd4Manager(nodeIp, cluster.getAdminUser(), cluster.getAdminPassword());
+					return esPythonService.initUserAndPwd4Manager(nodeIp, cluster.getAdminUser(), cluster.getAdminPassword());
 				}
 			};
 			tasks.add(task);
 		}
-		tr = super.synchroExecuteTasks(tasks,tr);
+		tr = super.asynchroExecuteTasks(tasks,tr);
 		if (tr.isSuccess()) {
 			logger.debug("配置ES-Manager集群管理管理员用户名、密码成功");
 		}

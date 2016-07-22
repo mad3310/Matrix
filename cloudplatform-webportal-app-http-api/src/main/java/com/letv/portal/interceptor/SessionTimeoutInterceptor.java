@@ -10,6 +10,7 @@ import com.letv.common.util.IpUtil;
 import com.letv.portal.model.UserLogin;
 import com.letv.portal.proxy.ILoginProxy;
 import com.letv.portal.service.impl.oauth.IOauthService;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -126,9 +129,12 @@ public class SessionTimeoutInterceptor  implements HandlerInterceptor{
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		ResultObject resultObject = new ResultObject(0);
-		resultObject.addMsg(message);
-		out.append(JSON.toJSONString(resultObject, SerializerFeature.WriteMapNullValue));
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("result", 2);
+		map.put("data",null);
+		map.put("alertMessage", null);
+		map.put("msgs", message);
+		out.append(JSON.toJSONString(map, SerializerFeature.WriteMapNullValue));
 		out.flush();
 	}
 

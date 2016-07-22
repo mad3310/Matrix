@@ -36,7 +36,10 @@ public class TaskEsInitZookeeperServiceImpl extends BaseTask4EsServiceImpl imple
 	private IEsClusterService esClusterService;
 
 	private final static Logger logger = LoggerFactory.getLogger(TaskEsInitZookeeperServiceImpl.class);
-
+	
+	private final static int PYTHON_CHECK_TIME = 500;
+	private final static int PYTHON_CHECK_INTERVAL_TIME = 5000;
+	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
 		logger.debug("配置Zookeeper地址");
@@ -55,21 +58,42 @@ public class TaskEsInitZookeeperServiceImpl extends BaseTask4EsServiceImpl imple
 		
 		List<Task> tasks = new ArrayList<Task>();
 		for(final EsContainer container:containers){
-			Task task = new Task<ApiResultObject>() {
+			Task task = new Task<TaskResult>() {
 				@Override
-				public ApiResultObject onExec() {
+				public TaskResult onExec() {
+					//Beehive构建集群成功后，通过IP池策略会为每个容器分配一个IP，对于Beehive本地环境，该IP有效，容器间可以互调，但对于走网关访问的Matrix，由于网关不能及时更新这个IP，所以有时会出现
+					//Beehive内部可以及时互联，但是Matrix却ping不通，因此使用的策略是，间隔5s请求一次该IP，重试500次，总5*500=2500s，如果该事件内请求HTTP失败，则认为是真正意义的容器创建失败。
+					int num = PYTHON_CHECK_TIME;
 					String nodeIp = container.getIpAddr();
-					return TaskEsInitZookeeperServiceImpl.this.esPythonService.initZookeeper(nodeIp,zkParm);
+					TaskResult trtmp = new TaskResult();
+					trtmp.setSuccess(false);
+					do{
+						if(!trtmp.isSuccess()){
+							if(num<=0){
+								return trtmp;
+							}
+							if(num--<PYTHON_CHECK_TIME){
+								try {
+									Thread.sleep(PYTHON_CHECK_INTERVAL_TIME);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						ApiResultObject api = esPythonService.initZookeeper(nodeIp,zkParm);
+						trtmp = analyzeRestServiceResult(api);
+					}while(!trtmp.isSuccess());
+					return trtmp;
 				}
 				@Override
-				public void onSuccess(ApiResultObject apiResult, TaskResult tr) {
+				public void onSuccess(TaskResult tr) {
 					container.setZookeeperIp(zks.get(0).getIp());
-					TaskEsInitZookeeperServiceImpl.this.esContainerService.updateBySelective(container);
+					esContainerService.updateBySelective(container);
 				}
 			};
 			tasks.add(task);
 		}
-		tr = super.synchroExecuteTasks(tasks,tr);
+		tr = super.asynchroExecuteTasks(tasks,tr);
 		if (tr.isSuccess()) {
 			logger.debug("配置Zookeeper地址成功");
 		}

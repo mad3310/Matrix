@@ -94,7 +94,33 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		return tr;
 		
 	}
-	
+	@Override
+	@SuppressWarnings("unchecked")
+	public TaskResult analyzeComplexRestServiceResult(ApiResultObject resultObject){
+		TaskResult tr = new TaskResult();
+		Map<String, Object> map = transToMap(resultObject.getResult());
+		if(CollectionUtils.isEmpty(map)) {
+			tr.setSuccess(false);
+			tr.setResult("api connect failed");
+			return tr;
+		}
+		Map<String,Object> meta = (Map<String, Object>) map.get("meta");
+		Map<String,Object> response = null;
+		//如果meta的code为200，再判断response的code
+		boolean isSucess = Constant.PYTHON_API_RESPONSE_SUCCESS.equals(String.valueOf(meta.get("code")));
+		if(isSucess) {
+			response = (Map<String, Object>) map.get("response");
+			isSucess = Constant.PYTHON_API_RESULT_SUCCESS.equals(String.valueOf(response.get("code")));
+		}
+		if(isSucess) {
+			tr.setResult((String) response.get("message"));
+			tr.setParams(response);
+		} else {
+			tr.setResult((String) meta.get("errorType") +",the api url:" + resultObject.getUrl());
+		}
+		tr.setSuccess(isSucess);
+		return tr;
+	}
 	public void buildResultToMgr(String buildType,String result,String detail,String to){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("buildType", buildType);
@@ -175,7 +201,42 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	public void beforExecute(Map<String, Object> params) {
 		// TODO Auto-generated method stub
 	}
-	
+	public TaskResult asynchroExecuteTasks(List<Task> tasks,TaskResult tr) {
+		if(!tr.isSuccess())
+			return tr;
+		if(CollectionUtils.isEmpty(tasks)){
+			tr.setSuccess(false);
+			tr.setResult("there is no available tasks");
+			return tr;
+		}
+		for(Task task:tasks){
+			Object obj = task.onExec();
+			if(obj == null){
+				tr.setSuccess(false);
+				tr.setResult("Gets the Task object's execute method returns a value is null");
+				return tr;
+			}
+			ApiResultObject apiResult = null;
+			if(obj instanceof ApiResultObject){
+				apiResult = (ApiResultObject) obj;
+				tr = analyzeRestServiceResult(apiResult);
+			}else if(obj instanceof TaskResult){
+				tr = (TaskResult) obj;
+			}else{
+				tr.setSuccess(false);
+				tr.setResult("Gets the Task object's execute method returns a value is invalid");
+				return tr;
+			}
+			if(!tr.isSuccess()) {
+				tr.setSuccess(false);
+				tr.setResult(MessageFormat.format("the {0} error:{1}",apiResult.getUrl(),tr.getResult()));
+				return tr;
+			}else{
+				task.onSuccess(tr);
+			}
+		}
+		return tr;
+	}
 	@Override
 	public TaskResult synchroExecuteTasks(List<Task> tasks,TaskResult tr) {
 		if(!tr.isSuccess())
@@ -187,7 +248,6 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		}
 		//是否继续
 		boolean isContinue = true;
-		// 创建一个弹性伸缩线程池
 		Map<Future,Task> onions = new HashMap<Future, IBaseTaskService.Task>();
 		for(Task task:tasks){
 			//使用全局线程池
@@ -199,30 +259,46 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 			IUT:
 			for(Future future:onions.keySet()){
 				if(future.isDone()){
-					ApiResultObject apiResult = null;
+					Object obj = null;
 					try {
-						apiResult = (ApiResultObject) future.get();
+						obj = future.get();
+						//apiResult = (ApiResultObject) future.get();
 					} catch (InterruptedException | ExecutionException e) {
+						tr.setSuccess(false);
 						tr.setResult("Gets the Task object's execute method returns a value failed:"+e.getMessage());
 						isContinue = false;
 						//终止后续任务工作
 						break OUT;
 					}
-					if(null == apiResult){
-						tr.setResult("The Task object's execute method returns a value that is null");
+					if(obj == null){
+						tr.setSuccess(false);
+						tr.setResult("Gets the Task object's execute method returns a value is null");
 						isContinue = false;
 						//终止后续任务工作
 						break OUT;
 					}
-					tr = analyzeRestServiceResult(apiResult);
+					ApiResultObject apiResult = null;
+					if(obj instanceof ApiResultObject){
+						apiResult = (ApiResultObject) obj;
+						tr = analyzeRestServiceResult(apiResult);
+					}else if(obj instanceof TaskResult){
+						tr = (TaskResult) obj;
+					}else{
+						tr.setSuccess(false);
+						tr.setResult("Gets the Task object's execute method returns a value is invalid");
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
 					if(!tr.isSuccess()) {
+						tr.setSuccess(false);
 						tr.setResult(MessageFormat.format("the {0} error:{1}",apiResult.getUrl(),tr.getResult()));
 						isContinue = false;
 						//终止后续任务工作
 						break OUT;
 					}else{
 						//成功后执行回调
-						onions.get(future).onSuccess(apiResult,tr);
+						onions.get(future).onSuccess(tr);
 					}
 					onions.remove(future);
 					break IUT;
@@ -231,6 +307,12 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 			if(onions.size()<=0){
 				isContinue = false;
 				break OUT;
+			}
+		}
+		//如果有未完成任务，或者正在进行任务，直接终止其继续执行
+		if(!CollectionUtils.isEmpty(onions)){
+			for(Future future:onions.keySet()){
+				future.cancel(true);
 			}
 		}
 		return tr;

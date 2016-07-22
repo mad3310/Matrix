@@ -43,12 +43,12 @@ public class TaskEsStartServiceImpl extends BaseTask4EsServiceImpl implements IB
 				@Override
 				public ApiResultObject onExec() {
 					String nodeIp = container.getIpAddr();
-					return TaskEsStartServiceImpl.this.esPythonService.startElesticSearch(nodeIp, username, password);
+					return esPythonService.startElesticSearch(nodeIp, username, password);
 				}
 			};
 			tasks.add(task);
 		}
-		tr = super.synchroExecuteTasks(tasks,tr);
+		tr = super.asynchroExecuteTasks(tasks,tr);
 		if (tr.isSuccess()) {
 			logger.debug("启动ES成功");
 		}

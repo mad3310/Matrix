@@ -47,12 +47,12 @@ public class TaskEsContainersConfigServiceImpl extends BaseTask4EsServiceImpl im
 				@Override
 				public ApiResultObject onExec() {
 					String nodeIp = container.getIpAddr();
-					return TaskEsContainersConfigServiceImpl.this.esPythonService.configEsContainer(nodeIp, username, password);
+					return esPythonService.configEsContainer(nodeIp, username, password);
 				}
 			};
 			tasks.add(task);
 		}
-		tr = super.synchroExecuteTasks(tasks,tr);
+		tr = super.asynchroExecuteTasks(tasks,tr);
 		if (tr.isSuccess()) {
 			logger.debug("配置ES成功");
 		}

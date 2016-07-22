@@ -54,12 +54,12 @@ public class TaskEsContainersInitServiceImpl extends BaseTask4EsServiceImpl impl
 					String nodeIp = container.getIpAddr();
 					map.put("dataNodeIp", nodeIp);
 					map.put("dataNodeName", MessageFormat.format("d-logs-{0}-n-{1}", cluster.getClusterName(),index));
-					return TaskEsContainersInitServiceImpl.this.esPythonService.initEsContainer(nodeIp, map, username, password);
+					return esPythonService.initEsContainer(nodeIp, map, username, password);
 				}
 			};
 			tasks.add(task);
 		}
-		tr = super.synchroExecuteTasks(tasks,tr);
+		tr = super.asynchroExecuteTasks(tasks,tr);
 		if (tr.isSuccess()) {
 			logger.debug("初始化node成功");
 		}

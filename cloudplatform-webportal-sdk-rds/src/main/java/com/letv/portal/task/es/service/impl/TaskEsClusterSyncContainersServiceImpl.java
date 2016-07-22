@@ -48,12 +48,12 @@ public class TaskEsClusterSyncContainersServiceImpl extends BaseTask4EsServiceIm
 				@Override
 				public ApiResultObject onExec() {
 					String nodeIp = container.getIpAddr();
-					return TaskEsClusterSyncContainersServiceImpl.this.esPythonService.syncEsCluster(nodeIp, map, username, password);
+					return esPythonService.syncEsCluster(nodeIp, map, username, password);
 				}
 			};
 			tasks.add(task);
 		}
-		tr = super.synchroExecuteTasks(tasks,tr);
+		tr = super.asynchroExecuteTasks(tasks,tr);
 		if (tr.isSuccess()) {
 			logger.debug("ES集群数据同步成功");
 		}

@@ -113,4 +113,9 @@ public class EsServerServiceImpl extends BaseServiceImpl<EsServer> implements IE
 		return esServer;
 	}
 
+	@Override
+	public List<EsServer> selectBySelective(Map<String,Object> exParams) {
+		return esServerDao.selectBySelective(exParams);
+	}
+
 }

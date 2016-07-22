@@ -44,55 +44,65 @@
 	        #{createUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler},
 	        #{descn})
 	</insert>
-	
+	<sql id="Base_Where_Clause">
+		<if test="id != null ">
+            and es.ID=#{id}
+        </if>
+        <if test="hclusterId != null ">
+            and es.HCLUSTER_ID=#{hclusterId}
+        </if>
+        <if test="esClusterId != null ">
+            and es.ESCLUSTER_ID=#{esClusterId}
+        </if>
+        <if test="memorySize != null ">
+            and es.MEMORY_SIZE=#{memorySize}
+        </if>
+        <if test="storageSize != null ">
+            and es.STORAGE_SIZE=#{storageSize}
+        </if>
+        <if test="nodeCount != null ">
+            and es.NODE_COUNT=#{nodeCount}
+        </if>
+        <if test="status != null ">
+            and es.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
+        </if>
+        <if test="deleted != null ">
+            and es.DELETED=#{deleted}
+        </if>
+        <if test="createTime != null ">
+            and es.CREATE_TIME=#{createTime}
+        </if>
+        <if test="updateTime != null ">
+            and es.UPDATE_TIME=#{updateTime}
+        </if>
+        <if test="createUser != null ">
+            and es.CREATE_USER=#{createUser}
+        </if>
+        <if test="updateUser != null ">
+            and es.UPDATE_USER=#{updateUser}
+        </if>
+        <if test="descn != null ">
+            and es.DESCN=#{descn}
+        </if>
+	</sql>
 	<sql id="Common_Where_Clause">
     	where 1=1
 	    <trim suffixOverrides=",">
-	        <if test="id != null ">
-	            and es.ID=#{id}
-	        </if>
+	        <include refid="Base_Where_Clause" />
 	        <if test="esName != null and logName != '' ">
 	            and es.ES_NAME like CONCAT('%',#{esName},'%') escape '^'
 	        </if>
-	        <if test="hclusterId != null ">
-	            and es.HCLUSTER_ID=#{hclusterId}
-	        </if>
-	        <if test="esClusterId != null ">
-	            and es.ESCLUSTER_ID=#{esClusterId}
-	        </if>
-	        <if test="memorySize != null ">
-	            and es.MEMORY_SIZE=#{memorySize}
-	        </if>
-	        <if test="storageSize != null ">
-	            and es.STORAGE_SIZE=#{storageSize}
-	        </if>
-	        <if test="nodeCount != null ">
-	            and es.NODE_COUNT=#{nodeCount}
-	        </if>
-	        <if test="status != null ">
-	            and es.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
-	        </if>
-	        <if test="deleted != null ">
-	            and es.DELETED=#{deleted}
-	        </if>
-	        <if test="createTime != null ">
-	            and es.CREATE_TIME=#{createTime}
-	        </if>
-	        <if test="updateTime != null ">
-	            and es.UPDATE_TIME=#{updateTime}
-	        </if>
-	        <if test="createUser != null ">
-	            and es.CREATE_USER=#{createUser}
-	        </if>
-	        <if test="updateUser != null ">
-	            and es.UPDATE_USER=#{updateUser}
-	        </if>
-	        <if test="descn != null ">
-	            and es.DESCN=#{descn}
+	    </trim>
+	</sql>
+	<sql id="Common2_Where_Clause">
+    	where 1=1
+	    <trim suffixOverrides=",">
+	        <include refid="Base_Where_Clause" />
+	        <if test="esName != null and logName != '' ">
+	            and es.ES_NAME=#{esName}
 	        </if>
 	    </trim>
 	</sql>
-	
 	<update id="updateBySelective" parameterType="EsServer">
 		update DA_ES
 		<set>
@@ -154,7 +164,13 @@
 	        DA_ES es
 	        <include refid="Common_Where_Clause" />
 	</select>
-	
+	<select id="selectBySelective" resultMap="BaseResultMap" parameterType="java.util.Map">
+	    select
+	        <include refid="Base_Column_List" />
+	    from
+	        DA_ES es
+	        <include refid="Common2_Where_Clause" />
+	</select>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
 		parameterType="java.util.Map">

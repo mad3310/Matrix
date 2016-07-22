@@ -27,6 +27,8 @@ public class EsServerController {
 	private IEsServerService esServerService;
 	@Autowired
 	private IEsProxy esProxy;
+	@Autowired(required=false)
+	private SessionServiceImpl sessionService;
 	
 	
 	private final static Logger logger = LoggerFactory.getLogger(EsServerController.class);
@@ -39,6 +41,9 @@ public class EsServerController {
 			logger.error("校验参数不合法");
 			return new ResultObject(bindResult.getAllErrors());
 		}
+		//界面赋值
+		esServer.setHclusterId(48l);
+		esServer.setCreateUser(this.sessionService.getSession().getUserId());
 		this.esProxy.insertAndBuild(esServer);
 		logger.debug("创建ES成功! ID:{},Name:{}", esServer.getId(), esServer.getEsName());
 		return obj;

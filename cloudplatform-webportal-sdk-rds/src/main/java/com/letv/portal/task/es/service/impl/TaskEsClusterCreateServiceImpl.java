@@ -30,9 +30,9 @@ public class TaskEsClusterCreateServiceImpl extends BaseTask4EsServiceImpl imple
 	@Autowired
 	private IImageService imageService;
 	private final static String  CONTAINER_MEMORY_SIZE = "4294967296";
+	private final static String  CONTAINER_DBDISK_SIZE = "10737418240";
 	
 	private final static Logger logger = LoggerFactory.getLogger(TaskEsClusterCreateServiceImpl.class);
-	
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception{
 		logger.debug("创建ES集群");
@@ -57,11 +57,12 @@ public class TaskEsClusterCreateServiceImpl extends BaseTask4EsServiceImpl imple
 		map.put("containerClusterName", esCluster.getClusterName());
 		map.put("componentType", "elasticsearch");
 		map.put("memory", esServer.getMemorySize()==null ? CONTAINER_MEMORY_SIZE : esServer.getMemorySize().toString());
-		/*if(params.get("buyNum") != null) {
-		}*/
-		map.put("nodeCount",String.valueOf(4));
+		if(esServer.getNodeCount() != null && esServer.getNodeCount() > 0)
+			map.put("nodeCount",String.valueOf(esServer.getNodeCount()));
 		map.put("networkMode", "ip");
 		map.put("image", images.get(0).getUrl());
+		map.put("dbDisk", params.get("dbDisk")==null || params.get("dbDisk")=="" ? CONTAINER_DBDISK_SIZE : String.valueOf(params.get("dbDisk")));
+		
 		ApiResultObject result = this.esPythonService.createContainer(map,host.getHostIp(),host.getName(),host.getPassword());
 		tr = analyzeRestServiceResult(result);
 		if (tr.isSuccess()) {

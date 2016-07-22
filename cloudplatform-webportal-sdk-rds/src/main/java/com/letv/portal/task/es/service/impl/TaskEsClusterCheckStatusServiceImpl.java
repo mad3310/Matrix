@@ -52,7 +52,7 @@ public class TaskEsClusterCheckStatusServiceImpl extends BaseTask4EsServiceImpl 
 		
 		do {
 			result = esPythonService.checkContainerCreateStatus(esCluster.getClusterName(),host.getHostIp(),host.getName(),host.getPassword());
-			tr = analyzeRestServiceResult(result);
+			tr = analyzeComplexRestServiceResult(result);
 			if(!tr.isSuccess()) {
 				Thread.sleep(PYTHON_CHECK_INTERVAL_TIME);
 				if(new Date().getTime()-start >PYTHON_CREATE_CHECK_TIME) {
