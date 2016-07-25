@@ -13,6 +13,7 @@
 		<result column="TYPE" property="type" />
 		<result column="AREA_ID" property="areaId" />
 		<result column="CONTAINER_IPS" property="containerIps" />
+		<result column="UPGRADE" property="upgrade" />
 		
 		<result column="STATUS" property="status" />
 		<result column="DELETED" property="deleted" />
@@ -53,7 +54,7 @@
 	
 	<sql id="Base_Column_List">
 		m.id,m.hcluster_name,m.status,m.type,m.DELETED,m.update_user,m.update_time,m.create_user,m.create_time,
-		m.descn,m.HCLUSTER_NAME_ALIAS,m.AREA_ID,m.CONTAINER_IPS
+		m.descn,m.HCLUSTER_NAME_ALIAS,m.AREA_ID,m.CONTAINER_IPS,m.UPGRADE
 	</sql>
 	
 	
@@ -72,6 +73,9 @@
 			</if>
 			<if test="status != null and status != '' ">
 				and m.STATUS=#{status}
+			</if>
+			<if test="upgrade != null and upgrade != '' ">
+				and m.UPGRADE=#{upgrade}
 			</if>
 			<if test="areaId != null and areaId != '' ">
 				and m.AREA_ID=#{areaId}
@@ -107,6 +111,9 @@
 			</if>
 			<if test="params != null and params.status !=null and params.status != '' ">
 				and m.STATUS=#{params.status}
+			</if>
+			<if test="params != null and params.upgrade !=null and params.upgrade != '' ">
+				and m.UPGRADE=#{params.upgrade}
 			</if>
 			<if test="params != null and params.areaId !=null and params.areaId != '' ">
 				and m.AREA_ID=#{params.areaId}
@@ -241,6 +248,9 @@
 			</if>
 			<if test="containerIps != null">
 				m.CONTAINER_IPS=#{containerIps},
+			</if>
+			<if test="upgrade != null">
+				m.UPGRADE=#{upgrade},
 			</if>
 			<if test="updateUser != null  ">
 				m.UPDATE_USER=#{updateUser},

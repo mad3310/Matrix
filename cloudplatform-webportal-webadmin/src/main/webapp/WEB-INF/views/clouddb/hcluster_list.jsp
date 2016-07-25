@@ -186,7 +186,6 @@
 										<option>GCE</option>
 										<option>CBASE</option>
 										<option>OSS</option>
-										<option>ES</option>
 									</select>
 								</div>
 								<label class="control-label hidden-sm hidden-xs">

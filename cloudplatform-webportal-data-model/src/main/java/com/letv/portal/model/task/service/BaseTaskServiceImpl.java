@@ -1,13 +1,10 @@
 package com.letv.portal.model.task.service;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,6 +35,8 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	private String SERVICE_NOTICE_MAIL_ADDRESS;
 	@Autowired
 	private ITemplateMessageSender defaultEmailSender;
+	@Autowired
+	private SchedulingTaskExecutor threadPoolTaskExecutor;
 
 	@Autowired
 	private IUserService userService;
@@ -46,8 +45,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
     private IZookeeperInfoService zookeeperInfoService;
 
 	private final static Logger logger = LoggerFactory.getLogger(BaseTaskServiceImpl.class);
-	@Autowired
-	private SchedulingTaskExecutor threadPoolTaskExecutor;
+	
 	@Override
 	public TaskResult validator(Map<String, Object> params) throws Exception {
 		TaskResult tr = new TaskResult();
@@ -75,7 +73,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	public TaskResult analyzeRestServiceResult(ApiResultObject resultObject){
 		TaskResult tr = new TaskResult();
 		Map<String, Object> map = transToMap(resultObject.getResult());
-		if(map == null) {
+		if(CollectionUtils.isEmpty(map)) {
 			tr.setSuccess(false);
 			tr.setResult("api connect failed:" + resultObject.getUrl());
 			return tr;
@@ -182,7 +180,8 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		if(zks == null || zks.size()!=number)
 			throw new ValidateException("zk numbers not sufficient");
 		for (ZookeeperInfo zk : zks) {
-			this.zookeeperInfoService.plusOneUsedByZookeeperId(zk.getId());
+			zk.setUsed(zk.getUsed()+1);
+			this.zookeeperInfoService.updateBySelective(zk);
 		}
 		return zks;
 	}
@@ -201,6 +200,33 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	public void beforExecute(Map<String, Object> params) {
 		// TODO Auto-generated method stub
 	}
+
+	@Override
+	public TaskResult polling(TaskResult tr, long interval, long timeout,Object... params) throws InterruptedException {
+		// 返回结果
+		ApiResultObject resultObject = null;
+		long beginTime = System.currentTimeMillis();
+		tr.setSuccess(false);
+		while (!tr.isSuccess()) {
+			// 循环的第一次肯定不会进该if，因为代码开头Assert.isTrue过，所以resultObject.url必然在轮训后有值
+			if (System.currentTimeMillis() - beginTime > timeout) {
+				tr.setSuccess(false);
+				tr.setResult("check time over:" + resultObject.getUrl());
+				break;
+			} else {
+				resultObject = pollingTask(params);
+				tr = analyzeComplexRestServiceResult(resultObject);
+			}
+			Thread.sleep(interval);
+		}
+		return tr;
+	}
+
+	@Override
+	public ApiResultObject pollingTask(Object... params) {
+		return null;
+	}
+	
 	public TaskResult asynchroExecuteTasks(List<Task> tasks,TaskResult tr) {
 		if(!tr.isSuccess())
 			return tr;
@@ -317,5 +343,4 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		}
 		return tr;
 	}
-	
 }

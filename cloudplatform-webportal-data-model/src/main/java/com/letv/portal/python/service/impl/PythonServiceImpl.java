@@ -494,5 +494,12 @@ public class PythonServiceImpl implements IPythonService{
 		return new BackupDTO(result, url.toString());
 	}
 	
+	@Override
+	public ApiResultObject oldWholeBackup4Db(String ipAddr,String name, String password) {
+		StringBuffer url = new StringBuffer();
+		url.append(URL_HEAD).append(ipAddr).append(URL_PORT).append("/backup");
+		String result = HttpClient.get(url.toString(),1000,5000,name,password);
+		return new ApiResultObject(result, url.toString());
+	}
 
 }

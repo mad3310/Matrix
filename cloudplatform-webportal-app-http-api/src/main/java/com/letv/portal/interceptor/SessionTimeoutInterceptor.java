@@ -1,15 +1,12 @@
 package com.letv.portal.interceptor;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.letv.common.result.ResultObject;
-import com.letv.common.session.Executable;
-import com.letv.common.session.Session;
-import com.letv.common.session.SessionServiceImpl;
-import com.letv.common.util.IpUtil;
-import com.letv.portal.model.UserLogin;
-import com.letv.portal.proxy.ILoginProxy;
-import com.letv.portal.service.impl.oauth.IOauthService;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,13 +16,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.letv.common.session.Executable;
+import com.letv.common.session.Session;
+import com.letv.common.session.SessionServiceImpl;
+import com.letv.common.util.IpUtil;
+import com.letv.portal.model.UserLogin;
+import com.letv.portal.proxy.ILoginProxy;
+import com.letv.portal.service.impl.oauth.IOauthService;
 
 /**
  * 处理session超时的拦截器
@@ -129,11 +128,13 @@ public class SessionTimeoutInterceptor  implements HandlerInterceptor{
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		Map<String,Object> map = new HashMap<String, Object>();
+		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("result", 2);
-		map.put("data",null);
-		map.put("alertMessage", null);
-		map.put("msgs", message);
+		map.put("data", null);
+		map.put("alertMessage", message);
+		map.put("msgs", new Object[]{});
+		/*ResultObject resultObject = new ResultObject(0);
+		resultObject.addMsg(message);*/
 		out.append(JSON.toJSONString(map, SerializerFeature.WriteMapNullValue));
 		out.flush();
 	}

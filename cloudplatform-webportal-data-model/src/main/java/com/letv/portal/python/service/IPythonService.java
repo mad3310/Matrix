@@ -308,6 +308,14 @@ public interface IPythonService {
 	 * @param password
 	 */
 	BackupDTO wholeBackup4Db(String ipAddr, String name, String password);
+	/**
+	 * 老接口，部分集群升级时使用
+	 * @param ipAddr
+	 * @param name
+	 * @param password
+	 * @return
+	 */
+	ApiResultObject oldWholeBackup4Db(String ipAddr, String name, String password);
 	
 	/**
 	 * Description: db数据库增量备份

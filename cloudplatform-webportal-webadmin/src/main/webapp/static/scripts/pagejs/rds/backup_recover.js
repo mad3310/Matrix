@@ -262,7 +262,7 @@ function BackupFunc(id,mclusterId,type){
 		contentType : "application/json; charset=utf-8",
 		success : function(data) {
 			if(!data.result){
-				warn("获取数据失败",2000);
+				warn(data.msgs,2000);
 			}else{
 				queryByPage(currentPage,recordsPerPage);
 				UpdateBackupState();
