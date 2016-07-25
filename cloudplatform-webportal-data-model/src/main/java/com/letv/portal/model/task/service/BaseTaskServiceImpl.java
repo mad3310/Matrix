@@ -1,8 +1,11 @@
 package com.letv.portal.model.task.service;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -10,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.SchedulingTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -31,6 +35,8 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	private String SERVICE_NOTICE_MAIL_ADDRESS;
 	@Autowired
 	private ITemplateMessageSender defaultEmailSender;
+	@Autowired
+	private SchedulingTaskExecutor threadPoolTaskExecutor;
 
 	@Autowired
 	private IUserService userService;
@@ -219,5 +225,122 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	@Override
 	public ApiResultObject pollingTask(Object... params) {
 		return null;
+	}
+	
+	public TaskResult asynchroExecuteTasks(List<Task> tasks,TaskResult tr) {
+		if(!tr.isSuccess())
+			return tr;
+		if(CollectionUtils.isEmpty(tasks)){
+			tr.setSuccess(false);
+			tr.setResult("there is no available tasks");
+			return tr;
+		}
+		for(Task task:tasks){
+			Object obj = task.onExec();
+			if(obj == null){
+				tr.setSuccess(false);
+				tr.setResult("Gets the Task object's execute method returns a value is null");
+				return tr;
+			}
+			ApiResultObject apiResult = null;
+			if(obj instanceof ApiResultObject){
+				apiResult = (ApiResultObject) obj;
+				tr = analyzeRestServiceResult(apiResult);
+			}else if(obj instanceof TaskResult){
+				tr = (TaskResult) obj;
+			}else{
+				tr.setSuccess(false);
+				tr.setResult("Gets the Task object's execute method returns a value is invalid");
+				return tr;
+			}
+			if(!tr.isSuccess()) {
+				tr.setSuccess(false);
+				tr.setResult(MessageFormat.format("the {0} error:{1}",apiResult.getUrl(),tr.getResult()));
+				return tr;
+			}else{
+				task.onSuccess(tr);
+			}
+		}
+		return tr;
+	}
+	@Override
+	public TaskResult synchroExecuteTasks(List<Task> tasks,TaskResult tr) {
+		if(!tr.isSuccess())
+			return tr;
+		if(CollectionUtils.isEmpty(tasks)){
+			tr.setSuccess(false);
+			tr.setResult("there is no available tasks");
+			return tr;
+		}
+		//是否继续
+		boolean isContinue = true;
+		Map<Future,Task> onions = new HashMap<Future, IBaseTaskService.Task>();
+		for(Task task:tasks){
+			//使用全局线程池
+			Future future = threadPoolTaskExecutor.submit(task);
+			onions.put(future, task);
+		}
+		OUT:
+		while(isContinue){
+			IUT:
+			for(Future future:onions.keySet()){
+				if(future.isDone()){
+					Object obj = null;
+					try {
+						obj = future.get();
+						//apiResult = (ApiResultObject) future.get();
+					} catch (InterruptedException | ExecutionException e) {
+						tr.setSuccess(false);
+						tr.setResult("Gets the Task object's execute method returns a value failed:"+e.getMessage());
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
+					if(obj == null){
+						tr.setSuccess(false);
+						tr.setResult("Gets the Task object's execute method returns a value is null");
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
+					ApiResultObject apiResult = null;
+					if(obj instanceof ApiResultObject){
+						apiResult = (ApiResultObject) obj;
+						tr = analyzeRestServiceResult(apiResult);
+					}else if(obj instanceof TaskResult){
+						tr = (TaskResult) obj;
+					}else{
+						tr.setSuccess(false);
+						tr.setResult("Gets the Task object's execute method returns a value is invalid");
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
+					if(!tr.isSuccess()) {
+						tr.setSuccess(false);
+						tr.setResult(MessageFormat.format("the {0} error:{1}",apiResult.getUrl(),tr.getResult()));
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}else{
+						//成功后执行回调
+						onions.get(future).onSuccess(tr);
+					}
+					onions.remove(future);
+					break IUT;
+				}
+			}
+			if(onions.size()<=0){
+				isContinue = false;
+				break OUT;
+			}
+		}
+		//如果有未完成任务，或者正在进行任务，直接终止其继续执行
+		if(!CollectionUtils.isEmpty(onions)){
+			for(Future future:onions.keySet()){
+				future.cancel(true);
+			}
+		}
+		return tr;
 	}
 }

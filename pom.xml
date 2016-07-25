@@ -673,8 +673,8 @@
                 <webportal.admin.http>http://127.0.0.1:8080</webportal.admin.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
-                <webportal.errormail.to></webportal.errormail.to>
-                <service.notice.email.to></service.notice.email.to>
+                <webportal.errormail.to>linzhanbo@le.com</webportal.errormail.to>
+                <service.notice.email.to>linzhanbo@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>D:</webportal.log.path>

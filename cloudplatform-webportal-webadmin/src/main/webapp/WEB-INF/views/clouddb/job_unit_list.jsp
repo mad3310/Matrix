@@ -88,6 +88,7 @@
 										<option value="CBASE">CBASE</option>								
 										<option value="OSS">OSS</option>								
 										<option value="LOG">LOG</option>								
+										<option value="ES">ES</option>								
 									</select>
 								</div>								
 								<label class="control-label">
