@@ -76,8 +76,14 @@ public interface IEsPythonService {
 	 * @param adminPassword
 	 * @return
 	 */
-	public ApiResultObject configEsContainer(String nodeIp, String adminUser, String adminPassword);
-
+	public ApiResultObject configEsContainer(String nodeIp, Map<String,String> params, String adminUser, String adminPassword);
+	/**
+	 * 启动ES
+	 * @param nodeIp
+	 * @param adminUser
+	 * @param adminPassword
+	 * @return
+	 */
 	public ApiResultObject startElesticSearch(String nodeIp, String adminUser, String adminPassword);
 
 }

@@ -92,10 +92,10 @@ public class EsPythonServiceImpl implements IEsPythonService{
 
 
 	@Override
-	public ApiResultObject configEsContainer(String nodeIp, String adminUser, String adminPassword) {
+	public ApiResultObject configEsContainer(String nodeIp, Map<String,String> params,String adminUser, String adminPassword) {
 		StringBuffer url = new StringBuffer();
 		url.append(URL_HEAD).append(nodeIp).append(ES_PORT).append("/elasticsearch/config");
-		String result = HttpClient.post(url.toString(), null, connectionTimeout, soTimeout, adminUser, adminPassword);
+		String result = HttpClient.post(url.toString(), params, connectionTimeout, soTimeout, adminUser, adminPassword);
 		return new ApiResultObject(result,url.toString());
 	}
 	

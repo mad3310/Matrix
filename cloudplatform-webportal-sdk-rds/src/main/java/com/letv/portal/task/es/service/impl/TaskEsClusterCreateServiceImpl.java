@@ -29,8 +29,10 @@ public class TaskEsClusterCreateServiceImpl extends BaseTask4EsServiceImpl imple
 	private IEsPythonService esPythonService;
 	@Autowired
 	private IImageService imageService;
-	private final static String  CONTAINER_MEMORY_SIZE = "4294967296";
-	private final static String  CONTAINER_DBDISK_SIZE = "10737418240";
+	//容器大小
+	public static final String  CONTAINER_MEMORY_SIZE = "4294967296";//4G
+	private static final String  CONTAINER_DBDISK_SIZE = "10737418240";
+	private static final String DOCKER_SHELL_MEMORY_SIZE = "1073741824";//1G
 	
 	private final static Logger logger = LoggerFactory.getLogger(TaskEsClusterCreateServiceImpl.class);
 	@Override
@@ -56,7 +58,14 @@ public class TaskEsClusterCreateServiceImpl extends BaseTask4EsServiceImpl imple
 		map.clear();
 		map.put("containerClusterName", esCluster.getClusterName());
 		map.put("componentType", "elasticsearch");
-		map.put("memory", esServer.getMemorySize()==null ? CONTAINER_MEMORY_SIZE : esServer.getMemorySize().toString());
+		long container_size = 0l;
+		//容器内存=ES服务内存大小+Docker shell内存大小，用户购买ES指定内存是指定ES服务内存大小。
+		if(esServer.getMemorySize()==null)
+			container_size = Long.parseLong(CONTAINER_MEMORY_SIZE);
+		else
+			container_size = esServer.getMemorySize();
+		container_size += Long.parseLong(DOCKER_SHELL_MEMORY_SIZE);
+		map.put("memory", String.valueOf(container_size));
 		if(esServer.getNodeCount() != null && esServer.getNodeCount() > 0)
 			map.put("nodeCount",String.valueOf(esServer.getNodeCount()));
 		map.put("networkMode", "ip");

@@ -222,7 +222,7 @@ public class HttpClient {
 			body = paseResponse(response);
 		} catch (IOException e) {
 			body = MessageFormat
-					.format("{\"meta\": {\"code \": 400}, \"response\": {\"error_code\": \"{0}\", \"errorDetail\": \"{1}\"}}",
+					.format("{\"meta\": {\"code\": 400}, \"response\": {\"error_code\": \"{0}\", \"errorDetail\": \"{1}\"}}",
 							e.getMessage(), e.getMessage());
 		}
 		return body;

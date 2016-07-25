@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.letv.common.model.BaseModel;
 import com.letv.portal.enumeration.EsStatus;
 import com.letv.portal.validation.annotation.IdValid;
+import com.letv.portal.validation.annotation.NumberLimit;
 
 public class EsServer extends BaseModel {
 	
@@ -56,6 +57,7 @@ public class EsServer extends BaseModel {
 	 */
 	private List<EsContainer> esContainers;
 	
+	@NumberLimit(limits = {1073741824L,2147483648L,4294967296L},message = "内存大小必须在1073741824,2147483648,4294967296之中")
 	public Long getMemorySize() {
 		return memorySize;
 	}
@@ -117,6 +119,7 @@ public class EsServer extends BaseModel {
 	public void setStorageSize(Long storageSize) {
 		this.storageSize = storageSize;
 	}
+	@NumberLimit(limits = {1,2,3,4,5},message = "购买数量必须在1,2,3,4,5之中")
 	public Integer getNodeCount() {
 		return nodeCount;
 	}
