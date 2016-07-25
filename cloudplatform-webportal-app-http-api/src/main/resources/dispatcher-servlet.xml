@@ -4,12 +4,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 	<!--对web包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 -->
 	<context:component-scan base-package="com.letv.portal.controller"/> 
+	
+	<aop:aspectj-autoproxy proxy-target-class="true">
+		<!-- 1.配置json过滤转换器：过滤发现 -->
+        <aop:include name="jsonFilterPropertyAspect"/>
+	</aop:aspectj-autoproxy>
+    <bean id="jsonFilterPropertyAspect" class="com.letv.common.util.jacksonext.springframework.aop.JsonFilterPropertyAspect"/>
 	
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
 	    <property name="locations">
@@ -33,8 +41,9 @@
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 	    <property name="messageConverters">
 	        <list>
+	        	<!-- 2.配置json过滤转换器：过滤转换 -->
 	            <bean
-	                class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+	                class="com.letv.common.util.jacksonext.springframework.convert.JacksonHttpMessageConverter">
 	            </bean>
 	        </list>
 	    </property>
