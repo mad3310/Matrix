@@ -388,11 +388,13 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		this.ecGceService.insert(gce);
 		//5.保存GCE扩展服务信息
 		if(gceExt!=null){
-			long ocsId = gceExt.getOcsId().longValue();
-			long rdsId = gceExt.getRdsId().longValue();
-			if(ocsId != 0L && rdsId != 0L){
-				gceExt.setGceId(gce.getId());
-				this.ecGceService.insertGceExt(gceExt);
+			if(gceExt.getOcsId()!=null && gceExt.getOcsId().longValue() != 0l && gceExt.getRdsId()!=null && gceExt.getRdsId().longValue() != 0L){
+				long ocsId = gceExt.getOcsId().longValue();
+				long rdsId = gceExt.getRdsId().longValue();
+				if(ocsId != 0L && rdsId != 0L){
+					gceExt.setGceId(gce.getId());
+					this.ecGceService.insertGceExt(gceExt);
+				}
 			}
 		}
 	}

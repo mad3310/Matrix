@@ -188,18 +188,18 @@
 						</li>
 						<li id="gce-opened" class="hide product-item col-xs-12 col-sm-12 col-md-3 col-lg-3">
 							<div class="item-profile clearfix">
-								<a href="${ctx}/list/gce" class="pull-left">
+								<a href="${ctx}/list/ecgce" class="pull-left">
 									<span class="item-icon product-icons-48 product-icons-ace"></span>
 								</a>
 								<p class="item-title">
-									<a href="${ctx}/list/gce">云引擎&nbsp;<span class="item-title-short">GCE</span>
+									<a href="${ctx}/list/ecgce">云引擎&nbsp;<span class="item-title-short">GCE</span>
 									</a>
 									<span class="beta-font">Beta</span>
 								</p>
 							</div>
 							<div class="item-record">
 								<span class="item-record-num">
-									<a class="item-record-num-count" href="${ctx}/list/gce"><span id="gceCount"></span></a>
+									<a class="item-record-num-count" href="${ctx}/list/ecgce"><span id="gceCount"></span></a>
 								</span>
 								<span class="item-record-unit">个</span>
 								<a data-toggle="tooltip" data-placement="top" title="云引擎数">

@@ -77,9 +77,9 @@ public class ECGceController {
 		}
 
 		gce.setCreateUser(this.sessionService.getSession().getUserId());
-		if (gceExt != null && (gceExt.getOcsId().longValue() != 0L)
-				&& (gceExt.getRdsId().longValue() != 0L)) {
-			gceExt.setCreateUser(this.sessionService.getSession().getUserId());
+		if (gceExt != null) {
+			if(gceExt.getOcsId()!=null && gceExt.getOcsId().longValue() != 0l && gceExt.getRdsId()!=null && gceExt.getRdsId().longValue() != 0L)
+				gceExt.setCreateUser(this.sessionService.getSession().getUserId());
 		}
 		// TODO 未指定地域和可用区ID,并且未判重
 		gce.setAreaId(7L);
