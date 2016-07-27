@@ -249,9 +249,9 @@ function legendTranslate(str){
 	}else if(title=="write"){
 		return ip+":磁盘写速率";
 	}else if(title=="rx"){
-		return ip+":网卡接受流量";
+		return ip+":网络接受流量";
 	}else if(title=="tx"){
-		return ip+":网卡发送流量";
+		return ip+":网络发送流量";
 	}else{
 		return str;
 	}
