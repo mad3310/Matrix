@@ -155,7 +155,7 @@ function initCharts(data){
 					var color = item.series.color;
 					var name = item.series.name;
 					var y = item.y;
-					pointStr += '<span style="color:'+color+'">\u25CF</span> '+name+': <b>'+getUnitByMonitorPoint(y,data.id)+'</b><br/>'
+					pointStr += '<span style="color:'+color+'">\u25CF</span> '+name+': <b>'+getUnitByMonitorPoint(y,data.detailTable)+'</b><br/>'
 				});
 				
 				return pointStr;	
@@ -165,7 +165,7 @@ function initCharts(data){
 	        yAxis: {
 	            labels: {
 	                formatter:function(){
-	                	return getUnitByMonitorPoint(this.value,data.id);
+	                	return getUnitByMonitorPoint(this.value,data.detailTable);
 	                }
 	             }
 	        }
@@ -222,11 +222,13 @@ function getUnitByMonitorPoint(data, monitorPoint){
 	//59	container.diskiops		监控读写速率     kb/s
 	//60	container.memory		内存
 	//61	container.networkio		
-	if(monitorPoint==60){//监控内存大小    G
-		return TransUnit(data);
-	}else if(monitorPoint==59){//监控读写速率     kb/s
+	if(monitorPoint=="monitor_container_resource_networkio"){
 		return TransUnit(data)+"/s";
-	}else if(monitorPoint==58){//cpu使用率	   100%
+	}else if(monitorPoint=="monitor_container_resource_memory"){//监控内存大小    G
+		return TransUnit(data);
+	}else if(monitorPoint=="monitor_container_resource_diskiops"){//监控读写速率     kb/s
+		return TransUnit(data)+"/s";
+	}else if(monitorPoint=="monitor_container_resource_cpuacct"){//cpu使用率	   100%
 		return (data*100).toFixed(2)+"%";
 	}else{
 		return data;
