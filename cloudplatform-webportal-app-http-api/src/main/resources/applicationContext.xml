@@ -40,7 +40,8 @@
     		<list>
     			<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter"/>
 				<bean id="formHttpMessageConverter" class="org.springframework.http.converter.FormHttpMessageConverter"/>
-				<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+				<!-- 对rest添加json过滤转换器 -->
+				<bean id="mappingJacksonHttpMessageConverter" class="com.letv.common.util.jacksonext.springframework.convert.JacksonHttpMessageConverter"/>
     		</list>
     	</property>
     </bean>

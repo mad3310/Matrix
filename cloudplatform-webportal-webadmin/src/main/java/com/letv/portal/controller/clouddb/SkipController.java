@@ -70,6 +70,7 @@ public class SkipController {
 		mav.setViewName("/clouddb/moniter_hcluster");
 		return mav;
 	}
+
 	/**Methods Name: toList <br>
 	 * Description: db页面跳转<br>
 	 * @author name: wujun
@@ -195,11 +196,22 @@ public class SkipController {
 		mav.setViewName("/clouddb/mcluster_monitor_view");
 		return mav;
 	}
+	@RequestMapping(value="/view/mcluster/monitor/res",method=RequestMethod.GET)
+	public ModelAndView toMonitorCotainerViewNode(ModelAndView mav){
+		mav.setViewName("/clouddb/mcluster_monitor_view_res");
+		return mav;
+	}
 	@RequestMapping(value="/view/mcluster/monitor/topN",method=RequestMethod.GET)
 	public ModelAndView toMonitorCotainerTopNView(ModelAndView mav){
 		mav.setViewName("/clouddb/mcluster_monitor_view_topN");
 		return mav;
 	}
+	@RequestMapping(value="/view/hcluster/monitor/topN",method=RequestMethod.GET)
+	public ModelAndView toHonitorCotainerTopNView(ModelAndView mav){
+		mav.setViewName("/clouddb/hcluster_monitor_view_topN");
+		return mav;
+	}
+	
 	
 	/**
 	 * Methods Name: toMonitorMclusterListDetail <br>
@@ -278,3 +290,4 @@ public class SkipController {
 		return mav;
 	}
 }
+

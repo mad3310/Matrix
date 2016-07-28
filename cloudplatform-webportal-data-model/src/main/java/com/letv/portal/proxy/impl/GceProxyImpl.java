@@ -1,19 +1,47 @@
 package com.letv.portal.proxy.impl;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.letv.common.exception.CommonException;
 import com.letv.common.exception.TaskExecuteException;
 import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
+import com.letv.common.util.AWSS3Util;
+import com.letv.common.util.AWSS3Util.AWS3SConn;
 import com.letv.portal.constant.Constant;
+import com.letv.portal.enumeration.GcePackageStatus;
+import com.letv.portal.enumeration.GceStatus;
 import com.letv.portal.enumeration.GceType;
-import com.letv.portal.enumeration.HostType;
 import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.enumeration.SlbStatus;
 import com.letv.portal.model.HostModel;
+import com.letv.portal.model.elasticcalc.gce.EcGce;
+import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
+import com.letv.portal.model.elasticcalc.gce.EcGceExt;
+import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
 import com.letv.portal.model.gce.GceCluster;
 import com.letv.portal.model.gce.GceContainer;
 import com.letv.portal.model.gce.GceServer;
 import com.letv.portal.model.gce.GceServerExt;
+import com.letv.portal.model.log.LogCluster;
 import com.letv.portal.model.log.LogServer;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
@@ -23,25 +51,15 @@ import com.letv.portal.python.service.IGcePythonService;
 import com.letv.portal.python.service.IPythonService;
 import com.letv.portal.service.IBaseService;
 import com.letv.portal.service.IHostService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceContainerService;
+import com.letv.portal.service.elasticcalc.gce.IEcGcePackageService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceService;
 import com.letv.portal.service.gce.IGceClusterService;
 import com.letv.portal.service.gce.IGceContainerService;
 import com.letv.portal.service.gce.IGceServerService;
+import com.letv.portal.service.log.ILogClusterService;
 import com.letv.portal.service.log.ILogServerService;
 import com.letv.portal.util.CommonServiceUtils;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
@@ -52,6 +70,13 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	@Autowired
 	private IGceServerService gceServerService;
 	@Autowired
+	private IEcGceService ecGceService;
+	@Autowired
+	private IEcGcePackageService ecGcePackageService;
+	@Autowired
+	private IEcGceContainerService ecGceContainerService;
+	
+	@Autowired
 	private IGcePythonService gcePythonService;
     @Autowired
     private IPythonService pythonService;
@@ -61,6 +86,8 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	private IGceContainerService gceContainerService;
 	@Autowired
 	private ILogServerService logServerService;
+	@Autowired
+	private ILogClusterService logClusterService;
 	@Autowired
 	private IBaseTaskService baseGceTaskService;
 	@Autowired
@@ -76,7 +103,19 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	private String GCE_ENGINE_CATEGORY;
 	@Value("${cluster.engine.category}")
 	private String CLUSTER_ENGINE_CATEGORY;
+	@Value("${matrix.gce.buy.process}")
+	private String GCE_BUY_PROCESS;
 	
+	@Value("${matrix.gce.file.default.local}")
+	private String MATRIX_GCE_FILE_DEFAULT_LOCAL;
+	@Value("${matrix.gce.awss3.endpoint}")
+	private String AWSS3ENDPOINT;
+	@Value("${matrix.gce.awss3.accessKey}")
+	private String AWSS3ACCESSKEY;
+	@Value("${matrix.gce.awss3.secretKey}")
+	private String AWSS3SECRETKEY;
+	@Value("${matrix.gce.awss3.bucketName}")
+	private String AWSS3BUCKETNAME;
 	@Override
 	public void saveAndBuild(GceServer gceServer,Long rdsId,Long ocsId) {	
 		if(gceServer == null)
@@ -325,5 +364,153 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 
         cluster.setStatus(MclusterStatus.CRISIS.getValue());
         this.gceClusterService.updateBySelective(cluster);
+	}
+	
+	@Transactional
+	@Override
+	public void createGce(EcGce gce, EcGceExt gceExt) {
+		//1.参数转换防止XSS跨站漏洞
+		gce.setGceName(StringEscapeUtils.escapeHtml(gce.getGceName()));
+		if(!StringUtils.isEmpty(gce.getDescn()))
+			gce.setDescn(StringEscapeUtils.escapeHtml(gce.getDescn()));
+		//2.校验该GCE是否已经存在
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("gceName", gce.getGceName());
+		exParams.put("hclusterId", gce.getHclusterId());
+		exParams.put("areaId", gce.getAreaId());
+		exParams.put("createUser", gce.getCreateUser());
+		Integer existLength = this.ecGceService.selectByMapCount(exParams);
+		if(existLength>0){
+			throw new ValidateException(MessageFormat.format("{0}应用已存在", gce.getGceName()));
+		}
+		//4.保存GCE信息
+		gce.setStatus(GceStatus.AVAILABLE.getValue());//可用
+		this.ecGceService.insert(gce);
+		//5.保存GCE扩展服务信息
+		if(gceExt!=null){
+			long ocsId = gceExt.getOcsId().longValue();
+			long rdsId = gceExt.getRdsId().longValue();
+			if(ocsId != 0L && rdsId != 0L){
+				gceExt.setGceId(gce.getId());
+				this.ecGceService.insertGceExt(gceExt);
+			}
+		}
+	}
+	@Override
+	public void uploadPackage(MultipartFile file, EcGcePackage gcePackage) {
+		//1.校验该GCE是否存在
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("gceName", gcePackage.getGceName());
+		exParams.put("createUser", gcePackage.getCreateUser());
+		exParams.put("deleted", false);
+		EcGce gce = null;
+		List<EcGce> list = this.ecGceService.selectByMap(exParams);
+		if(CollectionUtils.isEmpty(list)){
+			throw new ValidateException(MessageFormat.format("{0}应用不存在", gcePackage.getGceName()));
+		}
+		gce = list.get(0);
+		if(gce.getStatus()==GceStatus.NOTAVAILABLE.getValue()){
+			throw new ValidateException(MessageFormat.format("{0}应用不可用", gce.getGceName()));
+		}
+		gcePackage.setGceId(gce.getId());
+		//2.接收文件，保存文件到s3上
+		String fileName = file.getOriginalFilename();
+		String suffix = fileName.substring(fileName.lastIndexOf("."));//.war
+		try {
+			saveFileToLocal(file);
+		} catch (IllegalStateException | IOException e) {
+			throw new CommonException("上传应用失败"+e.getMessage(),e);
+		}
+		String key = MessageFormat.format("{0}_{1}_{2}", gcePackage.getCreateUser(),gce.getId(),gcePackage.getVersion());//不考虑创建GCE和上传包的人不同情况
+		String filePath = this.MATRIX_GCE_FILE_DEFAULT_LOCAL+"/" + fileName;
+		AWS3SConn.ConnBuilder builder = new AWS3SConn.ConnBuilder();
+		AWS3SConn conn = builder.setEndpoint(this.AWSS3ENDPOINT).setAccessKey(this.AWSS3ACCESSKEY)
+				.setSecretKey(this.AWSS3SECRETKEY).build();
+		AWSS3Util.getInstance(conn).upload(this.AWSS3BUCKETNAME,key,filePath);
+		//3.保存GcePackage到数据库
+		gcePackage.setSuffix(suffix);
+		gcePackage.setBucketName(this.AWSS3BUCKETNAME);
+		gcePackage.setKey(key);
+		gcePackage.setStatus(GcePackageStatus.BUILDDING.getValue());
+		Map<String,Object> gcePackageParams = this.ecGcePackageService.insertGceAndGcePackage(gce,gcePackage);
+		
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.putAll(gcePackageParams);
+		params.put("gceId", gce.getId());
+		params.put("gceName", gce.getGceName());
+		params.put("buyNum", gce.getInstanceNum());
+		params.put("type", gce.getType().trim().toLowerCase());
+		//TODO 暂留下来，以后调整时直接修改
+		/*params.put("isCreateLog", true);
+		params.put("isConfig", false);
+		params.put("isContinue", false);*/
+		//4.创建GCE应用包流程
+		this.taskEngine.run(GCE_BUY_PROCESS, params);
+		//5.删除暂存在本地的文件
+		removeFileFromLocal(fileName);
+	}
+	
+	private File saveFileToLocal(MultipartFile file) throws IllegalStateException, IOException {
+        String fileName = file.getOriginalFilename(); 
+        fileName = new String(fileName.getBytes("ISO8859-1"),"UTF-8");
+        File targetFile = new File(MATRIX_GCE_FILE_DEFAULT_LOCAL, fileName);  
+        if(!targetFile.exists()){  
+            targetFile.mkdirs();  
+        }  
+        file.transferTo(targetFile);  
+		return targetFile;
+	}
+	private void removeFileFromLocal(String fileName) {
+		File targetFile = new File(MATRIX_GCE_FILE_DEFAULT_LOCAL, fileName);  
+		targetFile.delete();
+	}
+
+	@Override
+	public List<EcGceContainer> getGcepackageContainers(
+			EcGcePackage gcePackage) {
+		//1.校验该GCE是否存在
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("gceName", gcePackage.getGceName());
+		exParams.put("createUser", gcePackage.getCreateUser());
+		exParams.put("deleted", false);
+		EcGce gce = null;
+		List<EcGce> list = this.ecGceService.selectByMap(exParams);
+		if(list == null || list.size()<=0){
+			throw new ValidateException(MessageFormat.format("{0}应用不存在", gcePackage.getGceName()));
+		}
+		gce = list.get(0);
+		if(gce.getStatus()==GceStatus.NOTAVAILABLE.getValue()){
+			throw new ValidateException(MessageFormat.format("{0}应用不可用", gce.getGceName()));
+		}
+		//2.校验该版本是否存在
+		Map<String,Object> ex2Params = new HashMap<String,Object>();
+		ex2Params.put("gceId", gce.getId());
+		ex2Params.put("createUser", gcePackage.getCreateUser());
+		ex2Params.put("version", gcePackage.getVersion());
+		ex2Params.put("deleted", false);
+		EcGcePackage ecGcePackage = null;
+		List<EcGcePackage> list2 = this.ecGcePackageService.selectByMap(ex2Params);
+		if(list2 == null || list2.size()<=0){
+			throw new ValidateException(MessageFormat.format("{0}应用{1}版本不存在", gcePackage.getGceName(),gcePackage.getVersion()));
+		}
+		ecGcePackage = list2.get(0);
+		Integer gcepackStatus = ecGcePackage.getStatus();
+		if(gcepackStatus!=GcePackageStatus.NORMAL.getValue()){//NORMAL为部署成功
+			if(gcepackStatus==GcePackageStatus.BUILDFAIL.getValue()){
+				throw new ValidateException(MessageFormat.format("{0}应用版本{1}部署失败", gce.getGceName(),gcePackage.getVersion()));
+			}else{
+				throw new CommonException(MessageFormat.format("{0}应用版本{1}正在部署中", gce.getGceName(),gcePackage.getVersion()));
+			}
+		}
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("gceId", gce.getId());
+		map.put("createUser", gcePackage.getCreateUser());
+		map.put("gcePackageId", ecGcePackage.getId());
+		map.put("deleted", false);
+		List<EcGceContainer> containers = this.ecGceContainerService.selectByMap(map);
+		if(list2 == null || list2.size()<=0){
+			throw new ValidateException(MessageFormat.format("{0}应用{1}版本容器列表为空", gcePackage.getGceName(),gcePackage.getVersion()));
+		}
+		return containers;
 	}
 }

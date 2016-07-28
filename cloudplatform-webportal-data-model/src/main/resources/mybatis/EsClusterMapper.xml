@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.letv.portal.dao.es.IEsClusterDao">
+
+	<resultMap id="BaseResultMap" type="EsCluster">
+	    <result column="ID" property="id" />
+	    <result column="CLUSTER_NAME" property="clusterName" />
+	    <result column="STATUS" property="status" jdbcType="TINYINT" typeHandler="com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler"/>
+	    <result column="HCLUSTER_ID" property="hclusterId" />
+	    <result column="ADMIN_USER" property="adminUser" />
+	    <result column="ADMIN_PASSWORD" property="adminPassword" />
+	    <result column="DELETED" property="deleted" />
+	    <result column="CREATE_TIME" property="createTime" />
+	    <result column="UPDATE_TIME" property="updateTime" />
+	    <result column="CREATE_USER" property="createUser" />
+	    <result column="UPDATE_USER" property="updateUser" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+	    cluster.ID,cluster.CLUSTER_NAME,cluster.STATUS,cluster.HCLUSTER_ID,cluster.ADMIN_USER,
+	    cluster.ADMIN_PASSWORD,cluster.DELETED,cluster.CREATE_TIME,cluster.UPDATE_TIME,cluster.CREATE_USER,
+	    cluster.UPDATE_USER
+	</sql>
+	
+	<!-- 添加 -->
+    <!-- 如果代码中未指定createUser，则赋默认值，否则按代码中指定createUser -->
+	<insert id="insert" parameterType="EsCluster" useGeneratedKeys="true" keyProperty="id" >
+	    insert into DA_ESCLUSTER 
+	        (CLUSTER_NAME,STATUS,HCLUSTER_ID,ADMIN_USER,ADMIN_PASSWORD,DELETED,CREATE_TIME,CREATE_USER) 
+	    values
+	        (#{clusterName},
+	        #{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
+	        #{hclusterId},#{adminUser},#{adminPassword},
+	        #{deleted},
+	        now(),
+	        #{createUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler})
+	</insert>
+
+	<sql id="Common_Where_Clause">
+	    where 1=1
+	    <trim suffixOverrides=",">
+	        <if test="id != null ">
+	            and cluster.ID=#{id}
+	        </if>
+	        <if test="clusterName != null ">
+	            and cluster.CLUSTER_NAME=#{clusterName}
+	        </if>
+	        <if test="status != null ">
+	            and cluster.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
+	        </if>
+	        <if test="hclusterId != null ">
+	            and cluster.HCLUSTER_ID=#{hclusterId}
+	        </if>
+	        <if test="adminUser != null ">
+	            and cluster.ADMIN_USER=#{adminUser}
+	        </if>
+	        <if test="adminPassword != null ">
+	            and cluster.ADMIN_PASSWORD=#{adminPassword}
+	        </if>
+	        <if test="deleted != null ">
+	            and cluster.DELETED=#{deleted}
+	        </if>
+	        <if test="createTime != null ">
+	            and cluster.CREATE_TIME=#{createTime}
+	        </if>
+	        <if test="updateTime != null ">
+	            and cluster.UPDATE_TIME=#{updateTime}
+	        </if>
+	        <if test="createUser != null ">
+	            and cluster.CREATE_USER=#{createUser}
+	        </if>
+	        <if test="updateUser != null ">
+	            and cluster.UPDATE_USER=#{updateUser}
+	        </if>
+	    </trim>
+	</sql>
+	
+	<!--根据id，有选择的修改记录 -->
+	<update id="updateBySelective" parameterType="EsCluster">
+		update DA_ESCLUSTER
+		<set>
+			<if test="clusterName != null  and clusterName != '' ">
+				CLUSTER_NAME=#{clusterName},
+			</if>
+			<if test="adminUser != null  ">
+				ADMIN_USER=#{adminUser},
+			</if>
+			<if test="adminPassword != null  ">
+				ADMIN_PASSWORD=#{adminPassword},
+			</if>
+			<if test="status != null  ">
+				STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler},
+			</if>
+			<if test="hclusterId != null  ">
+				HCLUSTER_ID=#{hclusterId},
+			</if>
+			<if test="deleted != null  ">
+				DELETED=#{deleted},
+			</if>
+				UPDATE_TIME=now(),
+				<!-- 如果代码中未指定updateUser，则赋默认值，否则按代码中指定updateUser -->
+				UPDATE_USER=#{updateUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler}
+		</set>
+		where ID=#{id}
+	</update>
+	
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+			<include refid="Base_Column_List" />
+		from 
+			DA_ESCLUSTER cluster
+		where 
+			cluster.ID=#{id}
+	</select>
+	
+	<select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+			<include refid="Base_Column_List" />
+		from 
+			DA_ESCLUSTER cluster
+		where 
+			cluster.CLUSTER_NAME=#{clusterName}
+	</select>
+	
+	<!-- 根据条件查询 -->
+	<select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
+	    select
+	        <include refid="Base_Column_List" />
+	    from
+	        DA_ESCLUSTER cluster
+	        <include refid="Common_Where_Clause" />
+	</select>
+</mapper>   

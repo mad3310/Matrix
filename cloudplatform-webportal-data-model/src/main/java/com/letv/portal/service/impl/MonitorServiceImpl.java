@@ -1,6 +1,7 @@
 package com.letv.portal.service.impl;
 
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -18,6 +19,7 @@ import java.util.TimeZone;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.index.query.AndFilterBuilder;
+import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -31,6 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
+import com.letv.common.exception.CommonException;
 import com.letv.common.util.DataFormat;
 import com.letv.common.util.ESUtil;
 import com.letv.mms.cache.ICacheService;
@@ -103,9 +106,8 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		return this.monitorDao;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<MonitorViewYModel> getHostDiskMonitorData(Long hostId, Long chartId, Integer strategy) {
+	public List<MonitorViewYModel> getHostMonitorDataFromEs(Long hostId, Long chartId, Integer strategy) {
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
 		HostModel hostModel = this.hostService.selectById(hostId);
 	    
@@ -122,37 +124,61 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		SearchHits searchHits = ESUtil.getFilterResult(indexs, filterBuilder, sortBuilder, 100000);
 
 		String[] detailNames =  monitorIndexModel.getMonitorPoint().split(",");
+		
+		ydatas = getMonitorViewYModels(detailNames, searchHits, hostModel.getHostIp());
+		return ydatas;
+	}
+	
+	//utc字符串转换为Date
+	private Date transferUtcToDate(String time) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Date d;
+		try {
+			d = sdf.parse(time);
+		} catch (ParseException e) {
+			throw new CommonException("Utc日期格式化出错");
+		}
+		return d;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<MonitorViewYModel> getMonitorViewYModels(String[] detailNames, SearchHits searchHits, String ip) {
+		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
 		for (String s : detailNames) {
 			MonitorViewYModel ydata = new MonitorViewYModel();
 			List<List<Object>> datas = new ArrayList<List<Object>>();
 			String[] layer = s.split("\\.");
-			try {
-				for (SearchHit hit : searchHits.getHits()) {
-					Map<String, Object> data = hit.getSource();
-					Date d = sdf.parse((String)data.get("timestamp"));
-					int j = layer.length-1;
-					for(int i=0; i<j; i++) {//适配“user.system”这类map嵌套取值
-						data = (Map<String, Object>) data.get(layer[i]);
-					}
-					if(data.containsKey(layer[j])) {
-						List<Object> point = new ArrayList<Object>();
-						point.add(d);
-						point.add(data.get(layer[j]));
-						datas.add(point);
-					}
+			for (SearchHit hit : searchHits.getHits()) {
+				Map<String, Object> data = hit.getSource();
+				Date d = transferUtcToDate((String)data.get("timestamp"));
+				int j = layer.length-1;
+				for(int i=0; i<j; i++) {//适配“user.system”这类map嵌套取值
+					data = (Map<String, Object>) data.get(layer[i]);
 				}
-			} catch (ParseException e) {
-				logger.error(e.getMessage(), e);
+				if(data.containsKey(layer[j])) {
+					List<Object> point = new ArrayList<Object>();
+					point.add(d);
+					Object o = data.get(layer[j]);
+					if(o instanceof Double && (double)o<1) {
+						BigDecimal b = new BigDecimal((double)o);
+						b = b.setScale(2, BigDecimal.ROUND_HALF_UP);
+						point.add(b);
+					} else {
+						point.add(o);
+					}
+					
+					datas.add(point);
+				}
 			}
 
-			ydata.setName(hostModel.getHostIp() +":"+s);
+			ydata.setName(ip +":"+s);
 			ydata.setData(datas);
 			ydatas.add(ydata);
 		}
 		return ydatas;
 	}
+	
 	@Override
 	public List<MonitorViewYModel> getMonitorViewData(Long mclusterId,Long chartId,Integer strategy) {
 		List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
@@ -191,55 +217,32 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 		}
 		return ydatas;
 	}
-  /* @Override
-    public List<MonitorViewYModel> getMonitorViewData(Long mclusterId,Long chartId,Integer strategy) {
+
+	public List<MonitorViewYModel> getMclusterMonitorDataFromEs(Long mclusterId,Long chartId,Integer strategy) {
         List<MonitorViewYModel> ydatas = new ArrayList<MonitorViewYModel>();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("mclusterId", mclusterId);
-        map.put("type", "mclusternode");
-        List<ContainerModel> containers = this.containerService.selectByMap(map);
+        List<ContainerModel> containers = this.containerService.selectNodeContainersByMap(map);
 
        MonitorIndexModel monitorIndexModel  = this.monitorIndexService.selectById(chartId);
-       Date end = new Date();
        String[] detailNames =  monitorIndexModel.getMonitorPoint().split(",");
-
-       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-       long tbefore = System.currentTimeMillis();
+       
+       Date end = new Date();
+       Date start = getStartDate(end, strategy);
+       
+       String[] indexs = getIndexs(monitorIndexModel.getDetailTable().toLowerCase(), start, end);
+       FieldSortBuilder sortBuilder = SortBuilders.fieldSort("timestamp").order(SortOrder.ASC);
+       
        for (ContainerModel c : containers) {
-            for (String s : detailNames) {
-                MonitorViewYModel ydata = new MonitorViewYModel();
-
-                *//*AndFilterBuilder andFilterBuilder = FilterBuilders.andFilter(
-                        FilterBuilders.termFilter("ip", c.getIpAddr().toLowerCase()),
-                        FilterBuilders.termFilter("detailName", s.toLowerCase().toLowerCase()),
-                      FilterBuilders.rangeFilter("monitorDate").from(getStartDate(end, strategy).getTime()).to(end.getTime())
-                );*//*
-                long before = System.currentTimeMillis();
-                BoolFilterBuilder must = FilterBuilders.boolFilter().must(FilterBuilders.termFilter("ip", c.getIpAddr().toLowerCase()))
-                        .must(FilterBuilders.termFilter("detailName", s.toLowerCase().toLowerCase()))
-                        .must(FilterBuilders.rangeFilter("monitorDate").from(getStartDate(end, strategy).getTime()).to(end.getTime()));
-                SearchHits searchHits = ESUtil.getFilterSortResult(getIndexs(Constant.ES_RDS_MONITOR_INDEX + monitorIndexModel.getDetailTable().toLowerCase(), getStartDate(end, strategy), end), must, "monitorDate");
-                List<List<Object>> datas = new ArrayList<List<Object>>();
-                for (SearchHit hit : searchHits) {
-                    List<Object> point = new ArrayList<Object>();
-                    Map<String, Object> source = hit.getSource();
-                    try {
-                        point.add(sdf.parse((String) source.get("monitorDate")).getTime());
-                    } catch (ParseException e) {
-                        throw new CommonException("监控日期格式化出错");
-                    }
-                    point.add(source.get("detailValue"));
-                    datas.add(point);
-                }
-                ydata.setName(c.getIpAddr() +":"+s);
-                ydata.setData(datas);
-                ydatas.add(ydata);
-                logger.info("searchHits time:{}",System.currentTimeMillis()-before);
-            }
+    	   BoolFilterBuilder must = FilterBuilders.boolFilter().must(FilterBuilders.termFilter("node_name", c.getIpAddr().toLowerCase()))
+                   .must(FilterBuilders.rangeFilter("timestamp").from(start).to(end));
+    	   SearchHits searchHits = ESUtil.getFilterResult(indexs, must, sortBuilder, 100000);
+    	   
+    	   List<MonitorViewYModel> subYdatas = getMonitorViewYModels(detailNames, searchHits, c.getIpAddr());
+    	   ydatas.addAll(subYdatas);
        }
-       logger.info("all searchHits time:{}",System.currentTimeMillis()-tbefore);
        return ydatas;
-}*/
+    }
     private  String[] getIndexs(String indexPrefix,Date start,Date end) {
         Calendar startTime = Calendar.getInstance();
         startTime.setTime(start);
@@ -435,8 +438,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 			now.add(Calendar.HOUR, -24);  // one day ago
 			break;
 		case 4:
-//			now.add(Calendar.HOUR, -168); // one week ago
-			now.add(Calendar.HOUR, -120); // one week ago
+			now.add(Calendar.HOUR, -168); // one week ago
 			break;
 		case 5:
 			now.add(Calendar.MONTH, -1); // one month ago

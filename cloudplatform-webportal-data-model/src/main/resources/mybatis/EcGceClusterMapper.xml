@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.letv.portal.dao.elasticcalc.gce.IEcGceClusterDao">
+	<resultMap id="BaseResultMap" type="EcGceCluster">
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="CLUSTER_NAME" property="clusterName" jdbcType="VARCHAR" />
+		<result column="SST_PASSWORD" property="sstPassword" jdbcType="VARCHAR" />
+		<result column="HCLUSTER_ID" property="hclusterId" jdbcType="BIGINT" />
+		<result column="ADMIN_USER" property="adminUser" jdbcType="VARCHAR" />
+		<result column="ADMIN_PASSWORD" property="adminPassword"
+			jdbcType="VARCHAR" />
+		<result column="GCE_ID" property="gceId" jdbcType="BIGINT" />
+		<result column="GCE_PACKAGE_ID" property="gcePackageId"
+			jdbcType="BIGINT" />
+		<result column="STATUS" property="status" jdbcType="TINYINT" />
+		<result column="DELETED" property="deleted" jdbcType="TINYINT" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, CLUSTER_NAME, SST_PASSWORD, HCLUSTER_ID, ADMIN_USER,
+		ADMIN_PASSWORD,
+		GCE_ID,
+		GCE_PACKAGE_ID, STATUS, DELETED, CREATE_TIME,
+		CREATE_USER, UPDATE_TIME, UPDATE_USER
+	</sql>
+
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE_CLUSTER
+		where ID = #{id,jdbcType=BIGINT}
+	</select>
+	<select id="selectByName" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE_CLUSTER
+		where CLUSTER_NAME=#{clusterName,jdbcType=VARCHAR}
+	</select>
+	<insert id="insert" parameterType="EcGceCluster"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		EC_GCE_CLUSTER (CLUSTER_NAME, SST_PASSWORD,
+		HCLUSTER_ID,
+		ADMIN_USER, ADMIN_PASSWORD,
+		GCE_ID, GCE_PACKAGE_ID, STATUS,
+		DELETED,
+		CREATE_TIME, CREATE_USER,
+		UPDATE_TIME, UPDATE_USER)
+		values
+		(#{clusterName,jdbcType=VARCHAR},
+		#{sstPassword,jdbcType=VARCHAR},
+		#{hclusterId,jdbcType=BIGINT}, #{adminUser,jdbcType=VARCHAR},
+		#{adminPassword,jdbcType=VARCHAR},
+		#{gceId,jdbcType=BIGINT},
+		#{gcePackageId,jdbcType=BIGINT},
+		#{status,jdbcType=TINYINT},
+		#{deleted,jdbcType=TINYINT}, now(), #{createUser,jdbcType=BIGINT},
+		#{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=BIGINT})
+	</insert>
+	<update id="updateBySelective" parameterType="EcGceCluster">
+		update `EC_GCE_CLUSTER`
+		<set>
+			<if test="clusterName != null  ">
+				`CLUSTER_NAME` = #{clusterName,jdbcType=VARCHAR},
+			</if>
+			<if test="sstPassword != null  ">
+				`SST_PASSWORD` = #{sstPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="hclusterId != null  ">
+				`HCLUSTER_ID` = #{hclusterId,jdbcType=BIGINT},
+			</if>
+			<if test="adminUser != null  ">
+				`ADMIN_USER` = #{adminUser,jdbcType=VARCHAR},
+			</if>
+			<if test="adminPassword != null  ">
+				`ADMIN_PASSWORD` = #{adminPassword,jdbcType=VARCHAR},
+			</if>
+			<if test="gceId != null ">
+				`GCE_ID` = #{gceId,jdbcType=BIGINT},
+			</if>
+			<if test="gcePackageId != null ">
+				`GCE_PACKAGE_ID` = #{gcePackageId,jdbcType=BIGINT},
+			</if>
+			<if test="status != null  ">
+				`STATUS` = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="deleted != null  ">
+				`DELETED` = #{deleted,jdbcType=TINYINT},
+			</if>
+			`UPDATE_TIME` = now(),			
+			<if test="updateUser != null  ">
+				`UPDATE_USER` = #{updateUser,jdbcType=BIGINT}
+			</if>
+		</set>
+		where `ID` =#{id}
+	</update>
+</mapper>

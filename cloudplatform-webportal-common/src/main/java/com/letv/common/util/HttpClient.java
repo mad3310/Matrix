@@ -1,6 +1,7 @@
 package com.letv.common.util;
 
 import com.mysql.jdbc.StringUtils;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,12 +55,13 @@ public class HttpClient {
 
 	public static String post(String url, Map<String, String> params,
 			String username, String password) {
-		return post(url,params,0,0,username,password);
+		return post(url, params, 0, 0, username, password);
 	}
-    public static String post(String url, Map<String, String> params,
-                              int connectionTimeout, int soTimeout) {
-        return post(url,params,connectionTimeout,soTimeout,null,null);
-    }
+
+	public static String post(String url, Map<String, String> params,
+			int connectionTimeout, int soTimeout) {
+		return post(url, params, connectionTimeout, soTimeout, null, null);
+	}
 
 	public static String post(String url, Map<String, String> params,
 			int connectionTimeout, int soTimeout, String username,
@@ -95,67 +98,77 @@ public class HttpClient {
 		return body;
 	}
 
-    public static String put(String url,Map<String, String> params) {
-        return put(url,params, null, null);
-    }
-    public static String put(String url, Map<String, String> params,String username, String password) {
-        return put(url,params, 0, 0, username, password);
-    }
-    public static String put(String url,Map<String, String> params, int connectionTimeout, int soTimeout) {
-        return put(url, params,connectionTimeout, soTimeout, null, null);
-    }
-    public static String put(String url,Map<String, String> params,int connectionTimeout,int soTimeout,String username,String password) {
-        DefaultHttpClient httpclient = getHttpclient(connectionTimeout,
-                soTimeout, username, password);
-        String body;
+	public static String put(String url, Map<String, String> params) {
+		return put(url, params, null, null);
+	}
 
-        logger.info("create httpput:" + url);
-        HttpPut put = putForm(url,params);
-        body = invoke(httpclient, put);
-        httpclient.getConnectionManager().shutdown();
-        return body;
-    }
+	public static String put(String url, Map<String, String> params,
+			String username, String password) {
+		return put(url, params, 0, 0, username, password);
+	}
 
+	public static String put(String url, Map<String, String> params,
+			int connectionTimeout, int soTimeout) {
+		return put(url, params, connectionTimeout, soTimeout, null, null);
+	}
+
+	public static String put(String url, Map<String, String> params,
+			int connectionTimeout, int soTimeout, String username,
+			String password) {
+		DefaultHttpClient httpclient = getHttpclient(connectionTimeout,
+				soTimeout, username, password);
+		String body;
+
+		logger.info("create httpput:" + url);
+		HttpPut put = putForm(url, params);
+		body = invoke(httpclient, put);
+		httpclient.getConnectionManager().shutdown();
+		return body;
+	}
 
 	public static String get(String url) {
 		return get(url, null, null);
 	}
 
 	public static String get(String url, String username, String password) {
-		return get(url,0,0,username,password);
+		return get(url, 0, 0, username, password);
 	}
 
-    public static String get(String url, int connectionTimeout, int soTimeout) {
-        return get(url, connectionTimeout, soTimeout, null, null);
-    }
-    
-    /**
-     * 单独传入参数的get请求调用
-     * @param url 不带任何参数的url
-     * @param params 请求参数
-     * @param connectionTimeout 
-     * @param soTimeout
-     * @return
-     * add by lisuxiao 2016-05-09
-     */
-    public static String get(String url, Map<String, String> params, int connectionTimeout, int soTimeout) {
-    	return get(urlJoinParams(url, params), connectionTimeout, soTimeout, null, null);
-    }
+	public static String get(String url, int connectionTimeout, int soTimeout) {
+		return get(url, connectionTimeout, soTimeout, null, null);
+	}
 
-    public static String get(String url, int connectionTimeout, int soTimeout,
-                             String username, String password) {
-        DefaultHttpClient httpclient = getHttpclient(connectionTimeout,
-                soTimeout, username, password);
-        String body;
+	/**
+	 * 单独传入参数的get请求调用
+	 * 
+	 * @param url
+	 *            不带任何参数的url
+	 * @param params
+	 *            请求参数
+	 * @param connectionTimeout
+	 * @param soTimeout
+	 * @return add by lisuxiao 2016-05-09
+	 */
+	public static String get(String url, Map<String, String> params,
+			int connectionTimeout, int soTimeout) {
+		return get(urlJoinParams(url, params), connectionTimeout, soTimeout,
+				null, null);
+	}
 
-        logger.info("create httpget:" + url);
-        HttpGet get = new HttpGet(url);
-        body = invoke(httpclient, get);
+	public static String get(String url, int connectionTimeout, int soTimeout,
+			String username, String password) {
+		DefaultHttpClient httpclient = getHttpclient(connectionTimeout,
+				soTimeout, username, password);
+		String body;
 
-        httpclient.getConnectionManager().shutdown();
+		logger.info("create httpget:" + url);
+		HttpGet get = new HttpGet(url);
+		body = invoke(httpclient, get);
 
-        return body;
-    }
+		httpclient.getConnectionManager().shutdown();
+
+		return body;
+	}
 
 	public static String detele(String url, String username, String password) {
 		DefaultHttpClient httpclient = getHttpclient(username, password);
@@ -166,40 +179,52 @@ public class HttpClient {
 		httpclient.getConnectionManager().shutdown();
 		return body;
 	}
-	public static String detele(String url, Map<String, String> params,String username, String password) {
+
+	public static String detele(String url, Map<String, String> params,
+			String username, String password) {
 		DefaultHttpClient httpclient = getHttpclient(username, password);
 		String body;
-        logger.info("create HttpDeleteWithBody:" + url);
-        HttpDeleteWithBody deleteWithBody = deleteForm(url, params);
-        body = invoke(httpclient, deleteWithBody);
-        httpclient.getConnectionManager().shutdown();
-        return body;
+		logger.info("create HttpDeleteWithBody:" + url);
+		HttpDeleteWithBody deleteWithBody = deleteForm(url, params);
+		body = invoke(httpclient, deleteWithBody);
+		httpclient.getConnectionManager().shutdown();
+		return body;
 	}
-	
+
 	/**
 	 * 根据传入的url和参数拼接get请求路径
-	 * @param url 不带任何参数的url
-	 * @param params 请求参数
-	 * @return
-	 * add by lisuxiao 2016-05-09
+	 * 
+	 * @param url
+	 *            不带任何参数的url
+	 * @param params
+	 *            请求参数
+	 * @return add by lisuxiao 2016-05-09
 	 */
 	private static String urlJoinParams(String url, Map<String, String> params) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(url);
 		buffer.append("?");
 		Set<Entry<String, String>> entrys = params.entrySet();
-		for(Map.Entry<String, String> entry : entrys) {
+		for (Map.Entry<String, String> entry : entrys) {
 			buffer.append(entry.getKey()).append("=").append(entry.getValue());
 			buffer.append("&");
 		}
 		buffer.deleteCharAt(buffer.lastIndexOf("&"));
 		return buffer.toString();
 	}
-	
+
 	private static String invoke(DefaultHttpClient httpclient,
 			HttpUriRequest httpost) {
-		HttpResponse response = sendRequest(httpclient, httpost);
-		String body = paseResponse(response);
+		HttpResponse response = null;
+		String body = null;
+		try {
+			response = sendRequest(httpclient, httpost);
+			body = paseResponse(response);
+		} catch (IOException e) {
+			body = MessageFormat
+					.format("{\"meta\": {\"code\": 400}, \"response\": {\"error_code\": \"{0}\", \"errorDetail\": \"{1}\"}}",
+							e.getMessage(), e.getMessage());
+		}
 		return body;
 	}
 
@@ -213,7 +238,7 @@ public class HttpClient {
 
 		logger.info("response status: " + response.getStatusLine());
 		String charset = EntityUtils.getContentCharSet(entity);
-		if(null != charset) {
+		if (null != charset) {
 			logger.info(charset);
 		}
 
@@ -231,17 +256,12 @@ public class HttpClient {
 	}
 
 	private static HttpResponse sendRequest(DefaultHttpClient httpclient,
-			HttpUriRequest httpost) {
+			HttpUriRequest httpost) throws ClientProtocolException, IOException {
 		logger.info("execute post...");
-		HttpResponse response = null;
-
-		try {
-			response = httpclient.execute(httpost);
-		} catch (ClientProtocolException e) {
-		} catch (IOException e) {
-		}
+		HttpResponse response = httpclient.execute(httpost);
 		return response;
 	}
+
 	private static HttpPost postForm(String url, Map<String, String> params) {
 		HttpPost httpost = new HttpPost(url);
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
@@ -285,7 +305,9 @@ public class HttpClient {
 
 		return httpput;
 	}
-	private static HttpDeleteWithBody deleteForm(String url, Map<String, String> params) {
+
+	private static HttpDeleteWithBody deleteForm(String url,
+			Map<String, String> params) {
 		HttpDeleteWithBody deleteWithBody = new HttpDeleteWithBody(url);
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 
@@ -299,7 +321,8 @@ public class HttpClient {
 
 		try {
 			logger.info("set utf-8 form entity to httppost");
-			deleteWithBody.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+			deleteWithBody
+					.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -307,12 +330,12 @@ public class HttpClient {
 		return deleteWithBody;
 	}
 
-    private static DefaultHttpClient getHttpclient(String username,
-                                                   String password) {
-        return getHttpclient(0,0,username,password);
-    }
+	private static DefaultHttpClient getHttpclient(String username,
+			String password) {
+		return getHttpclient(0, 0, username, password);
+	}
 
-    private static DefaultHttpClient getHttpclient(int connectionTimeout,
+	private static DefaultHttpClient getHttpclient(int connectionTimeout,
 			int soTimeout, String username, String password) {
 
 		DefaultHttpClient httpclient = new DefaultHttpClient();
@@ -323,14 +346,15 @@ public class HttpClient {
 			credsProvider.setCredentials(AuthScope.ANY, usernamePassword);
 			httpclient.setCredentialsProvider(credsProvider);
 		}
-        if(0!=connectionTimeout) {
-		/*
-		 * 设置超时时间
-		 */
-            HttpParams params = httpclient.getParams();
-            HttpConnectionParams.setConnectionTimeout(params, connectionTimeout);
-            HttpConnectionParams.setSoTimeout(params, soTimeout);
-        }
+		if (0 != connectionTimeout) {
+			/*
+			 * 设置超时时间
+			 */
+			HttpParams params = httpclient.getParams();
+			HttpConnectionParams
+					.setConnectionTimeout(params, connectionTimeout);
+			HttpConnectionParams.setSoTimeout(params, soTimeout);
+		}
 
 		/*
 		 * 设置重试策略

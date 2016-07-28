@@ -86,6 +86,7 @@
 										<option value="CBASE">CBASE</option>
 										<option value="OSS">OSS</option>
 										<option value="LOG">LOG</option>
+										<option value="ES">ES</option>
 										<!-- <option value="消息中间件">消息中间件</option> -->
 									</select>
 								</div>

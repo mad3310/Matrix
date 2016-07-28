@@ -1,27 +1,32 @@
 package com.letv.portal.model.task.service;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-import com.letv.common.exception.ValidateException;
-import com.letv.portal.model.common.ZookeeperInfo;
-import com.letv.portal.service.common.IZookeeperInfoService;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.SchedulingTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.email.bean.MailMessage;
+import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.portal.constant.Constant;
 import com.letv.portal.model.UserModel;
+import com.letv.portal.model.common.ZookeeperInfo;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.service.IUserService;
+import com.letv.portal.service.common.IZookeeperInfoService;
 
 @Component("baseTaskService")
 public  class BaseTaskServiceImpl implements IBaseTaskService{
@@ -30,6 +35,8 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	private String SERVICE_NOTICE_MAIL_ADDRESS;
 	@Autowired
 	private ITemplateMessageSender defaultEmailSender;
+	@Autowired
+	private SchedulingTaskExecutor threadPoolTaskExecutor;
 
 	@Autowired
 	private IUserService userService;
@@ -66,7 +73,7 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	public TaskResult analyzeRestServiceResult(ApiResultObject resultObject){
 		TaskResult tr = new TaskResult();
 		Map<String, Object> map = transToMap(resultObject.getResult());
-		if(map == null) {
+		if(CollectionUtils.isEmpty(map)) {
 			tr.setSuccess(false);
 			tr.setResult("api connect failed:" + resultObject.getUrl());
 			return tr;
@@ -85,7 +92,33 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		return tr;
 		
 	}
-	
+	@Override
+	@SuppressWarnings("unchecked")
+	public TaskResult analyzeComplexRestServiceResult(ApiResultObject resultObject){
+		TaskResult tr = new TaskResult();
+		Map<String, Object> map = transToMap(resultObject.getResult());
+		if(CollectionUtils.isEmpty(map)) {
+			tr.setSuccess(false);
+			tr.setResult("api connect failed");
+			return tr;
+		}
+		Map<String,Object> meta = (Map<String, Object>) map.get("meta");
+		Map<String,Object> response = null;
+		//如果meta的code为200，再判断response的code
+		boolean isSucess = Constant.PYTHON_API_RESPONSE_SUCCESS.equals(String.valueOf(meta.get("code")));
+		if(isSucess) {
+			response = (Map<String, Object>) map.get("response");
+			isSucess = Constant.PYTHON_API_RESULT_SUCCESS.equals(String.valueOf(response.get("code")));
+		}
+		if(isSucess) {
+			tr.setResult((String) response.get("message"));
+			tr.setParams(response);
+		} else {
+			tr.setResult((String) meta.get("errorType") +",the api url:" + resultObject.getUrl());
+		}
+		tr.setSuccess(isSucess);
+		return tr;
+	}
 	public void buildResultToMgr(String buildType,String result,String detail,String to){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("buildType", buildType);
@@ -147,7 +180,8 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 		if(zks == null || zks.size()!=number)
 			throw new ValidateException("zk numbers not sufficient");
 		for (ZookeeperInfo zk : zks) {
-			this.zookeeperInfoService.plusOneUsedByZookeeperId(zk.getId());
+			zk.setUsed(zk.getUsed()+1);
+			this.zookeeperInfoService.updateBySelective(zk);
 		}
 		return zks;
 	}
@@ -165,5 +199,148 @@ public  class BaseTaskServiceImpl implements IBaseTaskService{
 	@Override
 	public void beforExecute(Map<String, Object> params) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public TaskResult polling(TaskResult tr, long interval, long timeout,Object... params) throws InterruptedException {
+		// 返回结果
+		ApiResultObject resultObject = null;
+		long beginTime = System.currentTimeMillis();
+		tr.setSuccess(false);
+		while (!tr.isSuccess()) {
+			// 循环的第一次肯定不会进该if，因为代码开头Assert.isTrue过，所以resultObject.url必然在轮训后有值
+			if (System.currentTimeMillis() - beginTime > timeout) {
+				tr.setSuccess(false);
+				tr.setResult("check time over:" + resultObject.getUrl());
+				break;
+			} else {
+				resultObject = pollingTask(params);
+				tr = analyzeComplexRestServiceResult(resultObject);
+			}
+			Thread.sleep(interval);
+		}
+		return tr;
+	}
+
+	@Override
+	public ApiResultObject pollingTask(Object... params) {
+		return null;
+	}
+	
+	public TaskResult asynchroExecuteTasks(List<Task> tasks,TaskResult tr) {
+		if(!tr.isSuccess())
+			return tr;
+		if(CollectionUtils.isEmpty(tasks)){
+			tr.setSuccess(false);
+			tr.setResult("there is no available tasks");
+			return tr;
+		}
+		for(Task task:tasks){
+			Object obj = task.onExec();
+			if(obj == null){
+				tr.setSuccess(false);
+				tr.setResult("Gets the Task object's execute method returns a value is null");
+				return tr;
+			}
+			ApiResultObject apiResult = null;
+			if(obj instanceof ApiResultObject){
+				apiResult = (ApiResultObject) obj;
+				tr = analyzeRestServiceResult(apiResult);
+			}else if(obj instanceof TaskResult){
+				tr = (TaskResult) obj;
+			}else{
+				tr.setSuccess(false);
+				tr.setResult("Gets the Task object's execute method returns a value is invalid");
+				return tr;
+			}
+			if(!tr.isSuccess()) {
+				tr.setSuccess(false);
+				tr.setResult(MessageFormat.format("the {0} error:{1}",apiResult.getUrl(),tr.getResult()));
+				return tr;
+			}else{
+				task.onSuccess(tr);
+			}
+		}
+		return tr;
+	}
+	@Override
+	public TaskResult synchroExecuteTasks(List<Task> tasks,TaskResult tr) {
+		if(!tr.isSuccess())
+			return tr;
+		if(CollectionUtils.isEmpty(tasks)){
+			tr.setSuccess(false);
+			tr.setResult("there is no available tasks");
+			return tr;
+		}
+		//是否继续
+		boolean isContinue = true;
+		Map<Future,Task> onions = new HashMap<Future, IBaseTaskService.Task>();
+		for(Task task:tasks){
+			//使用全局线程池
+			Future future = threadPoolTaskExecutor.submit(task);
+			onions.put(future, task);
+		}
+		OUT:
+		while(isContinue){
+			IUT:
+			for(Future future:onions.keySet()){
+				if(future.isDone()){
+					Object obj = null;
+					try {
+						obj = future.get();
+						//apiResult = (ApiResultObject) future.get();
+					} catch (InterruptedException | ExecutionException e) {
+						tr.setSuccess(false);
+						tr.setResult("Gets the Task object's execute method returns a value failed:"+e.getMessage());
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
+					if(obj == null){
+						tr.setSuccess(false);
+						tr.setResult("Gets the Task object's execute method returns a value is null");
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
+					ApiResultObject apiResult = null;
+					if(obj instanceof ApiResultObject){
+						apiResult = (ApiResultObject) obj;
+						tr = analyzeRestServiceResult(apiResult);
+					}else if(obj instanceof TaskResult){
+						tr = (TaskResult) obj;
+					}else{
+						tr.setSuccess(false);
+						tr.setResult("Gets the Task object's execute method returns a value is invalid");
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}
+					if(!tr.isSuccess()) {
+						tr.setSuccess(false);
+						tr.setResult(MessageFormat.format("the {0} error:{1}",apiResult.getUrl(),tr.getResult()));
+						isContinue = false;
+						//终止后续任务工作
+						break OUT;
+					}else{
+						//成功后执行回调
+						onions.get(future).onSuccess(tr);
+					}
+					onions.remove(future);
+					break IUT;
+				}
+			}
+			if(onions.size()<=0){
+				isContinue = false;
+				break OUT;
+			}
+		}
+		//如果有未完成任务，或者正在进行任务，直接终止其继续执行
+		if(!CollectionUtils.isEmpty(onions)){
+			for(Future future:onions.keySet()){
+				future.cancel(true);
+			}
+		}
+		return tr;
 	}
 }
