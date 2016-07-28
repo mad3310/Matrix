@@ -438,8 +438,7 @@ public class MonitorServiceImpl extends BaseServiceImpl<MonitorDetailModel> impl
 			now.add(Calendar.HOUR, -24);  // one day ago
 			break;
 		case 4:
-//			now.add(Calendar.HOUR, -168); // one week ago
-			now.add(Calendar.HOUR, -120); // one week ago
+			now.add(Calendar.HOUR, -168); // one week ago
 			break;
 		case 5:
 			now.add(Calendar.MONTH, -1); // one month ago
