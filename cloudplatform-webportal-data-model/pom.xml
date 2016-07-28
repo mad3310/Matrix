@@ -216,6 +216,12 @@
 		         </exclusion>  
         	</exclusions>
 	        </dependency>
+	        <!-- 添加AWS S3工具类用到  TODO 应该统一管理各个应用的版本，统一引用 -->
+	        <dependency>
+	        	<groupId>com.letv.cloudplatform</groupId>
+	        	<artifactId>webportal-common</artifactId>
+        		<version>1.0-SNAPSHOT</version>
+	        </dependency>
     </dependencies>
 
 </project>

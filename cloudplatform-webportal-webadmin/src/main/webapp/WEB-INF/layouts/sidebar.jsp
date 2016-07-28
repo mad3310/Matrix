@@ -63,7 +63,8 @@
                 <li id="sidebar-monitor-mgr">
                     <a class="dropdown-toggle" href="#"><i></i><span class="menu-text">监控管理 </span><b class="arrow fa fa-angle-down"></b></a>
                     <ul class="submenu">
-                        <li><a href="${ctx}/view/mcluster/monitor"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">container集群监控图</span></a><b class="arrow"></b></li>
+                        <li><a href="${ctx}/view/mcluster/monitor/res"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">container基础资源监控</span></a><b class="arrow"></b></li>
+                        <li><a href="${ctx}/view/mcluster/monitor"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">mcluster指标监控</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/view/mcluster/monitor/topN"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">container集群TopN监控图</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/list/rds/node/health"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">rds健康监控</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/list/rds/node/resource"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">rds资源监控</span></a><b class="arrow"></b></li>

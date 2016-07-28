@@ -460,6 +460,34 @@
                 <version>1.5.1</version>
             </dependency>
 			
+			<!-- AWS 3S 相关 Lynzabo begin -->
+			<dependency>
+				<groupId>aws-java-sdk</groupId>
+				<artifactId>aws-java-sdk</artifactId>
+				<version>1.4.7</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>1.1.3</version>
+			</dependency>
+			<!-- jclouds OpenStack 已经包含 -->
+<!-- 			<dependency> -->
+<!-- 				<groupId>commons-codec</groupId> -->
+<!-- 				<artifactId>commons-codec</artifactId> -->
+<!-- 				<version>1.6</version> -->
+<!-- 			</dependency> -->
+			<dependency>
+				<groupId>httpclient</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.3</version>
+			</dependency>
+			<dependency>
+				<groupId>httpcore</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>4.3</version>
+			</dependency>
+			<!-- AWS 3S 相关 Lynzabo  end -->
         </dependencies>
     </dependencyManagement>
 
@@ -645,8 +673,8 @@
                 <webportal.admin.http>http://127.0.0.1:8080</webportal.admin.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
-                <webportal.errormail.to></webportal.errormail.to>
-                <service.notice.email.to></service.notice.email.to>
+                <webportal.errormail.to>linzhanbo@le.com</webportal.errormail.to>
+                <service.notice.email.to>linzhanbo@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>D:</webportal.log.path>
@@ -660,6 +688,8 @@
                 <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
                 <fixedpush.manageip.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/manageip</fixedpush.manageip.url>
                 <fixedpush.manageip.token>5e667298ecd46919d198ebe049d43d33</fixedpush.manageip.token>
+                <fixedpush.checkall.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
+                <fixedpush.checkall.token>adb8871899142bdcef54fa7c39fe9a9b</fixedpush.checkall.token>
 
                 <zabbix.post.url>http://10.200.90.51/zabbix_test/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -688,6 +718,21 @@
                 <openstack.neutron.network.user.private.subnet.name>__user_private_network_subnet</openstack.neutron.network.user.private.subnet.name>
                 <openstack.neutron.network.user.private.subnet.cidr>192.168.1.0/24</openstack.neutron.network.user.private.subnet.cidr>
                 <openstack.neutron.router.user.private.name>__user_private_router</openstack.neutron.router.user.private.name>
+            
+            	<!-- GCE dynamic allocation -->
+            	<matrix.gce.file.default.local>d:/webportal</matrix.gce.file.default.local>
+            	<matrix.gce.awss3.endpoint>http://s3.lecloud.com</matrix.gce.awss3.endpoint>
+            	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
+            	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
+            	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
+            	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
+            	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
+            	<matrix.gce.mirror.build.check.interval>3000</matrix.gce.mirror.build.check.interval>
+            	<matrix.gce.mirror.build.check.timeout>300000</matrix.gce.mirror.build.check.timeout>
+            	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
+            	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
+            	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             </properties>
         </profile>
 
@@ -725,8 +770,8 @@
                 <webportal.api.http>http://10.150.149.31:8080</webportal.api.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
-                <webportal.errormail.to>lisuxiao@letv.com</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com</service.notice.email.to>
+                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com</webportal.errormail.to>
+                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -740,6 +785,8 @@
                 <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
                 <fixedpush.manageip.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/manageip</fixedpush.manageip.url>
                 <fixedpush.manageip.token>5e667298ecd46919d198ebe049d43d33</fixedpush.manageip.token>
+                <fixedpush.checkall.url>http://lingshu.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
+                <fixedpush.checkall.token>0fd7e2409a518e8d0ecc7a34f56e9477</fixedpush.checkall.token>
 
                 <zabbix.post.url>http://10.200.90.51/zabbix_test/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -768,6 +815,21 @@
                 <openstack.neutron.network.user.private.subnet.name>__user_private_network_subnet</openstack.neutron.network.user.private.subnet.name>
                 <openstack.neutron.network.user.private.subnet.cidr>192.168.1.0/24</openstack.neutron.network.user.private.subnet.cidr>
                 <openstack.neutron.router.user.private.name>__user_private_router</openstack.neutron.router.user.private.name>
+            
+            	<!-- GCE dynamic allocation -->
+            	<matrix.gce.file.default.local>/tmp/gceFile</matrix.gce.file.default.local>
+            	<matrix.gce.awss3.endpoint>http://s3.lecloud.com</matrix.gce.awss3.endpoint>
+            	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
+            	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
+            	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
+            	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
+            	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
+            	<matrix.gce.mirror.build.check.interval>3000</matrix.gce.mirror.build.check.interval>
+            	<matrix.gce.mirror.build.check.timeout>300000</matrix.gce.mirror.build.check.timeout>
+            	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
+            	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
+            	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             </properties>
         </profile>
 
@@ -805,8 +867,8 @@
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
+                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
+                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -820,6 +882,8 @@
                 <fixedpush.del.token>8264dba692c861581c9df95c91ba5606</fixedpush.del.token>
                 <fixedpush.manageip.url>http://lingshu.letv.cn/cmdb/cmdbapi/manageip</fixedpush.manageip.url>
                 <fixedpush.manageip.token>c5c71d37f4093f165f4b620bb712d157</fixedpush.manageip.token>
+                <fixedpush.checkall.url>http://lingshu.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
+                <fixedpush.checkall.token>0fd7e2409a518e8d0ecc7a34f56e9477</fixedpush.checkall.token>
 
                 <zabbix.post.url>http://10.0.51.13/zabbix/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -848,6 +912,21 @@
                 <openstack.neutron.network.user.private.subnet.name>__matrix_user_private_network_subnet</openstack.neutron.network.user.private.subnet.name>
                 <openstack.neutron.network.user.private.subnet.cidr>192.168.1.0/24</openstack.neutron.network.user.private.subnet.cidr>
                 <openstack.neutron.router.user.private.name>__matrix_user_private_router</openstack.neutron.router.user.private.name>
+            
+            	<!-- GCE dynamic allocation -->
+            	<matrix.gce.file.default.local>/tmp/gceFile</matrix.gce.file.default.local>
+            	<matrix.gce.awss3.endpoint>http://s3.lecloud.com</matrix.gce.awss3.endpoint>
+            	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
+            	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
+            	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
+            	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
+            	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
+            	<matrix.gce.mirror.build.check.interval>3000</matrix.gce.mirror.build.check.interval>
+            	<matrix.gce.mirror.build.check.timeout>300000</matrix.gce.mirror.build.check.timeout>
+            	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
+            	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
+            	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             </properties>
         </profile>
         <profile>
@@ -882,8 +961,8 @@
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
+                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
+                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -897,6 +976,8 @@
                 <fixedpush.del.token>8264dba692c861581c9df95c91ba5606</fixedpush.del.token>
                 <fixedpush.manageip.url>http://lingshu.letv.cn/cmdb/cmdbapi/manageip</fixedpush.manageip.url>
                 <fixedpush.manageip.token>c5c71d37f4093f165f4b620bb712d157</fixedpush.manageip.token>
+                <fixedpush.checkall.url>http://lingshu.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
+                <fixedpush.checkall.token>0fd7e2409a518e8d0ecc7a34f56e9477</fixedpush.checkall.token>
 
                 <zabbix.post.url>http://10.0.51.13/zabbix/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -925,6 +1006,21 @@
                 <openstack.neutron.network.user.private.subnet.name>__matrix_user_private_network_subnet</openstack.neutron.network.user.private.subnet.name>
                 <openstack.neutron.network.user.private.subnet.cidr>192.168.1.0/24</openstack.neutron.network.user.private.subnet.cidr>
                 <openstack.neutron.router.user.private.name>__matrix_user_private_router</openstack.neutron.router.user.private.name>
+            
+            	<!-- GCE dynamic allocation -->
+            	<matrix.gce.file.default.local>/tmp/gceFile</matrix.gce.file.default.local>
+            	<matrix.gce.awss3.endpoint>http://s3.lecloud.com</matrix.gce.awss3.endpoint>
+            	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
+            	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
+            	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
+            	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
+            	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
+            	<matrix.gce.mirror.build.check.interval>3000</matrix.gce.mirror.build.check.interval>
+            	<matrix.gce.mirror.build.check.timeout>300000</matrix.gce.mirror.build.check.timeout>
+            	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
+            	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
+            	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             </properties>
         </profile>
         <profile>
@@ -959,8 +1055,8 @@
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
+                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
+                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -974,6 +1070,8 @@
                 <fixedpush.del.token>8264dba692c861581c9df95c91ba5606</fixedpush.del.token>
                 <fixedpush.manageip.url>http://lingshu.letv.cn/cmdb/cmdbapi/manageip</fixedpush.manageip.url>
                 <fixedpush.manageip.token>c5c71d37f4093f165f4b620bb712d157</fixedpush.manageip.token>
+                <fixedpush.checkall.url>http://lingshu.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
+                <fixedpush.checkall.token>0fd7e2409a518e8d0ecc7a34f56e9477</fixedpush.checkall.token>
 
                 <zabbix.post.url>http://10.0.51.13/zabbix/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -1002,6 +1100,21 @@
                 <openstack.neutron.network.user.private.subnet.name>__matrix_user_private_network_subnet</openstack.neutron.network.user.private.subnet.name>
                 <openstack.neutron.network.user.private.subnet.cidr>192.168.1.0/24</openstack.neutron.network.user.private.subnet.cidr>
                 <openstack.neutron.router.user.private.name>__matrix_user_private_router</openstack.neutron.router.user.private.name>
+            
+            	<!-- GCE dynamic allocation -->
+            	<matrix.gce.file.default.local>/tmp/gceFile</matrix.gce.file.default.local>
+            	<matrix.gce.awss3.endpoint>http://s3.lecloud.com</matrix.gce.awss3.endpoint>
+            	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
+            	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
+            	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
+            	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
+            	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
+            	<matrix.gce.mirror.build.check.interval>3000</matrix.gce.mirror.build.check.interval>
+            	<matrix.gce.mirror.build.check.timeout>300000</matrix.gce.mirror.build.check.timeout>
+            	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
+            	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
+            	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             </properties>
         </profile>
         <profile>
@@ -1036,8 +1149,8 @@
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>lisuxiao@letv.com;zhoubingzheng@letv.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@letv.com;zhangzeng@letv.com;zhoubingzheng@letv.com;wulicheng@letv.com;gaoqiang3@letv.com;zhangchengqiang@le.com</service.notice.email.to>
+                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
+                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1051,6 +1164,8 @@
                 <fixedpush.del.token>8264dba692c861581c9df95c91ba5606</fixedpush.del.token>
                 <fixedpush.manageip.url>http://lingshu.letv.cn/cmdb/cmdbapi/manageip</fixedpush.manageip.url>
                 <fixedpush.manageip.token>c5c71d37f4093f165f4b620bb712d157</fixedpush.manageip.token>
+                <fixedpush.checkall.url>http://lingshu.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
+                <fixedpush.checkall.token>0fd7e2409a518e8d0ecc7a34f56e9477</fixedpush.checkall.token>
 
                 <zabbix.post.url>http://10.0.51.13/zabbix/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -1079,6 +1194,21 @@
                 <openstack.neutron.network.user.private.subnet.name>__matrix_user_private_network_subnet</openstack.neutron.network.user.private.subnet.name>
                 <openstack.neutron.network.user.private.subnet.cidr>192.168.1.0/24</openstack.neutron.network.user.private.subnet.cidr>
                 <openstack.neutron.router.user.private.name>__matrix_user_private_router</openstack.neutron.router.user.private.name>
+            
+            	<!-- GCE dynamic allocation -->
+            	<matrix.gce.file.default.local>/tmp/gceFile</matrix.gce.file.default.local>
+            	<matrix.gce.awss3.endpoint>http://s3.lecloud.com</matrix.gce.awss3.endpoint>
+            	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
+            	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
+            	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
+            	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
+            	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
+            	<matrix.gce.mirror.build.check.interval>3000</matrix.gce.mirror.build.check.interval>
+            	<matrix.gce.mirror.build.check.timeout>300000</matrix.gce.mirror.build.check.timeout>
+            	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
+            	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
+            	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             </properties>
         </profile>
 
