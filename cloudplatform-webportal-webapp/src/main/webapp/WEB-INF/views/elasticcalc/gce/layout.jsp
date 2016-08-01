@@ -33,7 +33,7 @@
 						<span style="display: inline-block;vertical-align:super;">
 							<small id="gceStatus" class="text-success text-xs"></small>
 						</span>
-							<a class="btn btn-default btn-xs" href="${ctx}/list/gce">
+							<a class="btn btn-default btn-xs" href="${ctx}/list/ecgce">
 						<span class="glyphicon glyphicon-step-backward"></span>
 							返回实例列表
 						</a>
@@ -58,10 +58,10 @@
 						<%--<li><a class="text-sm" id = "logUrl" src="" href="javascript:void(0)">服务日志<p class="pull-right home-orange" id="logUrlInst"></p></a></li>--%>
 						 <li><a  class="text-sm" href="javascript:void(0)"><span class="glyphicon glyphicon glyphicon-chevron-right"></span>系统资源监控</a>
 	                        <ul class="nav hide">
-	                            <li><a  class="text-sm" src="${ctx}/monitor/gce/cpu/${ecGce.id}" href="javascript:void(0)">cpu使用率</a></li>
-	                            <li><a  class="text-sm" src="${ctx}/monitor/gce/disk/${ecGce.id}" href="javascript:void(0)">磁盘</a></li>
-	                            <li><a  class="text-sm" src="${ctx}/monitor/gce/memory/${ecGce.id}" href="javascript:void(0)">内存</a></li>
-	                            <li><a  class="text-sm" src="${ctx}/monitor/gce/network/${gceId.id}" href="javascript:void(0)">网络</a></li>
+	                            <li><a  class="text-sm" src="${ctx}/monitor/ecgce/cpu/${ecGce.id}" href="javascript:void(0)">cpu使用率</a></li>
+	                            <li><a  class="text-sm" src="${ctx}/monitor/ecgce/disk/${ecGce.id}" href="javascript:void(0)">磁盘</a></li>
+	                            <li><a  class="text-sm" src="${ctx}/monitor/ecgce/memory/${ecGce.id}" href="javascript:void(0)">内存</a></li>
+	                            <li><a  class="text-sm" src="${ctx}/monitor/ecgce/network/${ecGce.id}" href="javascript:void(0)">网络</a></li>
 	                        </ul>
 	                    </li>
 					</ul>

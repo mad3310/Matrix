@@ -14,7 +14,7 @@
 	<!-- bootstrapValidator-->
 	<link type="text/css" rel="stylesheet" href="${ctx}/static/css/bootstrapValidator.css"/>
 
-	<title>RDS账户管理</title>
+	<title>GCE版本管理</title>
 </head>
 
 <body>
@@ -25,14 +25,14 @@
 <div id="accountList" class="m-pr10" role="tablist" aria-multiselectable="true">
 	<div class="se-heading" id="headingOne">
 		<div class="pull-left">
-			<h5>账号管理</h5>
+			<h5>版本管理</h5>
 		</div>
 		<div class="pull-right hidden-xs">
 			<button id="refresh" class="btn btn-default">
 				<span class="glyphicon glyphicon-refresh"></span>
 				刷新
 			</button>
-			<button class="btn btn-primary toCreateAccount">上传镜像</button>
+			<button class="btn btn-primary" id="uploadImage">上传镜像</button>
 		</div>
 	</div>
 	<div class="table-responsive">

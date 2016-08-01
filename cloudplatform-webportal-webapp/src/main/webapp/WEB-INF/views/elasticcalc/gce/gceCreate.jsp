@@ -180,11 +180,11 @@
 																	<ul>
 																	<!-- <li class="bk-select-option"><a href="javascript:;" selectid="PYTHON">python</a></li>
 																	<li class="bk-select-option"><a href="javascript:;" selectid="PHP">php</a></li> -->
-																	<li class="bk-select-option"><a href="javascript:;" selectid="JETTY">java</a></li>
-																	<li class="bk-select-option"><a href="javascript:;" selectid="TOMCAT">tomcat</a></li>
-																	<li class="bk-select-option"><a href="javascript:;" selectid="RESIN">resin</a></li>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="tomcat">tomcat</a></li>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="jetty">java</a></li>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="resin">resin</a></li>
 																	</ul>
-																	<input name="type" type="hidden" value="JETTY" />
+																	<input name="type" type="hidden" value="tomcat" />
 																</div>
 														</span>
 														</span> <span class="bk-select-arrow"></span>
@@ -291,34 +291,24 @@
 										<div class="bk-form-row">
 											<label class="bk-form-row-name">数量：</label>
 											<div class="bk-form-row-cell">
-												<div class="bk-form-row-li">
-													<!-- <span class="bk-number"> 
-														<input type="text" onfocus="this.blur()" class="bk-number-input" name="buyNum" value="2"> 
-														<span class="bk-number-unit">台</span> 
-														<span class="bk-number-control"> 
-															<span class="bk-number-up bk-number-disabled hide"> <i class="bk-number-arrow"></i>
-														</span> 
-														<span class="bk-number-up"> <i class="bk-number-arrow"></i>
-														</span> 
-														<span class="bk-number-down"> <i class="bk-number-arrow"></i>
-														</span> 
-													</span>
-													</span> -->
-													<div class="bk-buttontab">
-														<input name="buyNum" type="text" class="hide" value="2">
-														<button class=" bk-button bk-button-primary " value="1">
-															<div>
-																<span>1台</span>
+												<div class="bk-form-row-li clearfix">
+													<div class="pull-left">
+														<span class="sleBG"> <span class="sleHid">
+															<div class="divselect">
+																<span></span>
+																<ul>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="1">1台</a></li>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="2">2台</a></li>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="3">3台</a></li>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="4">4台</a></li>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="5">5台</a></li>
+																</ul>
+																<input name="buyNum" type="hidden" value="1" />
 															</div>
-														</button>
-														<button class="bk-button bk-button-primary bk-button-current" value="2">
-															<div>
-																<span>2台</span>
-															</div>
-														</button>
+														</span>
+														</span> <span class="bk-select-arrow"></span>
 													</div>
 												</div>
-												<div class="bk-form-row-txt">目前只支持1台或2台</div>
 											</div>
 										</div>
 									</dd>

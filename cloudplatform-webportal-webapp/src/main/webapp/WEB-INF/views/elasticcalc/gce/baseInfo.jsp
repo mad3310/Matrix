@@ -51,17 +51,6 @@ td{word-break: break-all; word-wrap:break-word;}</style>
 							</td>
 						</tr>
 						<tr>
-							<td width="50%">
-								<span class="text-muted pd-r8">访问地址:</span><span text-length="26" id="gce_server_addr"></span>
-								<a href="/helpCenter/helpCenter.jsp?container=help-gceAccess"  target="_black" data-toggle="tooltip" data-placement="top" title="点击查看详细介绍">
-									<span class="glyphicon glyphicon-question-sign text-muted" ></span>
-								</a>
-							</td>
-							<td width="50%">
-								<span class="text-muted pd-r8">可用区:</span><span text-length="26" id="gce_info_available_region"></span>
-							</td>
-						</tr>
-						<tr>
 							<td colspan="2">
 								<span class="text-muted pd-r8">应用描述:</span><span text-length="26" id="gce_descn"></span>
 							</td>

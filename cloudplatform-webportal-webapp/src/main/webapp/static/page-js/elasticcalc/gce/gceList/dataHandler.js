@@ -47,7 +47,7 @@ define(function(require,exports,module){
                     var td10 = $("<td width=\"250\">"
                     		+ (array[i].descn?array[i].descn:'')
                     		+"</td>");
-                    var td4 = $("<td class='hidden-xs'><span>"+cn.gceTypeTranslation(array[i].type)+"</span></td>");
+                    var td4 = $("<td class='hidden-xs'><span>"+array[i].type+"</span></td>");
                     var td7="<td class='hidden-xs'></td>";
                     if(array[i].hcluster != undefined && array[i].hcluster != null){
                         var td7 = $("<td class='hidden-xs'>"
