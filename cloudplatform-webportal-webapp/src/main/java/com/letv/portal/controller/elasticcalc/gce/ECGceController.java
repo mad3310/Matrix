@@ -57,7 +57,7 @@ public class ECGceController {
 	public @ResponseBody ResultObject list(Page page,
 			HttpServletRequest request, ResultObject obj) {
 		Map<String, Object> params = HttpUtil.requestParam2Map(request);
-		// params.put("createUser", sessionService.getSession().getUserId());
+		params.put("createUser", sessionService.getSession().getUserId());
 		String gceName = (String) params.get("gceName");
 		if (!StringUtils.isEmpty(gceName))
 			params.put("gceName", StringUtil.transSqlCharacter(gceName));
