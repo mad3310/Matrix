@@ -45,6 +45,23 @@
 			</if>
 		</trim>
 	</sql>
+	<sql id="Example_Page_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="params != null and params.id !=null  ">
+				and ID=#{params.id}
+			</if>
+			<if test="params != null and params.version != null  and params.version != ''">
+				and VERSION=#{params.version}
+			</if>
+			<if test="params != null and params.gceId != null  and params.gceId != ''">
+				and GCE_ID=#{params.gceId}
+			</if>
+			<if test="params != null and params.createUser != null  and params.createUser != ''">
+				and CREATE_USER=#{params.createUser}
+			</if>
+		</trim>
+	</sql>
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
@@ -57,6 +74,24 @@
 		select
 		<include refid="Base_Column_List" />
 		from EC_GCE_PACKAGE
+		<include refid="Example_Where_Clause" />
+	</select>
+	<!-- 分页：根据条件查询 -->
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="com.letv.common.dao.QueryParam">
+		select
+		<include refid="Base_Column_List" />
+		from EC_GCE_PACKAGE
+		<include refid="Example_Page_Where_Clause" />
+		ORDER BY CREATE_TIME DESC
+		<if test="page != null">
+      		limit #{page.startRowPosition},#{page.recordsPerPage}
+    	</if>
+	</select>
+	<!-- 列表总数 -->
+	<select id="selectByMapCount" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		select count(1) from EC_GCE_PACKAGE
 		<include refid="Example_Where_Clause" />
 	</select>
 	<insert id="insert" parameterType="EcGcePackage"

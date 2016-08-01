@@ -1044,11 +1044,11 @@ define(function(require,exports,module){
         },
         gceTypeTranslation:function(type){
             if(type == "JETTY"){
-                return "java";
+                return "JETTY";
             }else if(type == "NGINX"){
-                return "nginx";
-            }else if(type == "NGINX_PROXY"){
-                return "nginx_proxy";
+                return "NGINX";
+            }else if(type == "TOMCAT"){
+                return "TOMCAT";
             }else{
                 return "-";
             }
