@@ -525,7 +525,7 @@
 										</div>
 										<div class="pull-right clearfix">
 											<div class="pull-left product-opt-wrap">
-												<a href="/detail/gceCreate" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
+												<a href="/detail/ecgceCreate" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
 													<span id="gce-purchase" class="glyphicon glyphicon-shopping-cart product-opt-icon"></span>
 												</a>
 											</div>
