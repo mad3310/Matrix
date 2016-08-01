@@ -32,9 +32,13 @@
 	
 	<insert id="insert" parameterType="BackupResult" useGeneratedKeys="true" keyProperty="id" >
 		insert into
-		WEBPORTAL_TASK_CHAIN_INDEX(TASK_ID,CLUSTER_NAME,SERVICE_NAME,STATUS,START_TIME,END_TIME,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER)
+		WEBPORTAL_TASK_CHAIN_INDEX(TASK_ID,CLUSTER_NAME,SERVICE_NAME,STATUS,DELETED,CREATE_TIME,CREATE_USER)
 		values(
-		#{taskId},#{clusterName},#{serviceName},#{status},#{startTime},#{endTime},#{deleted},#{createTime},#{createUser},#{updateTime},#{updateUser})
+		#{taskId},#{clusterName},#{serviceName},
+		#{status},
+		#{deleted},
+		now(),
+		#{createUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler})
 	</insert>
 	
 	<!-- 查询条件 -->
@@ -85,9 +89,6 @@
 	<update id="updateBySelective" parameterType="TaskChainIndex">
 		update WEBPORTAL_TASK_CHAIN_INDEX
 		<set>
-			<if test="id != null  ">
-				ID=#{id},
-			</if>
 			<if test="taskId != null  ">
 				TASK_ID=#{taskId},
 			</if>
@@ -100,25 +101,20 @@
 			<if test="status != null  ">
 				STATUS=#{status},
 			</if>
+			<!-- 开始流程时赋值 -->
 			<if test="startTime != null  ">
 				START_TIME=#{startTime},
 			</if>
+			<!-- 结束流程或出现异常时赋值 -->
 			<if test="endTime != null  ">
 				END_TIME=#{endTime},
 			</if>
 			<if test="deleted != null  ">
 				DELETED=#{deleted},
 			</if>
-			<if test="createTime != null  ">
-				CREATE_TIME=#{createTime},
-			</if>
-			<if test="createUser != null  ">
-				CREATE_USER=#{createUser},
-			</if>
-				UPDATE_TIME=#{updateTime},
-			<if test="updateUser != null  ">
-				UPDATE_USER=#{updateUser},
-			</if>
+				UPDATE_TIME=now(),
+				<!-- 如果代码中未指定updateUser，则赋默认值，否则按代码中指定updateUser -->
+				UPDATE_USER=#{updateUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler}
 		</set>
 		where ID=#{id}
 	</update>
@@ -155,8 +151,8 @@
 	
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
-		<include refid="Base_Column_List" />
-		from WEBPORTAL_TASK_CHAIN_INDEX tci where tci.id = #{id}
+		<include refid="Base_Column_List" />,tt.NAME,tt.TASK_TYPE,tt.DESCN
+		from WEBPORTAL_TASK_CHAIN_INDEX tci,WEBPORTAL_TEMPLATE_TASK tt where tci.id = #{id} and tci.TASK_ID = tt.ID
 	</select>
 	
 	<!--  分页：根据条件查询 -->

@@ -116,10 +116,7 @@ public class TaskController {
 	public @ResponseBody ResultObject restartTask(Long taskChainId,ResultObject obj) {
 		if(null == taskChainId)
 			throw new ValidateException("参数不合法");
-		/*改为异步*/
-		TaskChain tc = this.taskChainService.selectById(taskChainId);
-    	this.taskEngine.run(tc);
-    	
+		this.taskEngine.proceed(taskChainId);
 		return obj;
 	}
 	/**Methods Name: taskDetail <br>

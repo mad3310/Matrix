@@ -33,17 +33,8 @@ import com.letv.portal.service.elasticcalc.gce.IEcGceService;
 @Component("baseEcGceTaskService")
 public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBaseTaskService{
 
-	@Value("${service.notice.email.to}")
-	private String SERVICE_NOTICE_MAIL_ADDRESS;
-	@Autowired
-	private ITemplateMessageSender defaultEmailSender;
-	
-	@Autowired
-	private IHostService hostService;
 	@Autowired
 	private IEcGceClusterService ecGceClusterService;
-	@Autowired
-	private IUserService userService;
 	@Autowired
 	private IEcGceService gceService;
 	@Autowired
@@ -71,18 +62,33 @@ public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBa
 		}
 	}
 	@Override
-	public TaskResult execute(Map<String, Object> params) throws Exception {
-		TaskResult tr = new TaskResult();
-		if(params == null || params.isEmpty()) {
-			tr.setResult("params is empty");
-			tr.setSuccess(false);
+	public void beforeExecute(Map<String, Object> params) {
+		EcGcePackage gcePackage = this.getGcePackage(params);
+		EcGceCluster cluster = this.getGceCluster(params);
+
+		if(gcePackage.getStatus() != DbStatus.BUILDDING.getValue()) {
+			gcePackage.setStatus(DbStatus.BUILDDING.getValue());
+			gcePackage.setUpdateUser(gcePackage.getCreateUser());
+			this.ecGcePackageService.updateBySelective(gcePackage);
 		}
-		tr.setParams(params);
-		return tr;
+		if(cluster.getStatus() != MclusterStatus.BUILDDING.getValue()) {
+			cluster.setStatus(MclusterStatus.BUILDDING.getValue());
+			cluster.setUpdateUser(cluster.getCreateUser());
+			this.ecGceClusterService.updateBySelective(cluster);
+		}
+	}
+	@Override
+	public TaskResult execute(Map<String, Object> params) throws Exception {
+		return validator(params);
 	}
 
 	@Override
 	public void rollBack(TaskResult tr) {
+		finish(tr);
+	}
+	
+	@Override
+	public void finish(TaskResult tr) {
 		Map<String,Object> params = (Map<String, Object>) tr.getParams();
 		//发送邮件
 		String serverName =  (String) params.get("serviceName");
@@ -90,6 +96,7 @@ public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBa
 		//业务处理
 		this.serviceOver(tr);
 	}
+	
 	private void serviceOver(TaskResult tr) {
 		Map<String, Object> params = (Map<String, Object>) tr.getParams();
 		EcGcePackage gcePackage = this.getGcePackage(params);
@@ -108,41 +115,36 @@ public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBa
 		this.ecGcePackageService.updateBySelective(gcePackage);
 		this.ecGceClusterService.updateBySelective(cluster);
 	}
-
-	@Override
-	public void callBack(TaskResult tr) {
-		
-	}
 	
 	public EcGceImage getGceImage(Map<String, Object> params) {
 		Long gceImageId = getLongFromObject(params.get("gceImageId"));
-		if(gceImageId == null)
+		if(null == gceImageId)
 			throw new ValidateException("params's gceImageId is null");
 		
 		EcGceImage gceImage = this.ecGceImageService.selectById(gceImageId);
-		if(gceImage == null)
+		if(null == gceImage)
 			throw new ValidateException("gceImageService is null by gceImageId:" + gceImageId);
 		return gceImage;
 	}
 
 	public EcGcePackage getGcePackage(Map<String, Object> params) {
 		Long gcePackageId = getLongFromObject(params.get("gcePackageId"));
-		if(gcePackageId == null)
+		if(null == gcePackageId)
 			throw new ValidateException("params's gcePackageId is null");
 		
 		EcGcePackage gcePackage = this.ecGcePackageService.selectById(gcePackageId);
-		if(gcePackage == null)
+		if(null == gcePackage)
 			throw new ValidateException("gcePackageService is null by gcePackageId:" + gcePackageId);
 		return gcePackage;
 	}
 	
 	public EcGce getGce(Map<String, Object> params) {
 		Long gceId = getLongFromObject(params.get("gceId"));
-		if(gceId == null)
+		if(null == gceId)
 			throw new ValidateException("params's gceId is null");
 		
 		EcGce gce = this.gceService.selectById(gceId);
-		if(gce == null)
+		if(null == gce)
 			throw new ValidateException("gceService is null by gceId:" + gceId);
 		return gce;
 	}
@@ -150,23 +152,14 @@ public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBa
 	
 	public EcGceCluster getGceCluster(Map<String, Object> params) {
 		Long gceClusterId = getLongFromObject(params.get("gceClusterId"));
-		if(gceClusterId == null)
+		if(null == gceClusterId)
 			throw new ValidateException("params's gceClusterId is null");
 		
 		EcGceCluster gceCluster = this.ecGceClusterService.selectById(gceClusterId);
-		if(gceCluster == null)
+		if(null == gceCluster)
 			throw new ValidateException("gceCluster is null by gceClusterId:" + gceClusterId);
 		
 		return gceCluster;
 	}
 
-	public HostModel getHost(Long hclusterId) {
-		if(hclusterId == null)
-			throw new ValidateException("hclusterId is null :" + hclusterId);
-		HostModel host = this.hostService.getHostByHclusterId(hclusterId);
-		if(host == null)
-			throw new ValidateException("host is null by hclusterIdId:" + hclusterId);
-		
-		return host;
-	}
 }

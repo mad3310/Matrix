@@ -46,7 +46,7 @@ public class TaskEngineRDS extends AbstractTest{
     @Test
     public void testRun6() {
     	TaskChain tc = this.taskChainService.selectFailedChainByIndex(2L);
-    	this.taskEngine.run(tc);
+    	//this.taskEngine.run(tc);
     }
     
 }
