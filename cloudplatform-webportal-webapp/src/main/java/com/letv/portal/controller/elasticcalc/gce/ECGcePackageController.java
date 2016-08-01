@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.letv.common.exception.ValidateException;
 import com.letv.common.paging.impl.Page;
 import com.letv.common.result.ResultObject;
 import com.letv.common.session.SessionServiceImpl;
@@ -73,7 +74,18 @@ public class ECGcePackageController {
 			return new ResultObject(bindResult.getAllErrors());
 		}
 		gcePackage.setCreateUser(this.sessionService.getSession().getUserId());
-		gceProxy.uploadPackage(file, gcePackage);
+		try{
+			gceProxy.uploadPackage(file, gcePackage);
+		} catch (ValidateException e) {
+			callbackResult.setResult(0);
+			callbackResult.addMsg(e.getMessage());
+			return callbackResult;
+		} catch (Exception e) {
+			logger.error("上传应用部署包失败:" + e.getMessage(),e);
+			callbackResult.setResult(0);
+			callbackResult.addMsg("系统出现异常，请联系系统管理员!");
+			return callbackResult;
+		}
 		callbackResult.setData(gcePackage);
 		logger.debug("上传GCE应用部署包成功! GCE名称:{},版本号:{}", gcePackage.getGceName(),
 				gcePackage.getVersion());

@@ -51,7 +51,7 @@ define(function(require,exports,module){
             	for(var i=0;i<dataArray.length;++i){
                     var version = $("<td width=\"30%\">" + dataArray[i].version + "</td>");
                     var status = $("<td width=\"30%\">" + cn.TranslateStatus(dataArray[i].status) + "</td>");
-                    var createTime = $("<td width=\"40%\">" + dataArray[i].createTime + "</td>");
+                    var createTime = $("<td width=\"40%\">" + cn.RemainAvailableTime(dataArray[i].createTime) + "</td>");
                     var tr = $("<tr class='data-tr'></tr>");
                     tr.append(version).append(status).append(createTime);
                     tr.appendTo($tby);
