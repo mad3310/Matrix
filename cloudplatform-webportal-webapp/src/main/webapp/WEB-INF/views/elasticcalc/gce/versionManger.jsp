@@ -66,7 +66,7 @@
 </div>
 
 <!--上传镜像-->
-<div id="reset-password-box" class="modal">
+<div id="upload-image-box" class="modal">
 	<div class="modal-dialog modal-md" style="left: -120px; display: block;">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -75,7 +75,7 @@
 				</button>
 				<h5 id="reset-password-box-title" class="modal-title">上传镜像</h5>
 			</div>
-			<form id="uploadImageForm" role="form" class="form-horizontal" method="post" action="/ecgce/packages/uploadPackage" enctype="multipart/form-data">
+			<form id="uploadImageForm" role="form" class="form-horizontal" method="post" action="/ecgce/packages/uploadPackage" enctype="multipart/form-data" autocomplete="off">
 				<div class="modal-body">
 					<div class="form-group">
 						<label class="col-sm-4 control-label">版本号： </label>

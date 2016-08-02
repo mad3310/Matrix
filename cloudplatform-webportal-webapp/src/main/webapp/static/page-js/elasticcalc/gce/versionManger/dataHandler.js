@@ -20,12 +20,13 @@ define(function(require,exports,module){
                 $("#uploadImageForm").ajaxForm({
                 	success: function (data) {
                 		cn.alertoolSuccess("镜像上传成功",30000);
+                		$('#upload-image-box').modal('hide');
                     },
                     beforeSubmit:function(){
                     	cn.alertoolSuccess("镜像上传中，请勿刷新页面",3000);
                     },
-                    error:function(){
-                    	cn.alertoolDanger("镜像上传失败",3000);
+                    error:function(data){
+                    	cn.alertoolDanger(data.msgs[0],3000);
                     }
                 }); 
             },
@@ -51,7 +52,7 @@ define(function(require,exports,module){
             	for(var i=0;i<dataArray.length;++i){
                     var version = $("<td width=\"30%\">" + dataArray[i].version + "</td>");
                     var status = $("<td width=\"30%\">" + cn.TranslateStatus(dataArray[i].status) + "</td>");
-                    var createTime = $("<td width=\"40%\">" + cn.RemainAvailableTime(dataArray[i].createTime) + "</td>");
+                    var createTime = $("<td width=\"40%\">" + cn.TransDate('Y-m-d H:i:s',dataArray[i].createTime) + "</td>");
                     var tr = $("<tr class='data-tr'></tr>");
                     tr.append(version).append(status).append(createTime);
                     tr.appendTo($tby);

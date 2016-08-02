@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.letv.portal.enumeration.*;
 import com.letv.portal.model.swift.SwiftServer;
 import com.letv.portal.service.cbase.ICbaseClusterService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceService;
 import com.letv.portal.service.gce.IGceClusterService;
 import com.letv.portal.service.slb.ISlbClusterService;
 import org.slf4j.Logger;
@@ -66,6 +67,8 @@ public class DashBoardProxyImpl implements IDashBoardProxy {
 	private ISlbServerService slbServerService;
 	@Autowired
 	private IGceServerService gceServerService;
+	@Autowired
+	private IEcGceService gceService;
 	@Autowired
 	private ICbaseBucketService cbaseBucketService;
 	@Autowired
@@ -294,7 +297,7 @@ public class DashBoardProxyImpl implements IDashBoardProxy {
 		statistics.put("dbFree", dbFree > 0 ? dbFree : 0);
 		statistics.put("dbUser", this.dbUserService.selectByMapCount(map));
 		statistics.put("slb", this.slbServerService.selectByMapCount(map));
-		statistics.put("gce", this.gceServerService.selectByMapCount(map));
+		statistics.put("gce", this.gceService.selectByMapCount(map));
 		statistics.put("cache", this.cbaseBucketService.selectByMapCount(map));
 		statistics.put("oss", this.swiftServerService.selectByMapCount(map));
 		return statistics;

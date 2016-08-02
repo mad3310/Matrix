@@ -51,6 +51,14 @@ td{word-break: break-all; word-wrap:break-word;}</style>
 							</td>
 						</tr>
 						<tr>
+							<td width="50%">
+								<span class="text-muted pd-r8">可用区:</span><span text-length="26" id="hcluster_name"></span>
+							</td>
+							<td width="50%">
+								<span class="text-muted pd-r8">内存:</span><span text-length="26" id="memory_size"></span>
+							</td>
+						</tr>
+						<tr>
 							<td colspan="2">
 								<span class="text-muted pd-r8">应用描述:</span><span text-length="26" id="gce_descn"></span>
 							</td>
