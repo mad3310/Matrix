@@ -34,6 +34,7 @@ import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.enumeration.SlbStatus;
 import com.letv.portal.model.HostModel;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
+import com.letv.portal.model.elasticcalc.gce.EcGceCluster;
 import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 import com.letv.portal.model.elasticcalc.gce.EcGceExt;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
@@ -41,7 +42,6 @@ import com.letv.portal.model.gce.GceCluster;
 import com.letv.portal.model.gce.GceContainer;
 import com.letv.portal.model.gce.GceServer;
 import com.letv.portal.model.gce.GceServerExt;
-import com.letv.portal.model.log.LogCluster;
 import com.letv.portal.model.log.LogServer;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
@@ -51,6 +51,7 @@ import com.letv.portal.python.service.IGcePythonService;
 import com.letv.portal.python.service.IPythonService;
 import com.letv.portal.service.IBaseService;
 import com.letv.portal.service.IHostService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceClusterService;
 import com.letv.portal.service.elasticcalc.gce.IEcGceContainerService;
 import com.letv.portal.service.elasticcalc.gce.IEcGcePackageService;
 import com.letv.portal.service.elasticcalc.gce.IEcGceService;
@@ -73,6 +74,8 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	private IEcGceService ecGceService;
 	@Autowired
 	private IEcGcePackageService ecGcePackageService;
+	@Autowired
+	private IEcGceClusterService ecGceClusterService;
 	@Autowired
 	private IEcGceContainerService ecGceContainerService;
 	
@@ -398,6 +401,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 			}
 		}
 	}
+	
 	@Override
 	public void uploadPackage(MultipartFile file, EcGcePackage gcePackage) {
 		//1.校验该GCE是否存在
@@ -452,6 +456,59 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		removeFileFromLocal(fileName);
 	}
 	
+	@Override
+	public void uploadPackageNoWorkflow(MultipartFile file, EcGcePackage gcePackage) {
+		//1.校验该GCE是否存在
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("gceName", gcePackage.getGceName());
+		exParams.put("createUser", gcePackage.getCreateUser());
+		exParams.put("deleted", false);
+		EcGce gce = null;
+		List<EcGce> list = this.ecGceService.selectByMap(exParams);
+		if(CollectionUtils.isEmpty(list)){
+			throw new ValidateException(MessageFormat.format("{0}应用不存在", gcePackage.getGceName()));
+		}
+		gce = list.get(0);
+		if(gce.getStatus()==GceStatus.NOTAVAILABLE.getValue()){
+			throw new ValidateException(MessageFormat.format("{0}应用不可用", gce.getGceName()));
+		}
+		gcePackage.setGceId(gce.getId());
+		//2.接收文件，保存文件到s3上
+		String fileName = file.getOriginalFilename();
+		String suffix = fileName.substring(fileName.lastIndexOf("."));//.war
+		try {
+			saveFileToLocal(file);
+		} catch (IllegalStateException | IOException e) {
+			throw new CommonException("上传应用失败"+e.getMessage(),e);
+		}
+		String key = MessageFormat.format("{0}_{1}_{2}", gcePackage.getCreateUser(),gce.getId(),gcePackage.getVersion());//不考虑创建GCE和上传包的人不同情况
+		String filePath = this.MATRIX_GCE_FILE_DEFAULT_LOCAL+"/" + fileName;
+		AWS3SConn.ConnBuilder builder = new AWS3SConn.ConnBuilder();
+		AWS3SConn conn = builder.setEndpoint(this.AWSS3ENDPOINT).setAccessKey(this.AWSS3ACCESSKEY)
+				.setSecretKey(this.AWSS3SECRETKEY).build();
+		AWSS3Util.getInstance(conn).upload(this.AWSS3BUCKETNAME,key,filePath);
+		//3.保存GcePackage到数据库
+		gcePackage.setSuffix(suffix);
+		gcePackage.setBucketName(this.AWSS3BUCKETNAME);
+		gcePackage.setKey(key);
+		gcePackage.setStatus(GcePackageStatus.DEFAULT.getValue());
+		//TODO	将返回数据放到map，消耗性能不考虑
+		this.ecGcePackageService.insert(gcePackage);
+		//4.删除暂存在本地的文件
+		removeFileFromLocal(fileName);
+	}
+	@Override
+	public void deployGCE(EcGcePackage ecGcePackage) {
+		EcGce gce = this.ecGceService.selectById(ecGcePackage.getGceId());
+		Map<String,Object> gcePackageParams = this.ecGcePackageService.insertGceCuster(gce,ecGcePackage);
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.putAll(gcePackageParams);
+		params.put("gceId", gce.getId());
+		params.put("gceName", gce.getGceName());
+		params.put("buyNum", gce.getInstanceNum());
+		params.put("type", gce.getType().trim().toLowerCase());
+		this.taskEngine.run(GCE_BUY_PROCESS, params);
+	}
 	private File saveFileToLocal(MultipartFile file) throws IllegalStateException, IOException {
         String fileName = file.getOriginalFilename(); 
         fileName = new String(fileName.getBytes("ISO8859-1"),"UTF-8");

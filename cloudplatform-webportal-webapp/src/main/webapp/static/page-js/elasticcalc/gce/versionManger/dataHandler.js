@@ -50,13 +50,20 @@ define(function(require,exports,module){
 	        	}
 	        	 
             	for(var i=0;i<dataArray.length;++i){
-                    var version = $("<td width=\"30%\">" + dataArray[i].version + "</td>");
-                    var status = $("<td width=\"30%\">" + cn.TranslateStatus(dataArray[i].status) + "</td>");
-                    var createTime = $("<td width=\"40%\">" + cn.TransDate('Y-m-d H:i:s',dataArray[i].createTime) + "</td>");
-                    var tr = $("<tr class='data-tr'></tr>");
-                    tr.append(version).append(status).append(createTime);
+                    var version = $("<td width=\"25%\">" + dataArray[i].version + "</td>");
+                    var status = $("<td width=\"25%\">" + cn.TranslateGceType(dataArray[i].status) + "</td>");
+                    var createTime = $("<td width=\"25%\">" + cn.TransDate('Y-m-d H:i:s',dataArray[i].createTime) + "</td>");
+                    var deploy = "";
+                    if(dataArray[i].status == 0){
+                    	deploy =  $("<td width=\"25%\"><a class='deploy' href='void:javascript(0);return false;'>部署</a></td>");
+                    }else{
+                    	deploy =  $("<td width=\"25%\"><span style='color:grey'>部署</span></td>");
+                    }
+                    var tr = $("<tr class='data-tr' pakageId='"+dataArray[i].id+"'></tr>");
+                    tr.append(version).append(status).append(createTime).append(deploy)
                     tr.appendTo($tby);
             	}
+                        	
             	
 	            /*
 	             * 设置分页数据
