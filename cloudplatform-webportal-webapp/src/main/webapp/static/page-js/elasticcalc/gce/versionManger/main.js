@@ -78,7 +78,6 @@ define(function(require) {
 		var packageId = $(this).parents("tr").attr("pakageId");
 		
 		cn.GetData("/ecgce/packages/deploy/"+packageId+"?gceId="+gceId, function(data){
-			alert(data);
 			gceInfoHandler.GceImageListHandler(data);
 			asyncData(cn.currentPage);
 		});
@@ -94,7 +93,6 @@ define(function(require) {
 		cn.GetData(url, gceInfoHandler.GceImageListHandler);
 	}
 
-	//cn.GetData("/ecgce/" + $("#gceId").val(),gceInfoHandler.GceAjaxFormHandler);
 	gceInfoHandler.GceAjaxFormHandler(asyncData);
 	
 	asyncData(1);
