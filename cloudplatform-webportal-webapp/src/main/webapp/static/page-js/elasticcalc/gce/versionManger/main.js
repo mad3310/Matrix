@@ -71,8 +71,17 @@ define(function(require) {
 				}
 			}
 		}
-	})
+	});
 
+	$('#tby').delegate(".deploy","click",function(){
+		var gceId = $("#gceId").val();
+		var packageId = $(this).parents("tr").attr("pakageId");
+		
+		cn.GetData("/ecgce/packages/deploy/"+packageId+"?gceId="+gceId, gceInfoHandler.GceImageListHandler);
+		asyncData(cn.currentPage);
+	});
+	
+	
 	//加载列表数据
 	function asyncData(page) {
 		if (!page)

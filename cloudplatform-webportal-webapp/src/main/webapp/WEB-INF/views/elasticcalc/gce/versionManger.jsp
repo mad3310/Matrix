@@ -39,9 +39,10 @@
 		<table class="table table-hover table-se">
 			<thead>
 			<tr>
-				<th width="30%">版本号</th>
-				<th width="30%">状态</th>
-				<th width="40%">创建时间</th>
+				<th width="25%">版本号</th>
+				<th width="25%">状态</th>
+				<th width="25%">创建时间</th>
+				<th width="25%">操作</th>
 			</tr>
 			</thead>
 			<tbody id="tby">

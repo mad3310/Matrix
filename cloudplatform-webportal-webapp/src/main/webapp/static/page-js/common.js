@@ -99,6 +99,13 @@ define(function(require,exports,module){
                 return "读写"
             }
         },
+        TranslateGceType: function(type){
+            if(type == 0){
+                return "未部署";
+            }else{
+                return this.TranslateStatus(type);
+            }
+        },
         TranslateStatus : function (status){
             if (status == 0){
                 return "未审核";
