@@ -77,8 +77,10 @@ define(function(require) {
 		var gceId = $("#gceId").val();
 		var packageId = $(this).parents("tr").attr("pakageId");
 		
-		cn.GetData("/ecgce/packages/deploy/"+packageId+"?gceId="+gceId, gceInfoHandler.GceImageListHandler);
-		asyncData(cn.currentPage);
+		cn.GetData("/ecgce/packages/deploy/"+packageId+"?gceId="+gceId, function(data){
+			gceInfoHandler.GceImageListHandler(data);
+			asyncData(cn.currentPage);
+		});
 	});
 	
 	
@@ -91,9 +93,8 @@ define(function(require) {
 		cn.GetData(url, gceInfoHandler.GceImageListHandler);
 	}
 
-	cn.GetData("/ecgce/" + $("#gceId").val(),
-					gceInfoHandler.GceAjaxFormHandler);
-
+	gceInfoHandler.GceAjaxFormHandler(asyncData);
+	
 	asyncData(1);
 
 	setInterval(function() {

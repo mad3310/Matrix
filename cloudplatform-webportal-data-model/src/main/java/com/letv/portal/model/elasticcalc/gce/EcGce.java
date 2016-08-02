@@ -75,7 +75,6 @@ public class EcGce extends BaseModel {
     private Integer status;
     
     private HclusterModel hcluster;
-	private EcGceCluster gceCluster;
 	private UserModel createUserModel;
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z_][a-zA-Z_0-9]{1,15}$",message = "内容必须以字母开头，允许字母数字下划线，长度在2-16字节内")
@@ -157,12 +156,7 @@ public class EcGce extends BaseModel {
 	public void setHcluster(HclusterModel hcluster) {
 		this.hcluster = hcluster;
 	}
-	public EcGceCluster getGceCluster() {
-		return gceCluster;
-	}
-	public void setGceCluster(EcGceCluster gceCluster) {
-		this.gceCluster = gceCluster;
-	}
+	
 	public UserModel getCreateUserModel() {
 		return createUserModel;
 	}

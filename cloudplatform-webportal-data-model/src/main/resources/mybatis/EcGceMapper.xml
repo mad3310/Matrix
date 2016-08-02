@@ -17,9 +17,6 @@
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
 		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
-		<association property="gceCluster" javaType="EcGceCluster">
-			<result column="CLUSTER_NAME" property="clusterName" />
-		</association>
 		<association property="hcluster" javaType="Hcluster">
 			<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
 		</association>
@@ -139,9 +136,8 @@
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
-		,n.CLUSTER_NAME,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		,u.USERNAME,h.HCLUSTER_NAME_ALIAS
 		from EC_GCE g
-		left join EC_GCE_CLUSTER n on n.GCE_ID = g.ID 
 		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
 		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		where
@@ -152,17 +148,13 @@
 		parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
-		,n.CLUSTER_NAME,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		,u.USERNAME,h.HCLUSTER_NAME_ALIAS
 		from EC_GCE g
-		left join EC_GCE_CLUSTER n on n.GCE_ID = g.ID 
 		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
 		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		<include refid="Example_Where_Clause" />
 		<if test="userName != null  and userName != ''">
 			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
-		</if>
-		<if test="clusterName != null  and clusterName != ''">
-			and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
 		</if>
 		<if test="hclusterName != null  and hclusterName != ''">
 			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
@@ -173,17 +165,13 @@
 		parameterType="com.letv.common.dao.QueryParam">
 		select
 		<include refid="Base_Column_List" />
-		,n.CLUSTER_NAME,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		,u.USERNAME,h.HCLUSTER_NAME_ALIAS
 		from EC_GCE g
-		left join EC_GCE_CLUSTER n on n.GCE_ID = g.ID 
 		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
 		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		<include refid="Example_Page_Where_Clause" />
 		<if test="params != null and params.userName != null  and params.userName != ''">
 			and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
-		</if>
-		<if test="params != null and params.clusterName != null  and params.clusterName != ''">
-			and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
 		</if>
 		<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
 			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
@@ -197,15 +185,11 @@
 	<select id="selectByMapCount" resultType="java.lang.Integer"
 		parameterType="java.util.Map">
 		select count(1) from EC_GCE g
-		left join EC_GCE_CLUSTER n on n.GCE_ID = g.ID 
 		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
 		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		<include refid="Example_Where_Clause" />
 		<if test="userName != null  and userName != ''">
 			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
-		</if>
-		<if test="clusterName != null  and clusterName != ''">
-			and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
 		</if>
 		<if test="hclusterName != null  and hclusterName != ''">
 			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
