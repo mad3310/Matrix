@@ -64,7 +64,7 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
     		e = ((MatrixException) e).getE();
     	}
 		e = transE(e);
-		if(e instanceof OauthException || e instanceof CommonException || e instanceof ValidateException) {
+		if(e instanceof OauthException || e instanceof CommonException || e instanceof ValidateException || e instanceof ApiNotFoundException) {
 			//do not send email.
 			logger.debug(e.getMessage());
 		} else if(Boolean.valueOf(ERROR_MAIL_ENABLED) ) {
@@ -81,7 +81,7 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
 		String clientType = req.getHeader("clientType");
 		
 		if (isAjaxRequest || !StringUtils.isEmpty(clientType)) {
-			responseJson(req,res,error);
+			responseJson(req,res,e.getMessage());
 			return null;
 		} else {
 			Integer statusCode = determineStatusCode(req, viewName);

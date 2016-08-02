@@ -19,6 +19,8 @@ define(function(require,exports,module){
     			$("#gce_type").html(gceInfo.type);
                 $("#gce_server_addr").html(getAccpetAddr(gceInfo.gceContainers,gceInfo.type));
     			$("#gce_create_time").html(cn.TransDate('Y-m-d H:i:s',gceInfo.createTime));
+    			$("#hcluster_name").html(gceInfo.hcluster.hclusterNameAlias);
+    			$("#memory_size").html(cn.TransUnit(gceInfo.memorySize));
                 if(gceInfo.hcluster != undefined && gceInfo.hcluster != null) {
                     $("#gce_info_available_region").html(gceInfo.hcluster.hclusterNameAlias);
                 }

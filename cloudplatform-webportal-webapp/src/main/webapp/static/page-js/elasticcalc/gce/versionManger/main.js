@@ -5,7 +5,7 @@ define(function(require){
 	var $ = require('jquery');
 	require('bootstrap');
 	require('paginator')($);
-	
+	require("bootstrapValidator")($);
     var common = require('../../../common');
     var cn = new common();
 
@@ -40,6 +40,35 @@ define(function(require){
         	asyncData(page);
         }
 	});
+    
+   	
+    /*修改描述*/
+    $("#uploadImageForm").bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{
+        	'version': {
+              validMessage: '请按提示输入',
+              validators: {
+          		regexp: {
+          			regexp: /^\d+.\d+.\d+.\d+$/,
+          			message: "版本号规范必须为x.x.x.x，例如1.1.1.12"
+          		}
+              }
+            },
+            'file': {
+                validMessage: '请按提示输入',
+                validators: {
+                    notEmpty: {
+                        message: '镜像文件不能为空!'
+                    }
+                }
+            }
+        }	
+    })
     
     
     

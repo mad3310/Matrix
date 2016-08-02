@@ -139,17 +139,34 @@
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
+		,n.CLUSTER_NAME,u.USERNAME,h.HCLUSTER_NAME_ALIAS
 		from EC_GCE g
+		left join EC_GCE_CLUSTER n on n.GCE_ID = g.ID 
+		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		where
-		ID = #{id}
+		g.ID = #{id}
 	</select>
 	<!-- 根据条件查询 -->
 	<select id="selectByMap" resultMap="BaseResultMap"
 		parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
+		,n.CLUSTER_NAME,u.USERNAME,h.HCLUSTER_NAME_ALIAS
 		from EC_GCE g
+		left join EC_GCE_CLUSTER n on n.GCE_ID = g.ID 
+		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		<include refid="Example_Where_Clause" />
+		<if test="userName != null  and userName != ''">
+			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
+		</if>
+		<if test="clusterName != null  and clusterName != ''">
+			and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+		</if>
+		<if test="hclusterName != null  and hclusterName != ''">
+			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+		</if>
 	</select>
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
@@ -180,7 +197,19 @@
 	<select id="selectByMapCount" resultType="java.lang.Integer"
 		parameterType="java.util.Map">
 		select count(1) from EC_GCE g
+		left join EC_GCE_CLUSTER n on n.GCE_ID = g.ID 
+		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		<include refid="Example_Where_Clause" />
+		<if test="userName != null  and userName != ''">
+			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
+		</if>
+		<if test="clusterName != null  and clusterName != ''">
+			and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+		</if>
+		<if test="hclusterName != null  and hclusterName != ''">
+			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+		</if>
 	</select>
 	<insert id="insert" parameterType="EcGce" useGeneratedKeys="true"
 		keyProperty="id">

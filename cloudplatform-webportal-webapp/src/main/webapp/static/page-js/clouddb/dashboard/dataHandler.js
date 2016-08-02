@@ -14,6 +14,7 @@ define(function(require,exports,module){
     	 * 相关资源量赋值
     	 */
         resCountHandler : function(data){
+        	console.log(data);
             if(data.data.db > 0){
                 $("#rds-opened").removeClass("hide");
                 $("#rds-not-opened").addClass("hide");
