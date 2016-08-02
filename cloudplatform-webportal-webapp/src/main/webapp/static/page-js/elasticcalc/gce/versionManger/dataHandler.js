@@ -20,6 +20,7 @@ define(function(require,exports,module){
                 $("#uploadImageForm").ajaxForm({
                 	success: function (data) {
                 		cn.alertoolSuccess("镜像上传成功",30000);
+                		$('#upload-image-box').modal('hide');
                     },
                     beforeSubmit:function(){
                     	cn.alertoolSuccess("镜像上传中，请勿刷新页面",3000);
