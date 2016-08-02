@@ -16,22 +16,22 @@ define(function(require,exports,module){
     module.exports = DataHandler;
 
     DataHandler.prototype = {
-            GceAjaxFormHandler : function(data){    	
+            GceAjaxFormHandler : function(callBackFunc){    	
                 $("#uploadImageForm").ajaxForm({
-                	success: function (data) {
+                	success: function (data) {        		
                 		cn.alertoolSuccess("镜像上传成功",30000);
+                		callBackFunc(cn.currentPage);
                 		$('#upload-image-box').modal('hide');
                     },
                     beforeSubmit:function(){
                     	cn.alertoolSuccess("镜像上传中，请勿刷新页面",3000);
                     },
                     error:function(data){
-                    	cn.alertoolDanger(data.msgs[0],3000);
+                    	cn.alertoolDanger("镜像上传失败",30000);
                     }
                 }); 
             },
             GceImageListHandler : function(data){
-    	
             	var $tby = $('#tby').empty();
             	var dataArray = data.data.data;
           	
@@ -55,7 +55,7 @@ define(function(require,exports,module){
                     var createTime = $("<td width=\"25%\">" + cn.TransDate('Y-m-d H:i:s',dataArray[i].createTime) + "</td>");
                     var deploy = "";
                     if(dataArray[i].status == 0){
-                    	deploy =  $("<td width=\"25%\"><a class='deploy' href='void:javascript(0);return false;'>部署</a></td>");
+                    	deploy =  $("<td width=\"25%\"><a class='deploy' href='javascript:void(0);return false;'>部署</a></td>");
                     }else{
                     	deploy =  $("<td width=\"25%\"><span style='color:grey'>部署</span></td>");
                     }
