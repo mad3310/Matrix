@@ -41,7 +41,7 @@ public class EsProxyImpl extends BaseProxyImpl<EsServer> implements IEsProxy{
 	
 	
 	@Override
-	public void insertAndBuild(EsServer esServer) {
+	public Long insertAndBuild(EsServer esServer) {
 		//1.参数转换防止XSS跨站漏洞
 		esServer.setEsName(StringEscapeUtils.escapeHtml(esServer.getEsName()));
 		esServer.setDescn(StringEscapeUtils.escapeHtml(esServer.getDescn()));
@@ -49,14 +49,15 @@ public class EsProxyImpl extends BaseProxyImpl<EsServer> implements IEsProxy{
 		Map<String,Object> exParams = new HashMap<String,Object>();
 		exParams.put("esName", esServer.getEsName());
 		exParams.put("createUser", esServer.getCreateUser());
-		Integer existLength = this.esServerService.selectByMapCount(exParams);
-		if(existLength>0){
+		List<EsServer> ess = this.esServerService.selectByMap(exParams);
+		if(!CollectionUtils.isEmpty(ess)) {
 			throw new ValidateException(MessageFormat.format("{0}应用已存在", esServer.getEsName()));
 		}
 		//4.保存ES和ES集群信息
 		Map<String,Object> params = this.esServerService.insertEsServerAndCluster(esServer);
 		//5.走创建ES流程
 		this.taskEngine.run("ES_BUY", params);
+		return esServer.getId();
 	}
 
 

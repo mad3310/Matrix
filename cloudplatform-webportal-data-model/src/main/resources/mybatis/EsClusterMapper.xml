@@ -16,6 +16,13 @@
 	    <result column="UPDATE_TIME" property="updateTime" />
 	    <result column="CREATE_USER" property="createUser" />
 	    <result column="UPDATE_USER" property="updateUser" />
+	    
+	    <association property="createUserModel" javaType="User">
+			<result column="USERNAME" property="userName" />
+		</association>
+		<association property="hcluster" javaType="Hcluster">
+			<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
+		</association>
 	</resultMap>
 	
 	<sql id="Base_Column_List">
@@ -132,4 +139,76 @@
 	        DA_ESCLUSTER cluster
 	        <include refid="Common_Where_Clause" />
 	</select>
+	
+	<!-- 列表总数  -->
+	<select id="selectByMapCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">
+		select 
+			count(1) 
+		from 
+			DA_ESCLUSTER cluster
+			join WEBPORTAL_USER u ON u.ID = cluster.CREATE_USER
+			join WEBPORTAL_HCLUSTER h on cluster.HCLUSTER_ID = h.ID
+			<include refid="Page_Where_Clause" />
+			<if test="params != null and params.userName != null  and params.userName != ''">
+				and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.hCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
+	</select>
+	
+	<!-- 分页：根据条件查询 -->
+	<select id="selectPageByMap" resultMap="BaseResultMap" parameterType="com.letv.common.dao.QueryParam">
+		select
+			<include refid="Base_Column_List" /> ,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		FROM  
+			DA_ESCLUSTER cluster
+			join WEBPORTAL_USER u ON u.ID = cluster.CREATE_USER
+			join WEBPORTAL_HCLUSTER h on cluster.HCLUSTER_ID = h.ID
+			<include refid="Page_Where_Clause" />
+			<if test="params != null and params.userName != null  and params.userName != ''">
+				and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.hCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
+		ORDER BY 
+			cluster.CREATE_TIME DESC	
+			<if test="page != null">
+	      		limit #{page.startRowPosition},#{page.recordsPerPage}
+	    	</if>
+	</select>
+	<!-- List查询条件 -->
+	<sql id="Page_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="params != null and params.id !=null and params.id != '' ">
+				and cluster.ID=#{params.id}
+			</if>
+			<if test="params != null and params.clusterName != null  and params.clusterName != '' and params.clusterName != 'null'">
+				and cluster.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.status != null and params.status != '' ">
+				and cluster.STATUS=#{params.status}
+			</if>
+			<if test="params != null and params.deleted != null and params.deleted != '' ">
+				and cluster.DELETED=#{params.deleted}
+			</if>
+			<if test="params != null and params.hclusterId != null and params.hclusterId != '' ">
+				and cluster.HCLUSTER_ID=#{params.hclusterId}
+			</if>
+			<if test="params != null and params.createTime != null and params.createTime != '' ">
+				and cluster.CREATE_TIME=#{params.createTime}
+			</if>
+			<if test="params != null and params.createUser != null and params.createUser != '' ">
+				and cluster.CREATE_USER=#{params.createUser}
+			</if>
+			<if test="params != null and params.updateTime != null and params.updateTime != '' ">
+				and cluster.UPDATE_TIME=#{params.updateTime}
+			</if>
+			<if test="params != null and params.updateUser != null and params.updateUser != '' ">
+				and cluster.UPDATE_USER=#{params.updateUser}
+			</if>
+		</trim>
+	</sql>
 </mapper>   

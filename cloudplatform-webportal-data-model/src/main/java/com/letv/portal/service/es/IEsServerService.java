@@ -11,4 +11,6 @@ public interface IEsServerService extends IBaseService<EsServer> {
 	Map<String, Object> insertEsServerAndCluster(EsServer esServer);
 	
 	List<EsServer> selectBySelective(Map<String,Object> exParams);
+	
+	EsServer selectByIdWithContainers(Long id);
 }
