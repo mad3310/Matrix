@@ -2,6 +2,8 @@ package com.letv.portal.model.es;
 
 import com.letv.common.model.BaseModel;
 import com.letv.portal.enumeration.MclusterStatus;
+import com.letv.portal.model.HclusterModel;
+import com.letv.portal.model.UserModel;
 
 public class EsCluster extends BaseModel {
 	
@@ -28,6 +30,22 @@ public class EsCluster extends BaseModel {
 	 */
 	private String adminPassword;
 	
+	private HclusterModel hcluster;
+
+	private UserModel createUserModel;
+	
+	public HclusterModel getHcluster() {
+		return hcluster;
+	}
+	public void setHcluster(HclusterModel hcluster) {
+		this.hcluster = hcluster;
+	}
+	public UserModel getCreateUserModel() {
+		return createUserModel;
+	}
+	public void setCreateUserModel(UserModel createUserModel) {
+		this.createUserModel = createUserModel;
+	}
 	public String getClusterName() {
 		return clusterName;
 	}

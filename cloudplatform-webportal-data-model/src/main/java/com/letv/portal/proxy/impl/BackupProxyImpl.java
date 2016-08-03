@@ -1,5 +1,6 @@
 package com.letv.portal.proxy.impl;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -508,7 +509,7 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 			return backup;
 		}
 		backup.setStatus(BackupStatus.FAILD);
-		backup.setResultDetail("api not found:" + resultObject.getUrl());
+		backup.setResultDetail(MessageFormat.format("unknown response:{0}, url:{1}", result.substring(0, result.length()>=150?150:result.length()), resultObject.getUrl()));
 
 		return backup;
 	}

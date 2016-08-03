@@ -2,6 +2,8 @@ package com.letv.portal.model.es;
 
 import com.letv.common.model.BaseModel;
 import com.letv.portal.enumeration.MclusterStatus;
+import com.letv.portal.model.HclusterModel;
+import com.letv.portal.model.HostModel;
 
 public class EsContainer extends BaseModel {
 	
@@ -30,6 +32,21 @@ public class EsContainer extends BaseModel {
 	private String bindProtocol;//
 	private String mgrBindHostPort;//物理机映射端口
 	
+	private EsCluster esCluster;
+	private HclusterModel hcluster;
+	
+	public EsCluster getEsCluster() {
+		return esCluster;
+	}
+	public void setEsCluster(EsCluster esCluster) {
+		this.esCluster = esCluster;
+	}
+	public HclusterModel getHcluster() {
+		return hcluster;
+	}
+	public void setHcluster(HclusterModel hcluster) {
+		this.hcluster = hcluster;
+	}
 	public String getContainerName() {
 		return containerName;
 	}

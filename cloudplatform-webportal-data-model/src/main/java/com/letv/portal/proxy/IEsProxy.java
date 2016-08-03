@@ -7,7 +7,7 @@ import com.letv.portal.model.es.EsServer;
 
 public interface IEsProxy extends IBaseProxy<EsServer> {
 	
-	public void insertAndBuild(EsServer esServer);
+	public Long insertAndBuild(EsServer esServer);
 	/**
 	 * 使用ES基础信息获取该ES的容器列表
 	 * @param esServer
