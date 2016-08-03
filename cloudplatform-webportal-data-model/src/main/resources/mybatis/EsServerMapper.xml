@@ -171,15 +171,75 @@
 	        DA_ES es
 	        <include refid="Common2_Where_Clause" />
 	</select>
+	
+	
 	<!-- 列表总数 -->
-	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="java.util.Map">
+	<select id="selectByMapCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">
 		select 
 			count(1) 
 		from 
 			DA_ES es
-		where
-			es.ES_NAME=#{esName} and es.CREATE_USER=#{createUser}
+			<include refid="Page_Where_Clause" />
+	</select>
+	
+	
+	<sql id="Page_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="params != null and params.id != null  ">
+				and es.ID=#{params.id}
+			</if>
+			<if test="params != null and params.esName != null and params.esName != '' ">
+				and es.ES_NAME like CONCAT('%',#{params.esName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterId != null and params.hclusterId != '' ">
+				and es.HCLUSTER_ID=#{params.hclusterId}
+			</if>
+			<if test="params != null and params.esClusterId != null and params.esClusterId != '' ">
+	            and es.ESCLUSTER_ID=#{params.esClusterId}
+	        </if>
+	        <if test="params != null and params.memorySize != null and params.memorySize != '' ">
+	            and es.MEMORY_SIZE=#{params.memorySize}
+	        </if>
+	        <if test="params != null and params.storageSize != null and params.storageSize != '' ">
+	            and es.STORAGE_SIZE=#{params.storageSize}
+	        </if>
+	        <if test="params != null and params.nodeCount != null and params.nodeCount != '' ">
+	            and es.NODE_COUNT=#{params.nodeCount}
+	        </if>
+	        <if test="params != null and params.status != null ">
+	            and es.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
+	        </if>
+	        <if test="params != null and params.createTime != null  ">
+				and es.CREATE_TIME=#{params.createTime}
+			</if>
+			<if test="params != null and params.createUser != null  ">
+				and es.CREATE_USER=#{params.createUser}
+			</if>
+			<if test="params != null and params.updateTime != null  ">
+				and es.UPDATE_TIME=#{params.updateTime}
+			</if>
+			<if test="params != null and params.updateUser != null  ">
+				and es.UPDATE_USER=#{params.updateUser}
+			</if>
+	        <if test="params != null and params.descn != null and params.descn != ''  ">
+	            and es.DESCN=#{params.descn}
+	        </if>
+		</trim>
+	</sql>
+        	
+	
+	<!-- 分页：根据条件查询 -->
+	<select id="selectPageByMap" resultMap="BaseResultMap" parameterType="com.letv.common.dao.QueryParam">
+		select
+			<include refid="Base_Column_List" />
+		from 
+			DA_ES es
+			<include refid="Page_Where_Clause" />
+		ORDER BY es.CREATE_TIME DESC
+			<if test="page != null">
+	      		limit #{page.startRowPosition},#{page.recordsPerPage}
+	    	</if>
 	</select>
 	
 </mapper>   

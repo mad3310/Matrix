@@ -108,14 +108,20 @@ public class EsServerServiceImpl extends BaseServiceImpl<EsServer> implements IE
 	
 	public EsServer selectById(Long id){
 		EsServer esServer = this.esServerDao.selectById(id);
-		List<EsContainer> esContainers = this.esContainerService.selectContainersByEsClusterId(esServer.getEsClusterId());
-		esServer.setEsContainers(esContainers);
 		return esServer;
 	}
 
 	@Override
 	public List<EsServer> selectBySelective(Map<String,Object> exParams) {
 		return esServerDao.selectBySelective(exParams);
+	}
+
+	@Override
+	public EsServer selectByIdWithContainers(Long id) {
+		EsServer esServer = this.esServerDao.selectById(id);
+		List<EsContainer> esContainers = this.esContainerService.selectContainersByEsClusterId(esServer.getEsClusterId());
+		esServer.setEsContainers(esContainers);
+		return esServer;
 	}
 
 }
