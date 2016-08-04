@@ -785,8 +785,8 @@
                 <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
                 <fixedpush.manageip.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/manageip</fixedpush.manageip.url>
                 <fixedpush.manageip.token>5e667298ecd46919d198ebe049d43d33</fixedpush.manageip.token>
-                <fixedpush.checkall.url>http://lingshu.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
-                <fixedpush.checkall.token>0fd7e2409a518e8d0ecc7a34f56e9477</fixedpush.checkall.token>
+                <fixedpush.checkall.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
+                <fixedpush.checkall.token>adb8871899142bdcef54fa7c39fe9a9b</fixedpush.checkall.token>
 
                 <zabbix.post.url>http://10.200.90.51/zabbix_test/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
