@@ -56,7 +56,7 @@ define(function(require){
 					notEmpty: {
 						message: '应用名不能为空!'
 					}, regexp: {
-						regexp: /^[a-zA-Z]+[a-zA-Z_0-9]{1,15}$/,
+						regexp: /^[a-zA-Z][a-zA-Z_0-9]{1,15}$/,
 						message: "2-16个字符,支持英文、数字和“_”格式,请以英文字母开头"
 					}
 				}
