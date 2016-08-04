@@ -65,32 +65,19 @@
 						<th class="hidden-xs">服务类型</th>
 						<th class="hidden-xs">所在可用区</th>
 						<th class="hidden-xs">付费方式</th>
-						<th class="text-right">操作</th>
+						<th class="hidden-xs">操作</th>
 					</tr>
 				</thead>
 				<tbody id="tby">
 				</tbody>
 				<tfoot id="paginatorBlock">
 					<tr class="tfoot" >
-						<td width="10">
-							<input type="checkbox">
-						</td>
 						<td colspan=" 8">
-							<div class="col-xs-4 col-sm-6" style="margin:2px 0;padding:0;">
-								<div class="pull-left">
-										<div pagination-info="paginationInfo">
-											<div class="pull-left">
-												<button class="btn btn-default hidden-xs" disabled="disabled" style="height:30px;font-size:12px;">批量续费</button>
-												<button class="btn btn-default btn-sm hidden-sm hidden-md hidden-lg" disabled="disabled"><span class="glyphicon glyphicon-shopping-cart"></span> 续费</button>
-											</div>
-										</div>
-								</div>
-							</div>
-							<div class="col-xs-8 col-sm-6" style="margin:2px 0;padding:0;">
+							<div class="col-xs-11 col-sm-11" style="margin:2px 0;padding:0;">
 								<div class="pull-right">
 									<div class="pagination-info hidden-xs">
 										<span class="ng-binding">共有<span id="totalRecords"></span>条</span>， 
-										<span class="ng-binding">每页显示：<span id="recordsPerPage"></span>条</span>&nbsp;
+										<span class="ng-binding">每页显示<span id="recordsPerPage"></span>条</span>&nbsp;
 									</div>
 									<ul id='paginator'></ul>
 								</div>
@@ -105,7 +92,7 @@
 </div>
 <!--确认对话框-->
 	<div id="dialog-box" class="modal">
-		<div class="modal-dialog modal-sm">
+		<div class="modal-dialog modal-sm modal-top">
 			<div class="modal-content">
 				<div class="modal-header">
 			<!--	<button type="button" class="close" data-dismiss="modal">

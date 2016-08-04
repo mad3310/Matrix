@@ -59,17 +59,6 @@ public class EsServerController {
 		return obj;
 	}
 	
-	@RequestMapping(value ="/es",method=RequestMethod.GET)
-	public ModelAndView toES(@RequestParam(value="lang",required=false) String lang,ModelAndView mav){
-		if(StringUtils.isEmpty(lang)){
-			String defaultLang = "zh-cn";
-			mav.setViewName("redirect:/es?lang="+defaultLang);
-		}else{
-			mav.addObject("lang", lang);
-			mav.setViewName("/es/index");
-		}
-		return mav;
-	}
 	
 	@RequestMapping(method=RequestMethod.GET)   
 	public @ResponseBody ResultObject list(Page page,HttpServletRequest request,ResultObject obj) {
@@ -90,6 +79,7 @@ public class EsServerController {
 		obj.setData(es);
 		return obj;
 	}
+	
 	
 	private void isAuthorityEs(Long id) {
 		if(id == null)
