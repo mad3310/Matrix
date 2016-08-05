@@ -16,7 +16,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.letv.common.exception.ValidateException;
 import com.letv.common.paging.impl.Page;
@@ -57,6 +59,7 @@ public class EsServerController {
 		return obj;
 	}
 	
+	
 	@RequestMapping(method=RequestMethod.GET)   
 	public @ResponseBody ResultObject list(Page page,HttpServletRequest request,ResultObject obj) {
 		Map<String,Object> params = HttpUtil.requestParam2Map(request);
@@ -76,6 +79,7 @@ public class EsServerController {
 		obj.setData(es);
 		return obj;
 	}
+	
 	
 	private void isAuthorityEs(Long id) {
 		if(id == null)
