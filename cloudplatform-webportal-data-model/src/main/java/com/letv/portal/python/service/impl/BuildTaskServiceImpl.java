@@ -755,6 +755,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             } else {
                 monitor.setResult(lostIp.length);
             }
+        } else {
+        	monitor.setResult(MonitorStatus.CRASH.getValue());
         }
         return monitor;
     }
@@ -802,6 +804,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             if(timeout) {
                 monitor.setResult(MonitorStatus.CRASH.getValue());
             }
+        } else {
+        	monitor.setResult(MonitorStatus.CRASH.getValue());
         }
         return monitor;
     }
@@ -841,6 +845,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             if(timeout) {
                 monitor.setResult(MonitorStatus.CRASH.getValue());
             }
+        } else {
+        	monitor.setResult(MonitorStatus.CRASH.getValue());
         }
         return monitor;
     }
