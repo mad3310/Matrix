@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.exception.ValidateException;
@@ -34,14 +35,7 @@ import com.letv.portal.service.log.ILogContainerService;
 
 @Component("baseGceTaskService")
 public class BaseTask4GceServiceImpl extends BaseTaskServiceImpl implements IBaseTaskService{
-
-	@Value("${service.notice.email.to}")
-	private String SERVICE_NOTICE_MAIL_ADDRESS;
-	@Autowired
-	private ITemplateMessageSender defaultEmailSender;
 	
-	@Autowired
-	private IHostService hostService;
 	@Autowired
 	private IGceClusterService gceClusterService;
 	@Autowired
@@ -52,13 +46,6 @@ public class BaseTask4GceServiceImpl extends BaseTaskServiceImpl implements IBas
 	private ILogClusterService logClusterService;
 	@Autowired
 	private ILogContainerService logContainerService;
-	@Autowired
-	private IUserService userService;
-	@Autowired
-	private IZookeeperInfoService zookeeperInfoService;
-	
-	
-	
 	
 	private final static Logger logger = LoggerFactory.getLogger(BaseTask4GceServiceImpl.class);
 	
@@ -75,20 +62,31 @@ public class BaseTask4GceServiceImpl extends BaseTaskServiceImpl implements IBas
 			this.gceClusterService.updateBySelective(cluster);
 		}
 	}
-	
+	@Override
+	public void beforeExecute(Map<String, Object> params) {
+		GceServer gce = this.getGceServer(params);
+		GceCluster cluster = this.getGceCluster(params);
+		if(gce.getStatus() != DbStatus.BUILDDING.getValue()) {
+			gce.setStatus(DbStatus.BUILDDING.getValue());
+			this.gceServerService.updateBySelective(gce);
+		}
+		if(gce.getStatus() != MclusterStatus.BUILDDING.getValue()) {
+			cluster.setStatus(MclusterStatus.BUILDDING.getValue());
+			this.gceClusterService.updateBySelective(cluster);
+		}
+	}
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
-		TaskResult tr = new TaskResult();
-		if(params == null || params.isEmpty()) {
-			tr.setResult("params is empty");
-			tr.setSuccess(false);
-		}
-		tr.setParams(params);
-		return tr;
+		return validator(params);
 	}
 
 	@Override
 	public void rollBack(TaskResult tr) {
+		finish(tr);
+	}
+	
+	@Override
+	public void finish(TaskResult tr) {
 		Map<String,Object> params = (Map<String, Object>) tr.getParams();
 		boolean isContinue = (Boolean) params.get("isContinue");
 		//发送邮件
@@ -97,7 +95,6 @@ public class BaseTask4GceServiceImpl extends BaseTaskServiceImpl implements IBas
 		//业务处理
 		this.serviceOver(tr);
 	}
-	
 	private void serviceOver(TaskResult tr) {
 		Map<String, Object> params = (Map<String, Object>) tr.getParams();
 		GceServer gce = this.getGceServer(params);
@@ -126,31 +123,25 @@ public class BaseTask4GceServiceImpl extends BaseTaskServiceImpl implements IBas
 		this.gceServerService.updateBySelective(gce);
 		this.gceClusterService.updateBySelective(cluster);
 	}
-
-	@Override
-	public void callBack(TaskResult tr) {
-		
-	}
 	
 	public GceServer getGceServer(Map<String, Object> params) {
 		Long gceId = getLongFromObject(params.get("gceId"));
-		if(gceId == null)
+		if(null == gceId)
 			throw new ValidateException("params's gceId is null");
 		
 		GceServer gceServer = this.gceServerService.selectById(gceId);
-		if(gceServer == null)
+		if(null == gceServer)
 			throw new ValidateException("gceServer is null by gceId:" + gceId);
-		
 		return gceServer;
 	}
 	
 	public GceCluster getGceCluster(Map<String, Object> params) {
 		Long gceClusterId = getLongFromObject(params.get("gceClusterId"));
-		if(gceClusterId == null)
+		if(null == gceClusterId)
 			throw new ValidateException("params's gceClusterId is null");
 		
 		GceCluster gceCluster = this.gceClusterService.selectById(gceClusterId);
-		if(gceCluster == null)
+		if(null == gceCluster)
 			throw new ValidateException("gceCluster is null by gceClusterId:" + gceClusterId);
 		
 		return gceCluster;
@@ -158,43 +149,34 @@ public class BaseTask4GceServiceImpl extends BaseTaskServiceImpl implements IBas
 	public LogCluster getLogCluster(Map<String, Object> params) {
 		Map<String, Object> logParams = (Map<String, Object>) params.get("logParams");
 		Long logClusterId = getLongFromObject(logParams.get("logClusterId"));
-		if(logClusterId == null)
+		if(null == logClusterId)
 			throw new ValidateException("params's logClusterId is null");
 		
 		LogCluster logCluster = this.logClusterService.selectById(logClusterId);
-		if(logCluster == null)
+		if(null == logCluster)
 			throw new ValidateException("logCluster is null by logClusterId:" + logClusterId);
 		
 		return logCluster;
 	}
 	
-	public HostModel getHost(Long hclusterId) {
-		if(hclusterId == null)
-			throw new ValidateException("hclusterId is null :" + hclusterId);
-		HostModel host = this.hostService.getHostByHclusterId(hclusterId);
-		if(host == null)
-			throw new ValidateException("host is null by hclusterIdId:" + hclusterId);
-		
-		return host;
-	}
 	public List<GceContainer> getContainers(Map<String, Object> params) {
 		Long gceClusterId = getLongFromObject(params.get("gceClusterId"));
-		if(gceClusterId == null)
+		if(null == gceClusterId)
 			throw new ValidateException("params's gceClusterId is null");
 		
 		List<GceContainer> gceContainers = this.gceContainerService.selectByGceClusterId(gceClusterId);
-		if(gceContainers == null || gceContainers.isEmpty())
+		if(CollectionUtils.isEmpty(gceContainers))
 			throw new ValidateException("gceCluster is null by gceClusterId:" + gceClusterId);
 		return gceContainers;
 	}
 	public List<LogContainer> getLogContainers(Map<String, Object> params) {
 		Map<String, Object> logParams = (Map<String, Object>) params.get("logParams");
 		Long logClusterId = getLongFromObject(logParams.get("logClusterId"));
-		if(logClusterId == null)
+		if(null == logClusterId)
 			throw new ValidateException("params's logClusterId is null");
 		
 		List<LogContainer> logContainers = this.logContainerService.selectByLogClusterId(logClusterId);
-		if(logContainers == null || logContainers.isEmpty())
+		if(CollectionUtils.isEmpty(logContainers))
 			throw new ValidateException("gceCluster is null by logClusterId:" + logClusterId);
 		return logContainers;
 	}

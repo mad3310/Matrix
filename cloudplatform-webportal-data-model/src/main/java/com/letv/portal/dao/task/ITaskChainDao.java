@@ -15,5 +15,6 @@ public interface ITaskChainDao extends IBaseDao<TaskChain> {
 	List<TaskChain> selectAllChainByIndexId(Long chainIndexId);
 
 	void updateAfterDoingChainStatus(Map<String, Object> params);
-
+	
+	public void insertBatch(List<TaskChain> taskChains);
 }

@@ -38,15 +38,6 @@ public class TaskEngineTest extends AbstractTest{
     }
     
     /**Methods Name: testRun2 <br>
-     * Description: 执行：从第一个节点开始<br>
-     * @author name: liuhao1
-     */
-    @Test
-    public void testRun2() {
-    	TaskChainIndex tci = this.taskChainIndexService.selectById(31L);
-    	this.taskEngine.run(tci);
-    }
-    /**Methods Name: testRun2 <br>
      * Description: 执行：从失败节点开始<br>
      * @author name: liuhao1
      */

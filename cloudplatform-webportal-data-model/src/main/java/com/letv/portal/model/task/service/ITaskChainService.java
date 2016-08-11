@@ -23,5 +23,7 @@ public interface ITaskChainService extends IBaseService<TaskChain> {
 	public int getStepByCacheId(Long cacheId);
 
 	public int  getStepByDbId(Long dbId);
+	
+	public void insertBatch(List<TaskChain> taskChains);
 
 }

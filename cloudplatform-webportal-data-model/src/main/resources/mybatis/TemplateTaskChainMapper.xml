@@ -86,7 +86,7 @@
 		from WEBPORTAL_TEMPLATE_TASK_CHAIN ttc
 		left join WEBPORTAL_TEMPLATE_TASK_DETAIL ttd on ttd.ID = ttc.TASK_DETAIL_ID
 		left join WEBPORTAL_TEMPLATE_TASK tt on tt.ID = ttc.TASK_ID
-		where ttc.TASK_ID = #{taskId}
+		where ttc.TASK_ID = #{taskId} and ttc.DELETED = 0
 		ORDER BY ttc.EXECUTE_ORDER
 	</select>
 </mapper>   

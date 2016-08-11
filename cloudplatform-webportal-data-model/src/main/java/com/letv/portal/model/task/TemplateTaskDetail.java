@@ -2,6 +2,13 @@ package com.letv.portal.model.task;
 
 import com.letv.common.model.BaseModel;
 
+/**
+ * 
+ * 任务单元详细定义信息
+ * 
+ * @author linzhanbo .
+ * @since 2016年7月26日, 下午3:57:45 .
+ */
 public class TemplateTaskDetail extends BaseModel {
 
 	private static final long serialVersionUID = 4318996252018673374L;
