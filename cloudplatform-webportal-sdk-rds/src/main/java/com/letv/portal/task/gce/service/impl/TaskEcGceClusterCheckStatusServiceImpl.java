@@ -107,18 +107,20 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 		tr.setParams(params);
 		return tr;
 	}
+	
 	@Override
-	public void callBack(TaskResult tr) {
+	public void afterExecute(TaskResult tr) {
 		Map<String,Object> params = (Map<String, Object>) tr.getParams();
 		String type = (String) params.get("type");
         if(!StringUtils.isEmpty(type)) {
             if("tomcat".equals(type.toLowerCase())){
             	String serverName = (String) params.get("serviceName");
             	logger.debug("部署GCE{}成功!",serverName);
-            	super.rollBack(tr);
+            	super.finish(tr);
             }
         }
 	}
+	
 	@Override
 	public ApiResultObject pollingTask(Object... params) {
 		//从调用polling时候的赋值中获取

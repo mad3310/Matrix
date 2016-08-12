@@ -183,4 +183,9 @@ public class TaskChainServiceImpl extends BaseServiceImpl<TaskChain> implements
 			return 0;
 		return this.getStepByTaskChainIndexId(taskChainIndex.getId());
 	}
+
+	@Override
+	public void insertBatch(List<TaskChain> taskChains) {
+		taskChainDao.insertBatch(taskChains);
+	}
 }
