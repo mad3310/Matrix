@@ -30,16 +30,16 @@
         }
         </style> 
         <body>
-        <div ng-include="'/apps/es/views/headerEs.html'"></div>
+        <div ng-include="'/apps/elasticsearch/views/headerEs.html'"></div>
         <div class="main">
-        <div ng-include="'/apps/es/views/side-menu.html'"></div>
+        <div ng-include="'/apps/elasticsearch/views/side-menu.html'"></div>
         <div class="content-wrapper">
         <div ng-view="ng-view" class="content"></div>
         </div>
         <div class="clearfix"></div>
         </div>
 
-        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/apps/es/main-${lang}.js"></script>
+        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/apps/elasticsearch/main-${lang}.js"></script>
 
         </body>
         </html>

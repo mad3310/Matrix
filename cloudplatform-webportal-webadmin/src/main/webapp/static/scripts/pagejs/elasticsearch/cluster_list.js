@@ -100,6 +100,7 @@ $(function(){
 });
 
 function queryByPage() {
+	queryUser();
 	var mclusterName = $("#containerName").val()?$("#containerName").val():'';
 	var hclusterName = $("#Physicalcluster").find('option:selected').attr('data-hclsName')?$("#Physicalcluster").find('option:selected').attr('data-hclsName'):'';
 	var userName = $("#containeruser").find('option:selected').text()?$("#containeruser").find('option:selected').text():'';
@@ -618,8 +619,7 @@ function queryHcluster(){
 }
 
 function getUserNameById(id){
-	var options = $('#containeruser option');
-	console.log(options.length);
+	var options = $('#containeruser>option');
 	var name = "";
 	options.each(function(){
 		var option = $(this);
@@ -639,5 +639,4 @@ function page_init(){
 	$('[name = "popoverHelp"]').popover();
 	// 新添 2015-7-7
 	queryHcluster();
-	queryUser();
 }
