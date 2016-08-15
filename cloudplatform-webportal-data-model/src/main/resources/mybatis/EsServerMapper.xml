@@ -242,4 +242,15 @@
 	    	</if>
 	</select>
 	
+	<select id="selectCountByStatus" resultType="java.lang.Integer"
+			parameterType="java.lang.Integer">
+		select 
+			count(1) 
+		from 
+			DA_ES
+		<if test="status != null">
+			where STATUS = #{status}
+		</if>
+	</select>
+	
 </mapper>   

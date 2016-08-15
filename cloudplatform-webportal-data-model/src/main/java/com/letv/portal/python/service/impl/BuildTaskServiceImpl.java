@@ -95,6 +95,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
 
     @Value("${service.notice.email.to}")
     private String SERVICE_NOTICE_MAIL_ADDRESS;
+    @Value("${service.operation.notice.email.to}")
+    private String SERVICE_OPERATION_NOTICE_MAIL_ADDRESS;
     @Autowired
     private ITemplateMessageSender defaultEmailSender;
 
@@ -1224,5 +1226,55 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             this.monitorService.insertMysqlMonitorSpaceData(dbName, container, dataAll, date);
         }
     }
+    
+    @Override
+	public void checkDbStruc() {
+		//查询所有的正常状态的vip节点
+		List<ContainerModel> containers = this.containerService.selectVaildVipContainers(null);
+		NodeModel monitorNode = null;
+		DetailModel detailModel = null;
+		for (ContainerModel container : containers) {
+			monitorNode = (NodeModel) getMonitorData(container.getIpAddr(), 3L);
+			if(null == monitorNode.getResponse()) {
+				continue;
+			}
+			detailModel = monitorNode.getResponse().getDb().getExisted_db_anti_item();
+			Map<String, Object> errorInfo = (Map<String, Object>) detailModel.getError_record();
+			logger.info(errorInfo.toString());
+			String msg = (String) errorInfo.get("msg");
+			if(null!=msg && (msg.toLowerCase().contains("nopk") || msg.toLowerCase().contains("myisam"))) {
+				UserModel user = this.userService.getUserById(container.getMcluster().getCreateUser());
+				List<DbModel> dbModels = this.dbService.selectDbByMclusterId(container.getMclusterId());
+				Map<String, Object> mailParams = new HashMap<String, Object>();
+				mailParams.put("dbName", dbModels.get(0).getDbName());
+				mailParams.put("dbTableInfo", getMailInfo(new ArrayList()));
+				
+				MailMessage mailMessage = new MailMessage("乐视云平台web-portal系统",user.getEmail(), dbModels.get(0).getDbName()+"数据库集群反例-nopk","dbStrucCheck.ftl",mailParams);
+				mailMessage.setHtml(true);
+				mailMessage.setCc(SERVICE_OPERATION_NOTICE_MAIL_ADDRESS);
+				defaultEmailSender.sendMessage(mailMessage);
+			}
+		}
+	}
+    
+    private String getMailInfo(List<Map<String, Object>> datas) {
+		StringBuffer buffer = new StringBuffer();
+		for (Map<String, Object> data : datas) {
+			buffer.append("<tr>");
+			buffer.append("<th width=\"100px\">");
+			buffer.append(data.get("dbName"));
+			buffer.append("</th>");
+			buffer.append("<th width=\"100px\">");
+			buffer.append(data.get("engine"));
+			buffer.append("</th>");
+			buffer.append("<th width=\"100px\">");
+			buffer.append(data.get("nopk"));
+			buffer.append("</th>");
+			buffer.append("</tr>");
+		}
+		return buffer.toString();
+	}
+    
+    
 
 }
