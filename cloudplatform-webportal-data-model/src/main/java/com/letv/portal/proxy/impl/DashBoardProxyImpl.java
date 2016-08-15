@@ -8,12 +8,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.letv.portal.enumeration.*;
-import com.letv.portal.model.swift.SwiftServer;
-import com.letv.portal.service.cbase.ICbaseClusterService;
-import com.letv.portal.service.elasticcalc.gce.IEcGceService;
-import com.letv.portal.service.gce.IGceClusterService;
-import com.letv.portal.service.slb.ISlbClusterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +15,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
+import com.letv.common.dao.QueryParam;
 import com.letv.common.session.SessionServiceImpl;
+import com.letv.portal.enumeration.CbaseBucketStatus;
+import com.letv.portal.enumeration.DbStatus;
+import com.letv.portal.enumeration.GceStatus;
+import com.letv.portal.enumeration.MonitorStatus;
+import com.letv.portal.enumeration.SlbStatus;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.DbModel;
 import com.letv.portal.model.MclusterModel;
 import com.letv.portal.model.monitor.BaseMonitor;
-import com.letv.portal.proxy.IContainerProxy;
 import com.letv.portal.proxy.IDashBoardProxy;
 import com.letv.portal.python.service.IBuildTaskService;
 import com.letv.portal.service.IContainerService;
@@ -37,7 +36,13 @@ import com.letv.portal.service.IHostService;
 import com.letv.portal.service.IMclusterService;
 import com.letv.portal.service.IMonitorService;
 import com.letv.portal.service.cbase.ICbaseBucketService;
+import com.letv.portal.service.cbase.ICbaseClusterService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceService;
+import com.letv.portal.service.es.IEsClusterService;
+import com.letv.portal.service.es.IEsServerService;
+import com.letv.portal.service.gce.IGceClusterService;
 import com.letv.portal.service.gce.IGceServerService;
+import com.letv.portal.service.slb.ISlbClusterService;
 import com.letv.portal.service.slb.ISlbServerService;
 import com.letv.portal.service.swift.ISwiftServerService;
 
@@ -74,6 +79,8 @@ public class DashBoardProxyImpl implements IDashBoardProxy {
 	@Autowired
 	private ISwiftServerService swiftServerService;
 	@Autowired
+	private IEsServerService esServerService;
+	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 	@Autowired(required = false)
@@ -88,6 +95,8 @@ public class DashBoardProxyImpl implements IDashBoardProxy {
     private ISlbClusterService slbClusterService;
     @Autowired
     private ICbaseClusterService cbaseClusterService;
+    @Autowired
+    private IEsClusterService esClusterService;
 
     @Override
 	public Map<String, Integer> selectManagerResource() {
@@ -97,17 +106,20 @@ public class DashBoardProxyImpl implements IDashBoardProxy {
         statistics.put("slb_hclusterSum", this.hclusterService.selectCountByType("SLB"));
         statistics.put("ocs_hclusterSum", this.hclusterService.selectCountByType("CBASE"));
         statistics.put("oss_hclusterSum", this.hclusterService.selectCountByType("OSS"));
+        statistics.put("es_hclusterSum", this.hclusterService.selectCountByType("ES"));
 
         statistics.put("db_hostSum", this.hostService.selectCountByHclusterType("RDS"));
         statistics.put("gce_hostSum", this.hostService.selectCountByHclusterType("GCE"));
         statistics.put("slb_hostSum", this.hostService.selectCountByHclusterType("SLB"));
         statistics.put("ocs_hostSum", this.hostService.selectCountByHclusterType("CBASE"));
         statistics.put("oss_hostSum", this.hostService.selectCountByHclusterType("OSS"));
+        statistics.put("es_hostSum", this.hostService.selectCountByHclusterType("ES"));
 
         statistics.put("db_clusterSum", this.mclusterService.selectValidMclusterCount());
         statistics.put("gce_clusterSum", this.gceClusterService.selectValidClusterCount());
         statistics.put("slb_clusterSum", this.slbClusterService.selectValidClusterCount());
         statistics.put("ocs_clusterSum", this.cbaseClusterService.selectValidClusterCount());
+        statistics.put("es_clusterSum", this.esClusterService.selectValidClusterCount());
 
         statistics.put("db_dbSum", this.dbService.selectCountByStatus(DbStatus.NORMAL.getValue()));
         statistics.put("db_unauditeDbSum", this.dbService.selectCountByStatus(DbStatus.DEFAULT.getValue()));
@@ -124,6 +136,9 @@ public class DashBoardProxyImpl implements IDashBoardProxy {
         statistics.put("oss_clusterSum", this.swiftServerService.selectCountByStatus(DbStatus.NORMAL.getValue()));
         statistics.put("oss_ossSum", this.swiftServerService.selectCountByStatus(DbStatus.NORMAL.getValue()));
 		statistics.put("oss_unauditeOssSum", this.swiftServerService.selectCountByStatus(DbStatus.DEFAULT.getValue()));
+
+		statistics.put("es_esSum", this.esServerService.selectCountByStatus(GceStatus.NORMAL.getValue()));
+        statistics.put("es_unauditeEsSum", this.esServerService.selectCountByStatus(GceStatus.DEFAULT.getValue()));
 
 		return statistics;
 	}
@@ -300,6 +315,7 @@ public class DashBoardProxyImpl implements IDashBoardProxy {
 		statistics.put("gce", this.gceService.selectByMapCount(map));
 		statistics.put("cache", this.cbaseBucketService.selectByMapCount(map));
 		statistics.put("oss", this.swiftServerService.selectByMapCount(map));
+		statistics.put("es", this.esServerService.selectByMapCount(map));
 		return statistics;
 	}
 

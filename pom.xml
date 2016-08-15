@@ -675,6 +675,7 @@
 
                 <webportal.errormail.to>linzhanbo@le.com</webportal.errormail.to>
                 <service.notice.email.to>linzhanbo@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>lisuxiao@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>D:</webportal.log.path>
@@ -772,6 +773,7 @@
 
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -869,6 +871,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -963,6 +966,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1057,6 +1061,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1151,6 +1156,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
