@@ -67,7 +67,7 @@ define(function(require,exports,module){
             if(data.data.es > 0){
                 $("#es-opened").removeClass("hide");
                 $("#es-not-opened").addClass("hide");
-                $("#esCount").html(data.data.vm);
+                $("#esCount").html(data.data.es);
             }else{
                 $("#es-opened").addClass("hide");
                 $("#es-not-opened").removeClass("hide");

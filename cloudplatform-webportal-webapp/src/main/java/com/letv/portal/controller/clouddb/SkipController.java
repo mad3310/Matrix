@@ -188,10 +188,11 @@ public class SkipController {
 	}
 	
 	@RequestMapping(value ="/rds",method=RequestMethod.GET)
-	public ModelAndView toRDS(@RequestParam(value="lang",required=false) String lang,ModelAndView mav){
+	public ModelAndView toRDS(@RequestParam(value="lang",required=false) String lang, ModelAndView mav){
 		if(StringUtils.isEmpty(lang)){
 			String defaultLang = "zh-cn";
-			mav.setViewName("redirect:/rds?lang="+defaultLang);
+			String defaultArea = "7";
+			mav.setViewName("redirect:/rds?lang="+defaultLang+"&area="+defaultArea);
 		}else{
 			mav.addObject("lang", lang);
 			mav.setViewName("/rds/index");
