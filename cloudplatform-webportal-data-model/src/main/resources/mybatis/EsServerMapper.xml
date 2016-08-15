@@ -248,8 +248,8 @@
 			count(1) 
 		from 
 			DA_ES
-		<if test="_parameter != null">
-			where STATUS = #{_parameter}
+		<if test="status != null">
+			where STATUS = #{status}
 		</if>
 	</select>
 	
