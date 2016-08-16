@@ -207,7 +207,7 @@
 	        <if test="params != null and params.nodeCount != null and params.nodeCount != '' ">
 	            and es.NODE_COUNT=#{params.nodeCount}
 	        </if>
-	        <if test="params != null and params.status != null ">
+	        <if test="params != null and params.status != null and params.status != '' ">
 	            and es.STATUS=#{params.status}
 	        </if>
 	        <if test="params != null and params.createTime != null  ">
