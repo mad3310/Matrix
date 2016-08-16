@@ -94,31 +94,11 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 					container.setHostId(hostModel.getId());
 				}
 				this.ecGceContainerService.insert(container);
-				ApiResultObject apiResult = this.fixedPushService.sendFixedInfo(container.getHostIp(),container.getContainerName(),container.getIpAddr(),"add");
-                if(!apiResult.getAnalyzeResult()) {
-                    //发送推送失败邮件，流程继续。
-                    buildResultToMgr("GCE服务相关系统推送异常", container.getContainerName() +"节点固资系统数据推送失败，请运维人员重新推送", tr.getResult(), null);
-                    tr.setResult(apiResult.getResult());
-                    break;
-                }
 			}
 			
 		}
 		tr.setParams(params);
 		return tr;
-	}
-	
-	@Override
-	public void afterExecute(TaskResult tr) {
-		Map<String,Object> params = (Map<String, Object>) tr.getParams();
-		String type = (String) params.get("type");
-        if(!StringUtils.isEmpty(type)) {
-            if("tomcat".equals(type.toLowerCase())){
-            	String serverName = (String) params.get("serviceName");
-            	logger.debug("部署GCE{}成功!",serverName);
-            	super.finish(tr);
-            }
-        }
 	}
 	
 	@Override

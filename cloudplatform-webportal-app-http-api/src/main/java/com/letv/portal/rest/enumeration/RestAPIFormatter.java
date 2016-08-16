@@ -13,8 +13,9 @@ public enum RestAPIFormatter {
 	//力度不够，阿里云做到具体哪个字段不存在，或不符合规范
 	//接收请求参数无效	400
 	ParamsInvalid(HttpStatus.BAD_REQUEST,"ParamsInvalid","Request params {0} invalid."),
-	//请求出错	403
-	//Error(HttpStatus.FORBIDDEN,"Error","{0} is error, {1}"),
+	@Deprecated
+	//请求出错	403	兼容以前接口中直接throw CommonException/ValidateException，未将异常转换为ApiException	后续将删除
+	Error(HttpStatus.OK,"Error","Requests error, {0}"),
 	//继续进行中	100
 	//Doing(HttpStatus.CONTINUE,"Doing","{0} is error, {1}"),
 	//无可用集群	400

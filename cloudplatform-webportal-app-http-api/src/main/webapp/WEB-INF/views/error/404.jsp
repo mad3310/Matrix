@@ -20,6 +20,7 @@
 	}
 	response.setContentType("application/x-javascript;charset=UTF-8");
 	response.setStatus(excpet.getHttpStatus().value());
+	out.clear();
 	out.print(errorMsg);
 	out.flush();
 %>

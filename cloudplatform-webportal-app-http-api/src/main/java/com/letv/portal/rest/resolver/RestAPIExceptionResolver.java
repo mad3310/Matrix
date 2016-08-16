@@ -30,7 +30,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import com.letv.common.email.bean.MailMessage;
+import com.letv.common.exception.CommonException;
 import com.letv.common.exception.MatrixException;
+import com.letv.common.exception.ValidateException;
 import com.letv.common.session.Session;
 import com.letv.common.spring.DefaultMappingExceptionResolver;
 import com.letv.common.util.ExceptionUtils;
@@ -148,6 +150,10 @@ public class RestAPIExceptionResolver extends DefaultMappingExceptionResolver {
 			rex.setHttpStatus(aexcept.getHttpStatus());
 			rex.setErrorCode(aexcept.getErrorCode());
 			rex.setErrorMessage(aexcept.getErrorMessage());
+		//兼容以前未转换异常为ApiException接口，不建议不转换异常	待调整完以前接口以后将删除该else if判断，后续开发必须转换异常为ApiException
+		} else if(ex instanceof CommonException || ex instanceof ValidateException){
+			aexcept = new ApiException(RestAPIFormatter.Error.formatErrorMessage(ex.getMessage()));
+			rex.setApiException(aexcept);
 		}
 		else{
 			//ConversionNotSupportedException、HttpMessageNotWritableException、操作数据库失败、freemark失败等
@@ -174,7 +180,7 @@ public class RestAPIExceptionResolver extends DefaultMappingExceptionResolver {
 		params.put("hostIp", request.getRemoteHost());
 		
 		
-		MailMessage mailMessage = new MailMessage("乐视云平台web-porta系统", ERROR_MAIL_ADDRESS,"Rest API异常警告发生","warnnoticeemail.ftl",params);
+		MailMessage mailMessage = new MailMessage("乐视云平台web-porta系统", NOTICE_WARN_MAIL_ADDRESS,"Rest API异常警告发生","warnnoticeemail.ftl",params);
 		try {
 			defaultEmailSender.sendMessage(mailMessage);
 		} catch (Exception e) {
