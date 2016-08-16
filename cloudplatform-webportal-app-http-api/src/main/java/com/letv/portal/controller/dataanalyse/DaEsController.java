@@ -65,7 +65,7 @@ public class DaEsController {
 	
 	
 	@RequestMapping(method=RequestMethod.POST)   
-	public @ResponseBody void save(@Valid EsServer esServer, BindingResult bindResult, ResultObject obj) {
+	public @ResponseBody void save(@Valid EsServer esServer, BindingResult bindResult) {
 		logger.debug("创建ES");
 		if (bindResult.hasErrors()) {
 			logger.warn("校验参数不合法");
@@ -86,9 +86,6 @@ public class DaEsController {
 		}catch(ValidateException ex){
 			throw new ApiException(RestAPIFormatter.ServiceIsExist.formatErrorMessage(esServer.getEsName()));
 		}
-		Map<String,String> datas = new HashMap<String, String>(1);
-		datas.put("esName", esServer.getEsName());
-		obj.setData(datas);
 		logger.debug("创建ES成功! ID:{},Name:{}", esServer.getId(), esServer.getEsName());
 	}
 	
