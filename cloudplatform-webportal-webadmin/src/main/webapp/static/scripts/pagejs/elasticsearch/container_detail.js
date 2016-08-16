@@ -45,10 +45,9 @@ function queryContainer(){
 			}
 
 			var status="<td>"+esStateTransform(tempObj.status)+"</td>";
-
-			var option = "<td></td>"			
+]	
 			
-			recordsArray.push("<tr>",containerId,containerName,hostIp,ipAddr,mountDir,zookeeperIp,status,option,"</tr>");
+			recordsArray.push("<tr>",containerId,containerName,hostIp,ipAddr,mountDir,zookeeperIp,status,"</tr>");
 			tby.append(recordsArray.join(''));
 			
 			/*初始化tooltip*/

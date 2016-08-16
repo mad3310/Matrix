@@ -46,5 +46,18 @@ public class SkipController {
 		mav.setViewName("/elasticsearch/container_detail");
 		return mav;
 	}
+	
+	@RequestMapping(value="/list/es/db", method=RequestMethod.GET)   
+	public ModelAndView toEsDb(ModelAndView mav,HttpServletRequest request){
+		mav.setViewName("/elasticsearch/db_list");
+		return mav;
+	}
+	
+	@RequestMapping(value="/detail/es/db/{id}", method=RequestMethod.GET)   
+	public ModelAndView toEsDbDetail(@PathVariable Long id,ModelAndView mav) {
+		mav.addObject("id",id);
+		mav.setViewName("/elasticsearch/db_detail");
+		return mav;
+	}
 
 }
