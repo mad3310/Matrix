@@ -99,11 +99,14 @@
          <session-timeout>600</session-timeout>
     </session-config>
     
-    	<!-- 出错页面定义 -->
-	 <error-page>
+   	<!-- 出错页面定义 -->
+ 	<error-page>
 		<error-code>404</error-code>
-		<location>/404</location>
+		<location>/WEB-INF/views/error/404.jsp</location>
 	</error-page>
-
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/views/error/500.jsp</location>
+	</error-page>
     
 </web-app>   
