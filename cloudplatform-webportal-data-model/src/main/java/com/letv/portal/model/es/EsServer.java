@@ -9,6 +9,8 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.letv.common.model.BaseModel;
 import com.letv.portal.enumeration.EsStatus;
+import com.letv.portal.model.HclusterModel;
+import com.letv.portal.model.UserModel;
 import com.letv.portal.validation.annotation.IdValid;
 import com.letv.portal.validation.annotation.NumberLimit;
 
@@ -32,6 +34,7 @@ public class EsServer extends BaseModel {
 	 * 物理机集群id
 	 */
 	private Long hclusterId;
+	private HclusterModel hcluster;
 	/*
 	 * es集群
 	 */
@@ -56,7 +59,20 @@ public class EsServer extends BaseModel {
 	 * es节点
 	 */
 	private List<EsContainer> esContainers;
+	private UserModel createUserModel;
 	
+	public UserModel getCreateUserModel() {
+		return createUserModel;
+	}
+	public void setCreateUserModel(UserModel createUserModel) {
+		this.createUserModel = createUserModel;
+	}
+	public HclusterModel getHcluster() {
+		return hcluster;
+	}
+	public void setHcluster(HclusterModel hcluster) {
+		this.hcluster = hcluster;
+	}
 	@NumberLimit(limits = {1073741824L,2147483648L,4294967296L},message = "内存大小必须在1073741824,2147483648,4294967296之中")
 	public Long getMemorySize() {
 		return memorySize;
