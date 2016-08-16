@@ -23,6 +23,12 @@
 	    <association property="esCluster" javaType="EsCluster">
 			<result column="CLUSTER_NAME" property="clusterName" />
 		</association>
+		<association property="hcluster" javaType="Hcluster">
+			<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
+		</association>
+		<association property="createUserModel" javaType="User">
+			<result column="USERNAME" property="userName" />
+		</association>
 	
 	</resultMap>
 	
@@ -179,7 +185,22 @@
 			count(1) 
 		from 
 			DA_ES es
+		left join
+			DA_ESCLUSTER cluster on cluster.ID = es.ESCLUSTER_ID 
+		left join 
+			WEBPORTAL_USER u on es.CREATE_USER = u.ID
+		left join 
+			WEBPORTAL_HCLUSTER h on es.HCLUSTER_ID = h.ID
 			<include refid="Page_Where_Clause" />
+			<if test="params != null and params.userName != null  and params.userName != ''">
+				and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+			</if>
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
+				and cluster.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
 	</select>
 	
 	
@@ -232,10 +253,25 @@
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap" parameterType="com.letv.common.dao.QueryParam">
 		select
-			<include refid="Base_Column_List" />
+			<include refid="Base_Column_List" />,cluster.CLUSTER_NAME,u.USERNAME,h.HCLUSTER_NAME_ALIAS
 		from 
 			DA_ES es
+		left join
+			DA_ESCLUSTER cluster on cluster.ID = es.ESCLUSTER_ID 
+		left join 
+			WEBPORTAL_USER u on es.CREATE_USER = u.ID
+		left join 
+			WEBPORTAL_HCLUSTER h on es.HCLUSTER_ID = h.ID
 			<include refid="Page_Where_Clause" />
+			<if test="params != null and params.userName != null  and params.userName != ''">
+				and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+			</if>
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
+				and cluster.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
 		ORDER BY es.CREATE_TIME DESC
 			<if test="page != null">
 	      		limit #{page.startRowPosition},#{page.recordsPerPage}
