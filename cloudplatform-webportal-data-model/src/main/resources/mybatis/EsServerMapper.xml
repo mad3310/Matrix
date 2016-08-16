@@ -208,7 +208,7 @@
 	            and es.NODE_COUNT=#{params.nodeCount}
 	        </if>
 	        <if test="params != null and params.status != null ">
-	            and es.STATUS=#{status,jdbcType=TINYINT,typeHandler=com.letv.portal.util.mybatis.type.IntValueEnumTypeHandler}
+	            and es.STATUS=#{params.status}
 	        </if>
 	        <if test="params != null and params.createTime != null  ">
 				and es.CREATE_TIME=#{params.createTime}
@@ -248,8 +248,8 @@
 			count(1) 
 		from 
 			DA_ES
-		<if test="status != null">
-			where STATUS = #{status}
+		<if test="value != null">
+			where STATUS = #{value}
 		</if>
 	</select>
 	
