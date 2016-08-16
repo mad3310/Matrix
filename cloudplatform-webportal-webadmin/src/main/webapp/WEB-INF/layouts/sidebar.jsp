@@ -45,8 +45,7 @@
                 <li id="sidebar-cluster-mgr">
                     <a class="dropdown-toggle" href="#"><i class="menu-icon fa fa-sitemap"></i><span class="menu-text">集群管理 </span><b class="arrow fa fa-angle-down"></b></a>
                     <ul class="submenu">
-                        <li><a href="${ctx}/list/mcluster"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">RDS集群列表</span></a><b class="arrow"></b>
-                        </li>
+                        <li><a href="${ctx}/list/mcluster"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">RDS集群列表</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/list/container"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">Node列表</span></a><b class="arrow"></b></li>
                     </ul>
                 </li>
@@ -97,9 +96,15 @@
                     </a>
                     <ul class="submenu">
                         <li><a href="${ctx}/list/es/cluster_list"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">ES集群列表</span></a><b class="arrow"></b></li>
+                        <li><a href="${ctx}/list/es/container_list"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">Node列表</span></a><b class="arrow"></b></li>
                     </ul>
                 </li>
-                <li><a href="${ctx}/list/es/container_list"><i class="menu-icon fa fa-unlink"></i><span class="menu-text">Node列表</span></a><b class="arrow"></b></li>
+                <li id="sidebar-db-mgr">
+                    <a class="dropdown-toggle" href="#"><i class="menu-icon fa fa-database"></i><span class="menu-text">数据库管理 </span><b class="arrow fa fa-angle-down"></b></a>
+                    <ul class="submenu">
+                        <li><a href="${ctx}/list/es/db"> <i class="menu-icon fa fa-caret-right"></i><span class="menu-text">数据库列表</span></a><b class="arrow"></b></li>
+                    </ul>
+                </li>
             </ul>
         </li>
         <li id='sidebar-gce-mgr'>

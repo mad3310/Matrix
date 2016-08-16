@@ -275,7 +275,7 @@
 									<span class="item-icon product-icons-48 product-icons-es"></span>
 								</a>
 								<p class="item-title">
-									<a href="/rds">搜索服务器&nbsp;<span class="item-title-short">ES</span>
+									<a href="/elasticsearch">搜索服务器&nbsp;<span class="item-title-short">ES</span>
 									</a>
 								</p>
 							</div>

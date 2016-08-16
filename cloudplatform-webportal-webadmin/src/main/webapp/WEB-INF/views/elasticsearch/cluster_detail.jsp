@@ -27,7 +27,6 @@
 							<th class="hidden-480">挂载路径</th>
 							<th class="hidden-480">zookeeper地址</th>
 							<th>状态</th>
-							<th>操作</th>
 						</tr>
 					</thead>
 					<tbody id="tby"></tbody>
