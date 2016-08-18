@@ -117,7 +117,7 @@ function queryMcluster(queryCondition,updateflag) {
  							+ "-"
 							+ "</td>");
 				}
-				var td4 = $("<td name=\"mclusterStatus\">"
+				var td4 = $("<td name=\"mclusterStatus\" status='"+array[i].status+"'>"
 							+"<a><i class=\"ace-icon fa fa-spinner fa-spin  bigger-120\"/>获取数据中...</a>"
 							+ "</td>");
 				var td5 = $("<td>"						
@@ -157,9 +157,11 @@ function getMclusterStatus(ip,obj) {
 		success : function(data) {
 			if(error(data)) return;
 			var result = data.data.result;
+			$(obj).find('[name="mclusterStatus"]').attr("status",result);
 			if(result == "0"){
 				$(obj).removeClass();
 				$(obj).find('[name="mclusterStatus"]').html("<a>正常</a>");
+				$(obj).remove();
 				//$(obj).parent().find(".normalTag").after($(obj));
 			}else if(result == "1"){
 				$(obj).removeClass();
@@ -195,7 +197,7 @@ function updateMclusterStatus(){
 	$("#tby tr").each(function(){
 		var ip = $(this).find('[name="vip"]').html();
 		if(ip != null){
-			var status = getMclusterStatus(ip,$(this));
+			getMclusterStatus(ip,$(this));
 		}
 	});
 }
