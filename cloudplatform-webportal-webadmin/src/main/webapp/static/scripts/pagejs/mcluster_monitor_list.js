@@ -131,7 +131,7 @@ function queryMcluster(queryCondition,updateflag) {
 				}else{
 					var tr = $("<tr></tr>");
 				}
-				tr.append(td1).append(td2).append(td3).append(td4).append(td5);
+				tr.append(td1).append(td2).append(td3).append(td4).append(td5).hide();
 				tr.appendTo(tby);
 			}
 			if(updateflag) {
@@ -157,10 +157,12 @@ function getMclusterStatus(ip,obj) {
 		success : function(data) {
 			if(error(data)) return;
 			var result = data.data.result;
+			$(obj).show();
 			$(obj).find('[name="mclusterStatus"]').attr("status",result);
 			if(result == "0"){
 				$(obj).removeClass();
 				$(obj).find('[name="mclusterStatus"]').html("<a>正常</a>");
+				$(obj).remove();
 				//$(obj).parent().find(".normalTag").after($(obj));
 			}else if(result == "1"){
 				$(obj).removeClass();
@@ -195,8 +197,7 @@ function getMclusterStatus(ip,obj) {
 function updateMclusterStatus(){
 	$("#tby tr").each(function(){
 		var ip = $(this).find('[name="vip"]').html();
-		var status = $(this).find('[status]').attr("status");
-		if(ip != null && status!=0){
+		if(ip != null){
 			getMclusterStatus(ip,$(this));
 		}
 	});
