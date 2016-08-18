@@ -131,7 +131,7 @@ function queryMcluster(queryCondition,updateflag) {
 				}else{
 					var tr = $("<tr></tr>");
 				}
-				tr.append(td1).append(td2).append(td3).append(td4).append(td5).hide();
+				tr.append(td1).append(td2).append(td3).append(td4).append(td5);
 				tr.appendTo(tby);
 			}
 			if(updateflag) {
@@ -157,7 +157,6 @@ function getMclusterStatus(ip,obj) {
 		success : function(data) {
 			if(error(data)) return;
 			var result = data.data.result;
-			$(obj).show();
 			$(obj).find('[name="mclusterStatus"]').attr("status",result);
 			if(result == "0"){
 				$(obj).removeClass();

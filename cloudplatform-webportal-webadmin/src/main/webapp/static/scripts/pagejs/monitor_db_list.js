@@ -134,7 +134,7 @@ function queryMcluster(queryCondition,updateflag) {
 					var tr = $("<tr></tr>");
 				}
 				
-				tr.append(tdh1).append(tdh2).append(td1).append(td2).append(td3).append(td4).append(td5).hide();
+				tr.append(tdh1).append(tdh2).append(td1).append(td2).append(td3).append(td4).append(td5);
 				tr.appendTo(tby);
 			}
 			if(updateflag) {
@@ -176,7 +176,7 @@ function getMclusterStatus(ip,obj) {
 			removeLoading();
 			if(error(data)) return;
 			var result = data.data.result;
-			$(obj).show();
+	
 			$(obj).find('[name="mclusterStatus"]').attr("status",result);
 			if(result == "0"){
 				$(obj).removeClass();
