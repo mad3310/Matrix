@@ -1,28 +1,25 @@
 package com.letv.portal.service.es;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
-import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
+import org.elasticsearch.search.facet.FacetBuilders;
+import org.elasticsearch.search.facet.terms.TermsFacet;
+import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.Ignore;
@@ -30,9 +27,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.letv.common.util.DataFormat;
 import com.letv.common.util.ESUtil;
-import com.letv.portal.constant.Constant;
 import com.letv.portal.junitBase.AbstractTest;
  
 public class QueryESTest extends AbstractTest{
@@ -176,6 +171,49 @@ public class QueryESTest extends AbstractTest{
 		}
 
 	}
+	
+	public void testFacet() {
+		//生成一般查询的统计        
+		TermsFacetBuilder termsFacet = FacetBuilders.termsFacet("termF1").field("accountId").size(10);
+		SearchResponse sr = ESUtil.getClient().prepareSearch("hermes3").setQuery(QueryBuilders.matchAllQuery())
+				.addFacet(termsFacet)
+				.execute().actionGet();
+		TermsFacet f = (TermsFacet) sr.getFacets().facetsAsMap().get("f");
+		System.out.println(f.getTotalCount());
+		System.out.println(f.getOtherCount());
+		System.out.println(f.getMissingCount());
+		for (TermsFacet.Entry entry : f) {
+			System.out.println("t:" + entry.getTerm()); // Term            
+			System.out.println("c:" + entry.getCount()); // Doc count            
+			System.out.println("----");
+		}
+	}
+	
+	 // 得到某段时间内设备列表上每个设备的数据分布情况<设备ID，数量>
+    public Map<String, String> getDeviceDistributedInfo(String startTime,
+            String endTime, List<String> deviceList) {
+
+        Map<String, String> resultsMap = new HashMap<>();
+
+        QueryBuilder deviceQueryBuilder = QueryBuilders.termQuery("", "");
+        QueryBuilder rangeBuilder = QueryBuilders.rangeQuery("").from(startTime).to(endTime);
+        QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+                .must(deviceQueryBuilder).must(rangeBuilder);
+
+        TermsBuilder termsBuilder = AggregationBuilders.terms("DeviceIDAgg").size(Integer.MAX_VALUE)
+                .field("deviceId");
+        SearchResponse searchResponse = ESUtil.getClient().prepareSearch("hermes3")
+                .setQuery(queryBuilder).addAggregation(termsBuilder)
+                .execute().actionGet();
+        Terms terms = searchResponse.getAggregations().get("DeviceIDAgg");
+        if (terms != null) {
+            for (Terms.Bucket entry : terms.getBuckets()) {
+                resultsMap.put(entry.getKey(),
+                        String.valueOf(entry.getDocCount()));
+            }
+        }
+        return resultsMap;
+    }
 	
     
 }
