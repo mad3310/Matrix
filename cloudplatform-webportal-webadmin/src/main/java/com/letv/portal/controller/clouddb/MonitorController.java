@@ -118,7 +118,7 @@ public class MonitorController {
 	}
 	/**
 	 * Methods Name: mclusterMonitorCharts <br>
-	 * Description: 监控视图<br>
+	 * Description: mcluster指标监控<br>
 	 * @author name: wujun
 	 * @param mclusterId
 	 * @param result
@@ -130,7 +130,7 @@ public class MonitorController {
 		return result;
 	}
 	/**
-	 * 获取集群监控信息
+	 * 获取container基础资源监控信息
 	 * @param mclusterId 集群id
 	 * @param chartId 监控项id
 	 * @param strategy 时间策略
