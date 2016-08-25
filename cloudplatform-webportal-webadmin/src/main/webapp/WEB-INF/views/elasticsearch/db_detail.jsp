@@ -22,8 +22,8 @@
 						<tr
 							style="background-image: none; background-color: #307ECC; color: #FFFFFF;">
 							<th>数据库名称</th>
-							<th class="hidden-480">存储</th>
-							<th>内存</th>
+							<th class="hidden-480">内存</th>
+							<th>存储</th>
 							<th class="hidden-480">节点个数</th>
 							<th>创建时间</th>
 							<th>状态</th>

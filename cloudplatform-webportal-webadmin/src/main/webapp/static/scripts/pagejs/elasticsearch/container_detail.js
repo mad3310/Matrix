@@ -45,7 +45,7 @@ function queryContainer(){
 			}
 
 			var status="<td>"+esStateTransform(tempObj.status)+"</td>";
-]	
+	
 			
 			recordsArray.push("<tr>",containerId,containerName,hostIp,ipAddr,mountDir,zookeeperIp,status,"</tr>");
 			tby.append(recordsArray.join(''));

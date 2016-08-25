@@ -100,7 +100,6 @@ $(function(){
 });
 
 function queryByPage() {
-	queryUser();
 	var mclusterName = $("#containerName").val()?$("#containerName").val():'';
 	var hclusterName = $("#Physicalcluster").find('option:selected').attr('data-hclsName')?$("#Physicalcluster").find('option:selected').attr('data-hclsName'):'';
 	var userName = $("#containeruser").find('option:selected').text()?$("#containeruser").find('option:selected').text():'';
@@ -150,7 +149,7 @@ function queryByPage() {
 				} else {
 					var esHclusterNameAlias="<td class='hidden-480'>-</td>";
 				} 
-				var esCreateUser ="<td>"+getUserNameById(tempObj.createUser)+"</td>";
+				var createUser = $("<td>"+tempObj.createUserModel.userName+"</td>");
 				var escreateTime ="<td class='hidden-480'>"+date('Y-m-d H:i:s',tempObj.createTime)+"</td>";
 				var esStatus ="<td>"+esStateTransform(tempObj.status)+"</td>";
 				var esOption ="<td></td>";
@@ -632,11 +631,12 @@ function getUserNameById(id){
 }
 
 function page_init(){
+	queryUser();
 	queryByPage();
 	searchAction();
 	formValidate();
 	pageControl();
 	$('[name = "popoverHelp"]').popover();
 	// 新添 2015-7-7
-	queryHcluster();
+	queryHcluster();	
 }

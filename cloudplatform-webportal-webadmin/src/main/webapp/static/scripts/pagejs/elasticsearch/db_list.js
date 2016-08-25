@@ -101,7 +101,6 @@ var currentSelectedLineDbName = 1;
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
 });	
 function queryByPage() {
-	queryUser();
 	var dbName = $("#dbName").val()?$("#dbName").val():'';
 	var mclusterName = $("#dbMcluster").val()?$("#dbMcluster").val():'';
 	var hclusterName = $("#dbPhyMcluster").find('option:selected').attr('data-hclsName')?$("#dbPhyMcluster").find('option:selected').attr('data-hclsName'):'';
@@ -134,75 +133,74 @@ function queryByPage() {
 			var array = data.data.data;
 			var tby = $("#tby");
 			var totalPages = data.data.totalPages;
+			var recordsArray=[];
 			
 			for (var i = 0, len = array.length; i < len; i++) {
-				var esClusterId = $("<input class=\"hidden\" type=\"text\" value=\""+array[i].esClusterId+"\"\> ");
-				var checkbox = $("<td class=\"center\">"
+				var esClusterId = "<input class=\"hidden\" type=\"text\" value=\""+array[i].esClusterId+"\"\> ";
+				var checkbox = "<td class=\"center\">"
 								+"<label class=\"position-relative\">"
 								+"<input type=\"checkbox\" class=\"ace\"/>"
 								+"<span class=\"lbl\"></span>"
 								+"</label>"
-							+"</td>");
+							+"</td>";
 				var esName;
 				if(array[i].status == "NORMAL"){
-					esName = $("<td>"
+					esName = "<td>"
 							+ "<a class=\"link\"  href=\"/detail/es/db/"+array[i].id+"\">"+array[i].esName+"</a>"
-							+ "</td>");
+							+ "</td>";
 				}else{
-					esName = $("<td>"
+					esName = "<td>"
 							+ "<span>"+array[i].esName+"</span>"
-							+ "</td>");
+							+ "</td>";
 				}
 				if(array[i].esCluster){
-					var esCluster = $("<td class='hidden-480'>"
+					var esCluster = "<td class='hidden-480'>"
 							+ "<a class=\"link\" href=\"/detail/cluster/" + array[i].esClusterId+"\">"+array[i].esCluster.clusterName+"</a>"
- 							+ "</td>");
+ 							+ "</td>";
 				} else {
-					var esCluster = $("<td class='hidden-480'> </td>");
+					var esCluster = "<td class='hidden-480'> </td>";
 				}
 				if(array[i].hcluster){
-					var hcluster = $("<td class='hidden-480'>"
+					var hcluster = "<td class='hidden-480'>"
 							+ "<a class='link' href='/detail/hcluster/" + array[i].hclusterId+"'>"+array[i].hcluster.hclusterNameAlias+"</a>"
-							+ "</td>");
+							+ "</td>";
 				} else {
-					var hcluster = $("<td class='hidden-480'> </td>");
+					var hcluster = "<td class='hidden-480'> </td>";
 				}
-				var createUser = $("<td>"
-						+ getUserNameById(array[i].createUser)
-						+ "</td>");
-				var createTime = $("<td class='hidden-480'>"
+				var createUser = "<td>"+array[i].createUserModel.userName+"</td>";
+				var createTime = "<td class='hidden-480'>"
 						+ date('Y-m-d H:i:s',array[i].createTime)
-						+ "</td>");
+						+ "</td>";
 				if(array[i].status == "AUDITFAIL"){
-					var status = $("<td>"
+					var status = "<td>"
 							+"<a href=\"#\" name=\"dbRefuseStatus\" rel=\"popover\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"top\" data-trigger='hover' data-content=\""+ array[i].auditInfo + "\" style=\"cursor:pointer; text-decoration:none;\">"
 							+ esStateTransform(array[i].status)
 							+"</a>"
-							+ "</td>");
+							+ "</td>";
 				}else if(array[i].status == "BUILDDING"){
-					var status = $("<td>"
+					var status = "<td>"
 							+"<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
 							+"<i class=\"ace-icon fa fa-spinner fa-spin green bigger-125\" />"
 							+"创建中...</a>"
-							+ "</td>");
+							+ "</td>";
 				}else{
-					var status = $("<td><a>"
+					var status = "<td><a>"
 							+ esStateTransform(array[i].status)
-							+ "</a></td>");
+							+ "</a></td>";
 				}
 		
 					
 				if(array[i].status == "DEFAULT" ||array[i].status == "ABNORMAL"){
-					var tr = $("<tr class=\"warning\"></tr>");
+					var tr = "<tr class=\"warning\">";
 					
 				}else if(array[i].status == "BUILDFAIL" ||array[i].status == "AUDITFAIL"){
-					var tr = $("<tr class=\"default-danger\"></tr>");
+					var tr = "<tr class=\"default-danger\">";
 				}else{
-					var tr = $("<tr></tr>");
+					var tr = "<tr>";
 				}
-				
-				tr.append(esClusterId).append(checkbox).append(esName).append(esCluster).append(hcluster).append(createUser).append(createTime).append(status);
-				tr.appendTo(tby);
+				recordsArray.push(tr,esClusterId,checkbox,esName,esCluster,esCluster,createUser,createTime,status,"</tr>");
+
+				tby.append(recordsArray.join(''));
 				
 				$('[name = "dbRefuseStatus"]').popover();
 			}//循环json中的数据 
@@ -392,20 +390,9 @@ function queryHcluster(){
 	});
 }
 
-function getUserNameById(id){
-	var options = $('#containeruser>option');
-	var name = "";
-	options.each(function(){
-		var option = $(this);
-		if(option.val()==id){
-			name = option.text();
-			return false;
-		}	
-	}); 
-	return name;
-}
 
 function page_init(){
+	queryUser();
 	queryByPage();
 	pageControl();
 	// 下拉表查询
