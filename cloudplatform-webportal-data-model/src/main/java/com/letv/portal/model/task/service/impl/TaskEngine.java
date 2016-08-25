@@ -26,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import com.letv.common.exception.TaskExecuteException;
 import com.letv.common.exception.ValidateException;
 import com.letv.common.session.SessionServiceImpl;
+import com.letv.common.util.ExceptionUtils;
 import com.letv.common.util.SpringContextUtil;
 import com.letv.portal.model.task.TaskChain;
 import com.letv.portal.model.task.TaskChainIndex;
@@ -405,7 +406,8 @@ class TaskEngineWorker {
 				// 对于该处的若要抛出Exception，不需要在进rollBack,直接interrupt
 				try {
 					taskResult.setSuccess(false);
-					taskResult.setResult(e.getMessage());
+					String stackTraceStr = ExceptionUtils.getRootCauseStackTrace(e);
+					taskResult.setResult(stackTraceStr);
 					taskResult.setParams(prevParams);
 					baseTask.rollBack(taskResult);
 				} catch (Exception e1) {
