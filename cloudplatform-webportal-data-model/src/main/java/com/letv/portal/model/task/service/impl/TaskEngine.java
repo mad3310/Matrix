@@ -525,6 +525,7 @@ class TaskEngineWorker {
 		if (null == taskChain)
 			return taskChain;
 		taskChain.setStatus(TaskExecuteStatus.DOING);
+		taskChain.setResult("");
 		taskChain.setStartTime(new Date());
 		taskChain.setUpdateUser(userId);
 		this.taskChainService.updateBySelective(taskChain);
