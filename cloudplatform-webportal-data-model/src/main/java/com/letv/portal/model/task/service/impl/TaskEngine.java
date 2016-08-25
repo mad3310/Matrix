@@ -309,12 +309,17 @@ class TaskEngineWorker {
 		IBaseTaskService baseTask = null;
 		String errMsg = null;
 		TaskResult taskResult = new TaskResult();
+		//上个环节params
+		Map<String,Object> prevParams = new HashMap<String,Object>();
+		//当前环节执行beforeExecute后的params
+		Map<String,Object> beforParams = new HashMap<String,Object>();
 		try {
 			taskChain = onBeforeExecTaskChain(taskChain);
 			String taskBeanName = taskChain.getTemplateTaskDetail()
 					.getBeanName();
 			String paramsJsonStr = taskChain.getParams();
 			Map<String, Object> params = fromJson(paramsJsonStr);
+			prevParams.putAll(params);
 			baseTask = (IBaseTaskService) SpringContextUtil.getBean(taskBeanName);
 			if (null == baseTask) {
 				errMsg = MessageFormat
@@ -331,8 +336,14 @@ class TaskEngineWorker {
 			} else {
 				baseTask.beforExecute(params);
 			}
+			beforParams.putAll(params);
 			int retry = 1;
 			do {
+				//重试时，总保证进execute方法时params是beforeExecute后的结果
+				if(!params.equals(beforParams)){
+					params.clear();
+					params.putAll(beforParams);
+				}
 				if (retry > 1)
 					Thread.sleep(1000);
 				taskResult.setParams(params);
@@ -343,21 +354,22 @@ class TaskEngineWorker {
 									taskBeanName);
 					taskResult.setSuccess(false);
 					taskResult.setResult(errMsg);
+					taskResult.setParams(prevParams);
 					baseTask.rollBack(taskResult);
 					interrupt(taskChainIndex, taskChain, errMsg);
 					return;
 				}
-
 			} while (retry++ < taskChain.getTemplateTaskDetail().getRetry()
 					&& !taskResult.isSuccess());
-			// 为防止execute方法篡改params，这里手动赋值以为后续onExecTaskChain、rollback和finish使用
-			taskResult.setParams(params);
 			if (!taskResult.isSuccess()) {
+				taskResult.setParams(prevParams);
 				baseTask.rollBack(taskResult);
 				interrupt(taskChainIndex, taskChain, taskResult.getResult());
 				return;
 			}
 			if (taskResult.isSuccess()) {
+				//聚合execute和beforeExecute结果
+				params.putAll(beforParams);
 				// 判断是执行新方法afterExecute还是过期方法callBack，规则见isNextRunDest方法详细定义
 				boolean isExistAfterExecute = isNextRunMethod(
 						baseTask.getClass(), "afterExecute", "callBack",
@@ -394,12 +406,13 @@ class TaskEngineWorker {
 				try {
 					taskResult.setSuccess(false);
 					taskResult.setResult(e.getMessage());
+					taskResult.setParams(prevParams);
 					baseTask.rollBack(taskResult);
 				} catch (Exception e1) {
 					e = e1;
 				}
 			}
-			interrupt(taskChainIndex, taskChain, e.getMessage());
+			interrupt(taskChainIndex, taskChain, e);
 			return;
 		}
 	}
@@ -411,14 +424,25 @@ class TaskEngineWorker {
 	 *            任务流实例信息
 	 * @param taskChain
 	 *            任务单元实例信息
-	 * @param errMsg
-	 *            提示错误信息
+	 * @param err
+	 *            错误对象	要使用interrupt方法，该参数必须不为空，且必须为String/Exception类型
 	 * @author linzhanbo .
 	 * @since 2016年7月27日, 下午3:06:36 .
 	 * @version 1.0 .
 	 */
 	private void interrupt(TaskChainIndex taskChainIndex, TaskChain taskChain,
-			String errMsg) {
+			Object err) {
+		String errMsg = "";
+		TaskExecuteException texcept = null;
+		//
+		if(err instanceof String){
+			errMsg = (String) err;
+			texcept = new TaskExecuteException(errMsg);
+		}else if(err instanceof Exception){
+			Exception ex = (Exception) err;
+			errMsg = ex.getMessage();
+			texcept = new TaskExecuteException(ex);
+		}
 		TaskResult taskResult = new TaskResult();
 		taskResult.setSuccess(false);
 		taskResult.setResult(errMsg);
@@ -435,8 +459,7 @@ class TaskEngineWorker {
 				"The {}th links of the process {} is error,the service_name is {},the cluster_name is {}",
 				taskChain.getExecuteOrder(), taskChainIndex.getTemplateTask()
 						.getName(), taskChainIndex.getServiceName(),
-				taskChainIndex.getClusterName(), new TaskExecuteException(
-						errMsg));
+				taskChainIndex.getClusterName(), texcept);
 	}
 
 	/**
