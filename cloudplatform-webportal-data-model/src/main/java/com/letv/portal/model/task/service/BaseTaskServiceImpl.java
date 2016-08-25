@@ -84,24 +84,24 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 			resultMap = fromJson(resultObject.getResult());
 		}catch(Exception ex){
 			taskResult.setSuccess(false);
-			taskResult.setResult(MessageFormat.format("Analyze apiResultObject failed: {}",ex.getMessage()));
+			taskResult.setResult(MessageFormat.format("Analyze apiResultObject failed: {0}",ex.getMessage()));
 			return taskResult;
 		}
 		if(CollectionUtils.isEmpty(resultMap)) {
 			taskResult.setSuccess(false);
-			taskResult.setResult(MessageFormat.format("Analyze apiResultObject from '{}' failed: result is null",resultObject.getUrl()));
+			taskResult.setResult(MessageFormat.format("Analyze apiResultObject from {0} failed: result is null",resultObject.getUrl()));
 			return taskResult;
 		}
 		Map<String,Object> metaMap = (Map<String, Object>) resultMap.get("meta");
 		if(CollectionUtils.isEmpty(metaMap)){
 			taskResult.setSuccess(false);
-			taskResult.setResult(MessageFormat.format("Analyze apiResultObject from '{}' failed: meta property is not found,when json is ''",resultObject.getUrl(),resultObject.getResult()));
+			taskResult.setResult(MessageFormat.format("Analyze apiResultObject from {0} failed: meta property is not found,when json is {1}",resultObject.getUrl(),resultObject.getResult()));
 			return taskResult;
 		}
 		String code = metaMap.get("code").toString();
 		if(StringUtils.isEmpty(code)){
 			taskResult.setSuccess(false);
-			taskResult.setResult(MessageFormat.format("Analyze apiResultObject from '{}' failed: code property is not found,when json is ''",resultObject.getUrl(),resultObject.getResult()));
+			taskResult.setResult(MessageFormat.format("Analyze apiResultObject from {0} failed: code property is not found,when json is {1}",resultObject.getUrl(),resultObject.getResult()));
 			return taskResult;
 		}
 		boolean isSucess = Constant.PYTHON_API_RESPONSE_SUCCESS.equals(code);
@@ -113,7 +113,7 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 				//暂时延续以前做法，篡改params，在离开execute方法前，如果还需要通用params，请手动setParams(params)，如果不修改，后续的taskResult对象的params已经是篡改后的，
 				//就算后续进rollBack、afterExecute，以后确定到底需要否
 				taskResult.setParams(responseMap);
-				taskResult.setResult(MessageFormat.format("Analyze apiResultObject from '{}' failed: response property is not found,when json is ''",resultObject.getUrl(),resultObject.getResult()));
+				taskResult.setResult(MessageFormat.format("Analyze apiResultObject from {0} failed: response property is not found,when json is {1}",resultObject.getUrl(),resultObject.getResult()));
 				return taskResult;
 			}else{
 				String successMsg = (String) responseMap.get("message");
@@ -121,11 +121,11 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 			}
 		}else{
 			taskResult.setResult(
-					MessageFormat.format("When api url is '{0}', The data on failure. The error message is as follows:{1}", 
+					MessageFormat.format("When api url is {0}, The data on failure. The error message is as follows:{1}", 
 							resultObject.getUrl(),resultObject.getResult()));
 			/*Integer errorType =  (Integer) metaMap.get("errorType");
 			String errorDetail = (String) metaMap.get("errorDetail");
-			StringBuffer sb = new StringBuffer(MessageFormat.format("When api url is '{0}',The data on failure.", resultObject.getUrl()));
+			StringBuffer sb = new StringBuffer(MessageFormat.format("When api url is {0},The data on failure.", resultObject.getUrl()));
 			if(errorType != null){
 				sb.append(MessageFormat.format(" errorType:{0}.", errorType));
 			}
@@ -153,7 +153,7 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 		String resultCode = responseMap.get("code").toString();
 		if(StringUtils.isEmpty(resultCode)){
 			taskResult.setSuccess(false);
-			taskResult.setResult(MessageFormat.format("Analyze apiResultObject from '{}' failed: response's code property is not found,when json is ''",resultObject.getUrl(),resultObject.getResult()));
+			taskResult.setResult(MessageFormat.format("Analyze apiResultObject from {0} failed: response's code property is not found,when json is {1}",resultObject.getUrl(),resultObject.getResult()));
 			return taskResult;
 		}
 		boolean isSucess = Constant.PYTHON_API_RESULT_SUCCESS.equals(resultCode);
@@ -163,7 +163,7 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 			taskResult.setParams(responseMap);
 		} else {
 			taskResult.setResult(
-					MessageFormat.format("When api url is '{0}', The data on failure. The error message is as follows:{1}", 
+					MessageFormat.format("When api url is {0}, The data on failure. The error message is as follows:{1}", 
 							resultObject.getUrl(),resultObject.getResult()));
 		}
 		return taskResult;
