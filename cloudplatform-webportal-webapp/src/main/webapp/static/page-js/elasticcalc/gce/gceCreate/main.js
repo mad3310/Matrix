@@ -40,7 +40,12 @@ define(function(require){
         }
     })
     /*按钮组件封装 --end*/
-
+    
+    $('.divselect').find("ul li").unbind("click").click(function(){
+        var txt = $(this).find('a').text();
+        $("#bill_buyNum").text(txt);
+    }); 
+    
     /*表单验证 --begin*/
     $("#monthPurchaseForm").bootstrapValidator({
         message: 'This value is not valid',

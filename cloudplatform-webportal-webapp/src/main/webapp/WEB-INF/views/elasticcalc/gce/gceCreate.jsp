@@ -99,7 +99,7 @@
 									<dt class="bk-group-title">基本配置</dt>
 									<dd class="bk-group-detail">
 										<div class="bk-group-control"></div>
-										<div>
+										<div class="monthPurchaseForm">
 										<form id="monthPurchaseForm">
 											<div class="form-group bk-form-row col-sm-12">
 												<label class="bk-form-row-name col-sm-2" style="padding-left: 0px;">应用名称：</label>
@@ -181,7 +181,7 @@
 																	<!-- <li class="bk-select-option"><a href="javascript:;" selectid="PYTHON">python</a></li>
 																	<li class="bk-select-option"><a href="javascript:;" selectid="PHP">php</a></li> -->
 																	<li class="bk-select-option"><a href="javascript:;" selectid="tomcat">tomcat</a></li>
-																	<li class="bk-select-option"><a href="javascript:;" selectid="jetty">java</a></li>
+																	<li class="bk-select-option"><a href="javascript:;" selectid="jetty">jetty</a></li>
 																	<li class="bk-select-option"><a href="javascript:;" selectid="resin">resin</a></li>
 																	</ul>
 																	<input name="type" type="hidden" value="tomcat" />
@@ -317,7 +317,7 @@
 						</div>
 						<div class="col-sm-12 col-md-3">
 							<div class="bk-orders-menu  bk-mb4">
-								<span class="bk-orders-menu-name">购买清单</span> <span class="bk-orders-menu-quantity bk-pale">1台</span>
+								<span class="bk-orders-menu-name">购买清单</span> <span class="bk-orders-menu-quantity bk-pale" id="bill_buyNum">1台</span>
 							</div>
 							<div class="bk-scope bk-items bk-mb4">
 								<div class="bk-items-title">当前配置</div>

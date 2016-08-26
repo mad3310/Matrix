@@ -99,12 +99,7 @@
                         <li><a href="${ctx}/list/es/container_list"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">Node列表</span></a><b class="arrow"></b></li>
                     </ul>
                 </li>
-                <li id="sidebar-db-mgr">
-                    <a class="dropdown-toggle" href="#"><i class="menu-icon fa fa-database"></i><span class="menu-text">数据库管理 </span><b class="arrow fa fa-angle-down"></b></a>
-                    <ul class="submenu">
-                        <li><a href="${ctx}/list/es/db"> <i class="menu-icon fa fa-caret-right"></i><span class="menu-text">数据库列表</span></a><b class="arrow"></b></li>
-                    </ul>
-                </li>
+				<li><a href="${ctx}/list/es/db"> <i class="menu-icon fa fa-caret-right"></i><span class="menu-text">ES列表</span></a><b class="arrow"></b></li>
             </ul>
         </li>
         <li id='sidebar-gce-mgr'>

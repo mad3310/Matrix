@@ -24,7 +24,7 @@
 			    <div class="input-group pull-right col-sm-12 col-xs-12 col-md-12">
 					<form class="form-inline">
 						<div class="form-group col-sm-6 col-xs-12 col-md-2">
-							<input type="text" class="form-control" id="dbName" placeholder="数据库名称">
+							<input type="text" class="form-control" id="dbName" placeholder="ES名称">
 						</div>
 						<div class="form-group col-sm-6 col-xs-12 col-md-2">
 							<input type="text" class="form-control" id="dbMcluster" placeholder="所属ES集群">
@@ -133,7 +133,7 @@
 
 		<div class="widget-box widget-color-blue ui-sortable-handle col-xs-12">
 			<div class="widget-header">
-				<h5 class="widget-title">数据库列表</h5>
+				<h5 class="widget-title">ES列表</h5>
 			</div>
 			<div class="widget-body">
 				<div class="widget-main no-padding">
@@ -146,8 +146,8 @@
 									<span class="lbl"></span>
 								</label>
 							</th>
-							<th>数据库名称</th>
-							<th  class="hidden-480">所属RDS集群</th>
+							<th>ES名称</th>
+							<th  class="hidden-480">所属ES集群</th>
 							<th  class="hidden-480">所属物理机集群</th>
 							<th>所属用户</th>
 							<th  class="hidden-480">
