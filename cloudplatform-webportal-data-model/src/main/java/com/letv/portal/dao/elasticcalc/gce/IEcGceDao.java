@@ -5,6 +5,8 @@
  */
 package com.letv.portal.dao.elasticcalc.gce;
 
+import java.util.Map;
+
 import com.letv.common.dao.IBaseDao;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
 
@@ -15,5 +17,5 @@ import com.letv.portal.model.elasticcalc.gce.EcGce;
  * @version 1.0 .
  */
 public interface IEcGceDao extends IBaseDao<EcGce> {
-
+	public Integer selectBySelectiveCount(Map<String,Object> exParams);
 }

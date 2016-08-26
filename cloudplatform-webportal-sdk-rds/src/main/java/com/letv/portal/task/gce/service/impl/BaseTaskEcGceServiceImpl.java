@@ -1,5 +1,6 @@
 package com.letv.portal.task.gce.service.impl;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.exception.ValidateException;
@@ -18,6 +20,7 @@ import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.model.HostModel;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
 import com.letv.portal.model.elasticcalc.gce.EcGceCluster;
+import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 import com.letv.portal.model.elasticcalc.gce.EcGceImage;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
 import com.letv.portal.model.task.TaskResult;
@@ -26,6 +29,7 @@ import com.letv.portal.model.task.service.IBaseTaskService;
 import com.letv.portal.service.IHostService;
 import com.letv.portal.service.IUserService;
 import com.letv.portal.service.elasticcalc.gce.IEcGceClusterService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceContainerService;
 import com.letv.portal.service.elasticcalc.gce.IEcGceImageService;
 import com.letv.portal.service.elasticcalc.gce.IEcGcePackageService;
 import com.letv.portal.service.elasticcalc.gce.IEcGceService;
@@ -41,7 +45,10 @@ public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBa
 	private IEcGcePackageService ecGcePackageService;
 	@Autowired
 	private IEcGceImageService ecGceImageService;
-	
+	@Autowired
+	private IEcGceContainerService ecGceContainerService;
+	@Value("${matrix.gce.container.port}")
+	private String containerPort;
 	
 	private final static Logger logger = LoggerFactory.getLogger(BaseTaskEcGceServiceImpl.class);
 	
@@ -101,19 +108,44 @@ public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBa
 		Map<String, Object> params = (Map<String, Object>) tr.getParams();
 		EcGcePackage gcePackage = this.getGcePackage(params);
 		EcGceCluster cluster = this.getGceCluster(params);
-		String serverName =  (String) params.get("serviceName");
+		//String serverName =  (String) params.get("serviceName");
+		EcGce gce = this.getGce(params);
 		if(tr.isSuccess()) {
+			StringBuffer ips = new StringBuffer();
+			List<EcGceContainer> containers = this.getGceContainers(params);
+			for(EcGceContainer container:containers){
+				ips.append(MessageFormat.format("<a href=\"http://{0}:{1}\">http://{2}:{3}</a><br/>", 
+						container.getIpAddr(),containerPort,container.getIpAddr(),containerPort));
+			}
 			gcePackage.setStatus(GcePackageStatus.NORMAL.getValue());
 			cluster.setStatus(MclusterStatus.RUNNING.getValue());
 			Map<String, Object> emailParams = new HashMap<String,Object>();
-			emailParams.put("gceName", serverName);
-			this.email4User(emailParams, gcePackage.getCreateUser(),"gce/createGce.ftl");
+			emailParams.put("gceName", gce.getGceName());
+			emailParams.put("ver", gcePackage.getVersion());
+			emailParams.put("ips", ips.toString());
+			this.email4User(emailParams, gcePackage.getCreateUser(),"elasticcalc/gce/createEcGce.ftl");
 		} else {
 			gcePackage.setStatus(GcePackageStatus.BUILDFAIL.getValue());
 			cluster.setStatus(MclusterStatus.BUILDFAIL.getValue());
 		}
 		this.ecGcePackageService.updateBySelective(gcePackage);
 		this.ecGceClusterService.updateBySelective(cluster);
+	}
+	
+	private List<EcGceContainer> getGceContainers(Map<String, Object> params) {
+		Long gceId = getLongFromObject(params.get("gceId"));
+		if(null == gceId)
+			throw new ValidateException("params's gceId is null");
+		Long gcePackageId = getLongFromObject(params.get("gcePackageId"));
+		if(null == gcePackageId)
+			throw new ValidateException("params's gcePackageId is null");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("gceId", gceId);
+		map.put("gcePackageId", gcePackageId);
+		List<EcGceContainer> containers = ecGceContainerService.selectByMap(map);
+		if(CollectionUtils.isEmpty(containers))
+			throw new ValidateException("gceContainerService is null by gceId:" + gceId);
+		return containers;
 	}
 	
 	public EcGceImage getGceImage(Map<String, Object> params) {

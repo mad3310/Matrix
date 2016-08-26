@@ -49,8 +49,8 @@ public class EsProxyImpl extends BaseProxyImpl<EsServer> implements IEsProxy{
 		Map<String,Object> exParams = new HashMap<String,Object>();
 		exParams.put("esName", esServer.getEsName());
 		exParams.put("createUser", esServer.getCreateUser());
-		List<EsServer> ess = this.esServerService.selectByMap(exParams);
-		if(!CollectionUtils.isEmpty(ess)) {
+		int existLength = this.esServerService.selectBySelectiveCount(exParams);
+		if(existLength > 0) {
 			throw new ValidateException(MessageFormat.format("{0}应用已存在", esServer.getEsName()));
 		}
 		//4.保存ES和ES集群信息

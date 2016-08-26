@@ -31,54 +31,67 @@
 		g.STATUS, g.DELETED, g.CREATE_TIME, g.UPDATE_TIME,
 		g.CREATE_USER, g.UPDATE_USER
 	</sql>
+	
+	<sql id="Base_Where_Clause">
+		<if test="id != null  ">
+			and g.ID=#{id}
+		</if>
+		<if test="descn != null and descn != ''">
+			and g.DESCN=#{descn}
+		</if>
+		<if test="areaId != null and areaId != ''  ">
+			and g.AREA_ID=#{areaId}
+		</if>
+		<if test="hclusterId != null and hclusterId != ''  ">
+			and g.HCLUSTER_ID=#{hclusterId}
+		</if>
+		<if test="type != null and type != ''  ">
+			and g.TYPE=#{type}
+		</if>
+		<if test="logId != null and logId != ''  ">
+			and g.LOG_ID=#{logId}
+		</if>
+		<if test="memorySize != null and memorySize != ''  ">
+			and g.MEMORY_SIZE=#{memorySize}
+		</if>
+		<if test="instanceNum != null and instanceNum != ''  ">
+			and g.INSTANCE_NUM=#{instanceNum}
+		</if>
+		<if test="status != null and status != ''  ">
+			and g.STATUS=#{status}
+		</if>
+		<if test="deleted != null and deleted != ''  ">
+			and g.DELETED=#{deleted}
+		</if>
+		<if test="createTime != null and createTime != ''  ">
+			and g.CREATE_TIME=#{createTime}
+		</if>
+		<if test="updateTime != null and updateTime != ''  ">
+			and g.UPDATE_TIME=#{updateTime}
+		</if>
+		<if test="createUser != null and createUser != ''  ">
+			and g.CREATE_USER=#{createUser}
+		</if>
+		<if test="updateUser != null and updateUser != ''  ">
+			and g.UPDATE_USER=#{updateUser}
+		</if>
+	</sql>
 	<!-- 查询条件 -->
 	<sql id="Example_Where_Clause">
 		where 1=1
 		<trim suffixOverrides=",">
-			<if test="id != null  ">
-				and g.ID=#{id}
-			</if>
+			<include refid="Base_Where_Clause" />
 			<if test="gceName != null  and gceName != '' and gceName != 'null'">
 				and g.GCE_NAME like CONCAT('%',#{gceName},'%') escape '^'
 			</if>
-			<if test="descn != null and descn != ''">
-				and g.DESCN=#{descn}
-			</if>
-			<if test="areaId != null and areaId != ''  ">
-				and g.AREA_ID=#{areaId}
-			</if>
-			<if test="hclusterId != null and hclusterId != ''  ">
-				and g.HCLUSTER_ID=#{hclusterId}
-			</if>
-			<if test="type != null and type != ''  ">
-				and g.TYPE=#{type}
-			</if>
-			<if test="logId != null and logId != ''  ">
-				and g.LOG_ID=#{logId}
-			</if>
-			<if test="memorySize != null and memorySize != ''  ">
-				and g.MEMORY_SIZE=#{memorySize}
-			</if>
-			<if test="instanceNum != null and instanceNum != ''  ">
-				and g.INSTANCE_NUM=#{instanceNum}
-			</if>
-			<if test="status != null and status != ''  ">
-				and g.STATUS=#{status}
-			</if>
-			<if test="deleted != null and deleted != ''  ">
-				and g.DELETED=#{deleted}
-			</if>
-			<if test="createTime != null and createTime != ''  ">
-				and g.CREATE_TIME=#{createTime}
-			</if>
-			<if test="updateTime != null and updateTime != ''  ">
-				and g.UPDATE_TIME=#{updateTime}
-			</if>
-			<if test="createUser != null and createUser != ''  ">
-				and g.CREATE_USER=#{createUser}
-			</if>
-			<if test="updateUser != null and updateUser != ''  ">
-				and g.UPDATE_USER=#{updateUser}
+		</trim>
+	</sql>
+	<sql id="Example2_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<include refid="Base_Where_Clause" />
+			<if test="gceName != null  and gceName != '' and gceName != 'null'">
+				and g.GCE_NAME=#{gceName}
 			</if>
 		</trim>
 	</sql>
@@ -160,6 +173,7 @@
 			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
 		</if>
 	</select>
+	
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
@@ -180,6 +194,11 @@
 		<if test="page != null">
       		limit #{page.startRowPosition},#{page.recordsPerPage}
     	</if>
+	</select>
+	<select id="selectBySelectiveCount" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		select count(1) from EC_GCE g
+		<include refid="Example2_Where_Clause" />
 	</select>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"

@@ -5,6 +5,8 @@
  */
 package com.letv.portal.service.elasticcalc.gce;
 
+import java.util.Map;
+
 import com.letv.portal.model.elasticcalc.gce.EcGce;
 import com.letv.portal.model.elasticcalc.gce.EcGceExt;
 import com.letv.portal.service.IBaseService;
@@ -34,4 +36,13 @@ public interface IEcGceService extends IBaseService<EcGce> {
 	 * @version 1.0 .
 	 */
 	public EcGceExt selectGceExtByGceId(Long gceId);
+	/**
+	 * 使用查询条件查询GCE数量
+	 * @param exParams
+	 * @return
+	 * @author linzhanbo .
+	 * @since 2016年8月26日, 下午2:47:20 .
+	 * @version 1.0 .
+	 */
+	public Integer selectBySelectiveCount(Map<String,Object> exParams);
 }
