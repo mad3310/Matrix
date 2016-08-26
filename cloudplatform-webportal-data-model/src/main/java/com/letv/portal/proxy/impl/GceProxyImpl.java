@@ -119,6 +119,8 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	private String AWSS3SECRETKEY;
 	@Value("${matrix.gce.awss3.bucketName}")
 	private String AWSS3BUCKETNAME;
+	@Value("${matrix.gce.package.suffix}")
+	private String packageSuffix;
 	@Override
 	public void saveAndBuild(GceServer gceServer,Long rdsId,Long ocsId) {	
 		if(gceServer == null)
@@ -482,7 +484,12 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 			throw new ValidateException(MessageFormat.format("{0}应用{1}版本已经存在", gcePackage.getGceName(),gcePackage.getVersion()));
 		//3.接收文件，保存文件到s3上
 		String fileName = file.getOriginalFilename();
-		String suffix = fileName.substring(fileName.lastIndexOf("."));//.war
+		Boolean suffixislegal =  fileName.contains(this.packageSuffix);
+		if(!suffixislegal)
+			throw new ValidateException("应用部署包必须为zip格式文件");
+		String suffix = fileName.substring(fileName.lastIndexOf("."));
+		if(!suffix.equals(this.packageSuffix))
+			throw new ValidateException("应用部署包必须为zip格式文件");
 		try {
 			saveFileToLocal(file);
 		} catch (IllegalStateException | IOException e) {
