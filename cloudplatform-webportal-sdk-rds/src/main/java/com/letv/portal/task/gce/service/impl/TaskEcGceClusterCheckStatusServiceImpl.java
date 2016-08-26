@@ -108,14 +108,22 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 		EcGceCluster gceCluster = (EcGceCluster) params[1];
 		HostModel host = (HostModel) params[2];
 		logger.debug(System.currentTimeMillis()+" 检查集群[" + serverName + "]创建状态");
-		//TODO	与致新联调，测试环境地址
 		ApiResultObject resultObject = gcePythonService
 				.checkContainerCreateStatus(gceCluster.getClusterName(),
-						"10.154.156.129",host.getName(),host.getPassword());
-		/*ApiResultObject resultObject = gcePythonService
-				.checkContainerCreateStatus(gceCluster.getClusterName(),
-						host.getHostIp(),host.getName(),host.getPassword());*/
+						host.getHostIp(),host.getName(),host.getPassword());
 		return resultObject;
 	}
-
+	
+	@Override
+	public void afterExecute(TaskResult tr) {
+		Map<String,Object> params = (Map<String, Object>) tr.getParams();
+		String type = (String) params.get("type");
+        if(!StringUtils.isEmpty(type)) {
+            if("tomcat".equals(type.toLowerCase())){
+            	String serverName = (String) params.get("serviceName");
+            	logger.debug("部署GCE{}成功!",serverName);
+            	super.finish(tr);
+            }
+        }
+	}
 }

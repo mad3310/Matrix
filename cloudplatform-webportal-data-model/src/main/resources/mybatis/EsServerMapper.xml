@@ -177,7 +177,13 @@
 	        DA_ES es
 	        <include refid="Common2_Where_Clause" />
 	</select>
-	
+	<select id="selectBySelectiveCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+	    select
+	        count(1)
+	    from
+	        DA_ES es
+	        <include refid="Common2_Where_Clause" />
+	</select>
 	
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">

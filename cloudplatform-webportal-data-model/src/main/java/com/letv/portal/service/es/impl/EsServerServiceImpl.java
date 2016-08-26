@@ -137,4 +137,9 @@ public class EsServerServiceImpl extends BaseServiceImpl<EsServer> implements IE
 		return this.esServerDao.selectByMapCount(param);
 	}
 
+	@Override
+	public Integer selectBySelectiveCount(Map<String, Object> exParams) {
+		return this.esServerDao.selectBySelectiveCount(exParams);
+	}
+
 }

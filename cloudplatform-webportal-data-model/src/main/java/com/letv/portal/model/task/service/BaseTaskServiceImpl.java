@@ -110,14 +110,12 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 			Map<String,Object> responseMap = (Map<String, Object>) resultMap.get("response");
 			if(CollectionUtils.isEmpty(responseMap)){
 				taskResult.setSuccess(false);
-				//暂时延续以前做法，篡改params，在离开execute方法前，如果还需要通用params，请手动setParams(params)，如果不修改，后续的taskResult对象的params已经是篡改后的，
-				//就算后续进rollBack、afterExecute，以后确定到底需要否
-				taskResult.setParams(responseMap);
 				taskResult.setResult(MessageFormat.format("Analyze apiResultObject from {0} failed: response property is not found,when json is {1}",resultObject.getUrl(),resultObject.getResult()));
 				return taskResult;
 			}else{
 				String successMsg = (String) responseMap.get("message");
-				taskResult.setResult(StringUtils.isEmpty(successMsg)?"operea successfully!":successMsg);
+				taskResult.setParams(responseMap);
+				taskResult.setResult(StringUtils.isEmpty(successMsg)?"opera successfully!":successMsg);
 			}
 		}else{
 			taskResult.setResult(
@@ -159,8 +157,9 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 		boolean isSucess = Constant.PYTHON_API_RESULT_SUCCESS.equals(resultCode);
 		taskResult.setSuccess(isSucess);
 		if(isSucess) {
-			taskResult.setResult((String) responseMap.get("message"));
+			String successMsg = (String) responseMap.get("message");
 			taskResult.setParams(responseMap);
+			taskResult.setResult(StringUtils.isEmpty(successMsg)?"opera successfully!":successMsg);
 		} else {
 			taskResult.setResult(
 					MessageFormat.format("When api url is {0}, The data on failure. The error message is as follows:{1}", 
