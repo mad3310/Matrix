@@ -482,7 +482,8 @@ class TaskEngineWorker {
 			TaskChain taskChain, TaskResult taskResult)
 			throws JsonGenerationException, JsonMappingException, IOException {
 		taskChain.setStatus(TaskExecuteStatus.SUCCESS);
-		taskChain.setResult(taskResult.getResult());
+		String successMsg = taskResult.getResult();
+		taskChain.setResult(StringUtils.isEmpty(successMsg)?"opera successfully!":successMsg);
 		taskChain.setEndTime(new Date());
 		taskChain.setUpdateUser(userId);
 		this.taskChainService.updateBySelective(taskChain);

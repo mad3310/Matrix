@@ -382,7 +382,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		exParams.put("hclusterId", gce.getHclusterId());
 		exParams.put("areaId", gce.getAreaId());
 		exParams.put("createUser", gce.getCreateUser());
-		Integer existLength = this.ecGceService.selectByMapCount(exParams);
+		Integer existLength = this.ecGceService.selectBySelectiveCount(exParams);
 		if(existLength>0){
 			throw new ValidateException(MessageFormat.format("{0}应用已存在", gce.getGceName()));
 		}
@@ -472,8 +472,15 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		if(gce.getStatus()==GceStatus.NOTAVAILABLE.getValue()){
 			throw new ValidateException(MessageFormat.format("{0}应用不可用", gce.getGceName()));
 		}
+		//2.检查该版本是否已经存在
+		exParams.clear();
 		gcePackage.setGceId(gce.getId());
-		//2.接收文件，保存文件到s3上
+		exParams.put("gceId", gcePackage.getGceId());
+		exParams.put("version", gcePackage.getVersion());
+		int count = this.ecGcePackageService.selectByMapCount(exParams);
+		if(count > 0)
+			throw new ValidateException(MessageFormat.format("{0}应用{1}版本已经存在", gcePackage.getGceName(),gcePackage.getVersion()));
+		//3.接收文件，保存文件到s3上
 		String fileName = file.getOriginalFilename();
 		String suffix = fileName.substring(fileName.lastIndexOf("."));//.war
 		try {
@@ -487,14 +494,14 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		AWS3SConn conn = builder.setEndpoint(this.AWSS3ENDPOINT).setAccessKey(this.AWSS3ACCESSKEY)
 				.setSecretKey(this.AWSS3SECRETKEY).build();
 		AWSS3Util.getInstance(conn).upload(this.AWSS3BUCKETNAME,key,filePath);
-		//3.保存GcePackage到数据库
+		//4.保存GcePackage到数据库
 		gcePackage.setSuffix(suffix);
 		gcePackage.setBucketName(this.AWSS3BUCKETNAME);
 		gcePackage.setKey(key);
 		gcePackage.setStatus(GcePackageStatus.DEFAULT.getValue());
 		//TODO	将返回数据放到map，消耗性能不考虑
 		this.ecGcePackageService.insert(gcePackage);
-		//4.删除暂存在本地的文件
+		//5.删除暂存在本地的文件
 		removeFileFromLocal(fileName);
 	}
 	@Override

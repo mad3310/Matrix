@@ -71,4 +71,7 @@ public class TaskEcGceAddFixedPushServiceImpl extends BaseTaskEcGceServiceImpl
 	@Override
 	public void rollBack(TaskResult tr) {
 	}
+	@Override
+	public void beforeExecute(Map<String, Object> params) {
+	}
 }

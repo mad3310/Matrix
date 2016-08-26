@@ -65,4 +65,9 @@ public class EcGceServiceImpl extends BaseServiceImpl<EcGce> implements
 		return null;
 	}
 
+	@Override
+	public Integer selectBySelectiveCount(Map<String, Object> exParams) {
+		return this.ecGceDao.selectBySelectiveCount(exParams);
+	}
+
 }
