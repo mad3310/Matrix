@@ -23,6 +23,10 @@ public class TaskEsFixedPushServiceImpl extends BaseTask4EsServiceImpl implement
 	private final static Logger logger = LoggerFactory.getLogger(TaskEsFixedPushServiceImpl.class);
 	
 	@Override
+	public void beforeExecute(Map<String, Object> params) {
+	}
+	
+	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception {
 		TaskResult tr = super.execute(params);
 		if(!tr.isSuccess())
