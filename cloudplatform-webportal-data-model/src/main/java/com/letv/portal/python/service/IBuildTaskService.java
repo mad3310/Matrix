@@ -185,4 +185,8 @@ public interface IBuildTaskService {
 	  */
 	public void collectMysqlMonitorBaseSpaceData(String dbName, ContainerModel container, List<MonitorIndexModel> indexs,Date date);
 	
+	/**
+	 * 检查数据库表反例和无主键
+	 */
+	void checkDbStruc();
 }

@@ -221,13 +221,23 @@ public class HttpClient {
 			response = sendRequest(httpclient, httpost);
 			body = paseResponse(response);
 		} catch (IOException e) {
-			body = MessageFormat
-					.format("{\"meta\": {\"code\": 400}, \"response\": {\"error_code\": \"{0}\", \"errorDetail\": \"{1}\"}}",
-							e.getMessage(), e.getMessage());
+			body = getCommonExceptionResult(e.getMessage());
+			logger.error("http invoke has error:", e);
 		}
 		return body;
 	}
-
+	
+	private static String getCommonExceptionResult(String message) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("{\"meta\": {\"code\": 400, \"errorType\": \"");
+		builder.append(message);
+		builder.append("\", \"errorDetail\": \"");
+		builder.append(message);
+		builder.append("\"}}");
+		logger.info(builder.toString());
+		return builder.toString();
+	}
+	
 	private static String paseResponse(HttpResponse response) {
 		logger.info("get response from http server..");
 		if (response == null) {

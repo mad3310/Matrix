@@ -28,5 +28,12 @@ public interface IEcGcePackageService extends IBaseService<EcGcePackage> {
 	 * @version 1.0 .
 	 */
 	public Map<String, Object> insertGceAndGcePackage(EcGce gce, EcGcePackage gcePackage);
+	/**
+	 * 保存GCE集群信息
+	 * @param gce
+	 * @param gcePackage
+	 * @return
+	 */
+	public Map<String, Object> insertGceCuster(EcGce gce, EcGcePackage gcePackage);
 
 }

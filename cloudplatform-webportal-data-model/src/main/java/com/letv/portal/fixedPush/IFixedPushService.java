@@ -41,4 +41,9 @@ public interface IFixedPushService {
 	 * @return
 	 */
 	ApiResultObject manageContainerIps(String ips, String type);
+	
+	/**
+	 * 固资信息对账
+	 */
+	void fixedCheckAllFromCmdb();
 }

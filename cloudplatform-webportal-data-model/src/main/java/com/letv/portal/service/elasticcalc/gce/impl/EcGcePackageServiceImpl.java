@@ -58,6 +58,11 @@ public class EcGcePackageServiceImpl extends BaseServiceImpl<EcGcePackage>
 		Map<String,Object> params = new HashMap<String,Object>();
 		//创建GcePackage
 		this.ecGcePackageDao.insert(gcePackage);
+		return insertGceCuster(gce,gcePackage);
+	}
+	@Override
+	public Map<String, Object> insertGceCuster(EcGce gce, EcGcePackage gcePackage) {
+		Map<String,Object> params = new HashMap<String,Object>();
 		//创建GcePackageCluster
 		String gcePackName = gce.getGceName() + "_" + gcePackage.getVersion();
 		StringBuffer packClusterName = new StringBuffer();//"createUserId_GCE_CODE_gceName_version_第几个实例";

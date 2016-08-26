@@ -362,6 +362,28 @@ function translateStatus(status, resourceType) {
 		return "未知";
 	}
 }
+
+//ES状态翻译
+function esStateTransform(status){
+    if(status=='DEFAULT'){
+        return '未审核';
+    }else if(status=='RUNNING'){
+        return '运行中';
+    }else if(status=='BUILDDING'){
+        return '创建中';
+    }else if(status=='BUILDFAIL'){
+        return '创建失败';
+    }else if(status=='AUDITFAIL'){
+        return '审核失败';
+    }else if(status=='ABNORMAL'){
+        return '异常';
+    }else if(status=='NORMAL'){
+        return '正常';
+    }else{
+        return status;
+    }
+}
+
 // 状态翻译重写
 function stateTransform(status,type){
 	var defaultStatus={

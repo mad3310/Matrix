@@ -28,7 +28,7 @@ public interface IGceProxy extends IBaseProxy<GceServer> {
 	 */
 	public void createGce(EcGce gce, EcGceExt gceExt);
 	/**
-	 * 上传并保存应用包
+	 * 上传并部署应用包
 	 * @param file
 	 * @param gcePackage	应用包信息
 	 * @author linzhanbo .
@@ -36,6 +36,12 @@ public interface IGceProxy extends IBaseProxy<GceServer> {
 	 * @version 1.0 .
 	 */
 	public void uploadPackage(MultipartFile file, EcGcePackage gcePackage);
+	/**
+	 * 上传应用包
+	 * @param file
+	 * @param gcePackage
+	 */
+	void uploadPackageNoWorkflow(MultipartFile file, EcGcePackage gcePackage);
 	/**
 	 * 使用gce部署包获取该部署包所有容器信息
 	 * @param gcePackage
@@ -45,4 +51,9 @@ public interface IGceProxy extends IBaseProxy<GceServer> {
 	 * @version 1.0 .
 	 */
 	public List<EcGceContainer> getGcepackageContainers(EcGcePackage gcePackage);
+	/**
+	 * 部署应用包
+	 * @param ecGcePackage
+	 */
+	public void deployGCE(EcGcePackage ecGcePackage);
 }

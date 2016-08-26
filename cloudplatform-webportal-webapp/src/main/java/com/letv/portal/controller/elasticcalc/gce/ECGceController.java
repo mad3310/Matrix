@@ -57,7 +57,7 @@ public class ECGceController {
 	public @ResponseBody ResultObject list(Page page,
 			HttpServletRequest request, ResultObject obj) {
 		Map<String, Object> params = HttpUtil.requestParam2Map(request);
-		// params.put("createUser", sessionService.getSession().getUserId());
+		params.put("createUser", sessionService.getSession().getUserId());
 		String gceName = (String) params.get("gceName");
 		if (!StringUtils.isEmpty(gceName))
 			params.put("gceName", StringUtil.transSqlCharacter(gceName));
@@ -77,18 +77,22 @@ public class ECGceController {
 		}
 
 		gce.setCreateUser(this.sessionService.getSession().getUserId());
-		if (gceExt != null && (gceExt.getOcsId().longValue() != 0L)
-				&& (gceExt.getRdsId().longValue() != 0L)) {
-			gceExt.setCreateUser(this.sessionService.getSession().getUserId());
+		if (gceExt != null) {
+			if(gceExt.getOcsId()!=null && gceExt.getOcsId().longValue() != 0l && gceExt.getRdsId()!=null && gceExt.getRdsId().longValue() != 0L)
+				gceExt.setCreateUser(this.sessionService.getSession().getUserId());
 		}
 		// TODO 未指定地域
 		gce.setAreaId(7L);
 		try {
 			gceProxy.createGce(gce, gceExt);
+		} catch (ValidateException e) {
+			callbackResult.setResult(0);
+			callbackResult.addMsg(e.getMessage());
+			return callbackResult;
 		} catch (Exception e) {
 			logger.error("创建GCE失败:" + e.getMessage(),e);
 			callbackResult.setResult(0);
-			callbackResult.setData(e.getMessage());
+			callbackResult.addMsg("系统出现异常，请联系系统管理员!");
 			return callbackResult;
 		}
 		callbackResult.setData(gce);

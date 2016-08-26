@@ -45,8 +45,7 @@
                 <li id="sidebar-cluster-mgr">
                     <a class="dropdown-toggle" href="#"><i class="menu-icon fa fa-sitemap"></i><span class="menu-text">集群管理 </span><b class="arrow fa fa-angle-down"></b></a>
                     <ul class="submenu">
-                        <li><a href="${ctx}/list/mcluster"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">RDS集群列表</span></a><b class="arrow"></b>
-                        </li>
+                        <li><a href="${ctx}/list/mcluster"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">RDS集群列表</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/list/container"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">Node列表</span></a><b class="arrow"></b></li>
                     </ul>
                 </li>
@@ -63,8 +62,8 @@
                 <li id="sidebar-monitor-mgr">
                     <a class="dropdown-toggle" href="#"><i></i><span class="menu-text">监控管理 </span><b class="arrow fa fa-angle-down"></b></a>
                     <ul class="submenu">
-                        <li><a href="${ctx}/view/mcluster/monitor"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">container集群监控图</span></a><b class="arrow"></b></li>
-                        <li><a href="${ctx}/view/mcluster/monitor/res"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">container集群资源监控图</span></a><b class="arrow"></b></li>
+                        <li><a href="${ctx}/view/mcluster/monitor/res"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">container基础资源监控</span></a><b class="arrow"></b></li>
+                        <li><a href="${ctx}/view/mcluster/monitor"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">mcluster指标监控</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/view/mcluster/monitor/topN"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">container集群TopN监控图</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/list/rds/node/health"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">rds健康监控</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/list/rds/node/resource"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">rds资源监控</span></a><b class="arrow"></b></li>
@@ -81,6 +80,29 @@
                         <li><a href="${ctx}/list/mcluster/monitor/1"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">集群预警列表</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/list/mcluster/monitor/2"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">节点预警列表</span></a><b class="arrow"></b></li>
                         <li><a href="${ctx}/list/mcluster/monitor/3"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">数据库预警列表</span></a><b class="arrow"></b></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li id='sidebar-es-mgr'>
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-inbox"></i><span class="menu-text">ES 管理</span><b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+                <li id="sidebar-gce-cluster-mgr">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="menu-icon fa fa-sitemap"></i><span class="menu-text">集群管理</span><b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="${ctx}/list/es/cluster_list"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">ES集群列表</span></a><b class="arrow"></b></li>
+                        <li><a href="${ctx}/list/es/container_list"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">Node列表</span></a><b class="arrow"></b></li>
+                    </ul>
+                </li>
+                <li id="sidebar-db-mgr">
+                    <a class="dropdown-toggle" href="#"><i class="menu-icon fa fa-database"></i><span class="menu-text">数据库管理 </span><b class="arrow fa fa-angle-down"></b></a>
+                    <ul class="submenu">
+                        <li><a href="${ctx}/list/es/db"> <i class="menu-icon fa fa-caret-right"></i><span class="menu-text">数据库列表</span></a><b class="arrow"></b></li>
                     </ul>
                 </li>
             </ul>

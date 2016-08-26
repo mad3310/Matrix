@@ -23,6 +23,12 @@
 	    <association property="esCluster" javaType="EsCluster">
 			<result column="CLUSTER_NAME" property="clusterName" />
 		</association>
+		<association property="hcluster" javaType="Hcluster">
+			<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
+		</association>
+		<association property="createUserModel" javaType="User">
+			<result column="USERNAME" property="userName" />
+		</association>
 	
 	</resultMap>
 	
@@ -171,15 +177,116 @@
 	        DA_ES es
 	        <include refid="Common2_Where_Clause" />
 	</select>
+	
+	
 	<!-- 列表总数 -->
-	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="java.util.Map">
+	<select id="selectByMapCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">
 		select 
 			count(1) 
 		from 
 			DA_ES es
-		where
-			es.ES_NAME=#{esName} and es.CREATE_USER=#{createUser}
+		left join
+			DA_ESCLUSTER cluster on cluster.ID = es.ESCLUSTER_ID 
+		left join 
+			WEBPORTAL_USER u on es.CREATE_USER = u.ID
+		left join 
+			WEBPORTAL_HCLUSTER h on es.HCLUSTER_ID = h.ID
+			<include refid="Page_Where_Clause" />
+			<if test="params != null and params.userName != null  and params.userName != ''">
+				and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+			</if>
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
+				and cluster.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
+	</select>
+	
+	
+	<sql id="Page_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="params != null and params.id != null  ">
+				and es.ID=#{params.id}
+			</if>
+			<if test="params != null and params.esName != null and params.esName != '' ">
+				and es.ES_NAME like CONCAT('%',#{params.esName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterId != null and params.hclusterId != '' ">
+				and es.HCLUSTER_ID=#{params.hclusterId}
+			</if>
+			<if test="params != null and params.esClusterId != null and params.esClusterId != '' ">
+	            and es.ESCLUSTER_ID=#{params.esClusterId}
+	        </if>
+	        <if test="params != null and params.memorySize != null and params.memorySize != '' ">
+	            and es.MEMORY_SIZE=#{params.memorySize}
+	        </if>
+	        <if test="params != null and params.storageSize != null and params.storageSize != '' ">
+	            and es.STORAGE_SIZE=#{params.storageSize}
+	        </if>
+	        <if test="params != null and params.nodeCount != null and params.nodeCount != '' ">
+	            and es.NODE_COUNT=#{params.nodeCount}
+	        </if>
+	        <if test="params != null and params.status != null and params.status != '' ">
+	            and es.STATUS=#{params.status}
+	        </if>
+	        <if test="params != null and params.createTime != null  ">
+				and es.CREATE_TIME=#{params.createTime}
+			</if>
+			<if test="params != null and params.createUser != null  ">
+				and es.CREATE_USER=#{params.createUser}
+			</if>
+			<if test="params != null and params.updateTime != null  ">
+				and es.UPDATE_TIME=#{params.updateTime}
+			</if>
+			<if test="params != null and params.updateUser != null  ">
+				and es.UPDATE_USER=#{params.updateUser}
+			</if>
+	        <if test="params != null and params.descn != null and params.descn != ''  ">
+	            and es.DESCN=#{params.descn}
+	        </if>
+		</trim>
+	</sql>
+        	
+	
+	<!-- 分页：根据条件查询 -->
+	<select id="selectPageByMap" resultMap="BaseResultMap" parameterType="com.letv.common.dao.QueryParam">
+		select
+			<include refid="Base_Column_List" />,cluster.CLUSTER_NAME,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		from 
+			DA_ES es
+		left join
+			DA_ESCLUSTER cluster on cluster.ID = es.ESCLUSTER_ID 
+		left join 
+			WEBPORTAL_USER u on es.CREATE_USER = u.ID
+		left join 
+			WEBPORTAL_HCLUSTER h on es.HCLUSTER_ID = h.ID
+			<include refid="Page_Where_Clause" />
+			<if test="params != null and params.userName != null  and params.userName != ''">
+				and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+			</if>
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
+				and cluster.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
+		ORDER BY es.CREATE_TIME DESC
+			<if test="page != null">
+	      		limit #{page.startRowPosition},#{page.recordsPerPage}
+	    	</if>
+	</select>
+	
+	<select id="selectCountByStatus" resultType="java.lang.Integer"
+			parameterType="java.lang.Integer">
+		select 
+			count(1) 
+		from 
+			DA_ES
+		<if test="value != null">
+			where STATUS = #{value}
+		</if>
 	</select>
 	
 </mapper>   

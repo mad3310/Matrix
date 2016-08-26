@@ -1,0 +1,16 @@
+{
+  "code": "200",
+  "message": "successful",
+  "result":1,
+  "data":[{
+    "id": 1,
+    "name": "helloworld",
+    "status": 6,
+    "serverIp":"192.156.32.21",
+    "serverType":1,
+    "frontProt":3306,
+    "backendProt":3309,
+    "backendServer":"hellochina"
+  }],
+  "success": true
+}

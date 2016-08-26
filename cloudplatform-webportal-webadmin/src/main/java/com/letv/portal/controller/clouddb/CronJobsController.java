@@ -10,12 +10,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.letv.common.exception.ValidateException;
-import com.letv.common.util.DataFormat;
-import com.letv.common.util.HttpUtil;
-import com.letv.portal.model.ContainerModel;
-import com.letv.portal.service.IContainerService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +20,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.letv.common.result.ResultObject;
+import com.letv.common.util.HttpUtil;
+import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.MonitorIndexModel;
 import com.letv.portal.model.adminoplog.AoLogType;
+import com.letv.portal.model.monitor.NodeModel;
 import com.letv.portal.proxy.IBackupProxy;
 import com.letv.portal.proxy.IContainerProxy;
 import com.letv.portal.proxy.ICronJobsProxy;
-import com.letv.portal.proxy.IGceProxy;
 import com.letv.portal.proxy.IMclusterProxy;
 import com.letv.portal.proxy.IMonitorProxy;
+import com.letv.portal.python.service.IBuildTaskService;
+import com.letv.portal.service.IContainerService;
 import com.letv.portal.service.IMonitorIndexService;
 import com.letv.portal.service.IMonitorService;
 import com.letv.portal.service.adminoplog.AoLog;
@@ -58,6 +56,10 @@ public class CronJobsController {
 	private IMonitorService monitorService;
 	@Autowired
 	private IMonitorIndexService monitorIndexService;
+	@Autowired
+	private IFixedPushService fixedPushService;
+	@Autowired
+	private IBuildTaskService buildTaskService;
 
 	@Autowired
 	private ICronJobsProxy cronJobsProxy;
@@ -356,6 +358,31 @@ public class CronJobsController {
 	@RequestMapping(value="/monitor/error/clear",method=RequestMethod.GET)   
 	public @ResponseBody ResultObject deleteMonitorErrorData(HttpServletRequest request,ResultObject obj) {
 		this.monitorProxy.deleteMonitorErrorData();
+		return obj;
+	}
+	
+	/**
+	 * 固资信息对账
+	 * @param request
+	 * @param obj
+	 * @return
+	 */
+	@RequestMapping(value="/fixed/check",method=RequestMethod.GET)   
+	public @ResponseBody ResultObject fixedCheck(HttpServletRequest request,ResultObject obj) {
+		this.fixedPushService.fixedCheckAllFromCmdb();
+		return obj;
+	}
+	
+	
+	/**
+	 * 数据库表反例检查
+	 * @param request
+	 * @param obj
+	 * @return
+	 */
+	@RequestMapping(value="/db/struc/check",method=RequestMethod.GET)   
+	public @ResponseBody ResultObject nopkCheck(HttpServletRequest request,ResultObject obj) {
+		this.buildTaskService.checkDbStruc();
 		return obj;
 	}
 

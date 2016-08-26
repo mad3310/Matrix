@@ -99,6 +99,13 @@ define(function(require,exports,module){
                 return "读写"
             }
         },
+        TranslateGceType: function(type){
+            if(type == 0){
+                return "未部署";
+            }else{
+                return this.TranslateStatus(type);
+            }
+        },
         TranslateStatus : function (status){
             if (status == 0){
                 return "未审核";
@@ -1044,11 +1051,11 @@ define(function(require,exports,module){
         },
         gceTypeTranslation:function(type){
             if(type == "JETTY"){
-                return "java";
+                return "JETTY";
             }else if(type == "NGINX"){
-                return "nginx";
-            }else if(type == "NGINX_PROXY"){
-                return "nginx_proxy";
+                return "NGINX";
+            }else if(type == "TOMCAT"){
+                return "TOMCAT";
             }else{
                 return "-";
             }
