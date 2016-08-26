@@ -726,6 +726,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -825,6 +826,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -924,6 +926,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -1020,6 +1023,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -1116,6 +1120,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -1212,6 +1217,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
