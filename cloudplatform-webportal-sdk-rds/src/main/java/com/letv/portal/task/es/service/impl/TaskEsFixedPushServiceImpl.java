@@ -51,4 +51,8 @@ public class TaskEsFixedPushServiceImpl extends BaseTask4EsServiceImpl implement
 	public void callBack(TaskResult tr) {
 	}
 	
+	@Override
+	public void rollBack(TaskResult tr) {
+	}
+	
 }
