@@ -48,6 +48,10 @@ var currentSelectedLineDbName = 1;
 	
 	/*查询功能*/
 	$("#dbSearch").click(function(){
+		search();
+	});
+	
+	function search(){
 		var iw=document.body.clientWidth;
 		if(iw>767){//md&&lg
 		}else{
@@ -91,18 +95,20 @@ var currentSelectedLineDbName = 1;
 
 		}
 		queryByPage();
-	});
+	}
+	
 	$("#dbSearchClear").click(function(){
 		//var clearList = ["","","","","",""]
 		var clearList = ["dbName","dbMcluster","dbPhyMcluster","containeruser","dbStatus"]
 		clearSearch(clearList);
+		search();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
 });	
 function queryByPage() {
-	var dbName = $("#dbName").val()?$("#dbName").val():'';
-	var mclusterName = $("#dbMcluster").val()?$("#dbMcluster").val():'';
+	var esName = $("#dbName").val()?$("#dbName").val():'';
+	var clusterName = $("#dbMcluster").val()?$("#dbMcluster").val():'';
 	var hclusterName = $("#dbPhyMcluster").find('option:selected').attr('data-hclsName')?$("#dbPhyMcluster").find('option:selected').attr('data-hclsName'):'';
 	var userName = $("#containeruser").find('option:selected').text()?$("#containeruser").find('option:selected').text():'';
 	/*var createTime = $("#PhyMechineDate").val()?$("#PhyMechineDate").val():'null';*/
@@ -110,8 +116,8 @@ function queryByPage() {
 	var queryCondition = {
 			'currentPage':currentPage,
 			'recordsPerPage':recordsPerPage,
-			'dbName':dbName,
-			'mclusterName':mclusterName,
+			'esName':esName,
+			'clusterName':clusterName,
 			'hclusterName':hclusterName,
 			'userName':userName,
 			/*'createTime':createTime,*/
@@ -134,7 +140,7 @@ function queryByPage() {
 			var tby = $("#tby");
 			var totalPages = data.data.totalPages;
 			var recordsArray=[];
-			
+
 			for (var i = 0, len = array.length; i < len; i++) {
 				var esClusterId = "<input class=\"hidden\" type=\"text\" value=\""+array[i].esClusterId+"\"\> ";
 				var checkbox = "<td class=\"center\">"
@@ -198,7 +204,8 @@ function queryByPage() {
 				}else{
 					var tr = "<tr>";
 				}
-				recordsArray.push(tr,esClusterId,checkbox,esName,esCluster,esCluster,createUser,createTime,status,"</tr>");
+				
+				recordsArray.push(tr,esClusterId,checkbox,esName,esCluster,hcluster,createUser,createTime,status,"</tr>");
 
 				tby.append(recordsArray.join(''));
 				

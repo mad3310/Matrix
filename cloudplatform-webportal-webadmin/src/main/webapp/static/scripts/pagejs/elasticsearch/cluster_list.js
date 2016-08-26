@@ -50,6 +50,10 @@ $(function(){
 	});
 	
 	$("#mclusterSearch").click(function(){
+		search();
+	});
+	
+	function search(){
 		var iw=document.body.clientWidth;
 		if(iw>767){//md&&lg
 		}else{
@@ -90,24 +94,26 @@ $(function(){
 
 		}
 		queryByPage();
-	});
+	}
+	
 	$("#mclusterClearSearch").click(function(){
 		var clearList = ["containerName","Physicalcluster","containeruser","containerStatus"];
 		clearSearch(clearList);
+		search();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
 });
 
 function queryByPage() {
-	var mclusterName = $("#containerName").val()?$("#containerName").val():'';
+	var clusterName = $("#containerName").val()?$("#containerName").val():'';
 	var hclusterName = $("#Physicalcluster").find('option:selected').attr('data-hclsName')?$("#Physicalcluster").find('option:selected').attr('data-hclsName'):'';
 	var userName = $("#containeruser").find('option:selected').text()?$("#containeruser").find('option:selected').text():'';
 	var status = $("#containerStatus").val()?$("#containerStatus").val():'';
 	var queryCondition = {
 			'currentPage':currentPage,
 			'recordsPerPage':recordsPerPage,
-			'mclusterName':mclusterName,
+			'clusterName':clusterName,
 			'hclusterName':hclusterName,
 			'userName':userName,
 			/*'createTime':createTime,*/

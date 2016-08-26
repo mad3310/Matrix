@@ -20,6 +20,10 @@ $(function(){
 	});
 	
 	$("#mclusterSearch").click(function(){
+		search();
+	});
+	
+	function search(){
 		var iw=document.body.clientWidth;
 		if(iw>767){//md&&lg
 		}else{
@@ -56,11 +60,13 @@ $(function(){
 			}
 
 		}
-		queryByPage();
-	});
+		queryByPage();		
+	}
+	
 	$("#mclusterClearSearch").click(function(){
 		var clearList = ["containerName","ipAddr","containerStatus"];
 		clearSearch(clearList);
+		search();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);

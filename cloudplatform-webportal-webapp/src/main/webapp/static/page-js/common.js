@@ -596,7 +596,7 @@ define(function(require,exports,module){
                 $('.divselect').find('ul').hide().closest('.pull-left').find('.bk-select-arrow').attr("style","-webkit-transform:rotate(0deg);-moz-transform:rotate(0deg);-o-transform:rotate(0deg);-ms-transform: rotate(0deg);");
             })
 
-            $('.divselect').find("ul li").unbind("click").click(function(){
+            $('.divselect').find("ul li").click(function(){
                 var txt = $(this).find('a').text();
                 $(this).closest('.divselect').find('span').html(txt);
                 var value = $(this).find('a').attr("selectid");
