@@ -140,7 +140,7 @@ function queryByPage() {
 			var tby = $("#tby");
 			var totalPages = data.data.totalPages;
 			var recordsArray=[];
-			console.log(array);
+
 			for (var i = 0, len = array.length; i < len; i++) {
 				var esClusterId = "<input class=\"hidden\" type=\"text\" value=\""+array[i].esClusterId+"\"\> ";
 				var checkbox = "<td class=\"center\">"
@@ -203,10 +203,6 @@ function queryByPage() {
 					var tr = "<tr class=\"default-danger\">";
 				}else{
 					var tr = "<tr>";
-				}
-				
-				if("llllllll"==esName){
-					console.log(array[i]);
 				}
 				
 				recordsArray.push(tr,esClusterId,checkbox,esName,esCluster,hcluster,createUser,createTime,status,"</tr>");
