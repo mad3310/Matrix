@@ -149,10 +149,9 @@ function queryByPage() {
 				} else {
 					var esHclusterNameAlias="<td class='hidden-480'>-</td>";
 				} 
-				var createUser = $("<td>"+tempObj.createUserModel.userName+"</td>");
+				var createUser = "<td>"+tempObj.createUserModel.userName+"</td>";
 				var escreateTime ="<td class='hidden-480'>"+date('Y-m-d H:i:s',tempObj.createTime)+"</td>";
 				var esStatus ="<td>"+esStateTransform(tempObj.status)+"</td>";
-				var esOption ="<td></td>";
 				var tr="";	
 				
 				if(tempObj.status == 'BUILDFAIL'||tempObj.status == 'AUDITFAIL'){
@@ -162,7 +161,7 @@ function queryByPage() {
 				}else{
 					tr ="<tr>";
 				}
-				recordsArray.push(tr,esId,esClusterName,esHclusterNameAlias,esCreateUser,escreateTime,esStatus,esOption,"</tr>");
+				recordsArray.push(tr,esId,esClusterName,esHclusterNameAlias,createUser,escreateTime,esStatus,"</tr>");
 			}
 			tby.append(recordsArray.join(''));
 			/*初始化tooltip*/
