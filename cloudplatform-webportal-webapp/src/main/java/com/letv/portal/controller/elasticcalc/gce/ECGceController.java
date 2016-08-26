@@ -81,7 +81,7 @@ public class ECGceController {
 			if(gceExt.getOcsId()!=null && gceExt.getOcsId().longValue() != 0l && gceExt.getRdsId()!=null && gceExt.getRdsId().longValue() != 0L)
 				gceExt.setCreateUser(this.sessionService.getSession().getUserId());
 		}
-		// TODO 未指定地域ID,并且未判重
+		// TODO 未指定地域
 		gce.setAreaId(7L);
 		try {
 			gceProxy.createGce(gce, gceExt);

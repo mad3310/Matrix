@@ -36,7 +36,7 @@
         <div class="clearfix"></div>
         </div>
 
-        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds_${lang}-main-build-1468484220168.js"></script>
+        <script type="text/javascript" src="/javascripts/dist/require.min.js" data-main="/javascripts/dist/rds-${lang}-main-build-1468484220168.js"></script>
 
         </body>
         </html>

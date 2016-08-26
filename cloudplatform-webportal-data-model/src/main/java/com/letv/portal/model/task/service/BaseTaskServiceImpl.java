@@ -117,6 +117,7 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 				return taskResult;
 			}else{
 				String successMsg = (String) responseMap.get("message");
+				taskResult.setParams(responseMap);
 				taskResult.setResult(StringUtils.isEmpty(successMsg)?"operea successfully!":successMsg);
 			}
 		}else{
