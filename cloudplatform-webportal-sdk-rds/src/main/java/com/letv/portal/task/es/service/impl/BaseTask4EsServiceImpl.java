@@ -11,20 +11,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.exception.ValidateException;
 import com.letv.portal.enumeration.EsStatus;
 import com.letv.portal.enumeration.MclusterStatus;
-import com.letv.portal.model.HostModel;
 import com.letv.portal.model.es.EsCluster;
 import com.letv.portal.model.es.EsContainer;
 import com.letv.portal.model.es.EsServer;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.BaseTaskServiceImpl;
 import com.letv.portal.model.task.service.IBaseTaskService;
-import com.letv.portal.service.IHostService;
-import com.letv.portal.service.IUserService;
-import com.letv.portal.service.common.IZookeeperInfoService;
 import com.letv.portal.service.es.IEsClusterService;
 import com.letv.portal.service.es.IEsContainerService;
 import com.letv.portal.service.es.IEsServerService;
@@ -38,6 +33,8 @@ public class BaseTask4EsServiceImpl extends BaseTaskServiceImpl implements IBase
 	private IEsServerService esServerService;
 	@Autowired
 	private IEsContainerService esContainerService;
+	@Value("${es.default.port}")
+	private String esDefaultPort;
 	
 	private final static Logger logger = LoggerFactory.getLogger(BaseTask4EsServiceImpl.class);
 	
@@ -92,10 +89,12 @@ public class BaseTask4EsServiceImpl extends BaseTaskServiceImpl implements IBase
 		EsCluster cluster = this.getEsCluster(params);
 		
 		if(tr.isSuccess()) {
+			List<EsContainer> containers = this.getContainers(params);
 			es.setStatus(EsStatus.NORMAL);
 			cluster.setStatus(MclusterStatus.RUNNING);
 			Map<String, Object> emailParams = new HashMap<String,Object>();
 			emailParams.put("esName", es.getEsName());
+			emailParams.put("ips", getContainerIps(containers));
 			this.email4User(emailParams, es.getCreateUser(),"es/createEs.ftl");
 		} else {
 			es.setStatus(EsStatus.BUILDFAIL);
@@ -103,6 +102,14 @@ public class BaseTask4EsServiceImpl extends BaseTaskServiceImpl implements IBase
 		}
 		this.esServerService.updateBySelective(es);
 		this.esClusterService.updateBySelective(cluster);
+	}
+	
+	private String getContainerIps(List<EsContainer> containers) {
+		StringBuilder ips = new StringBuilder();
+		for (EsContainer esContainer : containers) {
+			ips.append(esContainer.getIpAddr()).append(":").append(esDefaultPort).append("<br>");
+		}
+		return ips.toString();
 	}
 
 	public EsServer getEsServer(Map<String, Object> params) {
