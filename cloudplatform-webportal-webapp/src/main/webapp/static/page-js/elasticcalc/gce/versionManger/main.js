@@ -78,7 +78,11 @@ define(function(require) {
 		var packageId = $(this).parents("tr").attr("pakageId");
 		
 		cn.GetData("/ecgce/packages/deploy/"+packageId+"?gceId="+gceId, function(data){
-			gceInfoHandler.GceImageListHandler(data);
+			if(data.result!=1){
+				cn.alertoolDanger("GCE部署失败",50000);
+			}else{
+				cn.alertoolSuccess("GCE开始部署，请等待",50000);
+			}
 			asyncData(cn.currentPage);
 		});
 	});
@@ -98,6 +102,8 @@ define(function(require) {
 	asyncData(1);
 
 	setInterval(function() {
-		asyncData(cn.currentPage);
+		if($("#tby td[status=2]").length>0){
+			asyncData(cn.currentPage);
+		}
 	}, 5000);
 });

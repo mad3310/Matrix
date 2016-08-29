@@ -7,9 +7,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>控制台-乐视云平台</title>
         <link rel="shortcut icon" href="http://i3.letvimg.com/lc05_lecloud/201601/12/10/21/favicon.ico">
-        <link rel="stylesheet" href="/stylesheets/dist/vendor.css">
-        <link rel="stylesheet" href="/stylesheets/dist/common-1468484220168.css">
-        <link rel="stylesheet" href="/stylesheets/dist/style-es-1468484220168.css">
+		<link rel="stylesheet" href="/stylesheets/dist/vendor.css">
+		<link rel="stylesheet" href="/stylesheets/dist/common-1468484220168.css">
+		<link rel="stylesheet" href="/stylesheets/dist/style-es-1468484220168.css">
         </head>
         <style>
         .main .side-bar {
