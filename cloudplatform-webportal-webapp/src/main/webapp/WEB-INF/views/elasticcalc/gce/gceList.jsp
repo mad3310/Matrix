@@ -95,10 +95,6 @@
 		<div class="modal-dialog modal-sm modal-top">
 			<div class="modal-content">
 				<div class="modal-header">
-			<!--	<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
-					</button>-->
-					<h5 id="dialog-box-title" class="modal-title"></h5ashboard>
 				</div>
 				<div class="modal-body clearfix">
 					<div class="col-sm-1 col-md-1 warning-sign">
