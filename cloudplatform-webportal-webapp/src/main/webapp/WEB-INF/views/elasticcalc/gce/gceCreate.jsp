@@ -181,8 +181,6 @@
 																	<!-- <li class="bk-select-option"><a href="javascript:;" selectid="PYTHON">python</a></li>
 																	<li class="bk-select-option"><a href="javascript:;" selectid="PHP">php</a></li> -->
 																	<li class="bk-select-option"><a href="javascript:;" selectid="tomcat">tomcat</a></li>
-																	<li class="bk-select-option"><a href="javascript:;" selectid="jetty">jetty</a></li>
-																	<li class="bk-select-option"><a href="javascript:;" selectid="resin">resin</a></li>
 																	</ul>
 																	<input name="type" type="hidden" value="tomcat" />
 																</div>

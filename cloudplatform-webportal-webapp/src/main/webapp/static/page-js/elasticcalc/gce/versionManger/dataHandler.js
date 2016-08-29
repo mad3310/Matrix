@@ -18,8 +18,12 @@ define(function(require,exports,module){
     DataHandler.prototype = {
             GceAjaxFormHandler : function(callBackFunc){    	
                 $("#uploadImageForm").ajaxForm({
-                	success: function (data) {        		
-                		cn.alertoolSuccess("镜像上传成功",30000);
+                	success: function (data) {
+                		if(data.result!=1){
+                			cn.alertoolDanger("镜像上传失败",30000);
+                		}else{
+                    		cn.alertoolSuccess("镜像上传成功",30000);
+                		}
                 		callBackFunc(cn.currentPage);
                 		$('#upload-image-box').modal('hide');
                     },
@@ -51,7 +55,7 @@ define(function(require,exports,module){
 	        	 
             	for(var i=0;i<dataArray.length;++i){
                     var version = $("<td width=\"25%\">" + dataArray[i].version + "</td>");
-                    var status = $("<td width=\"25%\">" + cn.TranslateGceType(dataArray[i].status) + "</td>");
+                    var status = $("<td width=\"25%\" status='"+dataArray[i].status+"'>" + cn.TranslateGceType(dataArray[i].status) + "</td>");
                     var createTime = $("<td width=\"25%\">" + cn.TransDate('Y-m-d H:i:s',dataArray[i].createTime) + "</td>");
                     var deploy = "";
                     if(dataArray[i].status == 0){

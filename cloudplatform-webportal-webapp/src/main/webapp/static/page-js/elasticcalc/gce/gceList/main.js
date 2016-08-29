@@ -48,7 +48,7 @@ define(function(require){
 		size:"small",
     	alignment:'right',
 		bootstrapMajorVersion:3,
-		numberOfPages: 1,
+		numberOfPages: 3,
 		onPageClicked: function(e,originalEvent,type,page){
 			cn.currentPage = page;
         	asyncData(page);
