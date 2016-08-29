@@ -59,6 +59,13 @@ td{word-break: break-all; word-wrap:break-word;}</style>
 							</td>
 						</tr>
 						<tr>
+							<td width="50%">
+								<span class="text-muted pd-r8">实例数量:</span><span text-length="26" id="gce_server_num"></span>
+							</td>
+							<td width="50%">
+							</td>
+						</tr>
+						<tr>
 							<td colspan="2">
 								<span class="text-muted pd-r8">应用描述:</span><span text-length="26" id="gce_descn"></span>
 							</td>
