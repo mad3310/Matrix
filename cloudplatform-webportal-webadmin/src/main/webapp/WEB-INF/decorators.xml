@@ -57,6 +57,7 @@
 		
 		<pattern>/dashboard/*</pattern>
 		<pattern>/403</pattern>
+		<pattern>/browserError</pattern>
 	</excludes>
 	
 	<decorator name="default" page="default.jsp">

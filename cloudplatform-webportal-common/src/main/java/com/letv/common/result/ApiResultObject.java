@@ -40,6 +40,12 @@ public class ApiResultObject {
 	public void setAnalyzeResult(Boolean analyzeResult) {
 		this.analyzeResult = analyzeResult;
 	}
+
+	@Override
+	public String toString() {
+		return "ApiResultObject [result=" + result + ", url=" + url
+				+ ", analyzeResult=" + analyzeResult + "]";
+	}
 	
 }
 

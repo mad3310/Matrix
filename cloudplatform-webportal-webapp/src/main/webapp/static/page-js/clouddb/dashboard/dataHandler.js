@@ -14,6 +14,7 @@ define(function(require,exports,module){
     	 * 相关资源量赋值
     	 */
         resCountHandler : function(data){
+        	console.log(data);
             if(data.data.db > 0){
                 $("#rds-opened").removeClass("hide");
                 $("#rds-not-opened").addClass("hide");
@@ -62,6 +63,14 @@ define(function(require,exports,module){
             }else{
                 $("#vm-opened").addClass("hide");
                 $("#vm-not-opened").removeClass("hide");
+            }
+            if(data.data.es > 0){
+                $("#es-opened").removeClass("hide");
+                $("#es-not-opened").addClass("hide");
+                $("#esCount").html(data.data.es);
+            }else{
+                $("#es-opened").addClass("hide");
+                $("#es-not-opened").removeClass("hide");
             }
         },
         InitVmModule:function(data){

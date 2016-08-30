@@ -13,4 +13,6 @@ public interface IEsClusterService extends IBaseService<EsCluster> {
 
 	List<EsCluster> selectByName(String clusterName);
 	
+	public Integer selectValidClusterCount();
+	
 }

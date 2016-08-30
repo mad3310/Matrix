@@ -4,6 +4,14 @@ import java.util.Date;
 
 import com.letv.common.model.BaseModel;
 
+/**
+ * 
+ * 任务流实例信息
+ * 
+ * @author linzhanbo .
+ * @since 2016年7月26日, 下午4:02:42 .
+ * @version 1.0 .
+ */
 public class TaskChainIndex extends BaseModel {
 
 	private static final long serialVersionUID = -3034786226461925814L;

@@ -188,18 +188,18 @@
 						</li>
 						<li id="gce-opened" class="hide product-item col-xs-12 col-sm-12 col-md-3 col-lg-3">
 							<div class="item-profile clearfix">
-								<a href="${ctx}/list/gce" class="pull-left">
+								<a href="${ctx}/list/ecgce" class="pull-left">
 									<span class="item-icon product-icons-48 product-icons-ace"></span>
 								</a>
 								<p class="item-title">
-									<a href="${ctx}/list/gce">云引擎&nbsp;<span class="item-title-short">GCE</span>
+									<a href="${ctx}/list/ecgce">云引擎&nbsp;<span class="item-title-short">GCE</span>
 									</a>
 									<span class="beta-font">Beta</span>
 								</p>
 							</div>
 							<div class="item-record">
 								<span class="item-record-num">
-									<a class="item-record-num-count" href="${ctx}/list/gce"><span id="gceCount"></span></a>
+									<a class="item-record-num-count" href="${ctx}/list/ecgce"><span id="gceCount"></span></a>
 								</span>
 								<span class="item-record-unit">个</span>
 								<a data-toggle="tooltip" data-placement="top" title="云引擎数">
@@ -265,6 +265,26 @@
 								</span>
 								<span class="item-record-unit">个</span>
 								<a data-toggle="tooltip" data-placement="top" title="云主机数">
+									<span class="glyphicon glyphicon-question-sign text-muted" ></span>
+								</a><!-- 已开通产品 begin -->
+							</div>
+						</li>
+						<li id="es-opened" class="hide product-item col-xs-12 col-sm-12 col-md-3 col-lg-3">
+							<div class="item-profile clearfix">
+								<a href="/elasticsearch" class="pull-left">
+									<span class="item-icon product-icons-48 product-icons-es"></span>
+								</a>
+								<p class="item-title">
+									<a href="/elasticsearch">搜索服务器&nbsp;<span class="item-title-short">ES</span>
+									</a>
+								</p>
+							</div>
+							<div class="item-record">
+								<span class="item-record-num">
+									<a class="item-record-num-count" href="/elasticsearch"><span id="esCount">0</span></a>
+								</span>
+								<span class="item-record-unit">个</span>
+								<a data-toggle="tooltip" data-placement="top" title="搜索服务器数">
 									<span class="glyphicon glyphicon-question-sign text-muted" ></span>
 								</a><!-- 已开通产品 begin -->
 							</div>
@@ -339,6 +359,28 @@
 											<div class="pull-left product-opt-wrap">
 												<a href="/detail/slbCreate" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
 													<span id="rds-purchase" class="glyphicon glyphicon-shopping-cart product-opt-icon"></span>
+												</a>
+											</div>
+											<div class="pull-left product-opt-wrap">
+												<a href="/helpCenter/helpCenter.jsp?container=product-SLBIntro" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="产品详情">
+													<span id="rds-purchase" class="glyphicon glyphicon-question-sign product-opt-icon"></span>
+												</a>
+											</div>
+										</div>
+										<!-- <div class="pull-right clearfix">
+											<span class="home-orange">敬请期待...</span>
+										</div> -->
+									</li>
+									<li  id="es-not-opened">
+										<div class="pull-left clearfix">
+											<span class="glyphicon glyphicon-search text-muted"></span>
+											<span>搜索服务器</span>
+											<span>ES</span>
+										</div>
+										<div class="pull-right clearfix">
+											<div class="pull-left product-opt-wrap">
+												<a href="/elasticsearch" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
+													<span id="es-purchase" class="glyphicon glyphicon-shopping-cart product-opt-icon"></span>
 												</a>
 											</div>
 											<div class="pull-left product-opt-wrap">
@@ -525,7 +567,7 @@
 										</div>
 										<div class="pull-right clearfix">
 											<div class="pull-left product-opt-wrap">
-												<a href="/detail/gceCreate" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
+												<a href="/detail/ecgceCreate" target="_blank" class="product-opt" data-toggle="tooltip" data-placement="top" title="立即购买">
 													<span id="gce-purchase" class="glyphicon glyphicon-shopping-cart product-opt-icon"></span>
 												</a>
 											</div>

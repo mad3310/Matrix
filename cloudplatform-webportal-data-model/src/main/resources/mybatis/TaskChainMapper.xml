@@ -26,6 +26,10 @@
 		<association property="templateTaskDetail" javaType="TemplateTaskDetail">
 			<result column="NAME" property="name" />
 			<result column="DESCN" property="descn" />
+			<result column="BEANNAME" property="beanName" />
+			<result column="TASK_TYPE" property="taskType" />
+			<result column="PARAMS" property="params" />
+			<result column="RETRY" property="retry" />
 		</association>
 	</resultMap>
 	
@@ -35,11 +39,40 @@
 	
 	<insert id="insert" parameterType="BackupResult" useGeneratedKeys="true" keyProperty="id" >
 		insert into
-		WEBPORTAL_TASK_CHAIN(TASK_ID,TASK_DETAIL_ID,CHAIN_INDEX_ID,EXECUTE_ORDER,RETRY,STATUS,START_TIME,END_TIME,RESULT,PARAMS,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER)
+		WEBPORTAL_TASK_CHAIN(TASK_ID,TASK_DETAIL_ID,CHAIN_INDEX_ID,EXECUTE_ORDER,RETRY,STATUS,RESULT,PARAMS,DELETED,CREATE_TIME,CREATE_USER)
 		values(
-		#{taskId},#{taskDetailId},#{chainIndexId},#{executeOrder},#{retry},#{status},#{startTime},#{endTime},#{result},#{params},#{deleted},#{createTime},#{createUser},#{updateTime},#{updateUser})
+		#{taskId},#{taskDetailId},#{chainIndexId},#{executeOrder},#{retry},
+		#{status},#{result},#{params},
+		#{deleted},
+		now(),
+		#{createUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler})
 	</insert>
-	
+	<insert id="insertBatch" parameterType="java.util.List"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		WEBPORTAL_TASK_CHAIN(TASK_ID,TASK_DETAIL_ID,CHAIN_INDEX_ID,EXECUTE_ORDER,RETRY,STATUS,RESULT,PARAMS,DELETED,CREATE_TIME,CREATE_USER)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.taskId,jdbcType=BIGINT},
+			#{item.taskDetailId,jdbcType=BIGINT},
+			#{item.chainIndexId,jdbcType=BIGINT},
+			#{item.executeOrder,jdbcType=TINYINT},
+			#{item.retry,jdbcType=TINYINT},
+			#{item.status,jdbcType=VARCHAR},
+			#{item.result,jdbcType=VARCHAR},
+			#{item.params,jdbcType=VARCHAR},
+			#{item.deleted,jdbcType=TINYINT},
+			now(),
+			#{item.createUser,jdbcType=BIGINT}
+			)
+		</foreach>
+		<!-- 获取上个刚插入的自增ID值 -->
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+		SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+	</insert>
 	<!-- -->
 	<update id="updateBySelective" parameterType="TaskChain">
 		update WEBPORTAL_TASK_CHAIN
@@ -62,9 +95,11 @@
 			<if test="status != null  ">
 				STATUS=#{status},
 			</if>
+			<!-- 单元实例开始执行时赋值 -->
 			<if test="startTime != null  ">
 				START_TIME=#{startTime},
 			</if>
+			<!-- 单元实例结束或出现异常时赋值 -->
 			<if test="endTime != null  ">
 				END_TIME=#{endTime},
 			</if>
@@ -77,32 +112,28 @@
 			<if test="deleted != null  ">
 				DELETED=#{deleted},
 			</if>
-			<if test="createTime != null  ">
-				CREATE_TIME=#{createTime},
-			</if>
-			<if test="createUser != null  ">
-				CREATE_USER=#{createUser},
-			</if>
-				UPDATE_TIME=#{updateTime},
-			<if test="updateUser != null  ">
-				UPDATE_USER=#{updateUser},
-			</if>
+				UPDATE_TIME=now(),
+				<!-- 如果代码中未指定updateUser，则赋默认值，否则按代码中指定updateUser -->
+				UPDATE_USER=#{updateUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler}
 		</set>
 		where ID=#{id}
 	</update>
 	
 	<select id="selectNextChainByIndexAndOrder" resultMap="BaseResultMap" parameterType="TaskChain">
 		select
-		<include refid="Base_Column_List" />
-		from WEBPORTAL_TASK_CHAIN tc where tc.CHAIN_INDEX_ID = #{chainIndexId} and EXECUTE_ORDER=#{executeOrder}
+		<include refid="Base_Column_List" />,ttd.NAME,ttd.DESCN,ttd.BEANNAME,ttd.TASK_TYPE,ttd.PARAMS,ttd.RETRY
+		from WEBPORTAL_TASK_CHAIN tc,WEBPORTAL_TEMPLATE_TASK_DETAIL ttd where tc.TASK_DETAIL_ID=ttd.id and tc.CHAIN_INDEX_ID = #{chainIndexId} and tc.EXECUTE_ORDER=#{executeOrder} and tc.DELETED = 0
 	</select>
 	<select id="updateAfterDoingChainStatus" resultMap="BaseResultMap" parameterType="java.util.Map">
-		update WEBPORTAL_TASK_CHAIN set status = #{status} where CHAIN_INDEX_ID = #{chainIndexId} and EXECUTE_ORDER>#{executeOrder}
+		update WEBPORTAL_TASK_CHAIN set status = #{status},
+		UPDATE_TIME=now(),
+		<!-- 如果代码中未指定updateUser，则赋默认值，否则按代码中指定updateUser -->
+		UPDATE_USER=#{updateUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler} where CHAIN_INDEX_ID = #{chainIndexId} and EXECUTE_ORDER>#{executeOrder}
 	</select>
 	<select id="selectFailedChainByIndex" resultMap="BaseResultMap" parameterType="TaskChain">
 		select
 		<include refid="Base_Column_List" />
-		from WEBPORTAL_TASK_CHAIN tc where tc.CHAIN_INDEX_ID = #{chainIndexId} and STATUS=#{status}
+		from WEBPORTAL_TASK_CHAIN tc where tc.CHAIN_INDEX_ID = #{chainIndexId} and tc.STATUS=#{status} and tc.DELETED = 0
 	</select>
 	<select id="selectAllChainByIndexId" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
@@ -113,9 +144,9 @@
 	</select>
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="Base_Column_List" />,ttd.NAME,ttd.DESCN,ttd.BEANNAME,ttd.TASK_TYPE,ttd.PARAMS,ttd.RETRY
 		from WEBPORTAL_TASK_CHAIN tc 
-		join WEBPORTAL_TEMPLATE_TASK_DETAIL
-		where tc.ID = #{id}
+		join WEBPORTAL_TEMPLATE_TASK_DETAIL ttd on ttd.id = tc.TASK_DETAIL_ID
+		where tc.ID = #{id} and tc.DELETED = 0
 	</select>
 </mapper>   

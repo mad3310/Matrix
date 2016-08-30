@@ -98,7 +98,7 @@ function queryMcluster(queryCondition,updateflag) {
 			var tby = $("#tby");
 			
 			for (var i = 0, len = array.length; i < len; i++) {
-				if(array[i] == null) continue;
+				if(array[i] == null  && array[i].status==0) continue;
 				var mclusterName = '';
         		if(array[i].mcluster != undefined && array[i].mcluster != null) {
         			mclusterName = array[i].mcluster.mclusterName;
@@ -119,7 +119,7 @@ function queryMcluster(queryCondition,updateflag) {
  							+ "-"
 							+ "</td>");
 				}
-				var td4 = $("<td name=\"mclusterStatus\">"
+				var td4 = $("<td name=\"mclusterStatus\"  status='"+array[i].status+"'>"
 							+"<a><i class=\"ace-icon fa fa-spinner fa-spin  bigger-120\"/>获取数据中...</a>"
 							+ "</td>");
 				var td5 = $("<td>"						
@@ -161,9 +161,11 @@ function getMclusterStatus(ip,obj) {
 			removeLoading();
 			if(error(data)) return;
 			var result = data.data.result;
+			$(obj).find('[name="mclusterStatus"]').attr("status",result);
 			if(result == "0"){
 				$(obj).removeClass();
 				$(obj).find('[name="mclusterStatus"]').html("<a>正常</a>");
+				$(obj).remove();
 				//$(obj).parent().find(".normalTag").after($(obj));
 			}else if(result == "1"){
 				$(obj).removeClass();

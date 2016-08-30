@@ -47,5 +47,10 @@ public class EsClusterServiceImpl extends BaseServiceImpl<EsCluster> implements 
 	public List<EsCluster> selectByName(String clusterName) {
 		return this.esClusterDao.selectByName(clusterName);
 	}
+
+	@Override
+	public Integer selectValidClusterCount() {
+		return this.esClusterDao.selectValidClusterCount();
+	}
 	
 }

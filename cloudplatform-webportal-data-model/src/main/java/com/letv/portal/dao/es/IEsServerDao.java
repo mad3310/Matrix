@@ -8,4 +8,8 @@ import com.letv.portal.model.es.EsServer;
 
 public interface IEsServerDao extends IBaseDao<EsServer> {
 	List<EsServer> selectBySelective(Map<String,Object> exParams);
+	
+	Integer selectCountByStatus(Integer value);
+	
+	Integer selectBySelectiveCount(Map<String,Object> exParams);
 }

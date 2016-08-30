@@ -26,10 +26,10 @@
 	
 	 <!-- 异常处理 -->
     <bean id="exceptionResolver"
-		class="com.letv.common.spring.DefaultMappingExceptionResolver">
+		class="com.letv.portal.rest.resolver.RestAPIExceptionResolver">
 		<property name="exceptionMappings">
 			<props>
-				<prop key="java.lang.Exception">error/500</prop>
+				<prop key="java.lang.Exception">error/warn</prop>
 			</props>
 		</property>
 	</bean>

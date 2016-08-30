@@ -32,6 +32,15 @@
 	    <result column="UPDATE_TIME" property="updateTime" />
 	    <result column="CREATE_USER" property="createUser" />
 	    <result column="UPDATE_USER" property="updateUser" />
+	    
+	    <association property="esCluster" javaType="EsCluster">
+			<result column="CLUSTER_NAME" property="clusterName" />
+			<result column="HCLUSTER_ID" property="hclusterId" />
+		</association>
+		
+	    <association property="hcluster" javaType="Hcluster">
+			<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
+		</association>
 	</resultMap>
 
 	
@@ -207,14 +216,6 @@
 		where ID=#{id}
 	</update>
 	
-	<select id="selectContainerByLogClusterId" resultMap="BaseResultMap" parameterType="java.lang.Long">
-        select
-			<include refid="Base_Column_List" />
-		from 
-			DA_ESCONTAINER container
-		where 
-			container.ESCLUSTER_ID=#{esClusterId}
-	</select>
 	<select id="selectContainersByEsClusterId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
 			<include refid="Base_Column_List" />
@@ -240,5 +241,82 @@
 	        <include refid="Common_Where_Clause" />
 	</select>
 	
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+			<include refid="Base_Column_List" />
+		from 
+			DA_ESCONTAINER container
+		where 
+			container.ID=#{id}
+	</select>
+	
+	
+	<!-- 查询条件 -->
+	<sql id="Page_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="params !=null and params.id != null  ">
+				and container.ID=#{params.id}
+			</if>
+			<if test="params !=null and params.containerName != null  and params.containerName != '' and params.containerName != 'null'">
+				and container.CONTAINER_NAME like CONCAT('%',#{params.containerName},'%')
+			</if>
+			<if test="params !=null and params.ipAddr != null and params.ipAddr != ''">
+				and container.IP_ADDR like CONCAT('%',#{params.ipAddr},'%')
+			</if>
+			<if test="params !=null and params.esClusterId != null ">
+				and container.ESCLUSTER_ID=#{params.esClusterId}
+			</if>
+			<if test="params !=null and params.zookeeperId != null ">
+				and container.ZOOKEEPER_ID=#{params.zookeeperId}
+			</if>
+			<if test="params !=null and params.status != null and params.status != '' ">
+				and container.STATUS=#{params.status}
+			</if>
+		</trim>
+	</sql>
+	
+	
+	<!-- 分页：根据条件查询 -->
+	<select id="selectPageByMap" resultMap="BaseResultMap" parameterType="com.letv.common.dao.QueryParam">
+		select
+			<include refid="Base_Column_List" />,n.CLUSTER_NAME,h.HCLUSTER_NAME_ALIAS,n.HCLUSTER_ID
+		from 
+			DA_ESCONTAINER container
+		join 
+			DA_ESCLUSTER n on n.ID = container.ESCLUSTER_ID 
+		join 
+			WEBPORTAL_HCLUSTER h on n.HCLUSTER_ID = h.ID
+			<include refid="Page_Where_Clause" />
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
+				and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
+		ORDER BY container.CREATE_TIME DESC
+			<if test="page != null">
+	      		limit #{page.startRowPosition},#{page.recordsPerPage}
+	    	</if>
+	</select>
+	
+	<!-- 列表总数 -->
+	<select id="selectByMapCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">
+		select 
+			count(1) 
+		from 
+			DA_ESCONTAINER container
+		join 
+			DA_ESCLUSTER n on n.ID = container.ESCLUSTER_ID 
+		join 
+			WEBPORTAL_HCLUSTER h on n.HCLUSTER_ID = h.ID
+			<include refid="Page_Where_Clause" />
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
+				and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
+	</select>
 	
 </mapper>   

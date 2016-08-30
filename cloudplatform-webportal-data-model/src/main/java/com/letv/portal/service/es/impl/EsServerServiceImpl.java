@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
+import com.letv.common.dao.QueryParam;
 import com.letv.common.exception.ValidateException;
 import com.letv.common.paging.impl.Page;
 import com.letv.portal.dao.es.IEsServerDao;
@@ -108,14 +109,37 @@ public class EsServerServiceImpl extends BaseServiceImpl<EsServer> implements IE
 	
 	public EsServer selectById(Long id){
 		EsServer esServer = this.esServerDao.selectById(id);
-		List<EsContainer> esContainers = this.esContainerService.selectContainersByEsClusterId(esServer.getEsClusterId());
-		esServer.setEsContainers(esContainers);
 		return esServer;
 	}
 
 	@Override
 	public List<EsServer> selectBySelective(Map<String,Object> exParams) {
 		return esServerDao.selectBySelective(exParams);
+	}
+
+	@Override
+	public EsServer selectByIdWithContainers(Long id) {
+		EsServer esServer = this.esServerDao.selectById(id);
+		List<EsContainer> esContainers = this.esContainerService.selectContainersByEsClusterId(esServer.getEsClusterId());
+		esServer.setEsContainers(esContainers);
+		return esServer;
+	}
+
+	@Override
+	public Integer selectCountByStatus(Integer value) {
+		return this.esServerDao.selectCountByStatus(value);
+	}
+	
+	@Override
+	public <K, V> Integer selectByMapCount(Map<K, V> map) {
+		QueryParam param = new QueryParam();
+		param.setParams(map);
+		return this.esServerDao.selectByMapCount(param);
+	}
+
+	@Override
+	public Integer selectBySelectiveCount(Map<String, Object> exParams) {
+		return this.esServerDao.selectBySelectiveCount(exParams);
 	}
 
 }

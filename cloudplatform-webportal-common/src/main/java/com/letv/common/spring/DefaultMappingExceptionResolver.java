@@ -44,16 +44,16 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
 	
 	
 	@Value("${error.email.to}")
-	private String ERROR_MAIL_ADDRESS;
+	protected String ERROR_MAIL_ADDRESS;
 	
 	@Value("${error.email.enabled}")
-	private Boolean ERROR_MAIL_ENABLED;
+	protected Boolean ERROR_MAIL_ENABLED;
 	
 	@Autowired
-	private ITemplateMessageSender defaultEmailSender;
+	protected ITemplateMessageSender defaultEmailSender;
 	
 	@Autowired
-	private SessionServiceImpl sessionManager;
+	protected SessionServiceImpl sessionManager;
 
     @Override
     protected ModelAndView doResolveException(HttpServletRequest req, HttpServletResponse res, Object handler,
@@ -64,7 +64,7 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
     		e = ((MatrixException) e).getE();
     	}
 		e = transE(e);
-		if(e instanceof OauthException || e instanceof CommonException || e instanceof ValidateException) {
+		if(e instanceof OauthException || e instanceof CommonException || e instanceof ValidateException || e instanceof ApiNotFoundException) {
 			//do not send email.
 			logger.debug(e.getMessage());
 		} else if(Boolean.valueOf(ERROR_MAIL_ENABLED) ) {
@@ -81,7 +81,7 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
 		String clientType = req.getHeader("clientType");
 		
 		if (isAjaxRequest || !StringUtils.isEmpty(clientType)) {
-			responseJson(req,res,error);
+			responseJson(req,res,e.getMessage());
 			return null;
 		} else {
 			Integer statusCode = determineStatusCode(req, viewName);
@@ -126,7 +126,7 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
 
 	}
 	
-	private void sendErrorMail(HttpServletRequest request,String exceptionMessage,String stackTraceStr)
+	protected void sendErrorMail(HttpServletRequest request,String exceptionMessage,String stackTraceStr)
 	{
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("exceptionContent", stackTraceStr);
@@ -150,7 +150,7 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
 		}
 	}
 	
-	private String getStackTrace(Throwable t) 
+	protected String getStackTrace(Throwable t) 
 	{
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
@@ -166,7 +166,7 @@ public class DefaultMappingExceptionResolver extends SimpleMappingExceptionResol
         ex.printStackTrace(pw);
     }
 	
-	private String getRequestValue(HttpServletRequest request)
+	protected String getRequestValue(HttpServletRequest request)
 	{
 		StringBuilder sb = new StringBuilder();
 		Map<String,Object> requestParams = (Map<String,Object>)request.getParameterMap();
