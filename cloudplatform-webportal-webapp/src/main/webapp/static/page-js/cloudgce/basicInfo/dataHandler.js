@@ -19,6 +19,7 @@ define(function(require,exports,module){
     			$("#gce_type").html(cn.gceTypeTranslation(gceInfo.type));
                 $("#gce_server_addr").html(getAccpetAddr(gceInfo.gceContainers,gceInfo.type));
     			$("#gce_create_time").html(cn.TransDate('Y-m-d H:i:s',gceInfo.createTime));
+    			$("#gce_server_num").html(gceInfo.instanceNum);
                 if(gceInfo.hcluster != undefined && gceInfo.hcluster != null) {
                     $("#gce_info_available_region").html(gceInfo.hcluster.hclusterNameAlias);
                 }

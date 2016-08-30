@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -17,8 +18,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,9 +48,9 @@ public class InsertESTest extends AbstractTest {
 	private final static Logger logger = LoggerFactory
 			.getLogger(InsertESTest.class);
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		InsertESTest test = new InsertESTest();
-		test.testInsertEsWithCountDownMultiThread();
+		test.testCreateMapping();
 	}
 
 	@Test
@@ -366,6 +373,55 @@ public class InsertESTest extends AbstractTest {
 		logger.info("end : {}", end);
 		logger.info("total time(s) : {}", (end - start) / 1000);
 		logger.info("{}/s", 3 * 4 * 20000 / ((end - start) / 1000));
+	}
+	
+	public void testCreateMapping() throws IOException {
+		String indexName = "test_mapping";
+		//创建index
+		//ESUtil.getClient().admin().indices().prepareCreate(indexName).execute().actionGet();
+		Map map = ESUtil.getClient().admin().cluster()
+				.health(new ClusterHealthRequest()).actionGet()
+				.getIndices();
+		// map is always empty!!??
+		boolean exists = map.containsKey(indexName);
+		if (!exists) {
+			ESUtil.getClient().admin().indices()
+					.create(new CreateIndexRequest(indexName)).actionGet();
+			// waitForYellow
+			ESUtil.getClient().admin()
+					.cluster()
+					.health(new ClusterHealthRequest(indexName)
+							.waitForYellowStatus()).actionGet();
+
+		} 
+
+		XContentBuilder mapping = XContentFactory.jsonBuilder().startObject()
+				.startObject(indexName)
+				.startObject("properties")
+				.startObject("node_name").field("type", "string").field("store", "no").field("index","not_analyzed").endObject()
+				.startObject("write").field("type", "long").field("store", "no").field("index","not_analyzed").endObject()
+				.endObject();
+
+		PutMappingRequest putMappingRequest = new PutMappingRequest(
+				indexName);
+		putMappingRequest.type(indexName);
+		putMappingRequest.source(mapping);
+		PutMappingResponse putMappingResponse = ESUtil.getClient().admin().indices()
+				.putMapping(putMappingRequest).actionGet();
+		
+		Random r = new Random();
+
+		int i=0;
+		while (i<6) {
+			ESUtil.getClient().prepareIndex(indexName, indexName).setSource(
+					XContentFactory
+					.jsonBuilder()
+					.startObject()
+							.field("node_name", "10.123.123.1"+i)
+							.field("write", r.nextInt(100))
+							.endObject()).execute().actionGet();
+			i++;
+		}
 	}
 
 }

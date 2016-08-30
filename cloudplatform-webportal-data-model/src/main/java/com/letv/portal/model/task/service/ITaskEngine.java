@@ -1,31 +1,61 @@
 package com.letv.portal.model.task.service;
 
-import com.letv.portal.model.task.TaskChain;
-import com.letv.portal.model.task.TaskChainIndex;
-import com.letv.portal.model.task.TaskResult;
 
-
+/**
+ * 
+ * 工作流引擎入口
+ * 
+ * @author linzhanbo .
+ * @since 2016年7月26日, 下午5:51:26 .
+ * @version 1.0 .
+ */
 public interface ITaskEngine {
 
-	public TaskChainIndex init(Long taskId,Object params);
-	public TaskChainIndex init(String taskName,Object params);
+	/**
+	 * 启动流程
+	 * @param templateTaskName	流程模板名称
+	 * @author linzhanbo .
+	 * @since 2016年7月26日, 下午5:17:20 .
+	 * @version 1.0 .
+	 */
+	public void run(String templateTaskName);
 	
-	public void run(Long taskId);
-	public void run(String taskName);
+	/**
+	 * 启动流程
+	 * @param templateTaskName	流程模板名称
+	 * @param params	参数
+	 * @author linzhanbo .
+	 * @since 2016年7月26日, 下午5:18:00 .
+	 * @version 1.0 .
+	 */
+	public void run(String templateTaskName, Object params);
 	
-	public void run(Long taskId,Object params);
-	public void run(String taskName,Object params);
-
-	public void run(TaskChainIndex tci);
+	/**
+	 * 启动流程
+	 * @param templateTaskId	流程模板ID
+	 * @author linzhanbo .
+	 * @since 2016年7月26日, 下午5:25:49 .
+	 * @version 1.0 .
+	 */
+	public void run(Long templateTaskId);
 	
-	public void run(TaskChain tc);
+	/**
+	 * 启动流程
+	 * @param templateTaskId	流程模板ID
+	 * @param params	参数
+	 * @author linzhanbo .
+	 * @since 2016年7月26日, 下午5:28:35 .
+	 * @version 1.0 .
+	 */
+	public void run(Long templateTaskId, Object params);
 	
-	public void run(TaskChain tc,TaskChainIndex tci);
-	
-	public TaskChain beforeExecute(TaskChain tc);
-	
-	public TaskChain afterExecute(TaskChain tc,TaskResult tr);
-	
-	public void execute(TaskChain tc,TaskChainIndex tci);
+	/**
+	 * 继续运行流程
+	 * @param taskChainId	任务单元实例ID
+	 * @author linzhanbo .
+	 * @since 2016年7月26日, 下午5:48:59 .
+	 * @version 1.0 .
+	 */
+	public void proceed(Long taskChainId);
 
 }

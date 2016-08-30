@@ -99,6 +99,13 @@ define(function(require,exports,module){
                 return "读写"
             }
         },
+        TranslateGceType: function(type){
+            if(type == 0){
+                return "未部署";
+            }else{
+                return this.TranslateStatus(type);
+            }
+        },
         TranslateStatus : function (status){
             if (status == 0){
                 return "未审核";
@@ -589,7 +596,7 @@ define(function(require,exports,module){
                 $('.divselect').find('ul').hide().closest('.pull-left').find('.bk-select-arrow').attr("style","-webkit-transform:rotate(0deg);-moz-transform:rotate(0deg);-o-transform:rotate(0deg);-ms-transform: rotate(0deg);");
             })
 
-            $('.divselect').find("ul li").unbind("click").click(function(){
+            $('.divselect').find("ul li").click(function(){
                 var txt = $(this).find('a').text();
                 $(this).closest('.divselect').find('span').html(txt);
                 var value = $(this).find('a').attr("selectid");
@@ -1044,11 +1051,11 @@ define(function(require,exports,module){
         },
         gceTypeTranslation:function(type){
             if(type == "JETTY"){
-                return "java";
+                return "JETTY";
             }else if(type == "NGINX"){
-                return "nginx";
-            }else if(type == "NGINX_PROXY"){
-                return "nginx_proxy";
+                return "NGINX";
+            }else if(type == "TOMCAT"){
+                return "TOMCAT";
             }else{
                 return "-";
             }

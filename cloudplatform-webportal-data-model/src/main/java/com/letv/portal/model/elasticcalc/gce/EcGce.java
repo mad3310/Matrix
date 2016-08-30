@@ -12,6 +12,9 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.letv.common.model.BaseModel;
+import com.letv.portal.model.HclusterModel;
+import com.letv.portal.model.UserModel;
+import com.letv.portal.model.gce.GceCluster;
 import com.letv.portal.validation.annotation.IdValid;
 import com.letv.portal.validation.annotation.NumberLimit;
 
@@ -70,7 +73,9 @@ public class EcGce extends BaseModel {
      * 状态
      */
     private Integer status;
-
+    
+    private HclusterModel hcluster;
+	private UserModel createUserModel;
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z_][a-zA-Z_0-9]{1,15}$",message = "内容必须以字母开头，允许字母数字下划线，长度在2-16字节内")
 	public String getGceName() {
@@ -144,6 +149,19 @@ public class EcGce extends BaseModel {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public HclusterModel getHcluster() {
+		return hcluster;
+	}
+	public void setHcluster(HclusterModel hcluster) {
+		this.hcluster = hcluster;
+	}
+	
+	public UserModel getCreateUserModel() {
+		return createUserModel;
+	}
+	public void setCreateUserModel(UserModel createUserModel) {
+		this.createUserModel = createUserModel;
 	}
     
 	

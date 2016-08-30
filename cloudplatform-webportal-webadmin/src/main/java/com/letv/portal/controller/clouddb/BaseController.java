@@ -24,4 +24,8 @@ public class BaseController {
 	public String webportalException(HttpServletRequest request,HttpServletResponse response) {
 		return "/error/500";
 	}
+	@RequestMapping(value="/browserError",method=RequestMethod.GET)   
+	public String browserErrorException(HttpServletRequest request,HttpServletResponse response) {
+		return "/error/browserError";
+	}
 }

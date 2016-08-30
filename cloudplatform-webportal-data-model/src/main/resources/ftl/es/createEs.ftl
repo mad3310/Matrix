@@ -39,9 +39,11 @@ p {
 <table class="gridtable" style="margin: 20px">
 	<tr>
 		<th width="100px">ES名称</th>
+		<th width="100px">服务地址</th>
 	</tr>
 	<tr>
 		<td>${esName}</td>
+		<td>${ips}</td>
 	</tr>
 </table>
 <br/>

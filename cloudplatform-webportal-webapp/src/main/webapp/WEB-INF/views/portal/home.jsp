@@ -11,7 +11,7 @@
 <link rel="shortcut icon" href=" ${ctx}/static/img/favicon2.ico">
 <script type="text/javascript" src="${ctx}/static/modules/jquery/2.0.3/jquery.min.js"></script>
 <script type="text/javascript" src="${ctx}/static/modules/bootstrap/bootstrap/3.3.0/bootstrap.min.js"></script>
-<title>用户注册中心</title>
+<title>乐视云计算首页</title>
 </head>
 <body>
 <script>

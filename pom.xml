@@ -675,6 +675,7 @@
 
                 <webportal.errormail.to>linzhanbo@le.com</webportal.errormail.to>
                 <service.notice.email.to>linzhanbo@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>lisuxiao@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>D:</webportal.log.path>
@@ -725,6 +726,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -733,6 +735,7 @@
             	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
+            	<matrix.gce.container.port>8080</matrix.gce.container.port>
             </properties>
         </profile>
 
@@ -770,8 +773,9 @@
                 <webportal.api.http>http://10.150.149.31:8080</webportal.api.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
-                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com</service.notice.email.to>
+                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</webportal.errormail.to>
+                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -785,8 +789,8 @@
                 <fixedpush.del.token>78dd97ae83ae9e78ef7b6847c5742252</fixedpush.del.token>
                 <fixedpush.manageip.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/manageip</fixedpush.manageip.url>
                 <fixedpush.manageip.token>5e667298ecd46919d198ebe049d43d33</fixedpush.manageip.token>
-                <fixedpush.checkall.url>http://lingshu.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
-                <fixedpush.checkall.token>0fd7e2409a518e8d0ecc7a34f56e9477</fixedpush.checkall.token>
+                <fixedpush.checkall.url>http://lingshu-test.letv.cn/cmdb/cmdbapi/dockersyn</fixedpush.checkall.url>
+                <fixedpush.checkall.token>adb8871899142bdcef54fa7c39fe9a9b</fixedpush.checkall.token>
 
                 <zabbix.post.url>http://10.200.90.51/zabbix_test/api_jsonrpc.php</zabbix.post.url>
                 <zabbix.name>cloude_api</zabbix.name>
@@ -822,6 +826,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -830,6 +835,7 @@
             	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
+            	<matrix.gce.container.port>8080</matrix.gce.container.port>
             </properties>
         </profile>
 
@@ -869,6 +875,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -919,6 +926,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -927,6 +935,7 @@
             	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
+            	<matrix.gce.container.port>8080</matrix.gce.container.port>
             </properties>
         </profile>
         <profile>
@@ -963,6 +972,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1013,6 +1023,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -1021,6 +1032,7 @@
             	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
+            	<matrix.gce.container.port>8080</matrix.gce.container.port>
             </properties>
         </profile>
         <profile>
@@ -1057,6 +1069,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1107,6 +1120,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -1115,6 +1129,7 @@
             	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
+            	<matrix.gce.container.port>8080</matrix.gce.container.port>
             </properties>
         </profile>
         <profile>
@@ -1151,6 +1166,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1201,6 +1217,7 @@
             	<matrix.gce.awss3.accessKey>EH18VA68TUPMOF4L5MK3</matrix.gce.awss3.accessKey>
             	<matrix.gce.awss3.secretKey>Y3KW8LAyVcTNS1cAnPEv847lUmtFXILVg+8gXaIo</matrix.gce.awss3.secretKey>
             	<matrix.gce.awss3.bucketName>matrix.gce.package</matrix.gce.awss3.bucketName>
+            	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
             	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
@@ -1209,6 +1226,7 @@
             	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
+            	<matrix.gce.container.port>8080</matrix.gce.container.port>
             </properties>
         </profile>
 
