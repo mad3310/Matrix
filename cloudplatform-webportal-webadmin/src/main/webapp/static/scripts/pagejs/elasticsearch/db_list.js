@@ -137,10 +137,11 @@ function queryByPage() {
 			removeLoading();
 			error(data);
 			var array = data.data.data;
-			var tby = $("#tby");
+			var tby = $("#tby").empty();
 			var totalPages = data.data.totalPages;
 			var recordsArray=[];
-
+			
+			
 			for (var i = 0, len = array.length; i < len; i++) {
 				var esClusterId = "<input class=\"hidden\" type=\"text\" value=\""+array[i].esClusterId+"\"\> ";
 				var checkbox = "<td class=\"center\">"
@@ -206,11 +207,11 @@ function queryByPage() {
 				}
 				
 				recordsArray.push(tr,esClusterId,checkbox,esName,esCluster,hcluster,createUser,createTime,status,"</tr>");
-
 				tby.append(recordsArray.join(''));
-				
+				recordsArray = [];
 				$('[name = "dbRefuseStatus"]').popover();
 			}//循环json中的数据 
+			
 			
 			if (totalPages <= 1) {
 				$("#pageControlBar").hide();
