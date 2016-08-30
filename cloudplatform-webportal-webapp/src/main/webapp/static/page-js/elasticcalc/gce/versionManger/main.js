@@ -57,7 +57,7 @@ define(function(require) {
 						message : '版本号不能为空!'
 					},
 					regexp : {
-						regexp : /^\d+.\d+.\d+.\d+$/,
+						regexp : /^\d+\.\d+\.\d+\.\d+$/,
 						message : "版本号规范必须为x.x.x.x，例如1.1.1.12"
 					}
 				}
