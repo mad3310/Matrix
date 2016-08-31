@@ -20,28 +20,52 @@
 		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
 		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
 	</resultMap>
+	<resultMap id="ConnContainerResultMap" type="EcGcePackage">
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="VERSION" property="version" jdbcType="VARCHAR" />
+		<result column="SUFFIX" property="suffix" jdbcType="VARCHAR" />
+		<result column="BUCKETNAME" property="bucketName" jdbcType="VARCHAR" />
+		<result column="KEY" property="key" jdbcType="VARCHAR" />
+		<result column="PORT_FORWARD" property="portForward" jdbcType="VARCHAR" />
+		<result column="GCE_ID" property="gceId" jdbcType="BIGINT" />
+		<result column="GCECLUSTER_ID" property="gceclusterId"
+			jdbcType="BIGINT" />
+		<result column="GCE_IMAGE_NAME" property="gceImageName"
+			jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="TINYINT" />
+		<result column="DELETED" property="deleted" jdbcType="TINYINT" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+		<collection property="containers" column="GCE_PACKAGE_ID" ofType="EcGceContainer">    
+            <id column="ID" property="id" jdbcType="BIGINT" />
+            <result column="IP_ADDR" property="ipAddr" jdbcType="VARCHAR" />
+            <result column="BIND_HOST_PORT" property="bindHostPort" jdbcType="VARCHAR" />
+        </collection>
+	</resultMap>
 	<sql id="Base_Column_List">
-		`ID`, `VERSION`, `SUFFIX`, `BUCKETNAME`, `KEY`,
-		`PORT_FORWARD`, `GCE_ID`,
-		`GCECLUSTER_ID`, `GCE_IMAGE_NAME`,
-		`STATUS`,
-		`DELETED`, `CREATE_TIME`, `UPDATE_TIME`, `CREATE_USER`, `UPDATE_USER`
+		pack.`ID`, pack.`VERSION`, pack.`SUFFIX`, pack.`BUCKETNAME`, pack.`KEY`,
+		pack.`PORT_FORWARD`, pack.`GCE_ID`,
+		pack.`GCECLUSTER_ID`, pack.`GCE_IMAGE_NAME`,
+		pack.`STATUS`,
+		pack.`DELETED`, pack.`CREATE_TIME`, pack.`UPDATE_TIME`, pack.`CREATE_USER`, pack.`UPDATE_USER`
 	</sql>
 	<!-- 查询条件 -->
 	<sql id="Example_Where_Clause">
 		where 1=1
 		<trim suffixOverrides=",">
 			<if test="id != null and id != '' ">
-				and ID=#{id}
+				and pack.ID=#{id}
 			</if>
 			<if test="version != null  and version != '' and version != 'null'">
-				and VERSION=#{version}
+				and pack.VERSION=#{version}
 			</if>
 			<if test="gceId != null and gceId != '' ">
-				and GCE_ID=#{gceId}
+				and pack.GCE_ID=#{gceId}
 			</if>
 			<if test="createUser != null and createUser != '' ">
-				and CREATE_USER=#{createUser}
+				and pack.CREATE_USER=#{createUser}
 			</if>
 		</trim>
 	</sql>
@@ -49,23 +73,23 @@
 		where 1=1
 		<trim suffixOverrides=",">
 			<if test="params != null and params.id !=null  ">
-				and ID=#{params.id}
+				and pack.ID=#{params.id}
 			</if>
 			<if test="params != null and params.version != null  and params.version != ''">
-				and VERSION=#{params.version}
+				and pack.VERSION=#{params.version}
 			</if>
 			<if test="params != null and params.gceId != null  and params.gceId != ''">
-				and GCE_ID=#{params.gceId}
+				and pack.GCE_ID=#{params.gceId}
 			</if>
 			<if test="params != null and params.createUser != null  and params.createUser != ''">
-				and CREATE_USER=#{params.createUser}
+				and pack.CREATE_USER=#{params.createUser}
 			</if>
 		</trim>
 	</sql>
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
 		<include refid="Base_Column_List" />
-		from EC_GCE_PACKAGE
+		from EC_GCE_PACKAGE pack
 		where `ID` = #{id,jdbcType=BIGINT}
 	</select>
 	<!-- 根据条件查询 -->
@@ -73,17 +97,22 @@
 		parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
-		from EC_GCE_PACKAGE
+		from EC_GCE_PACKAGE pack
 		<include refid="Example_Where_Clause" />
 	</select>
 	<!-- 分页：根据条件查询 -->
-	<select id="selectPageByMap" resultMap="BaseResultMap"
+	<select id="selectPageByMap" resultMap="ConnContainerResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
 		select
-		<include refid="Base_Column_List" />
-		from EC_GCE_PACKAGE
+		<include refid="Base_Column_List" />,container.id,container.IP_ADDR,container.BIND_HOST_PORT
+		from EC_GCE_PACKAGE pack
+		LEFT JOIN
+			EC_GCE_CONTAINER container
+		ON 
+		  container.GCE_PACKAGE_ID = pack.ID 
+		  AND container.GCE_ID = pack.GCE_ID 
 		<include refid="Example_Page_Where_Clause" />
-		ORDER BY CREATE_TIME DESC
+		ORDER BY pack.CREATE_TIME DESC
 		<if test="page != null">
       		limit #{page.startRowPosition},#{page.recordsPerPage}
     	</if>
@@ -91,7 +120,7 @@
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
 		parameterType="java.util.Map">
-		select count(1) from EC_GCE_PACKAGE
+		select count(1) from EC_GCE_PACKAGE pack
 		<include refid="Example_Where_Clause" />
 	</select>
 	<insert id="insert" parameterType="EcGcePackage"

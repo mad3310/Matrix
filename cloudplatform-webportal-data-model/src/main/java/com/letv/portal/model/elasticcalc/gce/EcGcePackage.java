@@ -5,12 +5,11 @@
  */
 package com.letv.portal.model.elasticcalc.gce;
 
-import javax.validation.constraints.Digits;
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.hibernate.validator.constraints.NotBlank;
 
 import com.letv.common.model.BaseModel;
 import com.letv.portal.validation.annotation.GcePackageVersionFormatLimit;
@@ -74,6 +73,8 @@ public class EcGcePackage extends BaseModel {
 	 * GCE名称	数据库无该字段，添加该字段只是为了方便前端validate
 	 */
 	private String gceName;
+	
+	private List<EcGceContainer> containers;
 
 	@GcePackageVersionFormatLimit(message = "版本号规范必须为x.x.x.x，例如1.1.1.12")
 	public String getVersion() {
@@ -154,6 +155,14 @@ public class EcGcePackage extends BaseModel {
 
 	public void setGceName(String gceName) {
 		this.gceName = gceName;
+	}
+
+	public List<EcGceContainer> getContainers() {
+		return containers;
+	}
+
+	public void setContainers(List<EcGceContainer> containers) {
+		this.containers = containers;
 	}
 
 }
