@@ -49,6 +49,8 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 	private long checkInterval;// 间隔checkInterval s检查一次
 	@Value("${matrix.gce.cluster.create.check.timeout}")
 	private long checkTimeout;// checkTimeout s超时,超时后停止检查
+	@Value("${matrix.gce.container.port}")
+	private String defaultContainerPort;
 	/**
 	 * 检查集群创建状态
 	 */
@@ -82,6 +84,8 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 			for (Map map : containers) {
 				EcGceContainer container = new EcGceContainer();
 				BeanUtils.populate(container, map);
+				if(StringUtils.isEmpty(container.getBindHostPort()))
+					container.setBindHostPort(defaultContainerPort);
 				container.setGceId(gceCluster.getGceId());
 				container.setGcePackageId(gceCluster.getGcePackageId());
 				container.setGceClusterId(gceCluster.getId());
