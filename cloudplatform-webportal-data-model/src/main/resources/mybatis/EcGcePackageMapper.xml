@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap" type="EcGcePackage">
 		<id column="ID" property="id" jdbcType="BIGINT" />
 		<result column="VERSION" property="version" jdbcType="VARCHAR" />
+		<result column="DESCN" property="descn" jdbcType="VARCHAR" />
 		<result column="SUFFIX" property="suffix" jdbcType="VARCHAR" />
 		<result column="BUCKETNAME" property="bucketName" jdbcType="VARCHAR" />
 		<result column="KEY" property="key" jdbcType="VARCHAR" />
@@ -23,6 +24,7 @@
 	<resultMap id="ConnContainerResultMap" type="EcGcePackage">
 		<id column="ID" property="id" jdbcType="BIGINT" />
 		<result column="VERSION" property="version" jdbcType="VARCHAR" />
+		<result column="DESCN" property="descn" jdbcType="VARCHAR" />
 		<result column="SUFFIX" property="suffix" jdbcType="VARCHAR" />
 		<result column="BUCKETNAME" property="bucketName" jdbcType="VARCHAR" />
 		<result column="KEY" property="key" jdbcType="VARCHAR" />
@@ -45,7 +47,7 @@
         </collection>
 	</resultMap>
 	<sql id="Base_Column_List">
-		pack.`ID`, pack.`VERSION`, pack.`SUFFIX`, pack.`BUCKETNAME`, pack.`KEY`,
+		pack.`ID`, pack.`VERSION`,pack.`DESCN`, pack.`SUFFIX`, pack.`BUCKETNAME`, pack.`KEY`,
 		pack.`PORT_FORWARD`, pack.`GCE_ID`,
 		pack.`GCECLUSTER_ID`, pack.`GCE_IMAGE_NAME`,
 		pack.`STATUS`,
@@ -64,6 +66,9 @@
 			<if test="gceId != null and gceId != '' ">
 				and pack.GCE_ID=#{gceId}
 			</if>
+			<if test="descn != null and descn != '' ">
+				and pack.DESCN=#{descn}
+			</if>
 			<if test="createUser != null and createUser != '' ">
 				and pack.CREATE_USER=#{createUser}
 			</if>
@@ -80,6 +85,9 @@
 			</if>
 			<if test="params != null and params.gceId != null  and params.gceId != ''">
 				and pack.GCE_ID=#{params.gceId}
+			</if>
+			<if test="params != null and params.descn != null  and params.descn != ''">
+				and pack.DESCN=#{params.descn}
 			</if>
 			<if test="params != null and params.createUser != null  and params.createUser != ''">
 				and pack.CREATE_USER=#{params.createUser}
@@ -128,6 +136,7 @@
 		insert into `EC_GCE_PACKAGE`
 		(
 		`VERSION`,
+		`DESCN`,
 		`SUFFIX`,
 		`BUCKETNAME`,
 		`KEY`,
@@ -144,6 +153,7 @@
 		)
 		values
 		(#{version,jdbcType=VARCHAR},
+		#{descn,jdbcType=VARCHAR},
 		#{suffix,jdbcType=VARCHAR},
 		#{bucketName,jdbcType=VARCHAR},
 		#{key,jdbcType=VARCHAR},
@@ -164,6 +174,7 @@
 		update `EC_GCE_PACKAGE`
 		set
 		`VERSION` = #{version,jdbcType=VARCHAR},
+		`DESCN` = #{descn,jdbcType=VARCHAR},
 		`SUFFIX` =
 		#{suffix,jdbcType=VARCHAR},
 		`BUCKETNAME` =
@@ -189,6 +200,9 @@
 		<set>
 			<if test="version != null  ">
 				`VERSION` = #{version,jdbcType=VARCHAR},
+			</if>
+			<if test="descn != null  ">
+				`DESCN` = #{descn,jdbcType=VARCHAR},
 			</if>
 			<if test="suffix != null  ">
 				`SUFFIX` = #{suffix,jdbcType=VARCHAR},
