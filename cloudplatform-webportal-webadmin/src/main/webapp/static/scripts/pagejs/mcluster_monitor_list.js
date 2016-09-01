@@ -175,7 +175,7 @@ function getMclusterStatus(ip,obj) {
 				$(obj).parent().find(".seriousTag").after($(obj));
 			}else if(result == "3"){
 				$(obj).removeClass();
-				$(obj).find('[name="mclusterStatus"]').html("<a>集群不可用/a>");
+				$(obj).find('[name="mclusterStatus"]').html("<a>集群不可用</a>");
 				$(obj).addClass("default-danger disableCluster");
 				$(obj).parent().find(".disableClusterTag").after($(obj));
 			}else if(result == "4"){
