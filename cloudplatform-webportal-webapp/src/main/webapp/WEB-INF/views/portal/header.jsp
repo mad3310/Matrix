@@ -2,14 +2,10 @@
 <%@page import="com.letv.common.util.ConfigUtil"%>
 <script>
 	$(function(){
-		console.log($(".user").text());
-		
 		if($(".user span").text()){
-			console.log(1);
 			$(".user").show();
 			$(".login").hide();
 		}else{
-			console.log(2);
 			$(".user").hide();
 			$(".login").show();
 		}
