@@ -10,6 +10,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.hibernate.validator.constraints.Length;
 
 import com.letv.common.model.BaseModel;
 import com.letv.portal.validation.annotation.GcePackageVersionFormatLimit;
@@ -29,6 +30,10 @@ public class EcGcePackage extends BaseModel {
 	 * 版本号
 	 */
 	private String version;
+	/**
+     * 描述
+     */
+    private String descn;
 
 	/**
 	 * 包后缀名
@@ -163,6 +168,15 @@ public class EcGcePackage extends BaseModel {
 
 	public void setContainers(List<EcGceContainer> containers) {
 		this.containers = containers;
+	}
+	
+	@Length(max = 300)
+	public String getDescn() {
+		return descn;
+	}
+
+	public void setDescn(String descn) {
+		this.descn = descn;
 	}
 
 }
