@@ -55,17 +55,36 @@ define(function(require,exports,module){
 	        	}
 	        	 
             	for(var i=0;i<dataArray.length;++i){
-                    var version = $("<td width=\"25%\">" + dataArray[i].version + "</td>");
-                    var status = $("<td width=\"25%\" status='"+dataArray[i].status+"'>" + cn.TranslateGceType(dataArray[i].status) + "</td>");
-                    var createTime = $("<td width=\"25%\">" + cn.TransDate('Y-m-d H:i:s',dataArray[i].createTime) + "</td>");
+                    var version = $("<td width=\"10%\">" + dataArray[i].version + "</td>");
+                    var status = $("<td width=\"10%\" status='"+dataArray[i].status+"'>" + cn.TranslateGceType(dataArray[i].status) + "</td>");
+                    var createTime = $("<td width=\"20%\">" + cn.TransDate('Y-m-d H:i:s',dataArray[i].createTime) + "</td>");
+                    
+                    var descnStr = dataArray[i].descn?dataArray[i].descn:"";
+                    if(descnStr.length>20){
+                    	descnStr = descnStr.substr(0,20)+"...";
+                    }
+                    var descn = $("<td width=\"20%\">" + descnStr + "</td>");
+                    
+                    var ipListStr = "";
+                    if(dataArray[i].containers){
+                    	dataArray[i].containers.forEach(function(item){
+                    		if(item.ipAddr){
+                        		var url = item.ipAddr+":"+item.bindHostPort;
+                        		ipListStr += "<a target=_'blank' href='http://"+url+"'>"+url+"</a>";
+                    		}
+                    	});
+                    }
+                    
+                    var ipList = $("<td width=\"20%\">"+ipListStr+"</td>");
+                   
                     var deploy = "";
                     if(dataArray[i].status == 0){
-                    	deploy =  $("<td width=\"25%\"><a class='deploy' href='javascript:void(0);return false;'>部署</a></td>");
+                    	deploy =  $("<td width=\"20%\"><a class='deploy' href='javascript:void(0);return false;'>部署</a></td>");
                     }else{
-                    	deploy =  $("<td width=\"25%\"><span style='color:grey'>部署</span></td>");
+                    	deploy =  $("<td width=\"20%\"><span style='color:grey'>部署</span></td>");
                     }
                     var tr = $("<tr class='data-tr' pakageId='"+dataArray[i].id+"'></tr>");
-                    tr.append(version).append(status).append(createTime).append(deploy)
+                    tr.append(version).append(status).append(createTime).append(descn).append(ipList).append(deploy)
                     tr.appendTo($tby);
             	}
                         	

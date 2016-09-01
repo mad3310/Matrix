@@ -39,10 +39,12 @@
 		<table class="table table-hover table-se">
 			<thead>
 			<tr>
-				<th width="25%">版本号</th>
-				<th width="25%">状态</th>
-				<th width="25%">创建时间</th>
-				<th width="25%">操作</th>
+				<th width="10%">版本号</th>
+				<th width="10%">状态</th>
+				<th width="20%">创建时间</th>
+				<th width="20%">备注</th>
+				<th width="20%">地址</th>
+				<th width="20%">操作</th>
 			</tr>
 			</thead>
 			<tbody id="tby">
@@ -91,6 +93,14 @@
 						<div class="col-sm-8 row">
 							<div class="col-sm-12">
 								<input type="file" name="file" autocomplete="off"/>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">备注： </label>
+						<div class="col-sm-8 row">
+							<div class="col-sm-12">
+								<textarea name="descn" class="form-control input-radius-2" autocomplete="off"></textarea>
 							</div>
 						</div>
 					</div>

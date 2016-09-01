@@ -35,7 +35,7 @@ define(function(require) {
 		size : "small",
 		alignment : 'right',
 		bootstrapMajorVersion : 3,
-		numberOfPages : 1,
+		numberOfPages : 3,
 		onPageClicked : function(e, originalEvent, type, page) {
 			cn.currentPage = page;
 			asyncData(page);
@@ -67,7 +67,22 @@ define(function(require) {
 				validators : {
 					notEmpty : {
 						message : '镜像文件不能为空!'
-					}
+					},
+                    file: {
+                        extension: 'zip',
+                        type: 'application/zip',
+                        maxSize: 1048 * 1024*500,
+                        message: '文件必须为小于500M的zip文件'
+                    }
+				}
+			},
+			'descn' : {
+				validMessage : '请按提示输入',
+				validators : {
+					stringLength: {
+						max: 4,
+                        message: '备注描述不能超过100位'
+                    }
 				}
 			}
 		}
