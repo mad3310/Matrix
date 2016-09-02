@@ -63,7 +63,8 @@ public class DefaultEmailSender implements ITemplateMessageSender {
             helper.setBcc(mail.getBcc());
         }
         if (mail.getCc() != null) {
-            helper.setCc(mail.getCc());
+            String[] ccs = mail.getCc().split(";");
+            helper.setCc(ccs);
         }
         if (mail.getCreateDate() != null) {
             helper.setSentDate(mail.getCreateDate());
