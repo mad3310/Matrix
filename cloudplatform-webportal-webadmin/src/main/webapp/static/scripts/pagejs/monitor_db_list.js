@@ -119,7 +119,7 @@ function queryMcluster(queryCondition,updateflag) {
  							+ "-"
 							+ "</td>");
 				}
-				var td4 = $("<td name=\"mclusterStatus\ status='"+array[i].status+"'>"
+				var td4 = $("<td name=\"mclusterStatus\" status='"+array[i].status+"'>"
 							+"<a><i class=\"ace-icon fa fa-spinner fa-spin  bigger-120\"/>数据抓取中...</a>"
 							+ "</td>");
 				var td5 = $("<td name=\"mclusterControl\">"
