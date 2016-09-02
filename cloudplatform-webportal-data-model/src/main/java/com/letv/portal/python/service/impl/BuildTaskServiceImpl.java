@@ -1248,8 +1248,9 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
 				Map<String, Object> mailParams = new HashMap<String, Object>();
 				mailParams.put("dbName", dbModels.get(0).getDbName());
 				mailParams.put("dbTableInfo", getMailInfo(new ArrayList()));
+				mailParams.put("userName", user.getUserName());
 				
-				MailMessage mailMessage = new MailMessage("乐视云平台web-portal系统",user.getEmail(), dbModels.get(0).getDbName()+"数据库集群反例-nopk","dbStrucCheck.ftl",mailParams);
+				MailMessage mailMessage = new MailMessage("乐视云平台web-portal系统",user.getEmail(), dbModels.get(0).getDbName()+"数据库集群反例检查","dbStrucCheck.ftl",mailParams);
 				mailMessage.setHtml(true);
 				mailMessage.setCc(SERVICE_OPERATION_NOTICE_MAIL_ADDRESS);
 				defaultEmailSender.sendMessage(mailMessage);

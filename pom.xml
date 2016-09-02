@@ -743,7 +743,7 @@
             <id>test</id>
             <properties>
                 <cloudplatform.webportal.db.driverClassName>com.mysql.jdbc.Driver</cloudplatform.webportal.db.driverClassName>
-                <cloudplatform.webportal.db.url>jdbc:mysql://10.204.29.161:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8</cloudplatform.webportal.db.url>
+                <cloudplatform.webportal.db.url>jdbc:mysql://127.0.0.1:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8</cloudplatform.webportal.db.url>
                 <cloudplatform.webportal.db.username>webportal</cloudplatform.webportal.db.username>
                 <cloudplatform.webportal.db.password>webportal</cloudplatform.webportal.db.password>
                 <cloudplatform.webportal.db.maxPoolSize>10</cloudplatform.webportal.db.maxPoolSize>
@@ -875,7 +875,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -972,7 +972,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1069,7 +1069,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1166,7 +1166,7 @@
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
                 <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
                 <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
+                <service.operation.notice.email.to>zhoubingzheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
