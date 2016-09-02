@@ -13,6 +13,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.validator.constraints.Length;
 
 import com.letv.common.model.BaseModel;
+import com.letv.portal.model.UserModel;
 import com.letv.portal.validation.annotation.GcePackageVersionFormatLimit;
 
 /**
@@ -80,6 +81,7 @@ public class EcGcePackage extends BaseModel {
 	private String gceName;
 	
 	private List<EcGceContainer> containers;
+	private UserModel createUserModel;
 
 	@GcePackageVersionFormatLimit(message = "版本号规范必须为x.x.x.x，例如1.1.1.12")
 	public String getVersion() {
@@ -177,6 +179,14 @@ public class EcGcePackage extends BaseModel {
 
 	public void setDescn(String descn) {
 		this.descn = descn;
+	}
+
+	public UserModel getCreateUserModel() {
+		return createUserModel;
+	}
+
+	public void setCreateUserModel(UserModel createUserModel) {
+		this.createUserModel = createUserModel;
 	}
 
 }

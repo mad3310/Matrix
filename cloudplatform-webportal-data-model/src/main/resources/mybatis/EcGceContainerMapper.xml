@@ -43,29 +43,81 @@
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
 		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+		
+		<association property="host" javaType="Host">
+			<result column="HOST_NAME" property="hostName" />
+			<result column="HOST_NAME_ALIAS" property="hostNameAlias" />
+			<result column="HCLUSTER_ID" property="hclusterId" />
+		</association>
+		<association property="gceCluster" javaType="GceCluster">
+			<result column="CLUSTER_NAME" property="clusterName" />
+			<result column="HCLUSTER_ID" property="hclusterId" />
+		</association>
+		
+	    <association property="hcluster" javaType="Hcluster">
+			<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
+		</association>
 	</resultMap>
 	<sql id="Base_Column_List">
-		ID, CONTAINER_NAME, MOUNT_DIR, ZOOKEEPER_ID, IP_ADDR, GATE_ADDR, IP_MASK,
-		TYPE, DISK_SIZE,
-		CORES_NUMBER, CPU_SPEED, MEMORY_SIZE, HOST_ID, HOST_IP, BIND_CONTAINER_PORT,
-		BIND_HOST_PORT,
-		BIND_HOST_IP, BIND_PROTOCOL, MGR_BIND_HOST_PORT, CONTAINER_UUID, GCE_ID,
-		GCE_PACKAGE_ID,
-		GCE_CLUSTER_ID, ZABBIXHOSTS, SERVICE_TYPE, LOG_BIND_HOST_PORT, STATUS, DELETED,
-		CREATE_TIME, UPDATE_TIME, CREATE_USER, UPDATE_USER
+		CONTAINER.ID, CONTAINER.CONTAINER_NAME, CONTAINER.MOUNT_DIR, CONTAINER.ZOOKEEPER_ID, CONTAINER.IP_ADDR, CONTAINER.GATE_ADDR, CONTAINER.IP_MASK,
+		CONTAINER.TYPE, CONTAINER.DISK_SIZE,
+		CONTAINER.CORES_NUMBER, CONTAINER.CPU_SPEED, CONTAINER.MEMORY_SIZE, CONTAINER.HOST_ID, CONTAINER.HOST_IP, CONTAINER.BIND_CONTAINER_PORT,
+		CONTAINER.BIND_HOST_PORT,
+		CONTAINER.BIND_HOST_IP, CONTAINER.BIND_PROTOCOL, CONTAINER.MGR_BIND_HOST_PORT, CONTAINER.CONTAINER_UUID, CONTAINER.GCE_ID,
+		CONTAINER.GCE_PACKAGE_ID,
+		CONTAINER.GCE_CLUSTER_ID, CONTAINER.ZABBIXHOSTS, CONTAINER.SERVICE_TYPE, CONTAINER.LOG_BIND_HOST_PORT, CONTAINER.STATUS, CONTAINER.DELETED,
+		CONTAINER.CREATE_TIME, CONTAINER.UPDATE_TIME, CONTAINER.CREATE_USER, CONTAINER.UPDATE_USER
 	</sql>
 	<!-- 查询条件 -->
 	<sql id="Example_Where_Clause">
 		where 1=1
 		<trim suffixOverrides=",">
 			<if test="gceId != null and gceId != '' ">
-				and GCE_ID=#{gceId}
+				and CONTAINER.GCE_ID=#{gceId}
 			</if>
 			<if test="gcePackageId != null and gcePackageId != '' ">
-				and GCE_PACKAGE_ID=#{gcePackageId}
+				and CONTAINER.GCE_PACKAGE_ID=#{gcePackageId}
 			</if>
 			<if test="createUser != null and createUser != '' ">
-				and CREATE_USER=#{createUser}
+				and CONTAINER.CREATE_USER=#{createUser}
+			</if>
+		</trim>
+	</sql>
+	<sql id="Example_Page_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="params != null and params.id !=null  ">
+				and CONTAINER.ID=#{params.id}
+			</if>
+			<if test="params != null and params.containerName != null  and params.containerName != ''  and params.containerName != 'null'">
+				and CONTAINER.CONTAINER_NAME like CONCAT('%',#{params.containerName},'%') escape '^'
+			</if>
+			<if test="params != null and params.ipAddr != null  and params.ipAddr != ''">
+				and CONTAINER.IP_ADDR like CONCAT('%',#{params.ipAddr},'%') escape '^'
+			</if>
+			<if test="params != null and params.gceId != null  and params.gceId != ''  ">
+				and CONTAINER.GCE_ID=#{params.gceId}
+			</if>
+			<if test="params != null and params.gcePackageId != null  and params.gcePackageId != ''  ">
+				and CONTAINER.GCE_PACKAGE_ID=#{params.gcePackageId}
+			</if>
+			<if test="params != null and params.status != null  and params.status != ''  ">
+				and CONTAINER.STATUS=#{params.status}
+			</if>
+			<if test="params != null and params.deleted != null  and params.deleted != ''  ">
+				and CONTAINER.DELETED=#{params.deleted}
+			</if>
+			<if test="params != null and params.createTime != null  and params.createTime != ''  ">
+				and CONTAINER.CREATE_TIME=#{params.createTime}
+			</if>
+			<if test="params != null and params.updateTime != null  and params.updateTime != ''  ">
+				and CONTAINER.UPDATE_TIME=#{params.updateTime}
+			</if>
+			<if test="params != null and params.createUser != null  and params.createUser != ''  ">
+				and CONTAINER.CREATE_USER=#{params.createUser}
+			</if>
+			<if test="params != null and params.updateUser != null  and params.updateUser != ''  ">
+				and CONTAINER.UPDATE_USER=#{params.updateUser}
 			</if>
 		</trim>
 	</sql>
@@ -73,10 +125,80 @@
 	<select id="selectByMap" resultMap="BaseResultMap"
 		parameterType="java.util.Map">
 		select
-		<include refid="Base_Column_List" />
-		from EC_GCE_CONTAINER
+		<include refid="Base_Column_List" />,n.CLUSTER_NAME,h.HCLUSTER_NAME_ALIAS,n.HCLUSTER_ID
+		from
+		  EC_GCE_CONTAINER CONTAINER 
+		  left join WEBPORTAL_GCECLUSTER n 
+		    on n.ID = CONTAINER.GCE_CLUSTER_ID 
+		  left join EC_GCE gce 
+		    on gce.ID = CONTAINER.GCE_ID 
+		  left join WEBPORTAL_HCLUSTER h 
+		    on h.ID = gce.HCLUSTER_ID 
 		<include refid="Example_Where_Clause" />
 	</select>
+	<select id="selectById" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />,n.CLUSTER_NAME,h.HCLUSTER_NAME_ALIAS,n.HCLUSTER_ID
+		from
+		  EC_GCE_CONTAINER CONTAINER 
+		  left join WEBPORTAL_GCECLUSTER n 
+		    on n.ID = CONTAINER.GCE_CLUSTER_ID 
+		  left join EC_GCE gce 
+		    on gce.ID = CONTAINER.GCE_ID 
+		  left join WEBPORTAL_HCLUSTER h 
+		    on h.ID = gce.HCLUSTER_ID 
+		where CONTAINER.ID=#{id,jdbcType=BIGINT}
+	</select>
+	<!-- 分页：根据条件查询 -->
+	<select id="selectPageByMap" resultMap="BaseResultMap" parameterType="com.letv.common.dao.QueryParam">
+		select
+			<include refid="Base_Column_List" />,n.CLUSTER_NAME,h.HCLUSTER_NAME_ALIAS,n.HCLUSTER_ID
+		from
+		  EC_GCE_CONTAINER CONTAINER 
+		  left join WEBPORTAL_GCECLUSTER n 
+		    on n.ID = CONTAINER.GCE_CLUSTER_ID 
+		  left join EC_GCE g 
+		    on g.ID = CONTAINER.GCE_ID 
+		  left join WEBPORTAL_HCLUSTER h 
+		    on h.ID = g.HCLUSTER_ID 
+			<include refid="Example_Page_Where_Clause" />
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
+				and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.clusterId != null  and params.clusterId != ''  ">
+				and n.ID=#{params.clusterId}
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
+		   ORDER BY CONTAINER.CREATE_TIME DESC
+			<if test="page != null">
+	      		limit #{page.startRowPosition},#{page.recordsPerPage}
+	    	</if>
+	</select>
+	
+	<!-- 列表总数 -->
+	<select id="selectByMapCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">
+		select 
+			count(1) 
+		from
+		  EC_GCE_CONTAINER CONTAINER 
+		  left join WEBPORTAL_GCECLUSTER n 
+		    on n.ID = CONTAINER.GCE_CLUSTER_ID 
+		  left join EC_GCE g 
+		    on g.ID = CONTAINER.GCE_ID 
+		  left join WEBPORTAL_HCLUSTER h 
+		    on h.ID = g.HCLUSTER_ID
+			<include refid="Example_Page_Where_Clause" />
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
+				and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+				and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+			</if>
+	</select>
+	
 	<insert id="insert" parameterType="EcGceContainer"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into

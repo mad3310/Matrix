@@ -202,11 +202,11 @@
 	</select>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="java.util.Map">
+		parameterType="com.letv.common.dao.QueryParam">
 		select count(1) from EC_GCE g
 		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
 		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
-		<include refid="Example_Where_Clause" />
+		<include refid="Example_Page_Where_Clause" />
 		<if test="userName != null  and userName != ''">
 			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
 		</if>

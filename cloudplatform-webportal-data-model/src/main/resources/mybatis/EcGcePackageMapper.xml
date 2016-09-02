@@ -20,6 +20,9 @@
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
 		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+        <association property="createUserModel" javaType="User">
+			<result column="USERNAME" property="userName" />
+		</association>
 	</resultMap>
 	<resultMap id="ConnContainerResultMap" type="EcGcePackage">
 		<id column="ID" property="id" jdbcType="BIGINT" />
@@ -40,6 +43,9 @@
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
 		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+		<association property="createUserModel" javaType="User">
+			<result column="USERNAME" property="userName" />
+		</association>
 		<collection property="containers" column="GCE_PACKAGE_ID" ofType="EcGceContainer">    
             <id column="ID" property="id" jdbcType="BIGINT" />
             <result column="IP_ADDR" property="ipAddr" jdbcType="VARCHAR" />
@@ -47,11 +53,11 @@
         </collection>
 	</resultMap>
 	<sql id="Base_Column_List">
-		pack.`ID`, pack.`VERSION`,pack.`DESCN`, pack.`SUFFIX`, pack.`BUCKETNAME`, pack.`KEY`,
-		pack.`PORT_FORWARD`, pack.`GCE_ID`,
-		pack.`GCECLUSTER_ID`, pack.`GCE_IMAGE_NAME`,
-		pack.`STATUS`,
-		pack.`DELETED`, pack.`CREATE_TIME`, pack.`UPDATE_TIME`, pack.`CREATE_USER`, pack.`UPDATE_USER`
+		pack.ID, pack.VERSION,pack.DESCN, pack.SUFFIX, pack.BUCKETNAME, pack.KEY,
+		pack.PORT_FORWARD, pack.GCE_ID,
+		pack.GCECLUSTER_ID, pack.GCE_IMAGE_NAME,
+		pack.STATUS,
+		pack.DELETED, pack.CREATE_TIME, pack.UPDATE_TIME, pack.CREATE_USER, pack.UPDATE_USER
 	</sql>
 	<!-- 查询条件 -->
 	<sql id="Example_Where_Clause">
@@ -96,24 +102,29 @@
 	</sql>
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="Base_Column_List" />,u.USERNAME
 		from EC_GCE_PACKAGE pack
-		where `ID` = #{id,jdbcType=BIGINT}
+		left join WEBPORTAL_USER u on pack.CREATE_USER = u.ID
+		where pack.ID = #{id,jdbcType=BIGINT}
 	</select>
 	<!-- 根据条件查询 -->
 	<select id="selectByMap" resultMap="BaseResultMap"
 		parameterType="java.util.Map">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="Base_Column_List" />,u.USERNAME
 		from EC_GCE_PACKAGE pack
+		left join WEBPORTAL_USER u on pack.CREATE_USER = u.ID
 		<include refid="Example_Where_Clause" />
 	</select>
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="ConnContainerResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
 		select
-		<include refid="Base_Column_List" />,container.id,container.IP_ADDR,container.BIND_HOST_PORT
+		<include refid="Base_Column_List" />,container.id,container.IP_ADDR,container.BIND_HOST_PORT,u.USERNAME
 		from EC_GCE_PACKAGE pack
+		left join 
+			WEBPORTAL_USER u 
+		on pack.CREATE_USER = u.ID
 		LEFT JOIN
 			EC_GCE_CONTAINER container
 		ON 
@@ -127,9 +138,9 @@
 	</select>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="java.util.Map">
+		parameterType="com.letv.common.dao.QueryParam">
 		select count(1) from EC_GCE_PACKAGE pack
-		<include refid="Example_Where_Clause" />
+		<include refid="Example_Page_Where_Clause" />
 	</select>
 	<insert id="insert" parameterType="EcGcePackage"
 		useGeneratedKeys="true" keyProperty="id">

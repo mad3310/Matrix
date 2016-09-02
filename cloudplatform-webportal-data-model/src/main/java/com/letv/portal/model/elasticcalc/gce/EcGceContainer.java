@@ -8,6 +8,9 @@ package com.letv.portal.model.elasticcalc.gce;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.letv.common.model.BaseModel;
+import com.letv.portal.model.HclusterModel;
+import com.letv.portal.model.HostModel;
+import com.letv.portal.model.gce.GceCluster;
 
 /**
  * GCE应用包容器
@@ -148,6 +151,10 @@ public class EcGceContainer extends BaseModel {
 	 * STATUS
 	 */
 	private Integer status;
+	
+	private HostModel host;
+	private GceCluster gceCluster;
+	private HclusterModel hcluster;
 	
 	public String getContainerName() {
 		return containerName;
@@ -355,6 +362,30 @@ public class EcGceContainer extends BaseModel {
 
 	public void setLogBindHostPort(String logBindHostPort) {
 		this.logBindHostPort = logBindHostPort;
+	}
+
+	public HostModel getHost() {
+		return host;
+	}
+
+	public void setHost(HostModel host) {
+		this.host = host;
+	}
+
+	public GceCluster getGceCluster() {
+		return gceCluster;
+	}
+
+	public void setGceCluster(GceCluster gceCluster) {
+		this.gceCluster = gceCluster;
+	}
+
+	public HclusterModel getHcluster() {
+		return hcluster;
+	}
+
+	public void setHcluster(HclusterModel hcluster) {
+		this.hcluster = hcluster;
 	}
 	
 }
