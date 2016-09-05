@@ -84,7 +84,7 @@ function queryByPage() {
 	$.ajax({
 		cache:false,
 		type : "get",
-		url : queryUrlBuilder("/gce/container",queryCondition),
+		url : queryUrlBuilder("/ecgce/container",queryCondition),
 		dataType : "json", /*这句可用可不用，没有影响*/
 		success : function(data) {
 			removeLoading();
