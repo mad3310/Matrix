@@ -35,6 +35,18 @@
 				</table>
 			</div>
 		</div>
+		<div id="pageControlBar" class="col-xs-12 col-sm-12">
+			<input type="hidden" id="totalPage_input" />
+			<ul class="pager">
+				<li><a href="javascript:void(0);" id="firstPage">&laquo&nbsp;首页</a></li>
+				<li><a href="javascript:void(0);" id="prevPage" >上一页</a></li>
+				<li><a href="javascript:void(0);" id="nextPage">下一页</a></li>
+				<li><a href="javascript:void(0);" id="lastPage">末页&nbsp;&raquo</a></li>
+				<li class="hidden-480"><a>共<lable id="totalPage"></lable>页</a></li>
+				<li class="hidden-480"><a>第<lable id="currentPage"></lable>页</a></li>
+				<li class="hidden-480"><a>共<lable id="totalRows"></lable>条记录</a></li>
+			</ul>
+		</div>
 	</div>
 	<div id="dialog-confirm" class="hide">
 		<div id="dialog-confirm-content" class="alert alert-info bigger-110"></div>
