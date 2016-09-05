@@ -1,11 +1,18 @@
+var currentPage = 1; //第几页 
+var recordsPerPage = 15; //每页显示条数
 
 function queryByPage(){
 	$("#tby tr").remove();
+	var queryCondition = {
+			'currentPage':currentPage,
+			'recordsPerPage':recordsPerPage,
+			'params.clusterId':$("#gceClusterId").val()
+		};
 	getLoading();
 	$.ajax({ 
 		cache:false,
 		type : "get",
-		url : "/ecgce/container?params.clusterId="+$("#gceClusterId").val(),
+		url : queryUrlBuilder("/ecgce/container",queryCondition),
 		dataType : "json", 
 		success : function(data) {
 			removeLoading();
