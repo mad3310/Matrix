@@ -5,14 +5,15 @@
  */
 package com.letv.portal.model.elasticcalc.gce;
 
-import javax.validation.constraints.Digits;
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
 import com.letv.common.model.BaseModel;
+import com.letv.portal.model.UserModel;
 import com.letv.portal.validation.annotation.GcePackageVersionFormatLimit;
 
 /**
@@ -30,6 +31,10 @@ public class EcGcePackage extends BaseModel {
 	 * 版本号
 	 */
 	private String version;
+	/**
+     * 描述
+     */
+    private String descn;
 
 	/**
 	 * 包后缀名
@@ -74,6 +79,9 @@ public class EcGcePackage extends BaseModel {
 	 * GCE名称	数据库无该字段，添加该字段只是为了方便前端validate
 	 */
 	private String gceName;
+	
+	private List<EcGceContainer> containers;
+	private UserModel createUserModel;
 
 	@GcePackageVersionFormatLimit(message = "版本号规范必须为x.x.x.x，例如1.1.1.12")
 	public String getVersion() {
@@ -154,6 +162,31 @@ public class EcGcePackage extends BaseModel {
 
 	public void setGceName(String gceName) {
 		this.gceName = gceName;
+	}
+
+	public List<EcGceContainer> getContainers() {
+		return containers;
+	}
+
+	public void setContainers(List<EcGceContainer> containers) {
+		this.containers = containers;
+	}
+	
+	@Length(max = 300)
+	public String getDescn() {
+		return descn;
+	}
+
+	public void setDescn(String descn) {
+		this.descn = descn;
+	}
+
+	public UserModel getCreateUserModel() {
+		return createUserModel;
+	}
+
+	public void setCreateUserModel(UserModel createUserModel) {
+		this.createUserModel = createUserModel;
 	}
 
 }

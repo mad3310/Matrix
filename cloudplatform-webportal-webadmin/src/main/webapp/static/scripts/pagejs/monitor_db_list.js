@@ -176,7 +176,7 @@ function getMclusterStatus(ip,obj) {
 			removeLoading();
 			if(error(data)) return;
 			var result = data.data.result;
-	
+			
 			$(obj).find('[name="mclusterStatus"]').attr("status",result);
 			if(result == "0"){
 				$(obj).removeClass();

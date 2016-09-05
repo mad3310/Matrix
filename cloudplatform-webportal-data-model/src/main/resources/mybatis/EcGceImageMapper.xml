@@ -16,72 +16,75 @@
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
 		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+        <association property="createUserModel" javaType="User">
+			<result column="USERNAME" property="userName" />
+		</association>
 	</resultMap>
 	<sql id="Base_Column_List">
-		ID, NAME, URL, OWNER, NET_TYPE, GCE_ID, GCE_PACKAGE_ID,
-		STATUS, DELETED,
-		CREATE_TIME,
-		UPDATE_TIME, CREATE_USER, UPDATE_USER
+		IMAGE.ID, IMAGE.NAME, IMAGE.URL, IMAGE.OWNER, IMAGE.NET_TYPE, IMAGE.GCE_ID, IMAGE.GCE_PACKAGE_ID,
+		IMAGE.STATUS, IMAGE.DELETED,
+		IMAGE.CREATE_TIME,
+		IMAGE.UPDATE_TIME, IMAGE.CREATE_USER, IMAGE.UPDATE_USER
 	</sql>
 	<sql id="Example_Where_Clause">
 		where 1=1
 		<trim suffixOverrides=",">
 			<if test="id !=null  ">
-				and ID=#{id}
+				and IMAGE.ID=#{id}
 			</if>
 			<if
 				test="version != null  and version != ''  and version != 'null'">
-				and VERSION like CONCAT('%',#{version},'%') escape '^'
+				and IMAGE.VERSION like CONCAT('%',#{version},'%') escape '^'
 			</if>
 			<if test="descn != null  and descn != ''">
-				and DESCN=#{descn}
+				and IMAGE.DESCN=#{descn}
 			</if>
 			<if
 				test="areaId != null  and areaId != ''  ">
-				and AREA_ID=#{areaId}
+				and IMAGE.AREA_ID=#{areaId}
 			</if>
 			<if
 				test="hclusterId != null  and hclusterId != ''  ">
-				and HCLUSTER_ID=#{hclusterId}
+				and IMAGE.HCLUSTER_ID=#{hclusterId}
 			</if>
 			<if test="type != null  and type != ''  ">
-				and TYPE=#{type}
+				and IMAGE.TYPE=#{type}
 			</if>
 			<if
 				test="logId != null  and logId != ''  ">
-				and LOG_ID=#{logId}
+				and IMAGE.LOG_ID=#{logId}
 			</if>
 			<if
 				test="memorySize != null  and memorySize != ''  ">
-				and MEMORY_SIZE=#{memorySize}
+				and IMAGE.MEMORY_SIZE=#{memorySize}
 			</if>
 			<if
 				test="instanceNum != null  and instanceNum != ''  ">
-				and INSTANCE_NUM=#{instanceNum}
+				and IMAGE.INSTANCE_NUM=#{instanceNum}
 			</if>
 			<if
 				test="status != null  and status != ''  ">
-				and STATUS=#{status}
+				and IMAGE.STATUS=#{status}
 			</if>
 			<if
 				test="deleted != null  and deleted != ''  ">
-				and DELETED=#{deleted}
+				and IMAGE.DELETED=#{deleted}
 			</if>
 			<if
 				test="createTime != null  and createTime != ''  ">
-				and CREATE_TIME=#{createTime}
+				and IMAGE.CREATE_TIME=#{createTime}
 			</if>
 			<if
 				test="updateTime != null  and updateTime != ''  ">
-				and UPDATE_TIME=#{updateTime}
+				and IMAGE.UPDATE_TIME=#{updateTime}
 			</if>
 			<if
 				test="createUser != null  and createUser != ''  ">
-				and CREATE_USER=#{createUser}
+				and IMAGE.CREATE_USER=#{createUser}
 			</if>
 			<if
 				test="updateUser != null  and updateUser != ''  ">
-				and UPDATE_USER=#{params.updateUser}
+				and IMAGE.UPDATE_USER=#{params.updateUser}
 			</if>
 		</trim>
 	</sql>
@@ -89,78 +92,80 @@
 		where 1=1
 		<trim suffixOverrides=",">
 			<if test="params != null and params.id !=null  ">
-				and ID=#{params.id}
+				and IMAGE.ID=#{params.id}
 			</if>
 			<if
 				test="params != null and params.version != null  and params.version != ''  and params.version != 'null'">
-				and VERSION like CONCAT('%',#{params.version},'%') escape '^'
+				and IMAGE.VERSION like CONCAT('%',#{params.version},'%') escape '^'
 			</if>
 			<if test="params != null and params.descn != null  and params.descn != ''">
-				and DESCN=#{params.descn}
+				and IMAGE.DESCN=#{params.descn}
 			</if>
 			<if
 				test="params != null and params.areaId != null  and params.areaId != ''  ">
-				and AREA_ID=#{params.areaId}
+				and IMAGE.AREA_ID=#{params.areaId}
 			</if>
 			<if
 				test="params != null and params.hclusterId != null  and params.hclusterId != ''  ">
-				and HCLUSTER_ID=#{params.hclusterId}
+				and IMAGE.HCLUSTER_ID=#{params.hclusterId}
 			</if>
 			<if test="params != null and params.type != null  and params.type != ''  ">
-				and TYPE=#{params.type}
+				and IMAGE.TYPE=#{params.type}
 			</if>
 			<if
 				test="params != null and params.logId != null  and params.logId != ''  ">
-				and LOG_ID=#{params.logId}
+				and IMAGE.LOG_ID=#{params.logId}
 			</if>
 			<if
 				test="params != null and params.memorySize != null  and params.memorySize != ''  ">
-				and MEMORY_SIZE=#{params.memorySize}
+				and IMAGE.MEMORY_SIZE=#{params.memorySize}
 			</if>
 			<if
 				test="params != null and params.instanceNum != null  and params.instanceNum != ''  ">
-				and INSTANCE_NUM=#{params.instanceNum}
+				and IMAGE.INSTANCE_NUM=#{params.instanceNum}
 			</if>
 			<if
 				test="params != null and params.status != null  and params.status != ''  ">
-				and STATUS=#{params.status}
+				and IMAGE.STATUS=#{params.status}
 			</if>
 			<if
 				test="params != null and params.deleted != null  and params.deleted != ''  ">
-				and DELETED=#{params.deleted}
+				and IMAGE.DELETED=#{params.deleted}
 			</if>
 			<if
 				test="params != null and params.createTime != null  and params.createTime != ''  ">
-				and CREATE_TIME=#{params.createTime}
+				and IMAGE.CREATE_TIME=#{params.createTime}
 			</if>
 			<if
 				test="params != null and params.updateTime != null  and params.updateTime != ''  ">
-				and UPDATE_TIME=#{params.updateTime}
+				and IMAGE.UPDATE_TIME=#{params.updateTime}
 			</if>
 			<if
 				test="params != null and params.createUser != null  and params.createUser != ''  ">
-				and CREATE_USER=#{params.createUser}
+				and IMAGE.CREATE_USER=#{params.createUser}
 			</if>
 			<if
 				test="params != null and params.updateUser != null  and params.updateUser != ''  ">
-				and UPDATE_USER=#{params.updateUser}
+				and IMAGE.UPDATE_USER=#{params.updateUser}
 			</if>
 		</trim>
 	</sql>
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
-		<include refid="Base_Column_List" />
-		from EC_GCE_IMAGE
-		where ID = #{id,jdbcType=BIGINT}
+		<include refid="Base_Column_List" />,u.USERNAME
+		from EC_GCE_IMAGE IMAGE
+		left join WEBPORTAL_USER u on IMAGE.CREATE_USER = u.ID
+		where IMAGE.ID = #{id,jdbcType=BIGINT}
 	</select>
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
 		select
-		<include refid="Base_Column_List" />
-		from EC_GCE_IMAGE
+		<include refid="Base_Column_List" />,u.USERNAME
+		from EC_GCE_IMAGE IMAGE
+		left join WEBPORTAL_USER u on IMAGE.CREATE_USER = u.ID
 		<include refid="Example_Page_Where_Clause" />
-		ORDER BY UPDATE_TIME DESC
+		ORDER BY IMAGE.UPDATE_TIME DESC
 		<if test="page != null">
 			limit #{page.startRowPosition},#{page.recordsPerPage}
 		</if>
@@ -168,7 +173,7 @@
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
 		parameterType="java.util.Map">
-		select count(1) from EC_GCE_IMAGE
+		select count(1) from EC_GCE_IMAGE IMAGE
 		<include refid="Example_Where_Clause" />
 	</select>
 	<insert id="insert" parameterType="EcGceImage"
