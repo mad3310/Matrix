@@ -61,6 +61,7 @@ $(function(){
 	$("#mclusterClearSearch").click(function(){
 		var clearList = ["containerName","ipAddr","containerStatus"];
 		clearSearch(clearList);
+		queryByPage();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
@@ -77,7 +78,7 @@ function queryByPage() {
 			'ipAddr':ipAddr,
 			/*'createTime':createTime,*/
 			'status':status
-		}
+		};
 	
 	$("#tby tr").remove();
 	getLoading();

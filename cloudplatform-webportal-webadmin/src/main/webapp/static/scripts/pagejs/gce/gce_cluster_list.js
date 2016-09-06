@@ -94,6 +94,7 @@ $(function(){
 	$("#mclusterClearSearch").click(function(){
 		var clearList = ["containerName","Physicalcluster","containeruser","containerStatus"];
 		clearSearch(clearList);
+		queryByPage();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);

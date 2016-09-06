@@ -54,15 +54,12 @@ var currentSelectedLineDbName = 1;
 			$('.queryOption').addClass('collapsed').find('.widget-body').attr('style', 'dispaly:none;');
 			$('.queryOption').find('.widget-header').find('i').attr('class', 'ace-icon fa fa-chevron-down');
 			var qryStr='';
-			var qryStr1=$('#dbName').val();var qryStr2=$('#dbMcluster').val();var qryStr3=$("#dbPhyMcluster").find('option:selected').text();var qryStr4=$("#containeruser").find('option:selected').text();var qryStr5;
+			var qryStr1=$('#dbName').val();var qryStr3=$("#dbPhyMcluster").find('option:selected').text();var qryStr4=$("#containeruser").find('option:selected').text();var qryStr5;
 			if($('#dbStatus').val()){
 				qryStr5=translateStatus($('#dbStatus').val());
 			}
 			if(qryStr1){
 				qryStr+='<span class="label label-success arrowed">'+qryStr1+'<span class="queryBadge" data-rely-id="dbName"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
-			}
-			if(qryStr2){
-				qryStr+='<span class="label label-warning arrowed">'+qryStr2+'<span class="queryBadge" data-rely-id="dbMcluster"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
 			}
 			if(qryStr3){
 				qryStr+='<span class="label label-purple arrowed">'+qryStr3+'<span class="queryBadge" data-rely-id="dbPhyMcluster"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
@@ -94,8 +91,9 @@ var currentSelectedLineDbName = 1;
 	});
 	$("#dbSearchClear").click(function(){
 		//var clearList = ["","","","","",""]
-		var clearList = ["dbName","dbMcluster","dbPhyMcluster","containeruser","dbStatus"]
+		var clearList = ["dbName","dbPhyMcluster","containeruser","dbStatus"]
 		clearSearch(clearList);
+		queryByPage();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
@@ -103,7 +101,6 @@ var currentSelectedLineDbName = 1;
 
   function queryByPage() {
   	var dbName = $("#dbName").val()?$("#dbName").val():'';
-	var mclusterName = $("#dbMcluster").val()?$("#dbMcluster").val():'';
 	var hclusterName = $("#dbPhyMcluster").find('option:selected').attr('data-hclsName')?$("#dbPhyMcluster").find('option:selected').attr('data-hclsName'):'';
 	var userName = $("#containeruser").find('option:selected').text()?$("#containeruser").find('option:selected').text():'';
 	/*var createTime = $("#PhyMechineDate").val()?$("#PhyMechineDate").val():'null';*/
@@ -112,7 +109,6 @@ var currentSelectedLineDbName = 1;
 			'currentPage':currentPage,
 			'recordsPerPage':recordsPerPage,
 			'gceName':dbName,
-			'clusterName':mclusterName,
 			'hclusterName':hclusterName,
 			'userName':userName,
 			// // /*'createTime':createTime,*/
@@ -124,7 +120,7 @@ var currentSelectedLineDbName = 1;
       cache:false,
       type : "get",
       // url : '/slb',
-      url : queryUrlBuilder("/gce",queryCondition),
+      url : queryUrlBuilder("/ecgce",queryCondition),
       dataType : "json", /*这句可用可不用，没有影响*/
       contentType : "application/json; charset=utf-8",
       success : function(data) {
@@ -154,13 +150,6 @@ var currentSelectedLineDbName = 1;
 	    td2 = $("<td>"
 	      + "<a class=\"link\" style=\"text-decoration:none;\">"+array[i].gceName+"</a>"
 	      + "</td>");
-	  }
-	  if(array[i].gceCluster){
-	    var td3 = $("<td class='hidden-480'>"
-	      + "<a class=\"link\" href=\"/detail/gce/cluster/" + array[i].gceClusterId+"\">"+array[i].gceCluster.clusterName+"</a>"
-	      + "</td>");//href=\"/detail/mcluster/" + array[i].mclusterId+"\"
-	  } else {
-	    var td3 = $("<td class='hidden-480'> -</td>");
 	  }
 	  if(array[i].hcluster){
 	    var td4 = $("<td class='hidden-480'>"
@@ -207,7 +196,7 @@ var currentSelectedLineDbName = 1;
 	    var tr = $("<tr></tr>");
 	  }
 
-	  tr.append(td0).append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7);
+	  tr.append(td0).append(td1).append(td2).append(td4).append(td5).append(td6).append(td7);
 	  tr.appendTo(tby);
 
 	  $('[name = "dbRefuseStatus"]').popover();
