@@ -101,7 +101,7 @@ function queryByPage() {
 								+"</label>"
 							+"</td>");
 				var td2 = $("<td>"
-						+  "<a class=\"link\"  href=\"/detail/gce/cluster/" + array[i].id+"\">"+array[i].containerName+"</a>"
+						+array[i].containerName
 						+ "</td>");
 				if(array[i].gceCluster){
 					var td3 = $("<td class='hidden-480'>"
