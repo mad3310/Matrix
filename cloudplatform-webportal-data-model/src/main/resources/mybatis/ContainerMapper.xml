@@ -364,6 +364,31 @@
 		and C.MCLUSTER_ID=M.Id AND M.STATUS IN(1,7,8,9,13,14) and C.HOST_ID=H.ID and H.HCLUSTER_ID=U.ID
 		
 	</select>
+	<select id="queryVaildVipContainers" resultType="java.util.Map" parameterType="com.letv.common.dao.QueryParam">
+		select
+			C.CONTAINER_NAME containerName,C.IP_ADDR ipAddr,M.MCLUSTER_NAME mclusterName,
+			M.ADMIN_USER adminUser,M.ADMIN_PASSWORD adminPassword
+		from 
+			WEBPORTAL_CONTAINER C,WEBPORTAL_MCLUSTER_INFO M
+		where 
+			C.MCLUSTER_ID=M.Id 
+			and M.STATUS IN(1,7,8,9,13,14) 
+			and C.TYPE='mclustervip'
+			ORDER BY C.CREATE_TIME DESC
+			<if test="page != null">
+	      		limit #{page.startRowPosition},#{page.recordsPerPage}
+	    	</if>
+	</select>
+	<select id="queryVaildVipContainersCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">
+		select
+			count(1)
+		from 
+			WEBPORTAL_CONTAINER C,WEBPORTAL_MCLUSTER_INFO M
+		where 
+			C.MCLUSTER_ID=M.Id 
+			and M.STATUS IN(1,7,8,9,13,14) 
+			and C.TYPE='mclustervip'
+	</select>
 	
 	
 	<!-- 根据条件查询 -->

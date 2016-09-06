@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.letv.common.dao.IBaseDao;
+import com.letv.common.dao.QueryParam;
 import com.letv.portal.model.ContainerModel;
 
 /**Program Name: IContainerDao <br>
@@ -43,4 +44,17 @@ public interface IContainerDao extends IBaseDao<ContainerModel> {
 	Integer selectCountNodeContainers(Map<String, Object> map);
 	
 	List<ContainerModel> selectNodeContainersByMap(Map<String, Object> map);
+	
+	/**
+	 * 查询有效vip容器信息
+	 * @param param
+	 * @return
+	 */
+	Map<String, Object> queryVaildVipContainers(QueryParam param);
+	/**
+	 * 查询有效vip容器数量
+	 * @param param
+	 * @return
+	 */
+	Integer queryVaildVipContainersCount(QueryParam param);
 }
