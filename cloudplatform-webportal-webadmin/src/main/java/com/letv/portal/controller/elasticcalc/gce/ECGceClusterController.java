@@ -39,7 +39,7 @@ public class ECGceClusterController {
 	@RequestMapping(method=RequestMethod.GET)   
 	public @ResponseBody ResultObject list(Page page,HttpServletRequest request,ResultObject obj) {
 		Map<String,Object> params = HttpUtil.requestParam2Map(request);
-		obj.setData(this.ecGceClusterService.selectPageByParams(page, params));
+		obj.setData(this.ecGceClusterService.queryByPagination(page, params));
 		return obj;
 	}
 }

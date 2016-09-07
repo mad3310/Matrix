@@ -49,7 +49,7 @@ public class ECGceController {
 	@RequestMapping(method=RequestMethod.GET)   
 	public @ResponseBody ResultObject list(Page page,HttpServletRequest request,ResultObject obj) {
 		Map<String,Object> params = HttpUtil.requestParam2Map(request);
-		obj.setData(this.ecGceService.selectPageByParams(page, params));
+		obj.setData(this.ecGceService.queryByPagination(page, params));
 		return obj;
 	}
 	/**
@@ -83,7 +83,7 @@ public class ECGceController {
 			throw new ValidateException("参数不合法");
 		Map<String,Object> params = HttpUtil.requestParam2Map(request);
 		params.put("gceId", id);
-		obj.setData(this.ecGcePackageService.selectPageByParams(page, params));
+		obj.setData(this.ecGcePackageService.queryByPagination(page, params));
 		return obj;
 	}
 	/**
@@ -120,7 +120,7 @@ public class ECGceController {
 			throw new ValidateException("参数不合法");
 		Map<String,Object> params = HttpUtil.requestParam2Map(request);
 		params.put("gceId", id);
-		obj.setData(this.ecGceImageService.selectPageByParams(page, params));
+		obj.setData(this.ecGceImageService.queryByPagination(page, params));
 		return obj;
 	}
 }

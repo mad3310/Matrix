@@ -63,7 +63,7 @@ public class ECGcePackageController {
 		params.put("createUser", sessionService.getSession().getUserId());
 		params.put("gceId", gceId);
 		logger.debug("查询GCE版本列表，参数" + params.toString());
-		obj.setData(this.ecGcePackageService.selectPageByParams(page, params));
+		obj.setData(this.ecGcePackageService.queryByPagination(page, params));
 		return obj;
 	}
 	

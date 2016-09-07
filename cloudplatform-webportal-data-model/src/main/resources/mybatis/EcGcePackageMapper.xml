@@ -46,6 +46,10 @@
 		<association property="createUserModel" javaType="User">
 			<result column="USERNAME" property="userName" />
 		</association>
+		<association property="ecGceImage" javaType="EcGceImage">    
+            <id column="ID" property="id" jdbcType="BIGINT" />
+            <result column="URL" property="url" jdbcType="VARCHAR" />
+		</association>
 		<collection property="containers" column="GCE_PACKAGE_ID" ofType="EcGceContainer">    
             <id column="ID" property="id" jdbcType="BIGINT" />
             <result column="IP_ADDR" property="ipAddr" jdbcType="VARCHAR" />
@@ -120,7 +124,7 @@
 	<select id="selectPageByMap" resultMap="ConnContainerResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
 		select
-		<include refid="Base_Column_List" />,container.id,container.IP_ADDR,container.BIND_HOST_PORT,u.USERNAME
+		<include refid="Base_Column_List" />,container.id,container.IP_ADDR,container.BIND_HOST_PORT,u.USERNAME,image.id,image.URL
 		from EC_GCE_PACKAGE pack
 		left join 
 			WEBPORTAL_USER u 
@@ -130,6 +134,11 @@
 		ON 
 		  container.GCE_PACKAGE_ID = pack.ID 
 		  AND container.GCE_ID = pack.GCE_ID 
+		LEFT JOIN
+			EC_GCE_IMAGE image
+		on
+		  image.GCE_PACKAGE_ID = pack.ID 
+		  AND image.GCE_ID = pack.GCE_ID 
 		<include refid="Example_Page_Where_Clause" />
 		ORDER BY pack.CREATE_TIME DESC
 		<if test="page != null">
@@ -138,7 +147,7 @@
 	</select>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="com.letv.common.dao.QueryParam">
+		parameterType="java.util.Map">
 		select count(1) from EC_GCE_PACKAGE pack
 		<include refid="Example_Page_Where_Clause" />
 	</select>
