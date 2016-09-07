@@ -40,7 +40,7 @@ public class ECGceContainerController {
 	@RequestMapping(method=RequestMethod.GET)   
 	public @ResponseBody ResultObject list(Page page,HttpServletRequest request,ResultObject obj) {
 		Map<String,Object> params = HttpUtil.requestParam2Map(request);
-		obj.setData(this.ecGceContainerService.selectPageByParams(page, params));
+		obj.setData(this.ecGceContainerService.queryByPagination(page, params));
 		return obj;
 	}
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)   

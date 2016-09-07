@@ -82,6 +82,7 @@ public class EcGcePackage extends BaseModel {
 	
 	private List<EcGceContainer> containers;
 	private UserModel createUserModel;
+	private EcGceImage ecGceImage;
 
 	@GcePackageVersionFormatLimit(message = "版本号规范必须为x.x.x.x，例如1.1.1.12")
 	public String getVersion() {
@@ -187,6 +188,14 @@ public class EcGcePackage extends BaseModel {
 
 	public void setCreateUserModel(UserModel createUserModel) {
 		this.createUserModel = createUserModel;
+	}
+
+	public EcGceImage getEcGceImage() {
+		return ecGceImage;
+	}
+
+	public void setEcGceImage(EcGceImage ecGceImage) {
+		this.ecGceImage = ecGceImage;
 	}
 
 }
