@@ -9,7 +9,7 @@ function queryByPage() {
 	var queryCondition = {
 			'currentPage':currentPage,
 			'recordsPerPage':recordsPerPage,
-			'gceName':''
+			'gceName':$('#gceName').val()
 	}
     $("#tby tr").remove();
     getLoading();
@@ -26,69 +26,30 @@ function queryByPage() {
 			var tby = $("#tby");
 			var totalPages = data.data.totalPages;
 			for (var i = 0, len = array.length; i < len; i++) {
-			  var td0 = $("<input class=\"hidden\" type=\"text\" value=\""+array[i].id+"\"\> ");
-			  var td2;
-			  if(array[i].status == 6){
-			    td2 = $("<td>"
-			      + "<a class=\"link\" href='#'>"+array[i].gceName+"</a>"
-			      + "</td>");//href=\"/detail/db/"+array[i].id+"\"
-			  }else if(array[i].status == 0 ||array[i].status == 3){
-			    td2 = $("<td>"
-			      + "<a class=\"link\" class=\"danger\" href='#'>"+array[i].gceName+"</a>"
-			      + "</td>");//href=\"/audit/db/"+array[i].id+"\"
-			  }else{
-			    td2 = $("<td>"
-			      + "<a class=\"link\" style=\"text-decoration:none;\">"+array[i].gceName+"</a>"
-			      + "</td>");
-			  }
-			  if(array[i].hcluster){
-			    var td4 = $("<td class='hidden-480'>"
-			      + array[i].hcluster.hclusterNameAlias
-			      + "</td>");
-			  } else {
-			    var td4 = $("<td class='hidden-480'> </td>");
-			  }
-			  if(array[i].status == 4){
-			    var td7 = $("<td>"
-			      +"<a href=\"#\" name=\"dbRefuseStatus\" rel=\"popover\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"top\" data-trigger='hover' data-content=\""+ array[i].auditInfo + "\" style=\"cursor:pointer; text-decoration:none;\">"
-			      + translateStatus(array[i].status)
-				+"</a>"
-			      + "</td>");
-			  }else if(array[i].status == 2){
-			    var td7 = $("<td>"
-			      +"<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
-			      +"<i class=\"ace-icon fa fa-spinner fa-spin green bigger-125\" />"
-			      +"创建中...</a>"
-			      + "</td>");
-			  }else{
-			    var td7 = $("<td> <a>"
-			      + translateStatus(array[i].status)
-				+ "</a></td>");
-			  }
+			  var tdIdHtml = "<input class=\"hidden\" type=\"text\" value=\""+array[i].id+"\"\> ";
+			  var tdNameHtml="<td>" +
+							      (array[i].gceName || '')+
+							  "</td>";
+			  var tdHclusterNameHtml = "<td class='hidden-480'>"+
+							    			(array[i].hcluster?array[i].hcluster.hclusterNameAlias:'')+
+									   "</td>";
+			  var tdStatusHtml = $("<td>"+
+							      		(array[i].status===7?'正常':'异常')+
+									"</td>");
+			  var tr = $("<tr class='tr-gce'></tr>");
 		
-			  if(array[i].status == 0 ||array[i].status == 5||array[i].status == 13){
-			    var tr = $("<tr class=\"tr-gce warning\"></tr>");
-		
-			  }else if(array[i].status == 3 ||array[i].status == 4||array[i].status == 14){
-			    var tr = $("<tr class=\"tr-gce default-danger\"></tr>");
-		
-			  }else{
-			    var tr = $("<tr class='tr-gce'></tr>");
-			  }
-		
-			  tr.append(td0).append(td2).append(td4).append(td7);
-			  tr.appendTo(tby);
-		
-			}//循环json中的数据
+			  tr.append(tdIdHtml).append(tdNameHtml).append(tdHclusterNameHtml).append(tdStatusHtml);
+			  tr.appendTo(tby);		
+			}
 		
 			if (totalPages <= 1) {
 			  $("#pageControlBar").hide();
 			} else {
 			  $("#pageControlBar").show();
 			  $("#totalPage_input").val(totalPages);
-			  $("#currentPage").html(currentPage);
+			  $("#currentPage").val(currentPage);
 			  $("#totalRows").html(data.data.totalRecords);
-			  $("#totalPage").html(totalPages);
+			  $("#totalPage").val(totalPages);
 			}
 			
 			queryVersionDetail(array[0].id);
@@ -106,7 +67,6 @@ function queryByPage() {
       }
     });
   }
-   
 
 function pageControl() {
 	// 首页
@@ -171,6 +131,12 @@ function addClickEventListenerToGceList(){
 	});
 }
 
+function addClickEventListenerToButtonSearch(){
+	$('#btnSearch').on('click',function(e){
+		queryByPage();
+	});	
+} 
+
 function queryVersionDetail(gceId){
 	//type 为 new|update
 	$.ajax({
@@ -186,9 +152,12 @@ function queryVersionDetail(gceId){
 			tby.empty();
 			for (var len = array.length, i = len - 1; i >=0 ; i--) {
 				var trHtml ='<tr>'+
-								'<td>'+array[i].gceImageName+'</td>'+
 								'<td>'+array[i].version+'</td>'+
-								'<td>'+array[i].status+'</td>'+
+								'<td style="max-width:250px;">'+(array[i].gceImageName || '')+'</td>'+
+								'<td style="max-width:300px;min-width:200px;">'+
+									'<span title="'+(array[i].descn || '')+'">'+(array[i].descn || '')+'</span>'+
+								'</td>'+
+								'<td>'+translateStatus(array[i].status)+'</td>'+
 							'</tr>';
 				
 				tby.append(trHtml);
@@ -203,6 +172,7 @@ function queryVersionDetail(gceId){
 
 
 function page_init(){
+	addClickEventListenerToButtonSearch();
 	addClickEventListenerToGceList();
 	queryByPage();
 	pageControl();

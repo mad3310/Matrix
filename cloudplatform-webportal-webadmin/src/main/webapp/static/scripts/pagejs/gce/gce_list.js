@@ -168,32 +168,15 @@ var currentSelectedLineDbName = 1;
 	  var td6 = $("<td class='hidden-480'>"
 	    + date('Y-m-d H:i:s',array[i].createTime)
 	      + "</td>");
-	  if(array[i].status == 4){
-	    var td7 = $("<td>"
-	      +"<a href=\"#\" name=\"dbRefuseStatus\" rel=\"popover\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"top\" data-trigger='hover' data-content=\""+ array[i].auditInfo + "\" style=\"cursor:pointer; text-decoration:none;\">"
-	      + translateStatus(array[i].status)
-		+"</a>"
-	      + "</td>");
-	  }else if(array[i].status == 2){
-	    var td7 = $("<td>"
-	      +"<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
-	      +"<i class=\"ace-icon fa fa-spinner fa-spin green bigger-125\" />"
-	      +"创建中...</a>"
-	      + "</td>");
+
+	  var td7 = $("<td>"+
+	      		(array[i].status===7?'正常':'异常')+
+				"</td>");
+
+	  if(array[i].status === 7){	    
+		var tr = $("<tr></tr>");
 	  }else{
-	    var td7 = $("<td> <a>"
-	      + translateStatus(array[i].status)
-		+ "</a></td>");
-	  }
-
-	  if(array[i].status == 0 ||array[i].status == 5||array[i].status == 13){
-	    var tr = $("<tr class=\"warning\"></tr>");
-
-	  }else if(array[i].status == 3 ||array[i].status == 4||array[i].status == 14){
 	    var tr = $("<tr class=\"default-danger\"></tr>");
-
-	  }else{
-	    var tr = $("<tr></tr>");
 	  }
 
 	  tr.append(td0).append(td1).append(td2).append(td4).append(td5).append(td6).append(td7);

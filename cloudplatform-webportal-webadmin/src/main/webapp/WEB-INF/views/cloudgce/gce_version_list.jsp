@@ -4,24 +4,16 @@
 	<div class="row">		
 		<div class="task-monitor-menu col-xs-12 col-sm-12 col-md-4 dataTables_wrapper form-inline no-footer">
 			<div class="table-header" style="margin-bottom:10px;background-color:#333;">
-			任务流执行记录
+			GCE列表
 			</div>
 			<div class="row">
 				<div class="input-group pull-right">
 					<form>
 						<div class="form-group col-xs-7 col-sm-7">
-							<select class="" id="jobstatus" style="height:34px;width:150px;">
-								<option value="GCE">GCE</option>
-								<option value="RDS">RDS</option>
-								<option value="SLB">SLB</option>
-								<option value="CBASE">CBASE</option>
-								<option value="OSS">OSS</option>
-								<option value="LOG">LOG</option>
-								<option value="ES">ES</option>
-							</select>
+							<input type="text" class="form-control" id="gceName" placeholder="GCE名称">
 						</div>
 						<div class=" form-group col-xs-5 col-sm-5">
-							<button class="btn btn-sm btn-primary btn-search pull-right " id="jobSearch"
+							<button class="btn btn-sm btn-primary btn-search pull-right " id="btnSearch"
 								type="button">
 								<i class="ace-icon fa fa-search"></i>搜索
 							</button>
@@ -71,8 +63,9 @@
 					<table class="table table-bordered table-version" >
 						<thead>
 							<tr>
-								<th>镜像名称</th>
 								<th>版本号</th>
+								<th>镜像名称</th>
+								<th>备注</th>
 								<th>状态</th>
 							</tr>
 						</thead>
