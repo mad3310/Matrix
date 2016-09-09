@@ -45,5 +45,20 @@ public interface IContainerService extends IBaseService<ContainerModel> {
 	 */
 	Integer selectCountNodeContainers(Map<String,Object> map);
 	List<ContainerModel> selectNodeContainersByMap(Map<String,Object> map);
+	
+	/**
+	 * 查询有效的vip容器信息（带分页）
+	 * @param page
+	 * @param params
+	 * @return
+	 */
+	Page queryVaildVipContainersByPagination(Page page, Map<String, Object> params);
+	
+	/**
+	 * 根据集群id更新container所属用户
+	 * @param mclusterId
+	 * @param userId
+	 */
+	void updateUserByMclusterId(Long mclusterId, Long userId);
 
 }

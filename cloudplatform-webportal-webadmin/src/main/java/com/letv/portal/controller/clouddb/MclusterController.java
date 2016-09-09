@@ -171,4 +171,13 @@ public class MclusterController {
 		return obj;
 	}
 	
+	@AoLog(desc="修改container集群所属用户",type=AoLogType.UPDATE)
+	@RequestMapping(value="/updateUser",method=RequestMethod.POST)
+	public @ResponseBody ResultObject updateUser(Long mclusterId, Long userId, ResultObject obj){
+		if(mclusterId == null) 
+			throw new ValidateException("参数不合法");
+		this.mclusterService.updateUser(mclusterId, userId);
+		return obj;
+	}
+	
 }

@@ -1,6 +1,5 @@
 package com.letv.portal.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +116,20 @@ public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implem
 	public List<ContainerModel> selectNodeContainersByMap(
 			Map<String, Object> map) {
 		return this.containerDao.selectNodeContainersByMap(map);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public Page queryVaildVipContainersByPagination(Page page, Map<String, Object> params) {
+		QueryParam param = new QueryParam(params, page);
+		page.setData(this.containerDao.queryVaildVipContainers(param));
+		page.setTotalRecords(this.containerDao.queryVaildVipContainersCount(param));
+		return page;
+	}
+
+	@Override
+	public void updateUserByMclusterId(Long mclusterId, Long userId) {
+		this.containerDao.updateUserByMclusterId(mclusterId, userId);
 	}
 	
 

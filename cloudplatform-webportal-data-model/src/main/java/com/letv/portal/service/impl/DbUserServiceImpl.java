@@ -270,4 +270,20 @@ public class DbUserServiceImpl extends BaseServiceImpl<DbUserModel> implements
 			return true;
 		return false;
 	}
+	
+	public boolean checkIp(Long dbId, String ip) {
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("dbId", dbId);
+		params.put("acceptIp", ip);
+		List<DbUserModel> realUsers = this.selectByMap(params);
+		if(realUsers.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void updateUserByDbId(Long mclusterId, Long userId) {
+		this.dbUserDao.updateUserByDbId(mclusterId, userId);
+	}
 }

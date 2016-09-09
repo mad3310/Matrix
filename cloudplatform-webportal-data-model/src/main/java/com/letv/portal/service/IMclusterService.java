@@ -68,6 +68,12 @@ public interface IMclusterService extends IBaseService<MclusterModel> {
 
 	public List<MclusterModel> selectNextValidMclusterById(Long mclusterId,Long hclusterId,
 			int addNewCount);
+	
+	/**
+	 * 修改集群所属用户
+	 * @param mclusterId
+	 */
+	void updateUser(Long mclusterId, Long userId);
 
 
 }
