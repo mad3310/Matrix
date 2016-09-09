@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
 import com.letv.common.dao.QueryParam;
+import com.letv.common.exception.ValidateException;
 import com.letv.common.paging.impl.Page;
 import com.letv.portal.dao.IMclusterDao;
 import com.letv.portal.enumeration.DbStatus;
@@ -18,6 +19,7 @@ import com.letv.portal.service.IBackupService;
 import com.letv.portal.service.IBuildService;
 import com.letv.portal.service.IContainerService;
 import com.letv.portal.service.IDbService;
+import com.letv.portal.service.IDbUserService;
 import com.letv.portal.service.IMclusterService;
 
 /**Program Name: MclusterServiceImpl <br>
@@ -42,6 +44,8 @@ public class MclusterServiceImpl extends BaseServiceImpl<MclusterModel> implemen
 	private IDbService dbService;
 	@Autowired
 	private IBackupService backupService;
+	@Autowired
+	private IDbUserService dbUserService;
 	
 	public MclusterServiceImpl() {
 		super(MclusterModel.class);
@@ -136,6 +140,34 @@ public class MclusterServiceImpl extends BaseServiceImpl<MclusterModel> implemen
 	@Override
 	public Integer selectValidMclusterCount() {
 		return this.mclusterDao.selectValidMclusterCount();
+	}
+
+	@Override
+	public void updateUser(Long mclusterId, Long userId) {
+		//更新mcluster集群表用户
+		MclusterModel m = new MclusterModel();
+		m.setId(mclusterId);
+		m.setCreateUser(userId);
+		this.mclusterDao.updateBySelective(m);
+		
+		//更新container表用户
+		containerService.updateUserByMclusterId(mclusterId, userId);
+		
+		//更新DB表
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("mclusterId", mclusterId);
+		List<DbModel> dbModels = dbService.selectByMap(params);
+		if(null == dbModels || dbModels.size() != 1) {
+			throw new ValidateException("集群主键{}，未获取到db信息");
+		}
+		DbModel db = new DbModel();
+		db.setId(dbModels.get(0).getId());
+		db.setCreateUser(userId);
+		dbService.updateBySelective(db);
+		
+		//更新dbUser表
+		dbUserService.updateUserByDbId(dbModels.get(0).getId(), userId);
+		
 	}
 
 }

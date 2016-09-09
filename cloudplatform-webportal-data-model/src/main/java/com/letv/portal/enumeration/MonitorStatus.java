@@ -7,7 +7,8 @@ public enum MonitorStatus implements ByteEnum{
 	SERIOUS(2),//危险 
 	CRASH(3),//宕机
 	TIMEOUT(4),//超时
-	EXCEPTION(5);//解析出错
+	EXCEPTION(5),//解析出错
+	STRUCTERROR(6);//存在反例
 	private final Integer value;
 
 	private MonitorStatus(Integer value) {

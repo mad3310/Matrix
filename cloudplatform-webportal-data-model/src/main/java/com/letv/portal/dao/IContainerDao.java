@@ -57,4 +57,6 @@ public interface IContainerDao extends IBaseDao<ContainerModel> {
 	 * @return
 	 */
 	Integer queryVaildVipContainersCount(QueryParam param);
+	
+	void updateUserByMclusterId(Long mclusterId, Long userId);
 }

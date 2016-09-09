@@ -126,6 +126,11 @@ public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implem
 		page.setTotalRecords(this.containerDao.queryVaildVipContainersCount(param));
 		return page;
 	}
+
+	@Override
+	public void updateUserByMclusterId(Long mclusterId, Long userId) {
+		this.containerDao.updateUserByMclusterId(mclusterId, userId);
+	}
 	
 
 }

@@ -120,6 +120,14 @@
 		</set>
 		where CONTAINER_NAME=#{containerName}
 	</update>
+	
+	<update id="updateUserByMclusterId">
+		update 
+			WEBPORTAL_CONTAINER
+		set
+			CREATE_USER=#{1}
+		where MCLUSTER_ID=#{0}
+	</update>
 
 	<!--根据id，有选择的修改记录 -->
 	<update id="updateBySelective" parameterType="Container">
