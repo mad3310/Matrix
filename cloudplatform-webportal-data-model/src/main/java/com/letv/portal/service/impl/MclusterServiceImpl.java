@@ -158,7 +158,7 @@ public class MclusterServiceImpl extends BaseServiceImpl<MclusterModel> implemen
 		params.put("mclusterId", mclusterId);
 		List<DbModel> dbModels = dbService.selectByMap(params);
 		if(null == dbModels || dbModels.size() != 1) {
-			throw new ValidateException("集群主键{}，未获取到db信息");
+			throw new ValidateException("集群id:"+mclusterId+"，未获取到db信息");
 		}
 		DbModel db = new DbModel();
 		db.setId(dbModels.get(0).getId());
