@@ -9,34 +9,23 @@ import org.springframework.stereotype.Service;
 
 import com.letv.common.result.ApiResultObject;
 import com.letv.portal.constant.Constant;
-import com.letv.portal.enumeration.MclusterStatus;
-import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.HostModel;
 import com.letv.portal.model.MclusterModel;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
 import com.letv.portal.python.service.IPythonService;
-import com.letv.portal.service.IContainerService;
-import com.letv.portal.service.IHostService;
-import com.letv.portal.service.IMclusterService;
 
-@Service("taskMclusterDelDataService")
+@Service("taskDelMclusterVipService")
 public class TaskDelMclusterVipServiceImpl extends BaseTask4RDSDelServiceImpl implements IBaseTaskService{
 	
 	@Autowired
 	private IPythonService pythonService;
-	@Autowired
-	private IHostService hostService;
-	@Autowired
-	private IContainerService containerService;
-	@Autowired
-	private IMclusterService mclusterService;
 
 	private final static Logger logger = LoggerFactory.getLogger(TaskDelMclusterVipServiceImpl.class);
 
 	@Override
 	public TaskResult execute(Map<String, Object> params) throws Exception{
-		TaskResult tr = super.execute(params);
+		TaskResult tr = super.validator(params);
 		if(!tr.isSuccess())
 			return tr;
 		
@@ -56,22 +45,4 @@ public class TaskDelMclusterVipServiceImpl extends BaseTask4RDSDelServiceImpl im
 		return tr;
 	}
 	
-	@Override
-	public void callBack(TaskResult tr) {
-	}
-
-	@Override
-	public void rollBack(TaskResult tr) {
-		String namesstr  =  (String) ((Map<String, Object>) tr.getParams()).get("delName");
-		ContainerModel containerModel = this.containerService.selectByName(namesstr);
-		if(MclusterStatus.ADDING.getValue() == containerModel.getStatus()) {
-			containerModel.setStatus(MclusterStatus.DELETINGFAILED.getValue());
-			this.containerService.updateBySelective(containerModel);
-		}
-		Long mclusterId = getLongFromObject(((Map<String, Object>) tr.getParams()).get("mclusterId"));
-		MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
-		mcluster.setStatus(MclusterStatus.DELETINGFAILED.getValue());
-		this.mclusterService.updateBySelective(mcluster);
-//		super.rollBack(tr);
-	}
 }

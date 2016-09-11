@@ -1,7 +1,5 @@
 package com.letv.portal.task.rds.service.delcluster.impl;
 
-import java.awt.Container;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,16 +12,10 @@ import org.springframework.util.CollectionUtils;
 
 import com.letv.common.exception.ValidateException;
 import com.letv.portal.enumeration.DbStatus;
-import com.letv.portal.enumeration.EsStatus;
-import com.letv.portal.enumeration.HostType;
 import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.model.ContainerModel;
 import com.letv.portal.model.DbModel;
-import com.letv.portal.model.HostModel;
 import com.letv.portal.model.MclusterModel;
-import com.letv.portal.model.es.EsCluster;
-import com.letv.portal.model.es.EsContainer;
-import com.letv.portal.model.es.EsServer;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.BaseTaskServiceImpl;
 import com.letv.portal.model.task.service.IBaseTaskService;
@@ -32,7 +24,7 @@ import com.letv.portal.service.IDbService;
 import com.letv.portal.service.IHostService;
 import com.letv.portal.service.IMclusterService;
 
-@Component("baseRDSDelTaskService")
+@Component("baseTask4RDSDelService")
 public class BaseTask4RDSDelServiceImpl extends BaseTaskServiceImpl implements IBaseTaskService{
 
 	@Value("${service.notice.email.to}")
@@ -51,64 +43,29 @@ public class BaseTask4RDSDelServiceImpl extends BaseTaskServiceImpl implements I
 	public void beforeExecute(Map<String, Object> params) {
 		DbModel db = this.getDbServer(params);
 		MclusterModel cluster = this.getMcluster(params);
-		if(db.getStatus() != DbStatus.DELETING.getValue()) {
-			db.setStatus(DbStatus.DELETING.getValue());
+		if(db.getStatus() != DbStatus.DESTROYING.getValue()) {
+			db.setStatus(DbStatus.DESTROYING.getValue());
 			this.dbService.updateBySelective(db);
 		}
-		if(cluster.getStatus() != MclusterStatus.DELETING.getValue()) {
-			cluster.setStatus(MclusterStatus.DELETING.getValue());
+		if(cluster.getStatus() != MclusterStatus.DESTROYING.getValue()) {
+			cluster.setStatus(MclusterStatus.DESTROYING.getValue());
 			this.mclusterService.updateBySelective(cluster);
 		}
 	}
 	
 	@Override
-	public TaskResult execute(Map<String, Object> params) throws Exception {
-		TaskResult tr = new TaskResult();
-		if(params == null || params.isEmpty()) {
-			tr.setResult("params is empty");
-			tr.setSuccess(false);
-		}
-		tr.setParams(params);
-		return tr;
-	}
-
-	@Override
 	public void rollBack(TaskResult tr) {
-		String serverName = "";
-		if(tr.getParams() !=null)
-			serverName =  (String) ((Map<String, Object>) tr.getParams()).get("serviceName");
-		//发送错误邮件
-		this.buildResultToMgr("RDS服务("+serverName+")创建", tr.isSuccess()?"成功":"失败", tr.getResult(), SERVICE_NOTICE_MAIL_ADDRESS);
-		//业务处理
-		this.serviceOver(tr);
-	}
-	
-	private void serviceOver(TaskResult tr) {
 		Map<String, Object> params = (Map<String, Object>) tr.getParams();
-		Long mclusterId = getLongFromObject(params.get("mclusterId"));
-		Long dbId = getLongFromObject(params.get("dbId"));
-		if(mclusterId == null)
-			throw new ValidateException("params's mclusterId is null");
-		//执行业务
-		MclusterModel mclusterModel = this.mclusterService.selectById(mclusterId);
-		if(mclusterModel == null)
-			throw new ValidateException("mclusterModel is null by mclusterId:" + mclusterId);
-		if(tr.isSuccess()) {
-			mclusterModel.setStatus(MclusterStatus.RUNNING.getValue());
-			this.mclusterService.audit(mclusterModel);
-			logger.info("RDS service build success:" + mclusterModel.getMclusterName());
-		} else {
-			mclusterModel.setStatus(MclusterStatus.BUILDFAIL.getValue());
-			this.mclusterService.audit(mclusterModel);
-			logger.info("RDS service build failed:" + mclusterModel.getMclusterName());
-			if(dbId==null)
-				return;
-			DbModel dbModel = this.dbService.selectById(dbId);
-			if(dbModel.getStatus() != DbStatus.NORMAL.getValue()) {
-				dbModel.setStatus(DbStatus.BUILDFAIL.getValue());
-				this.dbService.updateBySelective(dbModel);
-			}
-		}
+        DbModel db = getDbServer(params);
+        if(DbStatus.DESTROYING.getValue() == db.getStatus()) {
+            db.setStatus(DbStatus.DESTROYFAILED.getValue());
+            dbService.updateBySelective(db);
+        }
+        MclusterModel mcluster = getMcluster(params);
+        if(MclusterStatus.DESTROYING.getValue() == mcluster.getStatus()) {
+        	mcluster.setStatus(MclusterStatus.DESTROYFAILED.getValue());
+        	this.mclusterService.updateBySelective(mcluster);
+        }
 	}
 	
 	@Override
