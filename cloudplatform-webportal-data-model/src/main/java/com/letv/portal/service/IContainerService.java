@@ -60,5 +60,12 @@ public interface IContainerService extends IBaseService<ContainerModel> {
 	 * @param userId
 	 */
 	void updateUserByMclusterId(Long mclusterId, Long userId);
+	
+	/**
+	 * 根据物理机集群查询有效的vip容器信息
+	 * @param hclusterId
+	 * @return
+	 */
+	List<Map<String, Object>> queryVaildVipContainersByHclusterId(Long hclusterId);
 
 }

@@ -4,10 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.letv.portal.model.HclusterModel;
-import com.letv.portal.model.HostModel;
-import com.letv.portal.model.task.service.ITaskEngine;
-import com.letv.portal.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +14,24 @@ import com.letv.common.exception.PythonException;
 import com.letv.common.exception.ValidateException;
 import com.letv.common.result.ApiResultObject;
 import com.letv.common.session.SessionServiceImpl;
+import com.letv.portal.enumeration.DbStatus;
 import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.enumeration.MclusterType;
 import com.letv.portal.model.ContainerModel;
+import com.letv.portal.model.DbModel;
+import com.letv.portal.model.HclusterModel;
+import com.letv.portal.model.HostModel;
 import com.letv.portal.model.MclusterModel;
+import com.letv.portal.model.task.service.ITaskEngine;
 import com.letv.portal.proxy.IMclusterProxy;
 import com.letv.portal.python.service.IBuildTaskService;
 import com.letv.portal.python.service.IPythonService;
+import com.letv.portal.service.IBaseService;
+import com.letv.portal.service.IContainerService;
+import com.letv.portal.service.IDbService;
+import com.letv.portal.service.IHclusterService;
+import com.letv.portal.service.IHostService;
+import com.letv.portal.service.IMclusterService;
 
 /**Program Name: MclusterServiceImpl <br>
  * Description:  <br>
@@ -55,6 +62,8 @@ public class MclusterProxyImpl extends BaseProxyImpl<MclusterModel> implements
 	private IPythonService pythonService;
     @Autowired
     private ITaskEngine taskEngine;
+    @Autowired
+	private IDbService dbService;
 	
 	@Override
 	public IBaseService<MclusterModel> getService() {
@@ -83,7 +92,19 @@ public class MclusterProxyImpl extends BaseProxyImpl<MclusterModel> implements
 		MclusterModel mcluster = this.mclusterService.selectById(mclusterId);
 		mcluster.setStatus(MclusterStatus.DESTROYING.getValue());
 		this.mclusterService.updateBySelective(mcluster);
-		this.buildTaskService.removeMcluster(mcluster);
+		List<DbModel> dbs = this.dbService.selectDbByMclusterId(mclusterId);
+		if(null == dbs || dbs.size() != 1) {
+			throw new ValidateException("根据mclusterId查询db信息异常，mclusterId："+mclusterId);
+		}
+		dbs.get(0).setStatus(DbStatus.DESTROYING.getValue());
+		this.dbService.updateBySelective(dbs.get(0));
+		//this.buildTaskService.removeMcluster(mcluster);
+		Map<String,Object> params = new HashMap<String, Object>();
+        params.put("mclusterId", mclusterId);
+        params.put("dbId", dbs.get(0).getId());
+        params.put("serviceName", dbs.get(0).getDbName());
+        params.put("clusterName", mcluster.getMclusterName());
+        this.taskEngine.run("RDS_DESTROY", params);
 	}
 
 	@Override

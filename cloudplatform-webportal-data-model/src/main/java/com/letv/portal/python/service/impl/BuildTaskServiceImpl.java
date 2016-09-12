@@ -479,8 +479,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
     @Async
     public void checkMclusterStatus(MclusterModel mcluster) {
         HostModel host = getHostByHclusterId(mcluster.getHclusterId());
-        String result = this.pythonService.checkMclusterStatus(mcluster.getMclusterName(),host.getHostIp(),host.getName(),host.getPassword());
-        Map map = this.transResult(result);
+        ApiResultObject result = this.pythonService.checkMclusterStatus(mcluster.getMclusterName(),host.getHostIp(),host.getName(),host.getPassword());
+        Map map = this.transResult(result.getResult());
         if(map.isEmpty()) {
             mcluster.setStatus(MclusterStatus.CRISIS.getValue());
             this.mclusterService.updateBySelective(mcluster);
@@ -496,7 +496,7 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             } else {
                 this.checkVipMcluster(mcluster);
             }
-        } else if(null !=result && result.contains("not existed")){
+        } else if(null !=result.getResult() && result.getResult().contains("not existed")){
             this.mclusterService.delete(mcluster);
             this.pythonService.checkMclusterStatus(mcluster.getMclusterName() + Constant.MCLUSTER_NODE_TYPE_VIP_SUFFIX, host.getHostIp(), host.getName(), host.getPassword());
         }
@@ -504,8 +504,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
     }
     private void checkVipMcluster(MclusterModel mcluster) {
         HostModel host = getHostByHclusterId(mcluster.getHclusterId());
-        String resultVip = this.pythonService.checkMclusterStatus(mcluster.getMclusterName() + Constant.MCLUSTER_NODE_TYPE_VIP_SUFFIX, host.getHostIp(), host.getName(), host.getPassword());
-        Map mapResult = this.transResult(resultVip);
+        ApiResultObject resultVip = this.pythonService.checkMclusterStatus(mcluster.getMclusterName() + Constant.MCLUSTER_NODE_TYPE_VIP_SUFFIX, host.getHostIp(), host.getName(), host.getPassword());
+        Map mapResult = this.transResult(resultVip.getResult());
         if(mapResult.isEmpty()) {
             mcluster.setStatus(MclusterStatus.CRISIS.getValue());
             this.mclusterService.updateBySelective(mcluster);

@@ -50,7 +50,7 @@ public interface IContainerDao extends IBaseDao<ContainerModel> {
 	 * @param param
 	 * @return
 	 */
-	Map<String, Object> queryVaildVipContainers(QueryParam param);
+	List<Map<String, Object>> queryVaildVipContainers(QueryParam param);
 	/**
 	 * 查询有效vip容器数量
 	 * @param param
@@ -59,4 +59,10 @@ public interface IContainerDao extends IBaseDao<ContainerModel> {
 	Integer queryVaildVipContainersCount(QueryParam param);
 	
 	void updateUserByMclusterId(Long mclusterId, Long userId);
+	/**
+	 * 根据物理机集群id查询有效vip容器信息
+	 * @param param
+	 * @return
+	 */
+	List<Map<String, Object>> queryVaildVipContainersByHclusterId(Long hclusterId);
 }
