@@ -94,6 +94,7 @@ $(function(){
 	$("#mclusterClearSearch").click(function(){
 		var clearList = ["containerName","Physicalcluster","containeruser","containerStatus"];
 		clearSearch(clearList);
+		queryByPage();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
@@ -120,7 +121,7 @@ function queryByPage() {
 		cache:false,
 		type : "get",
 		//url : "/mcluster/" + currentPage + "/" + recordsPerPage + "/" + mclusterName,
-		url : queryUrlBuilder("/gce/cluster",queryCondition),
+		url : queryUrlBuilder("/ecgce/cluster",queryCondition),
 		dataType : "json", /*这句可用可不用，没有影响*/
 		success : function(data) {
 			removeLoading();
@@ -146,15 +147,6 @@ function queryByPage() {
 				} else {
 					var td3 = $("<td class='hidden-480'> </td>");
 				} 
-				var type = "";
-				if(array[i].type) {
-					type="后台创建";
-				} else {
-					type = "系统创建";
-				}
-				var td4 = $("<td class='hidden-480'>"
-						+ type
-						+ "</td>");
 				
 				var userName='system';
 				if(array[i].createUserModel) {
@@ -193,11 +185,8 @@ function queryByPage() {
 				}else{
 					var tr = $("<tr></tr>");
 				}
-				var td9 = $("<td>"
-						+ array[i].memorySize
-						+ "</td>");
 				
-				tr.append(td1).append(td2).append(td3).append(td9).append(td4).append(td5).append(td6).append(td7).append(td8);
+				tr.append(td1).append(td2).append(td3).append(td5).append(td6).append(td7).append(td8);
 				tr.appendTo(tby);
 			}//循环json中的数据 
 			
@@ -301,14 +290,14 @@ function pageControl() {
 	});
 }
 
-	function searchAction(){
+function searchAction(){
 		$('#nav-search-input').bind('keypress',function(event){
 	        if(event.keyCode == "13")    
 	        {
 	        	queryByPage();
 	        }
 	    });
-	}
+}
 	
 //创建Container集群表单验证
 function formValidate() {
