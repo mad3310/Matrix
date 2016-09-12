@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.letv.common.result.ApiResultObject;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.ContainerModel;
+import com.letv.portal.model.MclusterModel;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
 
@@ -29,11 +30,15 @@ public class TaskDelFixedServiceImpl extends BaseTask4RDSDelServiceImpl implemen
 			return tr;
 		
 		List<ContainerModel> containers = super.getContainers(params);
+		MclusterModel mcluster = super.getMcluster(params);
 		
 		ApiResultObject apiResult = fixedPushService.deleteMutilContainerPushFixedInfo(containers);
 		
 		tr.setResult(apiResult.getResult());
 		tr.setSuccess(apiResult.getAnalyzeResult());
+		if (tr.isSuccess()) {
+			logger.debug("RDS集群删除-删除固资成功{}", mcluster.getMclusterName());
+		}
 		tr.setParams(params);
 		return tr;
 	}

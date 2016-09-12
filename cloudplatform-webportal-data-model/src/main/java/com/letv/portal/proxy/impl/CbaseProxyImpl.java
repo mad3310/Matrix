@@ -3,32 +3,28 @@ package com.letv.portal.proxy.impl;
 import java.util.List;
 import java.util.Map;
 
-import com.letv.portal.constant.Constant;
-import com.letv.portal.enumeration.MclusterStatus;
-import com.letv.portal.model.HostModel;
-import com.letv.portal.model.cbase.CbaseClusterModel;
-import com.letv.portal.model.slb.SlbCluster;
-import com.letv.portal.python.service.IPythonService;
-import com.letv.portal.service.IHostService;
-import com.letv.portal.util.CommonServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.letv.common.email.ITemplateMessageSender;
 import com.letv.common.exception.TaskExecuteException;
 import com.letv.common.exception.ValidateException;
+import com.letv.common.result.ApiResultObject;
+import com.letv.portal.constant.Constant;
+import com.letv.portal.enumeration.MclusterStatus;
+import com.letv.portal.model.HostModel;
 import com.letv.portal.model.cbase.CbaseBucketModel;
+import com.letv.portal.model.cbase.CbaseClusterModel;
 import com.letv.portal.model.task.service.ITaskEngine;
 import com.letv.portal.proxy.ICbaseProxy;
-import com.letv.portal.python.service.ICbasePythonService;
+import com.letv.portal.python.service.IPythonService;
 import com.letv.portal.service.IBaseService;
+import com.letv.portal.service.IHostService;
 import com.letv.portal.service.cbase.ICbaseBucketService;
 import com.letv.portal.service.cbase.ICbaseClusterService;
-import com.letv.portal.service.cbase.ICbaseContainerService;
+import com.letv.portal.util.CommonServiceUtils;
 
 @Component
 public class CbaseProxyImpl extends BaseProxyImpl<CbaseBucketModel> implements
@@ -103,8 +99,8 @@ public class CbaseProxyImpl extends BaseProxyImpl<CbaseBucketModel> implements
 			this.cbaseClusterService.updateBySelective(cluster);
 			return;
 		}
-		String result = this.pythonService.checkMclusterStatus(cluster.getCbaseClusterName(),host.getHostIp(),host.getName(),host.getPassword());
-		Map map = CommonServiceUtils.transResult(result);
+		ApiResultObject result = this.pythonService.checkMclusterStatus(cluster.getCbaseClusterName(),host.getHostIp(),host.getName(),host.getPassword());
+		Map map = CommonServiceUtils.transResult(result.getResult());
 		if(map.isEmpty()) {
 			cluster.setStatus(MclusterStatus.CRISIS.getValue());
 			this.cbaseClusterService.updateBySelective(cluster);
@@ -121,7 +117,7 @@ public class CbaseProxyImpl extends BaseProxyImpl<CbaseBucketModel> implements
 			return;
 		}
 
-		if(null !=result && result.contains("not existed")){
+		if(null !=result.getResult() && result.getResult().contains("not existed")){
 			this.cbaseClusterService.delete(cluster);
 			return;
 		}

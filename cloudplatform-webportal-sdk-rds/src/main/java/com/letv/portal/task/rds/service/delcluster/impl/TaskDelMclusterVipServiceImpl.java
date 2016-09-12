@@ -39,7 +39,7 @@ public class TaskDelMclusterVipServiceImpl extends BaseTask4RDSDelServiceImpl im
 		tr = analyzeRestServiceResult(result);
 		
 		if (tr.isSuccess()) {
-			logger.debug("调用删除RDS集群vip节点成功{}", mclusterModel.getMclusterName());
+			logger.debug("RDS集群删除-调用删除RDS集群vip节点成功{}", mclusterModel.getMclusterName());
 		}
 		tr.setParams(params);
 		return tr;

@@ -61,6 +61,7 @@ public class TaskDelMclusterCheckStatusServiceImpl extends BaseTask4RDSDelServic
 		
 		if((Boolean)obj.get("judgeAnalyzeResult")) {//分析结果正常
 			tr = (TaskResult) obj.get("analyzeResult");
+			logger.debug("RDS集群删除-data节点删除成功{}", mclusterModel.getMclusterName());
 		} else {
 			ApiResultObject result = (ApiResultObject) obj.get("executeResult");
 			tr.setResult("check time over:"+result.getUrl());

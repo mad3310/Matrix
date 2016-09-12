@@ -31,6 +31,7 @@ public class TaskDelDbDataServiceImpl extends BaseTask4RDSDelServiceImpl impleme
 		
 		tr.setResult("success");
 		tr.setSuccess(true);
+		logger.debug("RDS集群删除-删除数据库记录成功{}", mcluster.getMclusterName());
 		tr.setParams(params);
 		return tr;
 	}

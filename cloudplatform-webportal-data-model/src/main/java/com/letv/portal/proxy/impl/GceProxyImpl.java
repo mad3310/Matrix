@@ -344,8 +344,8 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
             this.gceClusterService.updateBySelective(cluster);
             return;
         }
-		String result = this.pythonService.checkMclusterStatus(cluster.getClusterName(),host.getHostIp(),host.getName(),host.getPassword());
-		Map map = CommonServiceUtils.transResult(result);
+        ApiResultObject result = this.pythonService.checkMclusterStatus(cluster.getClusterName(),host.getHostIp(),host.getName(),host.getPassword());
+		Map map = CommonServiceUtils.transResult(result.getResult());
 		if(map.isEmpty()) {
 			cluster.setStatus(MclusterStatus.CRISIS.getValue());
 			this.gceClusterService.updateBySelective(cluster);
@@ -362,7 +362,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
             return;
 		}
 
-        if(null !=result && result.contains("not existed")){
+        if(null !=result.getResult() && result.getResult().contains("not existed")){
 			this.gceClusterService.delete(cluster);
             return;
 		}
