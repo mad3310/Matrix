@@ -313,4 +313,13 @@
 		</set>
 		where USERNAME = #{username} and DB_ID = #{dbId}
 	</update>
+	
+	<update id="updateUserByDbId">
+		update 
+			WEBPORTAL_DB_USER
+		set	
+			CREATE_USER=#{1}
+		where 
+			DB_ID=#{0}
+	</update>
 </mapper>

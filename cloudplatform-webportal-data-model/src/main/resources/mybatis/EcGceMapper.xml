@@ -207,10 +207,10 @@
 		left join WEBPORTAL_USER u on g.CREATE_USER = u.ID
 		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		<include refid="Example_Page_Where_Clause" />
-		<if test="userName != null  and userName != ''">
-			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
+		<if test="params != null and params.userName != null  and params.userName != ''">
+			and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
 		</if>
-		<if test="hclusterName != null  and hclusterName != ''">
+		<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
 			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
 		</if>
 	</select>
