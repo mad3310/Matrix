@@ -37,6 +37,7 @@ import com.letv.portal.model.elasticcalc.gce.EcGce;
 import com.letv.portal.model.elasticcalc.gce.EcGceCluster;
 import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 import com.letv.portal.model.elasticcalc.gce.EcGceExt;
+import com.letv.portal.model.elasticcalc.gce.EcGceImage;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
 import com.letv.portal.model.gce.GceCluster;
 import com.letv.portal.model.gce.GceContainer;
@@ -53,6 +54,7 @@ import com.letv.portal.service.IBaseService;
 import com.letv.portal.service.IHostService;
 import com.letv.portal.service.elasticcalc.gce.IEcGceClusterService;
 import com.letv.portal.service.elasticcalc.gce.IEcGceContainerService;
+import com.letv.portal.service.elasticcalc.gce.IEcGceImageService;
 import com.letv.portal.service.elasticcalc.gce.IEcGcePackageService;
 import com.letv.portal.service.elasticcalc.gce.IEcGceService;
 import com.letv.portal.service.gce.IGceClusterService;
@@ -76,6 +78,8 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	private IEcGcePackageService ecGcePackageService;
 	@Autowired
 	private IEcGceClusterService ecGceClusterService;
+	@Autowired
+	private IEcGceImageService ecGceImageService;
 	@Autowired
 	private IEcGceContainerService ecGceContainerService;
 	
@@ -108,6 +112,8 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 	private String CLUSTER_ENGINE_CATEGORY;
 	@Value("${matrix.gce.buy.process}")
 	private String GCE_BUY_PROCESS;
+	@Value("${matrix.gce.delete.process}")
+	private String GCE_DELETE_PROCESS;
 	
 	@Value("${matrix.gce.file.default.local}")
 	private String MATRIX_GCE_FILE_DEFAULT_LOCAL;
@@ -585,5 +591,57 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 			throw new ValidateException(MessageFormat.format("{0}应用{1}版本容器列表为空", gcePackage.getGceName(),gcePackage.getVersion()));
 		}
 		return containers;
+	}
+	
+	@Override
+	public void deletePackage(Long gcePackageId, Long gceId) {
+		//1.删除前校验
+		EcGce gce = this.ecGceService.selectById(gceId);
+		if(null == gce)
+			throw new ValidateException("GCE不存在");
+		EcGcePackage ecGcePackage = this.ecGcePackageService.selectById(gcePackageId);
+		if(null == ecGcePackage)
+			throw new ValidateException(MessageFormat.format("GCE {0}应用的版本包不存在", gce.getGceName()));
+		if(ecGcePackage.getStatus() == GcePackageStatus.DESTROYING.getValue() || ecGcePackage.getStatus() == GcePackageStatus.DESTROYED.getValue())
+			throw new CommonException(MessageFormat.format("GCE {0}应用版本包{1}正在删除中", gce.getGceName(),ecGcePackage.getVersion()));
+		//2.获取版本报当前状态
+		Integer status = ecGcePackage.getStatus();
+		//3.修改当前版本为正在删除中
+		ecGcePackage.setStatus(GcePackageStatus.DESTROYING.getValue());
+		this.ecGcePackageService.updateBySelective(ecGcePackage);
+		//4.删除s3
+		AWS3SConn.ConnBuilder builder = new AWS3SConn.ConnBuilder();
+		AWS3SConn conn = builder.setEndpoint(this.AWSS3ENDPOINT).setAccessKey(this.AWSS3ACCESSKEY)
+				.setSecretKey(this.AWSS3SECRETKEY).build();
+		AWSS3Util.getInstance(conn).deleteKey(ecGcePackage.getBucketName(), ecGcePackage.getKey());
+		//5.如果版本包未部署，直接删除版本，如果已经部署了，调工作流引擎删除集群，在工作流最后一步，删除版本信息
+		if(status == GcePackageStatus.DEFAULT.getValue()){
+			this.ecGcePackageService.delete(ecGcePackage);
+			return;
+		}
+		Map<String,Object> exParams = new HashMap<String,Object>();
+		exParams.put("gceId", gceId);
+		exParams.put("gcePackageId", gcePackageId);
+		List<EcGceCluster> clusters = this.ecGceClusterService.selectByMap(exParams);
+		if(CollectionUtils.isEmpty(clusters)){
+			throw new ValidateException("版本包不存在");
+		}
+		EcGceCluster cluster = clusters.get(0);
+		//6.修改集群状态为删除中
+		cluster.setStatus(MclusterStatus.DESTROYING.getValue());
+		this.ecGceClusterService.updateBySelective(cluster);
+		List<EcGceImage> images = this.ecGceImageService.selectByMap(exParams);
+		if(CollectionUtils.isEmpty(images)){
+			throw new ValidateException("版本包不存在");
+		}
+		EcGceImage image = images.get(0);
+		//7.开始工作流
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("gceId", gceId);
+		params.put("gcePackageId", gcePackageId);
+		params.put("gceClusterId", cluster.getId());
+		params.put("gceImageId", image.getId());
+		params.put("serviceName", cluster.getClusterName());
+		this.taskEngine.run(GCE_DELETE_PROCESS,params);
 	}
 }

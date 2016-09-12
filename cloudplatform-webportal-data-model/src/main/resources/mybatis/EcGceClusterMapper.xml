@@ -32,6 +32,53 @@
 		CLUSTER.GCE_PACKAGE_ID, CLUSTER.STATUS, CLUSTER.DELETED, CLUSTER.CREATE_TIME,
 		CLUSTER.CREATE_USER, CLUSTER.UPDATE_TIME, CLUSTER.UPDATE_USER
 	</sql>
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id !=null  ">
+				and CLUSTER.ID=#{id}
+			</if>
+			<if test="clusterName != null  and clusterName != '' and clusterName != 'null'">
+				and CLUSTER.CLUSTER_NAME like CONCAT('%',#{clusterName},'%') escape '^'
+			</if>
+			<if test="sstPassword != null  and sstPassword != ''">
+				and CLUSTER.SST_PASSWORD=#{sstPassword}
+			</if>
+			<if test="hclusterId != null  and hclusterId != ''  ">
+				and CLUSTER.HCLUSTER_ID=#{hclusterId}
+			</if>
+			<if test="adminUser != null  and adminUser != ''  ">
+				and CLUSTER.ADMIN_USER=#{adminUser}
+			</if>
+			<if test="adminPassword != null  and adminPassword != ''  ">
+				and CLUSTER.ADMIN_PASSWORD=#{adminPassword}
+			</if>
+			<if test="gceId != null  and gceId != ''  ">
+				and CLUSTER.GCE_ID=#{gceId}
+			</if>
+			<if test="gcePackageId != null  and gcePackageId != ''  ">
+				and CLUSTER.GCE_PACKAGE_ID=#{gcePackageId}
+			</if>
+			<if test="status != null  and status != ''  ">
+				and CLUSTER.STATUS=#{status}
+			</if>
+			<if test="deleted != null  and deleted != ''  ">
+				and CLUSTER.DELETED=#{deleted}
+			</if>
+			<if test="createTime != null  and createTime != ''  ">
+				and CLUSTER.CREATE_TIME=#{createTime}
+			</if>
+			<if test="updateTime != null  and updateTime != ''  ">
+				and CLUSTER.UPDATE_TIME=#{updateTime}
+			</if>
+			<if test="createUser != null  and createUser != ''  ">
+				and CLUSTER.CREATE_USER=#{createUser}
+			</if>
+			<if test="updateUser != null  and updateUser != ''  ">
+				and CLUSTER.UPDATE_USER=#{updateUser}
+			</if>
+		</trim>
+	</sql>
 	<sql id="Example_Page_Where_Clause">
 		where 1=1
 		<trim suffixOverrides=",">
@@ -96,6 +143,22 @@
 		left join WEBPORTAL_HCLUSTER h on CLUSTER.HCLUSTER_ID = h.ID
 		where CLUSTER.CLUSTER_NAME=#{clusterName,jdbcType=VARCHAR}
 	</select>
+	<select id="selectByMap" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		from EC_GCE_CLUSTER CLUSTER
+		left join WEBPORTAL_USER u on CLUSTER.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on CLUSTER.HCLUSTER_ID = h.ID
+		<include refid="Example_Where_Clause" />
+		<if test="userName != null and userName != ''">
+			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
+		</if>
+		<if test="hclusterName != null and hclusterName != ''">
+			and h.HCLUSTER_NAME like CONCAT('%',#{hclusterName},'%') escape '^'
+		</if>
+	</select>
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
@@ -119,16 +182,16 @@
 	</select>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="com.letv.common.dao.QueryParam">
+		parameterType="java.util.Map">
 		select count(1) from EC_GCE_CLUSTER CLUSTER
 		left join WEBPORTAL_USER u on CLUSTER.CREATE_USER = u.ID
 		left join WEBPORTAL_HCLUSTER h on CLUSTER.HCLUSTER_ID = h.ID
 		<include refid="Example_Page_Where_Clause" />
-		<if test="params != null and params.userName != null  and params.userName != ''">
-			and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+		<if test="userName != null  and userName != ''">
+			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
 		</if>
-		<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
-			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+		<if test="hclusterName != null  and hclusterName != ''">
+			and h.HCLUSTER_NAME like CONCAT('%',#{hclusterName},'%') escape '^'
 		</if>
 	</select>
 	<insert id="insert" parameterType="EcGceCluster"
@@ -189,4 +252,9 @@
 		</set>
 		where `ID` =#{id}
 	</update>
+	<!-- 物理删除 -->
+	<delete id="delete" parameterType="EcGceCluster">
+		delete CLUSTER from EC_GCE_CLUSTER CLUSTER
+		<include refid="Example_Where_Clause" />
+	</delete>
 </mapper>

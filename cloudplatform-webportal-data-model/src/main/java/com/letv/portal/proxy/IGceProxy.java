@@ -56,4 +56,13 @@ public interface IGceProxy extends IBaseProxy<GceServer> {
 	 * @param ecGcePackage
 	 */
 	public void deployGCE(EcGcePackage ecGcePackage);
+	/**
+	 * 删除GCE版本包
+	 * @param gcePackageId
+	 * @param gceId
+	 * @author linzhanbo .
+	 * @since 2016年9月9日, 下午3:15:20 .
+	 * @version 1.0 .
+	 */
+	public void deletePackage(Long gcePackageId, Long gceId);
 }
