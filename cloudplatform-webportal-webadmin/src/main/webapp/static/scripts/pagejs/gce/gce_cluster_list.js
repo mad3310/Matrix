@@ -120,7 +120,7 @@ function queryByPage() {
 		cache:false,
 		type : "get",
 		//url : "/mcluster/" + currentPage + "/" + recordsPerPage + "/" + mclusterName,
-		url : queryUrlBuilder("/gce/cluster",queryCondition),
+		url : queryUrlBuilder("/ecgce/cluster",queryCondition),
 		dataType : "json", /*这句可用可不用，没有影响*/
 		success : function(data) {
 			removeLoading();
