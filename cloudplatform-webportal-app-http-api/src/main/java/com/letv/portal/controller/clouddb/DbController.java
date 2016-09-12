@@ -5,6 +5,7 @@
  */
 package com.letv.portal.controller.clouddb;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -50,7 +51,7 @@ public class DbController {
 
 
 	/**
-	 * 获取有效的vip容器信息
+	 * 获取有效的vip容器信息(带分页)
 	 * @param page
 	 * @param request
 	 * @param callbackResult
@@ -72,6 +73,22 @@ public class DbController {
 		callbackResult.setData(result);
 		logger.debug("获取DB容器列表成功! 访问用户:{}", userId);
 		return callbackResult;
+	}
+	
+	@RequestMapping(value = "/containers", method = RequestMethod.GET)
+	public @ResponseBody List<Map<String, Object>> getVaildVipContainers(Long hclusterId) {
+		logger.debug("查询物理机集群下的vip容器");
+		if(null == hclusterId) {
+			throw new ApiException(RestAPIFormatter.ParamsInvalid.formatErrorMessage("hclusterId不能为空"));
+		}
+		Long userId = this.sessionService.getSession().getUserId();
+		if (!authorization(userId)) {
+			logger.info("{}无权访问该接口", userId);
+			throw new ApiException(RestAPIFormatter.Unauthorized);
+		}
+		List<Map<String, Object>> result = containerService.queryVaildVipContainersByHclusterId(hclusterId);
+		logger.debug("查询物理机集群下的vip容器成功! 访问用户:{}", userId);
+		return result;
 	}
 	
 	private boolean authorization(Long userId) {

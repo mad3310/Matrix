@@ -371,11 +371,11 @@ public class PythonServiceImpl implements IPythonService{
 	}
 
 	@Override
-	public String checkMclusterStatus(String mclusterName,String ip,String username,String password) {
+	public ApiResultObject checkMclusterStatus(String mclusterName,String ip,String username,String password) {
 		StringBuffer url = new StringBuffer();
 		url.append(URL_HEAD).append(ip).append(URL_CHECK_PORT).append("/containerCluster/status/").append(mclusterName);
 		String result = HttpClient.get(url.toString(),username,password);
-		return result;
+		return new ApiResultObject(result, url.toString());
 	}
 
 	@Override
