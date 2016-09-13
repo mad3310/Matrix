@@ -642,6 +642,7 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		params.put("gceClusterId", cluster.getId());
 		params.put("gceImageId", image.getId());
 		params.put("serviceName", cluster.getClusterName());
+		params.put("clusterName", cluster.getClusterName());
 		this.taskEngine.run(GCE_DELETE_PROCESS,params);
 	}
 }
