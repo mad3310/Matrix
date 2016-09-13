@@ -72,14 +72,38 @@
 	<sql id="Example_Where_Clause">
 		where 1=1
 		<trim suffixOverrides=",">
-			<if test="gceId != null and gceId != '' ">
+			<if test="id !=null  ">
+				and CONTAINER.ID=#{id}
+			</if>
+			<if test="containerName != null  and containerName != ''  and containerName != 'null'">
+				and CONTAINER.CONTAINER_NAME like CONCAT('%',#{containerName},'%') escape '^'
+			</if>
+			<if test="ipAddr != null  and ipAddr != ''">
+				and CONTAINER.IP_ADDR like CONCAT('%',#{ipAddr},'%') escape '^'
+			</if>
+			<if test="gceId != null  and gceId != ''  ">
 				and CONTAINER.GCE_ID=#{gceId}
 			</if>
-			<if test="gcePackageId != null and gcePackageId != '' ">
+			<if test="gcePackageId != null  and gcePackageId != ''  ">
 				and CONTAINER.GCE_PACKAGE_ID=#{gcePackageId}
 			</if>
-			<if test="createUser != null and createUser != '' ">
+			<if test="status != null  and status != ''  ">
+				and CONTAINER.STATUS=#{status}
+			</if>
+			<if test="deleted != null  and deleted != ''  ">
+				and CONTAINER.DELETED=#{deleted}
+			</if>
+			<if test="createTime != null  and createTime != ''  ">
+				and CONTAINER.CREATE_TIME=#{createTime}
+			</if>
+			<if test="updateTime != null  and updateTime != ''  ">
+				and CONTAINER.UPDATE_TIME=#{updateTime}
+			</if>
+			<if test="createUser != null  and createUser != ''  ">
 				and CONTAINER.CREATE_USER=#{createUser}
+			</if>
+			<if test="updateUser != null  and updateUser != ''  ">
+				and CONTAINER.UPDATE_USER=#{updateUser}
 			</if>
 		</trim>
 	</sql>
@@ -179,7 +203,7 @@
 	</select>
 	
 	<!-- 列表总数 -->
-	<select id="selectByMapCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">
+	<select id="selectByMapCount" resultType="java.lang.Integer" parameterType="java.util.Map">
 		select 
 			count(1) 
 		from
@@ -190,7 +214,7 @@
 		    on g.ID = CONTAINER.GCE_ID 
 		  left join WEBPORTAL_HCLUSTER h 
 		    on h.ID = g.HCLUSTER_ID
-			<include refid="Example_Page_Where_Clause" />
+			<include refid="Example_Where_Clause" />
 			<if test="params != null and params.clusterName != null  and params.clusterName != ''">
 				and n.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
 			</if>
@@ -245,4 +269,9 @@
 		#{createUser,jdbcType=BIGINT},
 		#{updateUser,jdbcType=BIGINT})
 	</insert>
+	<!-- 物理删除 -->
+	<delete id="deleteBySelective" parameterType="java.util.Map">
+		delete CONTAINER from EC_GCE_CONTAINER CONTAINER
+		<include refid="Example_Where_Clause" />
+	</delete>
 </mapper>

@@ -240,7 +240,7 @@ public interface IPythonService {
 	 * @param mclusterName
 	 * @return
 	 */
-	String checkMclusterStatus(String mclusterName,String ip,String username,String password);
+	ApiResultObject checkMclusterStatus(String mclusterName,String ip,String username,String password);
 
 	/**Methods Name: checkContainerStatus <br>
 	 * Description: 检查container状态<br>

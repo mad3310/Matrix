@@ -55,7 +55,12 @@ public class ECGcePackageController {
 	private IEcGcePackageService ecGcePackageService;
 	@Autowired
 	private IGceProxy gceProxy;
-
+	@RequestMapping(value = "/{gcePackageId}", method=RequestMethod.DELETE)
+	public @ResponseBody ResultObject delete(@PathVariable Long gcePackageId,@RequestParam Long gceId,ResultObject result) {
+		logger.debug("删除GCE版本包");
+		this.gceProxy.deletePackage(gcePackageId,gceId);
+		return result;
+	}
 	@RequestMapping(value="/{gceId}",method = RequestMethod.GET)
 	public @ResponseBody ResultObject list(@PathVariable("gceId") Long gceId,Page page,
 			HttpServletRequest request, ResultObject obj) {
@@ -63,7 +68,7 @@ public class ECGcePackageController {
 		params.put("createUser", sessionService.getSession().getUserId());
 		params.put("gceId", gceId);
 		logger.debug("查询GCE版本列表，参数" + params.toString());
-		obj.setData(this.ecGcePackageService.queryByPagination(page, params));
+		obj.setData(this.ecGcePackageService.selectPageByParams(page, params));
 		return obj;
 	}
 	

@@ -20,7 +20,10 @@ public enum GcePackageStatus implements ByteEnum {
 	BUILDFAIL(3), 
 	AUDITFAIL(4), 
 	ABNORMAL(5), 
-	NORMAL(6);
+	NORMAL(6),
+	DESTROYING(10),
+	DESTROYED(11),
+	DESTROYFAILED(19);
 
 	private final Integer value;
 

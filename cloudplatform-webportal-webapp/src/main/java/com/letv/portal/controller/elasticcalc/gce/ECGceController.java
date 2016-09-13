@@ -62,7 +62,7 @@ public class ECGceController {
 		if (!StringUtils.isEmpty(gceName))
 			params.put("gceName", StringUtil.transSqlCharacter(gceName));
 		logger.debug("查询GCE列表，参数" + params.toString());
-		obj.setData(this.ecGceService.queryByPagination(page, params));
+		obj.setData(this.ecGceService.selectPageByParams(page, params));
 		return obj;
 	}
 

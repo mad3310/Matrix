@@ -33,34 +33,26 @@
 				and IMAGE.ID=#{id}
 			</if>
 			<if
-				test="version != null  and version != ''  and version != 'null'">
-				and IMAGE.VERSION like CONCAT('%',#{version},'%') escape '^'
+				test="name != null  and name != ''  and name != 'null'">
+				and IMAGE.NAME like CONCAT('%',#{name},'%') escape '^'
 			</if>
-			<if test="descn != null  and descn != ''">
-				and IMAGE.DESCN=#{descn}
-			</if>
-			<if
-				test="areaId != null  and areaId != ''  ">
-				and IMAGE.AREA_ID=#{areaId}
+			<if test="url != null  and url != ''">
+				and IMAGE.URL=#{descn}
 			</if>
 			<if
-				test="hclusterId != null  and hclusterId != ''  ">
-				and IMAGE.HCLUSTER_ID=#{hclusterId}
+				test="owner != null  and owner != ''  ">
+				and IMAGE.OWNER=#{owner}
 			</if>
-			<if test="type != null  and type != ''  ">
-				and IMAGE.TYPE=#{type}
-			</if>
-			<if
-				test="logId != null  and logId != ''  ">
-				and IMAGE.LOG_ID=#{logId}
+			<if test="netType != null  and netType != ''  ">
+				and IMAGE.NET_TYPE=#{netType}
 			</if>
 			<if
-				test="memorySize != null  and memorySize != ''  ">
-				and IMAGE.MEMORY_SIZE=#{memorySize}
+				test="gceId != null  and gceId != ''  ">
+				and IMAGE.GCE_ID=#{gceId}
 			</if>
 			<if
-				test="instanceNum != null  and instanceNum != ''  ">
-				and IMAGE.INSTANCE_NUM=#{instanceNum}
+				test="gcePackageId != null  and gcePackageId != ''  ">
+				and IMAGE.GCE_PACKAGE_ID=#{gcePackageId}
 			</if>
 			<if
 				test="status != null  and status != ''  ">
@@ -84,7 +76,7 @@
 			</if>
 			<if
 				test="updateUser != null  and updateUser != ''  ">
-				and IMAGE.UPDATE_USER=#{params.updateUser}
+				and IMAGE.UPDATE_USER=#{updateUser}
 			</if>
 		</trim>
 	</sql>
@@ -95,34 +87,26 @@
 				and IMAGE.ID=#{params.id}
 			</if>
 			<if
-				test="params != null and params.version != null  and params.version != ''  and params.version != 'null'">
-				and IMAGE.VERSION like CONCAT('%',#{params.version},'%') escape '^'
+				test="params != null and params.name != null  and params.name != ''  and params.name != 'null'">
+				and IMAGE.NAME like CONCAT('%',#{params.name},'%') escape '^'
 			</if>
-			<if test="params != null and params.descn != null  and params.descn != ''">
-				and IMAGE.DESCN=#{params.descn}
-			</if>
-			<if
-				test="params != null and params.areaId != null  and params.areaId != ''  ">
-				and IMAGE.AREA_ID=#{params.areaId}
+			<if test="params != null and params.url != null  params.and url != ''">
+				and IMAGE.URL=#{params.descn}
 			</if>
 			<if
-				test="params != null and params.hclusterId != null  and params.hclusterId != ''  ">
-				and IMAGE.HCLUSTER_ID=#{params.hclusterId}
+				test="params != null and params.owner != null  and params.owner != ''  ">
+				and IMAGE.OWNER=#{params.owner}
 			</if>
-			<if test="params != null and params.type != null  and params.type != ''  ">
-				and IMAGE.TYPE=#{params.type}
-			</if>
-			<if
-				test="params != null and params.logId != null  and params.logId != ''  ">
-				and IMAGE.LOG_ID=#{params.logId}
+			<if test="params != null and params.netType != null  and params.netType != ''  ">
+				and IMAGE.NET_TYPE=#{params.netType}
 			</if>
 			<if
-				test="params != null and params.memorySize != null  and params.memorySize != ''  ">
-				and IMAGE.MEMORY_SIZE=#{params.memorySize}
+				test="params != null and params.gceId != null  and params.gceId != ''  ">
+				and IMAGE.GCE_ID=#{params.gceId}
 			</if>
 			<if
-				test="params != null and params.instanceNum != null  and params.instanceNum != ''  ">
-				and IMAGE.INSTANCE_NUM=#{params.instanceNum}
+				test="params != null and params.gcePackageId != null  and params.gcePackageId != ''  ">
+				and IMAGE.GCE_PACKAGE_ID=#{params.gcePackageId}
 			</if>
 			<if
 				test="params != null and params.status != null  and params.status != ''  ">
@@ -157,6 +141,14 @@
 		left join WEBPORTAL_USER u on IMAGE.CREATE_USER = u.ID
 		where IMAGE.ID = #{id,jdbcType=BIGINT}
 	</select>
+	<select id="selectByMap" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />,u.USERNAME
+		from EC_GCE_IMAGE IMAGE
+		left join WEBPORTAL_USER u on IMAGE.CREATE_USER = u.ID
+		<include refid="Example_Where_Clause" />
+	</select>
 	<!-- 分页：根据条件查询 -->
 	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
@@ -172,9 +164,9 @@
 	</select>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="com.letv.common.dao.QueryParam">
+		parameterType="java.util.Map">
 		select count(1) from EC_GCE_IMAGE IMAGE
-		<include refid="Example_Page_Where_Clause" />
+		<include refid="Example_Where_Clause" />
 	</select>
 	<insert id="insert" parameterType="EcGceImage"
 		useGeneratedKeys="true" keyProperty="id">
@@ -217,4 +209,9 @@
 		#{updateUser,jdbcType=BIGINT}
 		where ID = #{id,jdbcType=BIGINT}
 	</update>
+	<!-- 物理删除 -->
+	<delete id="delete" parameterType="EcGceImage">
+		delete pack from EC_GCE_IMAGE IMAGE
+		<include refid="Example_Where_Clause" />
+	</delete>
 </mapper>

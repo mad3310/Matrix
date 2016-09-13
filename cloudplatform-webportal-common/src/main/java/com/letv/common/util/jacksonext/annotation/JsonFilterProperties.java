@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * jackson扩展过滤属性	<br/>
+ * jackson扩展 属性过滤	<br/>
  * 兼容jackson提供的实体内加@jacksonIgnore等属性
  * @author linzhanbo .
  * @since 2016年7月7日, 下午4:20:25 .
