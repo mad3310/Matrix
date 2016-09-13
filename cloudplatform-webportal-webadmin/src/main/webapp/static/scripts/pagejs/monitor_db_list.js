@@ -124,7 +124,7 @@ function queryMcluster(queryCondition,updateflag) {
 							+ "</td>");
 				var td5 = $("<td name=\"mclusterControl\">"
 						//+ "<a href=\"/monitor/"+array[i].ipAddr+"/db/status\" target=\"_blank\">查看详情</a>"
-						+ "<a class=\"link\" href=\"/detail/mcluster/monitor/list/" + array[i].ipAddr + "/3\">查看详情</a>"
+						+ "<a target='_blank' class=\"link\" href=\"/detail/mcluster/monitor/list/" + array[i].ipAddr + "/3\">查看详情</a>"
 						+ "</td>");
 				if(array[i].status == 0 ||array[i].status == 5||array[i].status == 13){
 					var tr = $("<tr class=\"warning\"></tr>");

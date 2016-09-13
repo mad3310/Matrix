@@ -19,7 +19,6 @@ define(function(require,exports,module){
             GceAjaxFormHandler : function(callBackFunc){    	
                 $("#uploadImageForm").ajaxForm({
                 	success: function (data) {
-                		console.log(data);
                 		if(data.result!=1){
                 			cn.alertoolDanger(data.msgs[0],30000);
                 		}else{
@@ -79,9 +78,9 @@ define(function(require,exports,module){
                    
                     var deploy = "";
                     if(dataArray[i].status == 0){
-                    	deploy =  $("<td width=\"20%\"><a class='deploy' href='javascript:void(0);return false;'>部署</a></td>");
+                    	deploy =  $("<td width=\"20%\"><a class='deploy' href='javascript:void(0);return false;'>部署</a>&nbsp<a class='delete' href='javascript:void(0);return false;'>删除</a></td>");
                     }else{
-                    	deploy =  $("<td width=\"20%\"><span style='color:grey'>部署</span></td>");
+                    	deploy =  $("<td width=\"20%\"><span style='color:grey'>部署</span>&nbsp<a class='delete' href='javascript:void(0);return false;'>删除</a></td>");
                     }
                     var tr = $("<tr class='data-tr' pakageId='"+dataArray[i].id+"'></tr>");
                     tr.append(version).append(status).append(createTime).append(descn).append(ipList).append(deploy)
