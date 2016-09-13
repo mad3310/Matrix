@@ -1,4 +1,4 @@
-package com.letv.portal.task.gce.service.impl;
+package com.letv.portal.task.gce.service.add.impl;
 
 import java.text.MessageFormat;
 import java.util.List;

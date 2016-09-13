@@ -125,7 +125,34 @@ public enum AWSS3Util {
 			throw new CommonException(errorMsg,ace);
 		}
 	}
-
+	/**
+	 * 使用bucketName和key删除KV的Value
+	 * 
+	 * @param bucketName	bucket名称
+	 * @param key	key值
+	 * @author linzhanbo .
+	 * @since 2016年9月9日, 下午3:56:42 .
+	 * @version 1.0 .
+	 */
+	public void deleteKey(String bucketName,String key){
+		logger.debug("初始化AWS S3连接");
+		INSTANCE.initConn();
+		logger.debug("删除bucket {}的key{}",bucketName,key);
+		try {
+			s3.deleteObject(bucketName, key);
+			logger.debug("删除成功");
+		} catch (AmazonServiceException ase) {
+			String errorMsg = "删除AWS S3 bucket's key失败: StatusCode:"
+					+ ase.getStatusCode() + " ,ErrorCode:" + ase.getErrorCode()
+					+ " ,ErrorMsg: " + ase.getMessage();
+			logger.error(errorMsg);
+			throw new ServiceException(errorMsg,ase);
+		} catch (Exception ace) {
+			String errorMsg = "删除AWS S3 bucket's key请求连接失败: " + ace.getMessage();
+			logger.error(errorMsg);
+			throw new CommonException(errorMsg,ace);
+		}
+	}
 	/**
 	 * 添加bucket <br/>
 	 * <b>注意：如果已经存在,AWS S3不做任何操作,不会影响该bucket已经存在的所有key</b>

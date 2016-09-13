@@ -147,9 +147,9 @@
 	</select>
 	<!-- 列表总数 -->
 	<select id="selectByMapCount" resultType="java.lang.Integer"
-		parameterType="com.letv.common.dao.QueryParam">
+		parameterType="java.util.Map">
 		select count(1) from EC_GCE_PACKAGE pack
-		<include refid="Example_Page_Where_Clause" />
+		<include refid="Example_Where_Clause" />
 	</select>
 	<insert id="insert" parameterType="EcGcePackage"
 		useGeneratedKeys="true" keyProperty="id">
@@ -258,4 +258,9 @@
 		</set>
 		where `ID` =#{id}
 	</update>
+	<!-- 物理删除 -->
+	<delete id="delete" parameterType="EcGcePackage">
+		delete pack from EC_GCE_PACKAGE pack
+		<include refid="Example_Where_Clause" />
+	</delete>
 </mapper>

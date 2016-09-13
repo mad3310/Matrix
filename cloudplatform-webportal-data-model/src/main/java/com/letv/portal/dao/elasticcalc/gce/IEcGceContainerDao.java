@@ -5,6 +5,8 @@
  */
 package com.letv.portal.dao.elasticcalc.gce;
 
+import java.util.Map;
+
 import com.letv.common.dao.IBaseDao;
 import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 
@@ -15,5 +17,7 @@ import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
  * @version 1.0 .
  */
 public interface IEcGceContainerDao extends IBaseDao<EcGceContainer> {
+
+	void deleteBySelective(Map<String, Object> map);
 
 }

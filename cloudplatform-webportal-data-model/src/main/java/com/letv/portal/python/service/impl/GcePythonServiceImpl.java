@@ -220,5 +220,21 @@ public class GcePythonServiceImpl implements IGcePythonService{
 		String result = HttpClient.get(url.toString(),name,password);
 		return result;
 	}
+	@Override
+	public ApiResultObject deleteCluster(String clusterName, String hostIp,
+			String name, String password) {
+		StringBuffer url = new StringBuffer();
+		url.append(URL_HEAD).append(hostIp).append(URL_PORT).append("/containerCluster?containerClusterName=").append(clusterName);
+		String result = HttpClient.detele(url.toString(),name,password);
+		return new ApiResultObject(result,url.toString());
+	}
+	@Override
+	public ApiResultObject checkClusterDeleteStatus(String clusterName,
+			String hostIp, String name, String password) {
+		StringBuffer url = new StringBuffer();
+		url.append(URL_HEAD).append(hostIp).append(URL_CHECK_PORT).append("/containerCluster/status/").append(clusterName);
+		String result = HttpClient.get(url.toString(),name,password);
+		return new ApiResultObject(result,url.toString());
+	}
 
 }
