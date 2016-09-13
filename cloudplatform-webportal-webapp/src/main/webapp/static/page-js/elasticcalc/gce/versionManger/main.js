@@ -41,7 +41,9 @@ define(function(require) {
 			asyncData(page);
 		}
 	});
+	
 
+	
 	/*修改描述*/
 	$("#uploadImageForm").bootstrapValidator({
 		feedbackIcons : {
@@ -80,8 +82,8 @@ define(function(require) {
 				validMessage : '请按提示输入',
 				validators : {
 					stringLength: {
-						max: 4,
-                        message: '备注描述不能超过100位'
+						max:300,
+                        message: '备注描述不能超过300位'
                     }
 				}
 			}
@@ -102,6 +104,19 @@ define(function(require) {
 		});
 	});
 	
+	$('#tby').delegate(".delete","click",function(){
+		var gceId = $("#gceId").val();
+		var packageId = $(this).parents("tr").attr("pakageId");
+		
+		cn.DeleteData("/ecgce/packages/"+packageId+"?gceId="+gceId, function(data){
+			if(data.result!=1){
+				cn.alertoolDanger("GCE删除失败",50000);
+			}else{
+				cn.alertoolSuccess("GCE删除成功",50000);
+			}
+			asyncData(cn.currentPage);
+		});
+	});
 	
 	//加载列表数据
 	function asyncData(page) {
