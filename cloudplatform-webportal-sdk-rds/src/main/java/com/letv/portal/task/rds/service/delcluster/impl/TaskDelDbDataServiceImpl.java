@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.letv.portal.model.MclusterModel;
 import com.letv.portal.model.task.TaskResult;
 import com.letv.portal.model.task.service.IBaseTaskService;
+import com.letv.portal.model.task.service.ITaskAsyncExecuteService;
 import com.letv.portal.service.IMclusterService;
 
 @Service("taskDelDbDataService")
@@ -17,6 +18,8 @@ public class TaskDelDbDataServiceImpl extends BaseTask4RDSDelServiceImpl impleme
 
 	@Autowired
 	private IMclusterService mclusterService;
+	@Autowired
+	private ITaskAsyncExecuteService asyncExecuteService;
 	
 	private final static Logger logger = LoggerFactory.getLogger(TaskDelDbDataServiceImpl.class);
 	
@@ -27,6 +30,8 @@ public class TaskDelDbDataServiceImpl extends BaseTask4RDSDelServiceImpl impleme
 			return tr;
 		
 		MclusterModel mcluster = super.getMcluster(params);
+		//删除工作流失败异步重试表记录
+		this.asyncExecuteService.deleteByMclusterName(mcluster.getMclusterName());
 		this.mclusterService.delete(mcluster);
 		
 		tr.setResult("success");

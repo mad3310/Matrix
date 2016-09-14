@@ -107,4 +107,15 @@ public class BaseTask4RDSDelServiceImpl extends BaseTaskServiceImpl implements I
 		return containers;
 	}
 	
+	public List<ContainerModel> getVipContainers(Map<String, Object> params) {
+		Long mclusterId = getLongFromObject(params.get("mclusterId"));
+		if(null == mclusterId)
+			throw new ValidateException("params's mclusterId is null");
+		
+		List<ContainerModel> containers = this.containerService.selectVipByClusterId(mclusterId);
+		if(CollectionUtils.isEmpty(containers))
+			throw new ValidateException("vip ContainerModel is null by mclusterId:" + mclusterId);
+		return containers;
+	}
+	
 }
