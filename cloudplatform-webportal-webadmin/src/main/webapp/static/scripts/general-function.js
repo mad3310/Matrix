@@ -203,6 +203,9 @@ var Status={
 			hcluster:{		
 				'0':'未启用',
 				'1':'启用'
+			},
+			gceVersion:{
+				'0':'未部署'
 			}
 };
 
@@ -344,7 +347,9 @@ function translateStatus(status, resourceType) {
 		return "<font color=\"red\">严重危险</font>";
 	} else if (status == 15) {
 		return "禁用";
-	} else if (status == 'FAILD') {
+	} else if (status == 19) {
+		return "删除失败";
+	}else if (status == 'FAILD') {
 		return "备份失败";
 	} else if (status == 'SUCCESS') {
 		return "备份成功";
