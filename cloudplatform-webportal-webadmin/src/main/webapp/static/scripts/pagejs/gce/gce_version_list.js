@@ -157,7 +157,7 @@ function queryVersionDetail(gceId){
 								'<td style="max-width:300px;min-width:200px;">'+
 									'<span title="'+(array[i].descn || '')+'">'+(array[i].descn || '')+'</span>'+
 								'</td>'+
-								'<td>'+translateStatus(array[i].status)+'</td>'+
+								'<td>'+translateStatus(array[i].status, 'gceVersion')+'</td>'+
 							'</tr>';
 				
 				tby.append(trHtml);
