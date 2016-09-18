@@ -335,7 +335,7 @@ public class PythonServiceImpl implements IPythonService{
 			String password) {
 		StringBuilder url = new StringBuilder();
 		url.append(URL_HEAD).append(ip).append(URL_PORT).append("/cluster/zk/remove");
-		String result = HttpClient.detele(url.toString(),username,password);
+		String result = HttpClient.get(url.toString(),username,password);
 		return new ApiResultObject(result,url.toString());
 	}
 
