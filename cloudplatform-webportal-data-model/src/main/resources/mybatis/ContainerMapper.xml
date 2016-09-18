@@ -374,7 +374,7 @@
 	</select>
 	<select id="queryVaildVipContainersByHclusterId" resultType="java.util.Map" parameterType="java.lang.Long">
 		select
-			C.CONTAINER_NAME containerName,C.IP_ADDR ipAddr,M.MCLUSTER_NAME mclusterName,
+			C.CONTAINER_NAME containerName,C.IP_ADDR ipAddr,M.MCLUSTER_NAME clusterName,
 			M.ADMIN_USER adminUser,M.ADMIN_PASSWORD adminPassword
 		from 
 			WEBPORTAL_CONTAINER C,WEBPORTAL_MCLUSTER_INFO M
