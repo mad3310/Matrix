@@ -28,6 +28,7 @@ import com.letv.common.exception.ValidateException;
 import com.letv.common.session.SessionServiceImpl;
 import com.letv.common.util.ExceptionUtils;
 import com.letv.common.util.SpringContextUtil;
+import com.letv.portal.model.task.TaskAsyncExecute;
 import com.letv.portal.model.task.TaskChain;
 import com.letv.portal.model.task.TaskChainIndex;
 import com.letv.portal.model.task.TaskExecuteStatus;
@@ -36,6 +37,7 @@ import com.letv.portal.model.task.TemplateTask;
 import com.letv.portal.model.task.TemplateTaskChain;
 import com.letv.portal.model.task.TemplateTaskDetail;
 import com.letv.portal.model.task.service.IBaseTaskService;
+import com.letv.portal.model.task.service.ITaskAsyncExecuteService;
 import com.letv.portal.model.task.service.ITaskChainIndexService;
 import com.letv.portal.model.task.service.ITaskChainService;
 import com.letv.portal.model.task.service.ITaskEngine;
@@ -261,6 +263,10 @@ class TaskEngineWorker {
 	private ITaskChainIndexService taskChainIndexService;
 	@Autowired
 	private ITaskChainService taskChainService;
+	@Autowired
+	private ITemplateTaskDetailService templateTaskDetailService;
+	@Autowired
+	private ITaskAsyncExecuteService taskAsyncExecuteService;
 	private Long userId;
 
 	/**
@@ -280,6 +286,9 @@ class TaskEngineWorker {
 				taskChain.getExecuteOrder(), taskChainIndex.getTemplateTask()
 						.getName(), taskChainIndex.getServiceName(),
 				taskChainIndex.getClusterName());
+		if(TaskExecuteStatus.DOING == taskChainIndex.getStatus()) {
+			throw new ValidateException("当前工作流正在运行,请勿重复操作!");
+		}
 		this.userId = usrId;
 		// 修改流程状态为正在进行中
 		taskChainIndex.setStatus(TaskExecuteStatus.DOING);
@@ -314,6 +323,11 @@ class TaskEngineWorker {
 		Map<String,Object> prevParams = new HashMap<String,Object>();
 		//当前环节执行beforeExecute后的params
 		Map<String,Object> beforParams = new HashMap<String,Object>();
+		
+		//获取该步骤的异步重试
+		TemplateTaskDetail taskDetail = this.templateTaskDetailService.selectById(taskChain.getTaskDetailId());
+		//获取该步骤异步重试记录
+		TaskAsyncExecute asyncExecute = this.taskAsyncExecuteService.selectByTaskChainId(taskChain.getId());
 		try {
 			taskChain = onBeforeExecTaskChain(taskChain);
 			String taskBeanName = taskChain.getTemplateTaskDetail()
@@ -327,6 +341,7 @@ class TaskEngineWorker {
 						.format("When TemplateTaskDetail's beanName is {0},SpringBean is null",
 								taskBeanName);
 				interrupt(taskChainIndex, taskChain, errMsg);
+				saveAsyncExecute(taskChain.getId(), taskDetail, asyncExecute, taskChainIndex.getClusterName());
 				return;
 			}
 			// 判断是执行新方法beforeExecute还是过期方法beforExecute，规则见isNextRunDest方法详细定义
@@ -358,6 +373,7 @@ class TaskEngineWorker {
 					taskResult.setParams(prevParams);
 					baseTask.rollBack(taskResult);
 					interrupt(taskChainIndex, taskChain, errMsg);
+					saveAsyncExecute(taskChain.getId(), taskDetail, asyncExecute, taskChainIndex.getClusterName());
 					return;
 				}
 			} while (retry++ < taskChain.getTemplateTaskDetail().getRetry()
@@ -366,6 +382,7 @@ class TaskEngineWorker {
 				taskResult.setParams(prevParams);
 				baseTask.rollBack(taskResult);
 				interrupt(taskChainIndex, taskChain, taskResult.getResult());
+				saveAsyncExecute(taskChain.getId(), taskDetail, asyncExecute, taskChainIndex.getClusterName());
 				return;
 			}
 			if (taskResult.isSuccess()) {
@@ -380,7 +397,9 @@ class TaskEngineWorker {
 				} else {
 					baseTask.callBack(taskResult);
 				}
-
+				if(null != asyncExecute) {//该步骤成功后删除该异步重试
+					this.taskAsyncExecuteService.delete(asyncExecute);
+				}
 			}
 			// 完成当前环节状态的修改，返回下个环节信息
 			TaskChain nextTaskChain = onAfterExecTaskChain(taskChainIndex,
@@ -415,6 +434,7 @@ class TaskEngineWorker {
 				}
 			}
 			interrupt(taskChainIndex, taskChain, e);
+			saveAsyncExecute(taskChain.getId(), taskDetail, asyncExecute, taskChainIndex.getClusterName());
 			return;
 		}
 	}
@@ -462,6 +482,21 @@ class TaskEngineWorker {
 				taskChain.getExecuteOrder(), taskChainIndex.getTemplateTask()
 						.getName(), taskChainIndex.getServiceName(),
 				taskChainIndex.getClusterName(), texcept);
+		
+	}
+	
+	//保存异步重试机制
+	private void saveAsyncExecute(Long taskChainId, TemplateTaskDetail taskDetail, 
+			TaskAsyncExecute asyncExecute, String clusterName) {
+		//如果asyncExecute不存在并且异步重试次数>=0,保存该步骤到WEBPORTAL_TASK_ASYNC_EXECUTE表
+		if(null == asyncExecute && taskDetail.getAsyncRetry() > 0) {
+			TaskAsyncExecute execute = new TaskAsyncExecute();
+			execute.setTaskChainId(taskChainId);
+			execute.setCount(taskDetail.getAsyncRetry());
+			execute.setCreateUser(userId);
+			execute.setClusterName(clusterName);
+			taskAsyncExecuteService.insert(execute);
+		}
 	}
 
 	/**

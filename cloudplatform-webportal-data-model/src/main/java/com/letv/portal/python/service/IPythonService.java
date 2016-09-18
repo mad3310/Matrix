@@ -201,6 +201,15 @@ public interface IPythonService {
 	 * @param mclusterName
 	 */
 	ApiResultObject removeMcluster(String mclusterName,String ip,String username,String password);
+	/**
+	 * 删除集群在zk中的信息
+	 * @param mclusterName
+	 * @param ip
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	ApiResultObject removeClusterZkInfo(String ip,String username,String password);
 
 	/**Methods Name: startMcluster <br>
 	 * Description: 启动container集群<br>

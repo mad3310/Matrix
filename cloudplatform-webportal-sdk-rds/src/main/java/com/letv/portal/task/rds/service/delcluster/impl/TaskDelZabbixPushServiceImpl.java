@@ -34,12 +34,8 @@ public class TaskDelZabbixPushServiceImpl extends BaseTask4RDSDelServiceImpl imp
 		if(!tr.isSuccess())
 			return tr;
 		
-		Long mclusterId = getLongFromObject(params.get("mclusterId"));
-		if(mclusterId == null)
-			throw new ValidateException("params's mclusterId is null");
-
 		MclusterModel mcluster = super.getMcluster(params);
-		List<ContainerModel> containers = this.containerService.selectVipByClusterId(mclusterId);
+		List<ContainerModel> containers = super.getVipContainers(params);
 		if(null != containers && containers.size()==1 && 
 				StringUtils.isNotEmpty(containers.get(0).getZabbixHosts())) {
 			 ApiResultObject apiResult = this.zabbixPushService.deleteMutilContainerPushZabbixInfo(containers);

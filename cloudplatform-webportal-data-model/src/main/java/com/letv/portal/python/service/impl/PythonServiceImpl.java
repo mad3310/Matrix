@@ -329,6 +329,15 @@ public class PythonServiceImpl implements IPythonService{
 		String result = HttpClient.detele(url.toString(),username,password);
 		return new ApiResultObject(result,url.toString());
 	}
+	
+	@Override
+	public ApiResultObject removeClusterZkInfo(String ip, String username,
+			String password) {
+		StringBuilder url = new StringBuilder();
+		url.append(URL_HEAD).append(ip).append(URL_PORT).append("/cluster/zk/remove");
+		String result = HttpClient.detele(url.toString(),username,password);
+		return new ApiResultObject(result,url.toString());
+	}
 
 	@Override
 	public ApiResultObject startMcluster(String mclusterName,String ip,String username,String password) {
@@ -501,5 +510,6 @@ public class PythonServiceImpl implements IPythonService{
 		String result = HttpClient.get(url.toString(),1000,5000,name,password);
 		return new ApiResultObject(result, url.toString());
 	}
+
 
 }

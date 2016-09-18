@@ -6,11 +6,11 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.letv.common.paging.impl.Page;
 import com.letv.common.result.ResultObject;
+import com.letv.portal.annotation.submit.AvoidDuplicateSubmit;
 import com.letv.portal.model.HostModel;
 import com.letv.portal.model.adminoplog.AoLogType;
 import com.letv.portal.proxy.IHostProxy;
@@ -106,7 +107,8 @@ public class HostController {
 	 */
 	@AoLog(desc="创建host信息",type=AoLogType.INSERT)
 	@RequestMapping(method=RequestMethod.POST)   
-	public @ResponseBody ResultObject saveHost(HostModel hostModel,HttpServletRequest request) {
+	@AvoidDuplicateSubmit(needRemoveToken=true)
+	public @ResponseBody ResultObject saveHost(HttpServletRequest request, HttpServletResponse response, HostModel hostModel) {
 		ResultObject obj = new ResultObject();
 		this.hostProxy.insertAndPhyhonApi(hostModel);			
 		return obj;

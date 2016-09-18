@@ -24,7 +24,7 @@ import com.letv.common.util.HttpUtil;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.MonitorIndexModel;
 import com.letv.portal.model.adminoplog.AoLogType;
-import com.letv.portal.model.monitor.NodeModel;
+import com.letv.portal.model.task.service.ITaskAsyncExecuteService;
 import com.letv.portal.proxy.IBackupProxy;
 import com.letv.portal.proxy.IContainerProxy;
 import com.letv.portal.proxy.ICronJobsProxy;
@@ -60,6 +60,8 @@ public class CronJobsController {
 	private IFixedPushService fixedPushService;
 	@Autowired
 	private IBuildTaskService buildTaskService;
+	@Autowired
+	private ITaskAsyncExecuteService taskAsyncExecuteService;
 
 	@Autowired
 	private ICronJobsProxy cronJobsProxy;
@@ -383,6 +385,17 @@ public class CronJobsController {
 	@RequestMapping(value="/db/struc/check",method=RequestMethod.GET)   
 	public @ResponseBody ResultObject nopkCheck(HttpServletRequest request,ResultObject obj) {
 		this.buildTaskService.checkDbStruc();
+		return obj;
+	}
+	/**
+	 * 工作流异步重试
+	 * @param request
+	 * @param obj
+	 * @return
+	 */
+	@RequestMapping(value="/task/async/retry",method=RequestMethod.GET)   
+	public @ResponseBody ResultObject taskAsyncRetry(HttpServletRequest request,ResultObject obj) {
+		this.taskAsyncExecuteService.taskAsyncRetry();
 		return obj;
 	}
 
