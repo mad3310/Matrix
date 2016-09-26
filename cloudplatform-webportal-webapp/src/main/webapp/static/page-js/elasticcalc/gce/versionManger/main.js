@@ -42,53 +42,56 @@ define(function(require) {
 		}
 	});
 	
-
-	
+    formValidatorInit();
+    
 	/*修改描述*/
-	$("#uploadImageForm").bootstrapValidator({
-		feedbackIcons : {
-			valid : 'glyphicon glyphicon-ok',
-			invalid : 'glyphicon glyphicon-remove',
-			validating : 'glyphicon glyphicon-refresh'
-		},
-		fields : {
-			'version' : {
-				validMessage : '请按提示输入',
-				validators : {
-					notEmpty : {
-						message : '版本号不能为空!'
-					},
-					regexp : {
-						regexp : /^\d+\.\d+\.\d+\.\d+$/,
-						message : "版本号规范必须为x.x.x.x，例如1.1.1.12"
+	function formValidatorInit(){
+		$("#uploadImageForm").bootstrapValidator({
+			feedbackIcons : {
+				valid : 'glyphicon glyphicon-ok',
+				invalid : 'glyphicon glyphicon-remove',
+				validating : 'glyphicon glyphicon-refresh'
+			},
+			fields : {
+				'version' : {
+					validMessage : '请按提示输入',
+					validators : {
+						notEmpty : {
+							message : '版本号不能为空!'
+						},
+						regexp : {
+							regexp : /^\d+\.\d+\.\d+\.\d+$/,
+							message : "版本号规范必须为x.x.x.x，例如1.1.1.12"
+						}
+					}
+				},
+				'file' : {
+					validMessage : '请按提示输入',
+					validators : {
+						notEmpty : {
+							message : '镜像文件不能为空!'
+						},
+	                    file: {
+	                        extension: 'zip',
+	                        type: 'application/zip',
+	                        maxSize: 1048 * 1024*500,
+	                        message: '文件必须为小于500M的zip文件'
+	                    }
+					}
+				},
+				'descn' : {
+					validMessage : '请按提示输入',
+					validators : {
+						stringLength: {
+							max:100,
+	                        message: '备注描述不能超过100位'
+	                    }
 					}
 				}
-			},
-			'file' : {
-				validMessage : '请按提示输入',
-				validators : {
-					notEmpty : {
-						message : '镜像文件不能为空!'
-					},
-                    file: {
-                        extension: 'zip',
-                        type: 'application/zip',
-                        maxSize: 1048 * 1024*500,
-                        message: '文件必须为小于500M的zip文件'
-                    }
-				}
-			},
-			'descn' : {
-				validMessage : '请按提示输入',
-				validators : {
-					stringLength: {
-						max:300,
-                        message: '备注描述不能超过300位'
-                    }
-				}
 			}
-		}
-	});
+		});	
+	}
+
 
 	$('#tby').delegate(".deploy","click",function(){
 		var gceId = $("#gceId").val();

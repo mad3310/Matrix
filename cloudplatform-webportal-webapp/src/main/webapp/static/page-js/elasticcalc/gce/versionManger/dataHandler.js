@@ -14,18 +14,21 @@ define(function(require,exports,module){
     };
 
     module.exports = DataHandler;
-
+    
+    
     DataHandler.prototype = {
             GceAjaxFormHandler : function(callBackFunc){    	
                 $("#uploadImageForm").ajaxForm({
                 	success: function (data) {
+                		console.log(data);
                 		if(data.result!=1){
-                			cn.alertoolDanger(data.msgs[0],30000);
+                			//cn.alertoolDanger(data.msgs[0],30000);
                 		}else{
                     		cn.alertoolSuccess("镜像上传成功",30000);
                 		}
-                		callBackFunc(cn.currentPage);
-                		$('#upload-image-box').modal('hide');
+                		callBackFunc(cn.currentPage);  
+                		$('#uploadImageForm').data('bootstrapValidator').enableFieldValidators('file', true);
+                        $("#cancelModal").click();
                     },
                     beforeSubmit:function(){
                     	cn.alertoolSuccess("镜像上传中，请勿刷新页面",3000);
@@ -62,7 +65,7 @@ define(function(require,exports,module){
                     if(descnStr.length>20){
                     	descnStr = descnStr.substr(0,20)+"...";
                     }
-                    var descn = $("<td width=\"20%\">" + descnStr + "</td>");
+                    var descn = $("<td title='"+dataArray[i].descn+"'width=\"20%\">" + descnStr + "</td>");
                     
                     var ipListStr = "";
                     if(dataArray[i].containers){
