@@ -32,8 +32,10 @@ import com.letv.common.session.SessionServiceImpl;
 import com.letv.common.util.HttpUtil;
 import com.letv.common.util.jacksonext.annotation.ExcludeProperty;
 import com.letv.common.util.jacksonext.annotation.JsonFilterProperties;
+import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 import com.letv.portal.model.elasticcalc.gce.EcGcePackage;
 import com.letv.portal.proxy.IGceProxy;
+import com.letv.portal.service.elasticcalc.gce.IEcGceContainerService;
 import com.letv.portal.service.elasticcalc.gce.IEcGcePackageService;
 
 /**
@@ -55,6 +57,9 @@ public class ECGcePackageController {
 	private IEcGcePackageService ecGcePackageService;
 	@Autowired
 	private IGceProxy gceProxy;
+	@Autowired
+	private IEcGceContainerService ecGceContainerService;
+	
 	@RequestMapping(value = "/{gcePackageId}", method=RequestMethod.DELETE)
 	public @ResponseBody ResultObject delete(@PathVariable Long gcePackageId,@RequestParam Long gceId,ResultObject result) {
 		logger.debug("删除GCE版本包");
@@ -68,7 +73,18 @@ public class ECGcePackageController {
 		params.put("createUser", sessionService.getSession().getUserId());
 		params.put("gceId", gceId);
 		logger.debug("查询GCE版本列表，参数" + params.toString());
-		obj.setData(this.ecGcePackageService.selectPageByParams(page, params));
+		Page tPage = this.ecGcePackageService.selectPageByParams(page, params);
+		List<EcGcePackage> packages = (List<EcGcePackage>) tPage.getData();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for(EcGcePackage pack:packages){
+			map.put("gceId", pack.getGceId());
+			map.put("gcePackageId", pack.getId());
+			List<EcGceContainer> containers = ecGceContainerService.selectByMap(map);
+			if(!CollectionUtils.isEmpty(containers))
+				pack.setContainers(containers);
+			map.clear();
+		}
+		obj.setData(tPage);
 		return obj;
 	}
 	

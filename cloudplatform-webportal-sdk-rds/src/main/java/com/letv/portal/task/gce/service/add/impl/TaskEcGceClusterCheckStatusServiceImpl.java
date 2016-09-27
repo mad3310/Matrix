@@ -85,7 +85,7 @@ public class TaskEcGceClusterCheckStatusServiceImpl extends BaseTaskEcGceService
 				EcGceContainer container = new EcGceContainer();
 				BeanUtils.populate(container, map);
 				if(StringUtils.isEmpty(container.getBindHostPort()))
-					container.setBindHostPort(defaultContainerPort);
+				container.setBindHostPort(defaultContainerPort);
 				container.setGceId(gceCluster.getGceId());
 				container.setGcePackageId(gceCluster.getGcePackageId());
 				container.setGceClusterId(gceCluster.getId());

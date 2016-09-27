@@ -42,4 +42,9 @@ public class EcGceContainerServiceImpl extends BaseServiceImpl<EcGceContainer>
 	public void deleteBySelective(Map<String, Object> map) {
 		this.ecGceContainerDao.deleteBySelective(map);
 	}
+
+	@Override
+	public void updateBySelective(Map<String, Object> map) {
+		this.ecGceContainerDao.updateBySelective(map);
+	}
 }

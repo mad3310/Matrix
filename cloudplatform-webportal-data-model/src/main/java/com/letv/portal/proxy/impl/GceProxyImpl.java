@@ -630,6 +630,12 @@ public class GceProxyImpl extends BaseProxyImpl<GceServer> implements
 		//6.修改集群状态为删除中
 		cluster.setStatus(MclusterStatus.DESTROYING.getValue());
 		this.ecGceClusterService.updateBySelective(cluster);
+		Map<String,Object> containerUpdateMap = new HashMap<String, Object>();
+		containerUpdateMap.put("gceId", gceId);
+		containerUpdateMap.put("gcePackageId", gcePackageId);
+		containerUpdateMap.put("gceClusterId", cluster.getId());
+		containerUpdateMap.put("status", MclusterStatus.DESTROYING.getValue());
+		this.ecGceContainerService.updateBySelective(containerUpdateMap);
 		List<EcGceImage> images = this.ecGceImageService.selectByMap(exParams);
 		if(CollectionUtils.isEmpty(images)){
 			throw new ValidateException("版本包不存在");

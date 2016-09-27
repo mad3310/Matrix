@@ -23,39 +23,12 @@
         <association property="createUserModel" javaType="User">
 			<result column="USERNAME" property="userName" />
 		</association>
-	</resultMap>
-	<resultMap id="ConnContainerResultMap" type="EcGcePackage">
-		<id column="ID" property="id" jdbcType="BIGINT" />
-		<result column="VERSION" property="version" jdbcType="VARCHAR" />
-		<result column="DESCN" property="descn" jdbcType="VARCHAR" />
-		<result column="SUFFIX" property="suffix" jdbcType="VARCHAR" />
-		<result column="BUCKETNAME" property="bucketName" jdbcType="VARCHAR" />
-		<result column="KEY" property="key" jdbcType="VARCHAR" />
-		<result column="PORT_FORWARD" property="portForward" jdbcType="VARCHAR" />
-		<result column="GCE_ID" property="gceId" jdbcType="BIGINT" />
-		<result column="GCECLUSTER_ID" property="gceclusterId"
-			jdbcType="BIGINT" />
-		<result column="GCE_IMAGE_NAME" property="gceImageName"
-			jdbcType="VARCHAR" />
-		<result column="STATUS" property="status" jdbcType="TINYINT" />
-		<result column="DELETED" property="deleted" jdbcType="TINYINT" />
-		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
-		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
-		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
-		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
-		<association property="createUserModel" javaType="User">
-			<result column="USERNAME" property="userName" />
-		</association>
 		<association property="ecGceImage" javaType="EcGceImage">    
             <id column="ID" property="id" jdbcType="BIGINT" />
             <result column="URL" property="url" jdbcType="VARCHAR" />
 		</association>
-		<collection property="containers" column="GCE_PACKAGE_ID" ofType="EcGceContainer">    
-            <id column="ID" property="id" jdbcType="BIGINT" />
-            <result column="IP_ADDR" property="ipAddr" jdbcType="VARCHAR" />
-            <result column="BIND_HOST_PORT" property="bindHostPort" jdbcType="VARCHAR" />
-        </collection>
 	</resultMap>
+	
 	<sql id="Base_Column_List">
 		pack.ID, pack.VERSION,pack.DESCN, pack.SUFFIX, pack.BUCKETNAME, pack.KEY,
 		pack.PORT_FORWARD, pack.GCE_ID,
@@ -121,19 +94,14 @@
 		<include refid="Example_Where_Clause" />
 	</select>
 	<!-- 分页：根据条件查询 -->
-	<select id="selectPageByMap" resultMap="ConnContainerResultMap"
+	<select id="selectPageByMap" resultMap="BaseResultMap"
 		parameterType="com.letv.common.dao.QueryParam">
 		select
-		<include refid="Base_Column_List" />,container.id,container.IP_ADDR,container.BIND_HOST_PORT,u.USERNAME,image.id,image.URL
+		<include refid="Base_Column_List" />,u.USERNAME,image.id,image.URL
 		from EC_GCE_PACKAGE pack
 		left join 
 			WEBPORTAL_USER u 
 		on pack.CREATE_USER = u.ID
-		LEFT JOIN
-			EC_GCE_CONTAINER container
-		ON 
-		  container.GCE_PACKAGE_ID = pack.ID 
-		  AND container.GCE_ID = pack.GCE_ID 
 		LEFT JOIN
 			EC_GCE_IMAGE image
 		on
