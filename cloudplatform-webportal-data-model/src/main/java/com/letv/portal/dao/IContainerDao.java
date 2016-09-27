@@ -65,4 +65,16 @@ public interface IContainerDao extends IBaseDao<ContainerModel> {
 	 * @return
 	 */
 	List<Map<String, Object>> queryVaildVipContainersByHclusterId(Long hclusterId);
+	/**
+	 * 根据物理机集群id查询所有vip容器信息
+	 * @param param
+	 * @return
+	 */
+	List<Map<String, Object>> queryAllVipContainersByHclusterId(Long hclusterId);
+	/**
+	 * 根据物理机集群id查询所有data容器信息
+	 * @param param
+	 * @return
+	 */
+	List<Map<String, Object>> queryAllDataContainersByHclusterId(Long hclusterId);
 }

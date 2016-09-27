@@ -91,6 +91,38 @@ public class DbController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/containers/vip", method = RequestMethod.GET)
+	public @ResponseBody List<Map<String, Object>> getAllVipContainers(Long hclusterId) {
+		logger.debug("查询物理机集群下的所有vip容器");
+		if(null == hclusterId) {
+			throw new ApiException(RestAPIFormatter.ParamsInvalid.formatErrorMessage("hclusterId不能为空"));
+		}
+		Long userId = this.sessionService.getSession().getUserId();
+		if (!authorization(userId)) {
+			logger.info("{}无权访问该接口", userId);
+			throw new ApiException(RestAPIFormatter.Unauthorized);
+		}
+		List<Map<String, Object>> result = containerService.queryAllVipContainersByHclusterId(hclusterId);
+		logger.debug("查询物理机集群下的所有vip容器成功! 访问用户:{}", userId);
+		return result;
+	}
+	
+	@RequestMapping(value = "/containers/data", method = RequestMethod.GET)
+	public @ResponseBody List<Map<String, Object>> getAllDataContainers(Long hclusterId) {
+		logger.debug("查询物理机集群下的所有data容器");
+		if(null == hclusterId) {
+			throw new ApiException(RestAPIFormatter.ParamsInvalid.formatErrorMessage("hclusterId不能为空"));
+		}
+		Long userId = this.sessionService.getSession().getUserId();
+		if (!authorization(userId)) {
+			logger.info("{}无权访问该接口", userId);
+			throw new ApiException(RestAPIFormatter.Unauthorized);
+		}
+		List<Map<String, Object>> result = containerService.queryAllDataContainersByHclusterId(hclusterId);
+		logger.debug("查询物理机集群下的所有data容器成功! 访问用户:{}", userId);
+		return result;
+	}
+	
 	private boolean authorization(Long userId) {
 		UserModel u = userService.getUserById(userId);
 		return u.isAdmin();
