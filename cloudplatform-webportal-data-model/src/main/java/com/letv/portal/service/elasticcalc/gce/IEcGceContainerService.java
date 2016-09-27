@@ -21,4 +21,6 @@ public interface IEcGceContainerService extends
 
 	void deleteBySelective(Map<String, Object> map);
 
+	void updateBySelective(Map<String, Object> map);
+
 }
