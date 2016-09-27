@@ -285,6 +285,15 @@
 				CONTAINER.`UPDATE_USER` = #{updateUser,jdbcType=BIGINT}
 			</if>
 		</set>
-		<include refid="Example_Where_Clause" />
+		where 1=1
+		<if test="gceId != null  and gceId != ''  ">
+			and CONTAINER.GCE_ID=#{gceId}
+		</if>
+		<if test="gcePackageId != null  and gcePackageId != ''  ">
+			and CONTAINER.GCE_PACKAGE_ID=#{gcePackageId}
+		</if>
+		<if test="gceClusterId != null  and gceClusterId != ''  ">
+			and CONTAINER.GCE_CLUSTER_ID=#{gceClusterId}
+		</if>
 	</update>
 </mapper>
