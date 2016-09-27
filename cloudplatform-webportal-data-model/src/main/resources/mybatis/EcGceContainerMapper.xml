@@ -180,7 +180,7 @@
 			<include refid="Base_Column_List" />,n.CLUSTER_NAME,h.HCLUSTER_NAME_ALIAS,n.HCLUSTER_ID
 		from
 		  EC_GCE_CONTAINER CONTAINER 
-		  left join WEBPORTAL_GCECLUSTER n 
+		  left join EC_GCE_CLUSTER n 
 		    on n.ID = CONTAINER.GCE_CLUSTER_ID 
 		  left join EC_GCE g 
 		    on g.ID = CONTAINER.GCE_ID 
@@ -274,4 +274,17 @@
 		delete CONTAINER from EC_GCE_CONTAINER CONTAINER
 		<include refid="Example_Where_Clause" />
 	</delete>
+	<update id="updateBySelective" parameterType="java.util.Map">
+		update `EC_GCE_CONTAINER` CONTAINER
+		<set>
+			<if test="status != null  ">
+				CONTAINER.`STATUS` = #{status,jdbcType=TINYINT},
+			</if>
+			CONTAINER.`UPDATE_TIME` = now(),			
+			<if test="updateUser != null  ">
+				CONTAINER.`UPDATE_USER` = #{updateUser,jdbcType=BIGINT}
+			</if>
+		</set>
+		<include refid="Example_Where_Clause" />
+	</update>
 </mapper>

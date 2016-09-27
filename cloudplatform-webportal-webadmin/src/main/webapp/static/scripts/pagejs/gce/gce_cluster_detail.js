@@ -6,7 +6,7 @@ function queryByPage(){
 	var queryCondition = {
 			'currentPage':currentPage,
 			'recordsPerPage':recordsPerPage,
-			'params.clusterId':$("#gceClusterId").val()
+			'clusterId':$("#gceClusterId").val()
 		};
 	getLoading();
 	$.ajax({ 

@@ -116,10 +116,16 @@ public class BaseTaskEcGceDeleteServiceImpl extends BaseTaskServiceImpl implemen
 			emailParams.put("ips", ips.toString());
 			this.email4User(emailParams, gcePackage.getCreateUser(),"elasticcalc/gce/createEcGce.ftl");*/
 		} else {
+			Map<String,Object> containerUpdateMap = new HashMap<String, Object>();
+			containerUpdateMap.put("gceId", cluster.getGceId());
+			containerUpdateMap.put("gcePackageId", cluster.getGcePackageId());
+			containerUpdateMap.put("gceClusterId", cluster.getId());
+			containerUpdateMap.put("status", MclusterStatus.DESTROYFAILED.getValue());
 			gcePackage.setStatus(GcePackageStatus.DESTROYFAILED.getValue());
 			cluster.setStatus(MclusterStatus.DESTROYFAILED.getValue());
+			this.ecGcePackageService.updateBySelective(gcePackage);
+			this.ecGceClusterService.updateBySelective(cluster);
+			this.ecGceContainerService.updateBySelective(containerUpdateMap);
 		}
-		this.ecGcePackageService.updateBySelective(gcePackage);
-		this.ecGceClusterService.updateBySelective(cluster);
 	}
 }

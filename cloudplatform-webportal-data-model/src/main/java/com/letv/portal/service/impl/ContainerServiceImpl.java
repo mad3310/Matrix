@@ -137,6 +137,18 @@ public class ContainerServiceImpl extends BaseServiceImpl<ContainerModel> implem
 			Long hclusterId) {
 		return this.containerDao.queryVaildVipContainersByHclusterId(hclusterId);
 	}
+
+	@Override
+	public List<Map<String, Object>> queryAllVipContainersByHclusterId(
+			Long hclusterId) {
+		return this.containerDao.queryAllVipContainersByHclusterId(hclusterId);
+	}
+	
+	@Override
+	public List<Map<String, Object>> queryAllDataContainersByHclusterId(
+			Long hclusterId) {
+		return this.containerDao.queryAllDataContainersByHclusterId(hclusterId);
+	}
 	
 
 }
