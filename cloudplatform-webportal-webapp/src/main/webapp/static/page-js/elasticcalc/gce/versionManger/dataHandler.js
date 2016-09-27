@@ -23,7 +23,7 @@ define(function(require,exports,module){
                 	success: function (data) {
                 		console.log(data);
                 		if(data.result!=1){
-                			//cn.alertoolDanger(data.msgs[0],30000);
+                			cn.alertoolDanger(data.msgs[0],30000);
                 		}else{
                     		cn.alertoolSuccess("镜像上传成功",30000);
                 		}
