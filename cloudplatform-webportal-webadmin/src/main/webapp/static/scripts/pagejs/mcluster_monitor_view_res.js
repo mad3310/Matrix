@@ -230,6 +230,8 @@ function getUnitByMonitorPoint(data, monitorPoint){
 		return TransUnit(data)+"/s";
 	}else if(monitorPoint=="monitor_container_resource_cpuacct"){//cpu使用率	   100%
 		return (data*100).toFixed(2)+"%";
+	}else if(monitorPoint=="monitor_container_resource_diskusage"){//磁盘使用量
+		return TransUnit(data);
 	}else{
 		return data;
 	}
