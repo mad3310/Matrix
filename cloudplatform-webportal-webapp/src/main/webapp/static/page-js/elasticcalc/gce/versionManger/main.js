@@ -17,6 +17,7 @@ define(function(require) {
 	var dataHandler = require('./dataHandler');
 	var gceInfoHandler = new dataHandler();
 
+	
 	/*初始化上传镜像*/
 	$("#uploadImage").click(function() {
 		$("#upload-image-box").modal({
@@ -92,34 +93,6 @@ define(function(require) {
 		});	
 	}
 
-
-	$('#tby').delegate(".deploy","click",function(){
-		var gceId = $("#gceId").val();
-		var packageId = $(this).parents("tr").attr("pakageId");
-		
-		cn.GetData("/ecgce/packages/deploy/"+packageId+"?gceId="+gceId, function(data){
-			if(data.result!=1){
-				cn.alertoolDanger("GCE部署失败",50000);
-			}else{
-				cn.alertoolSuccess("GCE开始部署，请等待",50000);
-			}
-			asyncData(cn.currentPage);
-		});
-	});
-	
-	$('#tby').delegate(".delete","click",function(){
-		var gceId = $("#gceId").val();
-		var packageId = $(this).parents("tr").attr("pakageId");
-		
-		cn.DeleteData("/ecgce/packages/"+packageId+"?gceId="+gceId, function(data){
-			if(data.result!=1){
-				cn.alertoolDanger("GCE删除失败",50000);
-			}else{
-				cn.alertoolSuccess("GCE删除成功",50000);
-			}
-			asyncData(cn.currentPage);
-		});
-	});
 	
 	//加载列表数据
 	function asyncData(page) {
@@ -131,6 +104,7 @@ define(function(require) {
 	}
 
 	gceInfoHandler.GceAjaxFormHandler(asyncData);
+	gceInfoHandler.GceBandEventHandler();
 	
 	asyncData(1);
 
