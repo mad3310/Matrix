@@ -53,7 +53,7 @@ public class DbIpController {
 	 * @param obj
 	 * @return
 	 */
-	@RequestMapping(value="/checkIp", method=RequestMethod.GET)   
+	@RequestMapping(value="/checkIp", method=RequestMethod.POST)   
 	public @ResponseBody ResultObject checkIp(Long dbId, String ip, ResultObject obj) {
 		if(null == dbId || null == ip) {
 			throw new ValidateException("参数不合法");

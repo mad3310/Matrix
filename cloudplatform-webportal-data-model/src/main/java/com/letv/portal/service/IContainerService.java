@@ -67,5 +67,17 @@ public interface IContainerService extends IBaseService<ContainerModel> {
 	 * @return
 	 */
 	List<Map<String, Object>> queryVaildVipContainersByHclusterId(Long hclusterId);
+	/**
+	 * 根据物理机集群查询所有vip容器信息
+	 * @param hclusterId
+	 * @return
+	 */
+	List<Map<String, Object>> queryAllVipContainersByHclusterId(Long hclusterId);
+	/**
+	 * 根据物理机集群查询所有data容器信息
+	 * @param hclusterId
+	 * @return
+	 */
+	List<Map<String, Object>> queryAllDataContainersByHclusterId(Long hclusterId);
 
 }
