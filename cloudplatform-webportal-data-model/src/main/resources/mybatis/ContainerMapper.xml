@@ -385,6 +385,26 @@
 			and M.HCLUSTER_ID=#{hclusterId}
 			ORDER BY C.CREATE_TIME DESC
 	</select>
+	<select id="queryAllVipContainersByHclusterId" resultType="java.util.Map" parameterType="java.lang.Long">
+		select
+			C.CONTAINER_NAME containerName
+		from 
+			WEBPORTAL_CONTAINER C,WEBPORTAL_MCLUSTER_INFO M
+		where 
+			C.MCLUSTER_ID=M.Id 
+			and C.TYPE='mclustervip'
+			and M.HCLUSTER_ID=#{hclusterId}
+	</select>
+	<select id="queryAllDataContainersByHclusterId" resultType="java.util.Map" parameterType="java.lang.Long">
+		select
+			C.CONTAINER_NAME containerName
+		from 
+			WEBPORTAL_CONTAINER C,WEBPORTAL_MCLUSTER_INFO M
+		where 
+			C.MCLUSTER_ID=M.Id 
+			and C.TYPE != "mclustervip"
+			and M.HCLUSTER_ID=#{hclusterId}
+	</select>
 	<select id="queryVaildVipContainers" resultType="java.util.Map" parameterType="com.letv.common.dao.QueryParam">
 		select
 			C.CONTAINER_NAME containerName,C.IP_ADDR ipAddr,M.MCLUSTER_NAME mclusterName,
