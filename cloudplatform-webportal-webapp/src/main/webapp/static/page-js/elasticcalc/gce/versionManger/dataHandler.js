@@ -9,13 +9,11 @@ define(function(require,exports,module){
 	
     var common = require('../../../common');
     var cn = new common();
-    var lock = false;
 
     var DataHandler = function(){
     };
 
     module.exports = DataHandler;
-    
     
     DataHandler.prototype = {
             GceAjaxFormHandler : function(callBackFunc){    	
@@ -39,44 +37,8 @@ define(function(require,exports,module){
                     }
                 }); 
             },
-            GceBandEventHandler:function(){
-            	//删除
-            	$('#tby').delegate(".delete","click",function(){
-            		var gceId = $("#gceId").val();
-            		var packageId = $(this).parents("tr").attr("pakageId");
-            			
-            		cn.DeleteData("/ecgce/packages/"+packageId+"?gceId="+gceId, function(data){
-            			if(data.result!=1){
-            				cn.alertoolDanger("GCE删除失败",50000);
-            			}else{
-            				cn.alertoolSuccess("GCE删除中",50000);
-            			}
-            			asyncData(cn.currentPage);
-            		});
-            	});
-            	//部署
-            	$('#tby').delegate(".deploy","click",function(){
-            		console.log(111);
-            		var gceId = $("#gceId").val();
-            		var packageId = $(this).parents("tr").attr("pakageId");
-            		$(this).removeClass("deploy");
-            		lock = true;
-            		
-            		cn.GetData("/ecgce/packages/deploy/"+packageId+"?gceId="+gceId, function(data){
-            			lock = false;
-            			if(data.result!=1){
-            				cn.alertoolDanger("GCE部署失败",50000);
-            			}else{
-            				cn.alertoolSuccess("GCE开始部署，请等待",50000);
-            			}
-            			asyncData(cn.currentPage);
-            		});
-            	});
-            	
-            },
             GceImageListHandler : function(data){
-            	if(lock)return ;
-            	
+            	if(this.lock)return;
             	var $tby = $('#tby').empty();            	
             	var dataArray = data.data.data;
           	
