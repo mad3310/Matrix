@@ -135,6 +135,11 @@ function addClickEventListenerToButtonSearch(){
 	$('#btnSearch').on('click',function(e){
 		queryByPage();
 	});	
+	$("#gceClearSearch").click(function(){
+		var clearList = ["gceName"];
+		clearSearch(clearList);
+		queryByPage();
+	});
 } 
 
 function queryVersionDetail(gceId){
