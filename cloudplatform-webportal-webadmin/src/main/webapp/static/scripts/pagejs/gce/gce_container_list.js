@@ -112,7 +112,7 @@ function queryByPage() {
 					var td3 = $("<td class='hidden-480'>-</td>");
 				} 
 				
-				if(array[i].gceCluster && array[i].array[i].gceCluster){
+				if(array[i].gceCluster && array[i].hcluster){
 					var td4 = $("<td class='hidden-480'>"
 							+ "<a class=\"link\" href=\"/detail/hcluster/" + array[i].gceCluster.hclusterId+"\">"+array[i].hcluster.hclusterNameAlias+"</a>"
 							+ "</td>");
