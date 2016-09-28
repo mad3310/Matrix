@@ -8,8 +8,8 @@ public enum DbStatus implements ByteEnum{
 	AUDITFAIL(4),
 	ABNORMAL(5),
 	NORMAL(6),
-	DESTROYING(7),
-	DESTROYFAILED(8);
+	DESTROYING(10),
+	DESTROYFAILED(19);
 	
 	private final Integer value;
 	
