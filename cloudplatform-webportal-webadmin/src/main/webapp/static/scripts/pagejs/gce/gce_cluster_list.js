@@ -181,7 +181,7 @@ function queryByPage() {
 					var tr = $("<tr></tr>");
 				}
 				
-				tr.append(td1).append(td2).append(td3).append(td5).append(td6).append(td7).append(td8);
+				tr.append(td1).append(td2).append(td3).append(td5).append(td6).append(td7);
 				tr.appendTo(tby);
 			}//循环json中的数据 
 			
