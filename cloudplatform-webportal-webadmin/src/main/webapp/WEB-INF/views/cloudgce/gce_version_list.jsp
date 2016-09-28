@@ -9,14 +9,15 @@
 			<div class="row">
 				<div class="input-group pull-right">
 					<form>
-						<div class="form-group col-xs-7 col-sm-7">
+						<div class="form-group col-xs-6 col-sm-6">
 							<input type="text" class="form-control" id="gceName" placeholder="GCE名称">
 						</div>
-						<div class=" form-group col-xs-5 col-sm-5">
-							<button class="btn btn-sm btn-primary btn-search pull-right " id="btnSearch"
+						<div class=" form-group col-xs-6 col-sm-6">
+							<button class="btn btn-sm btn-primary btn-search" id="btnSearch"
 								type="button">
 								<i class="ace-icon fa fa-search"></i>搜索
 							</button>
+							<button class="btn btn-sm" type="button" id="gceClearSearch">清空</button>
 						</div>
 					</form>
 				</div>

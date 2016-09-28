@@ -170,7 +170,7 @@ var currentSelectedLineDbName = 1;
 	      + "</td>");
 
 	  var td7 = $("<td>"+
-	      		(array[i].status===7?'正常':'异常')+
+			  translateStatus(array[i].status)+
 				"</td>");
 
 	  if(array[i].status === 7){	    

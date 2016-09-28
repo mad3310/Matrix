@@ -122,7 +122,7 @@
                 </li>
                 <li id="sidebar-gce-cluster-mgr">
                     <a href="#" class="dropdown-toggle">
-                        <i class="menu-icon fa fa-sitemap"></i><span class="menu-text">GCE 管理</span><b class="arrow fa fa-angle-down"></b>
+                        <i class="menu-icon fa fa-sitemap"></i><span class="menu-text">GCE 列表</span><b class="arrow fa fa-angle-down"></b>
                     </a>
                     <ul class="submenu">
                         <li><a href="${ctx}/list/gce"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">应用列表</span></a><b class="arrow"></b></li>
