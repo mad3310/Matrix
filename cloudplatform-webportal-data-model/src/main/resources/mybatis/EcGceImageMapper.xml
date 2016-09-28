@@ -212,6 +212,6 @@
 	<!-- 物理删除 -->
 	<delete id="delete" parameterType="EcGceImage">
 		delete IMAGE from EC_GCE_IMAGE IMAGE
-		<include refid="Example_Where_Clause" />
+		where IMAGE.ID=#{id}
 	</delete>
 </mapper>
