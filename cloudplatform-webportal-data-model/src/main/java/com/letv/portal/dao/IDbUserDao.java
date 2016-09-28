@@ -62,4 +62,6 @@ public interface IDbUserDao extends IBaseDao<DbUserModel> {
 	public List<DbUserModel> selectGroupByName(Map<String, Object> params);
 
 	public void updateDescnByUsername(DbUserModel dbUserModel);
+	
+	void updateUserByDbId(Long mclusterId, Long userId);
 }

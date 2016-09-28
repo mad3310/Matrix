@@ -14,6 +14,30 @@ import com.letv.common.result.ApiResultObject;
  */
 public interface IGcePythonService {
 	/**
+	 * 检查集群删除状态
+	 * @param clusterName
+	 * @param hostIp
+	 * @param name
+	 * @param password
+	 * @return
+	 * @author linzhanbo .
+	 * @since 2016年9月9日, 下午5:23:44 .
+	 * @version 1.0 .
+	 */
+	public ApiResultObject checkClusterDeleteStatus(String clusterName,String hostIp, String name, String password);
+	/**
+	 * 删除集群
+	 * @param clusterName	集群名称
+	 * @param hostIp
+	 * @param name
+	 * @param password
+	 * @return
+	 * @author linzhanbo .
+	 * @since 2016年9月9日, 下午4:31:35 .
+	 * @version 1.0 .
+	 */
+	public ApiResultObject deleteCluster(String clusterName, String hostIp,String name, String password);
+	/**
 	 * 检查GCE部署包镜像创建状态
 	 * @param params
 	 * @param serverIp

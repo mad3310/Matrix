@@ -1,4 +1,4 @@
-package com.letv.portal.task.gce.service.impl;
+package com.letv.portal.task.gce.service.add.impl;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -47,8 +47,6 @@ public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBa
 	private IEcGceImageService ecGceImageService;
 	@Autowired
 	private IEcGceContainerService ecGceContainerService;
-	@Value("${matrix.gce.container.port}")
-	private String containerPort;
 	
 	private final static Logger logger = LoggerFactory.getLogger(BaseTaskEcGceServiceImpl.class);
 	
@@ -115,7 +113,7 @@ public class BaseTaskEcGceServiceImpl extends BaseTaskServiceImpl implements IBa
 			List<EcGceContainer> containers = this.getGceContainers(params);
 			for(EcGceContainer container:containers){
 				ips.append(MessageFormat.format("<a href=\"http://{0}:{1}\">http://{2}:{3}</a><br/>", 
-						container.getIpAddr(),containerPort,container.getIpAddr(),containerPort));
+						container.getIpAddr(),container.getBindHostPort(),container.getIpAddr(),container.getBindHostPort()));
 			}
 			gcePackage.setStatus(GcePackageStatus.NORMAL.getValue());
 			cluster.setStatus(MclusterStatus.RUNNING.getValue());

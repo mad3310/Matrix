@@ -736,6 +736,8 @@
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             	<matrix.gce.container.port>8080</matrix.gce.container.port>
+            	<matrix.gce.cluster.delete.check.interval>3000</matrix.gce.cluster.delete.check.interval>
+            	<matrix.gce.cluster.delete.check.timeout>300000</matrix.gce.cluster.delete.check.timeout>
             </properties>
         </profile>
 
@@ -836,6 +838,8 @@
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             	<matrix.gce.container.port>8080</matrix.gce.container.port>
+            	<matrix.gce.cluster.delete.check.interval>3000</matrix.gce.cluster.delete.check.interval>
+            	<matrix.gce.cluster.delete.check.timeout>300000</matrix.gce.cluster.delete.check.timeout>
             </properties>
         </profile>
 
@@ -936,6 +940,8 @@
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             	<matrix.gce.container.port>8080</matrix.gce.container.port>
+            	<matrix.gce.cluster.delete.check.interval>3000</matrix.gce.cluster.delete.check.interval>
+            	<matrix.gce.cluster.delete.check.timeout>300000</matrix.gce.cluster.delete.check.timeout>
             </properties>
         </profile>
         <profile>
@@ -1033,6 +1039,8 @@
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             	<matrix.gce.container.port>8080</matrix.gce.container.port>
+            	<matrix.gce.cluster.delete.check.interval>3000</matrix.gce.cluster.delete.check.interval>
+            	<matrix.gce.cluster.delete.check.timeout>300000</matrix.gce.cluster.delete.check.timeout>
             </properties>
         </profile>
         <profile>
@@ -1130,6 +1138,8 @@
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             	<matrix.gce.container.port>8080</matrix.gce.container.port>
+            	<matrix.gce.cluster.delete.check.interval>3000</matrix.gce.cluster.delete.check.interval>
+            	<matrix.gce.cluster.delete.check.timeout>300000</matrix.gce.cluster.delete.check.timeout>
             </properties>
         </profile>
         <profile>
@@ -1227,6 +1237,8 @@
             	<matrix.gce.cluster.create.check.interval>3000</matrix.gce.cluster.create.check.interval>
             	<matrix.gce.cluster.create.check.timeout>300000</matrix.gce.cluster.create.check.timeout>
             	<matrix.gce.container.port>8080</matrix.gce.container.port>
+            	<matrix.gce.cluster.delete.check.interval>3000</matrix.gce.cluster.delete.check.interval>
+            	<matrix.gce.cluster.delete.check.timeout>300000</matrix.gce.cluster.delete.check.timeout>
             </properties>
         </profile>
 

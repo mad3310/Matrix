@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mappes.dtd">
+<mapper namespace="com.letv.portal.dao.task.ITaskAsyncExecuteDao">
+	<!-- Result Map -->
+	<resultMap id="BaseResultMap" type="TaskAsyncExecute">
+		<result column="ID" property="id" />
+		<result column="TASK_CHAIN_ID" property="taskChainId" />
+		<result column="CLUSTER_NAME" property="clusterName" />
+		<result column="COUNT" property="count" />
+		<result column="DESCN" property="descn" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="CREATE_USER" property="createUser" />
+		<result column="UPDATE_TIME" property="updateTime" />
+		<result column="UPDATE_USER" property="updateUser" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		async.ID,
+		async.COUNT,async.TASK_CHAIN_ID,async.CLUSTER_NAME,async.DESCN,
+		async.CREATE_TIME,async.CREATE_USER,async.UPDATE_TIME,async.UPDATE_USER
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null  ">
+				and async.ID=#{id}
+			</if>
+			<if test="taskChainId != null and taskChainId != '' ">
+				and async.TASK_CHAIN_ID=#{taskChainId}
+			</if>
+			<if test="clusterName != null and clusterName != ''  ">
+				and async.CLUSTER_NAME=clusterName
+			</if>
+			<if test="count != null and count != ''  ">
+				and async.COUNT=count
+			</if>
+			<if test="count == null or count == ''  ">
+				and async.COUNT>0
+			</if>
+			<if test="descn != null and descn != ''  ">
+				and async.DESCN=#{descn}
+			</if>
+			<if test="createTime != null  ">
+				and async.CREATE_TIME=#{createTime}
+			</if>
+			<if test="createUser != null  ">
+				and async.CREATE_USER=#{createUser}
+			</if>
+			<if test="updateTime != null  ">
+				and async.UPDATE_TIME=#{updateTime}
+			</if>
+			<if test="updateUser != null  ">
+				and async.UPDATE_USER=#{updateUser}
+			</if>
+		</trim>
+	</sql>
+
+
+	<!-- 插入记录 -->
+	<insert id="insert" parameterType="TaskAsyncExecute" useGeneratedKeys="true" keyProperty="id" >
+		insert into
+			WEBPORTAL_TASK_ASYNC_EXECUTE
+			(TASK_CHAIN_ID,CLUSTER_NAME,COUNT,DESCN,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER)
+		values
+			(#{taskChainId},
+			 #{clusterName},
+			 #{count},
+			 #{descn},now(),#{createUser},#{updateTime},#{updateUser})
+	</insert>
+
+	<!-- 更新记录 -->
+	<update id="updateBySelective" parameterType="TaskAsyncExecute">
+		update WEBPORTAL_TASK_ASYNC_EXECUTE
+		<set>
+			<if test="id != null  ">
+				ID=#{id},
+			</if>
+			<if test="taskChainId != null and taskChainId != '' ">
+				TASK_CHAIN_ID=#{taskChainId},
+			</if>
+			<if test="clusterName != null and clusterName != ''  ">
+				CLUSTER_NAME=#{clusterName},
+			</if>
+			<if test="count != null and count != '' or count == 0 ">
+				COUNT=#{count},
+			</if>
+			<if test="descn != null and descn != ''  ">
+				DESCN=#{descn},
+			</if>
+			<if test="createTime != null  ">
+				CREATE_TIME=#{createTime},
+			</if>
+			<if test="createUser != null  ">
+				CREATE_USER=#{createUser},
+			</if>
+				UPDATE_TIME=now(),
+			<if test="updateUser != null  ">
+				UPDATE_USER=#{updateUser},
+			</if>
+		</set>
+		where ID=#{id}
+	</update>
+
+	<!-- 物理删除 -->
+	<delete id="delete" parameterType="TaskAsyncExecute">
+		delete from WEBPORTAL_TASK_ASYNC_EXECUTE where ID = #{id}
+	</delete>
+	
+	<delete id="deleteByMclusterName" parameterType="java.lang.String">
+		delete from WEBPORTAL_TASK_ASYNC_EXECUTE where CLUSTER_NAME = #{clusterName}
+	</delete>
+	
+	<!-- 根据id查询-->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+			<include refid="Base_Column_List" /> 
+		from 
+			WEBPORTAL_TASK_ASYNC_EXECUTE async
+		where 
+			async.ID = #{id}
+	</select>
+	
+	<select id="selectByTaskChainId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+			<include refid="Base_Column_List" /> 
+		from 
+			WEBPORTAL_TASK_ASYNC_EXECUTE async
+		where 
+			async.TASK_CHAIN_ID = #{taskChainId}
+			limit 1
+	</select>
+	
+	<!-- 根据条件查询 -->
+	<select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+			<include refid="Base_Column_List" />
+		from 
+			WEBPORTAL_TASK_ASYNC_EXECUTE async
+			<include refid="Example_Where_Clause" />
+	</select>
+	
+</mapper>   

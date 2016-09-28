@@ -148,24 +148,27 @@ function queryByPage() {
 					var td3="<td class='hidden-480'>-</td>";
 				} 
 				var userName=tempObj.createUserModel?tempObj.createUserModel.userName:"system";
-				var td5 ="<td>"+userName+"</td>";
+				var td5 ="<td userId='"+tempObj.createUser+"' >"+userName+"</td>";
 				var td6 ="<td class='hidden-480'>"+date('Y-m-d H:i:s',tempObj.createTime)+"</td>";
 				var tempStatus=tempObj.status;
 				var td7 ="<td>"+stateTransform(tempStatus,"rdsMcluster")+"</td>";
 
-				var startHtml='',stopHtml='',expandHtml='',deleteHtml='';
+				var startHtml='',stopHtml='',expandHtml='',deleteHtml='',changeUserHtml='';
 				var startOs=containerClusterOs(tempStatus,"rds","start"),
 				stopOs=containerClusterOs(tempStatus,"rds","stop"),
 				expandOs=containerClusterOs(tempStatus,"rds","expand"),
 				deleteOs=containerClusterOs(tempStatus,"rds","delete");
-
+				changeUserOs=containerClusterOs(tempStatus,"rds","changeUser");
+				
 				startHtml=startOs==0?startHtml:containerOsHtml("rds","start");
 				stopHtml=stopOs==0?stopHtml:containerOsHtml("rds","stop");
 				expandHtml=expandOs==0?expandHtml:containerOsHtml("rds","expand");
 				deleteHtml=deleteOs==0?deleteHtml:containerOsHtml("rds","delete");
+				changeUserHtml=changeUserOs==0?changeUserHtml:containerOsHtml("rds","changeUser");
+	
 				var td8 ="<td data-status='"+tempStatus+"'>"
 							+"<div class='hidden-sm hidden-xs  action-buttons'>"
-							+startHtml+stopHtml+expandHtml+deleteHtml
+							+startHtml+stopHtml+expandHtml+deleteHtml+changeUserHtml
 							+"</div>"
 							+'<div class="hidden-md hidden-lg">'
 							+'<div class="inline pos-rel">'
@@ -177,6 +180,7 @@ function queryByPage() {
 								+'<li>'+stopHtml+'</li>'
 								+'<li>'+expandHtml+'</li>'
 								+'<li>'+deleteHtml+'</li>'
+								+'<li>'+changeUserHtml+'</li>'
 							+'</ul></div></div>'
 						+ "</td>";
 				var tr="";	
@@ -409,6 +413,41 @@ function queryBuildStatus(mclusterId,type) {	//type(update或new)
 		}
 	});
  }
+
+//更改RDS集群用户
+function changeUserMcluster(obj){
+	var tdObj = $(obj).parents("tr").find("[userId]");
+	var mclusterId = $(obj).parents("tr").find('[name="mcluster_id"]').val();
+	var userId = tdObj.attr('userId');
+
+	var form = $("<form>"
+			 + "<div class='form-group'><div class='col-md-12'>"
+			 +"<div class='col-md-12'><select type='text' name='user' style='width=100%'/></select></div>"
+			 +"<div class='clearfix'></div>"
+			 + "</div></div>"
+             + "</form>");
+	
+	var options = $('#containeruser');
+	var selectObj = form.find('select');
+	selectObj.html(options.html()).val(userId);
+
+	var changeUserCmd=function(){
+		var newUserId = selectObj.find('option:selected').val()?selectObj.find('option:selected').val():'';
+		getLoading();
+		$.ajax({
+			cache:false,
+			url:'/mcluster/updateUser',
+			type:'post',
+			data:{mclusterId : mclusterId,userId:newUserId},
+			success:function(data){
+				removeLoading();
+				if(error(data)) return;
+				queryByPage();
+			}
+		});
+	}
+	confirmframe("更改RDS集群用户","选择用户",form,changeUserCmd);
+}
 
 function createMcluster(){
 	getLoading();

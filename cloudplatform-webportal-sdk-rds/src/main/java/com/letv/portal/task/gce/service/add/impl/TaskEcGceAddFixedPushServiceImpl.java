@@ -3,7 +3,7 @@
  *  Copyright (c) 2016 乐视云计算有限公司（lecloud.com）. All rights reserved
  *
  */
-package com.letv.portal.task.gce.service.impl;
+package com.letv.portal.task.gce.service.add.impl;
 
 import java.util.HashMap;
 import java.util.List;

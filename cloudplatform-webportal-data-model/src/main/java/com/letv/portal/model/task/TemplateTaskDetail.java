@@ -20,8 +20,15 @@ public class TemplateTaskDetail extends BaseModel {
 	private String taskType;
 	
 	private int retry;
+	private int asyncRetry;//异步重试
 	private int version;
 	
+	public int getAsyncRetry() {
+		return asyncRetry;
+	}
+	public void setAsyncRetry(int asyncRetry) {
+		this.asyncRetry = asyncRetry;
+	}
 	public String getParams() {
 		return params;
 	}

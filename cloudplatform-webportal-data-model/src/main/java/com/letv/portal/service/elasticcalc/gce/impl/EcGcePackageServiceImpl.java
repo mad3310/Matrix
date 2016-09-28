@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.letv.common.dao.IBaseDao;
 import com.letv.portal.dao.elasticcalc.gce.IEcGcePackageDao;
+import com.letv.portal.enumeration.GcePackageStatus;
 import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.model.elasticcalc.gce.EcGce;
 import com.letv.portal.model.elasticcalc.gce.EcGceCluster;
@@ -91,6 +92,7 @@ public class EcGcePackageServiceImpl extends BaseServiceImpl<EcGcePackage>
 		//更改GcePackage，添加clusterid信息.
 		gcePackage.setGceclusterId(gcePackCluster.getId());
 		gcePackage.setUpdateUser(gcePackage.getCreateUser());
+		gcePackage.setStatus(GcePackageStatus.BUILDDING.getValue());
 		this.ecGcePackageDao.update(gcePackage);
 		params.put("gcePackageId", gcePackage.getId());
     	params.put("gcePackageVersion", gcePackage.getVersion());

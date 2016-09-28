@@ -353,16 +353,23 @@ public class BaseTaskServiceImpl implements IBaseTaskService{
 				tr.setResult("check time over:" + resultObject.getUrl());
 				break;
 			} else {
-				resultObject = pollingTask(params);
-				tr = analyzeComplexRestServiceResult(resultObject);
+				Object obj = pollingTask(params);
+				if(obj instanceof ApiResultObject){
+					resultObject = (ApiResultObject) obj;
+					tr = analyzeComplexRestServiceResult(resultObject);
+				}
+				else if(obj instanceof TaskResult)
+					tr = (TaskResult) obj;
+				else
+					throw new ValidateException("The pollingTask method's returnvalue must be ApiResultObject type or TaskResult type.");
 			}
 			Thread.sleep(interval);
 		}
 		return tr;
 	}
-
+	
 	@Override
-	public ApiResultObject pollingTask(Object... params) {
+	public <T> T pollingTask(Object... params) throws InterruptedException {
 		return null;
 	}
 	

@@ -5,6 +5,8 @@
  */
 package com.letv.portal.service.elasticcalc.gce.impl;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -34,5 +36,15 @@ public class EcGceContainerServiceImpl extends BaseServiceImpl<EcGceContainer>
 	@Override
 	public IBaseDao<EcGceContainer> getDao() {
 		return this.ecGceContainerDao;
+	}
+
+	@Override
+	public void deleteBySelective(Map<String, Object> map) {
+		this.ecGceContainerDao.deleteBySelective(map);
+	}
+
+	@Override
+	public void updateBySelective(Map<String, Object> map) {
+		this.ecGceContainerDao.updateBySelective(map);
 	}
 }

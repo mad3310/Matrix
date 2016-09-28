@@ -479,8 +479,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
     @Async
     public void checkMclusterStatus(MclusterModel mcluster) {
         HostModel host = getHostByHclusterId(mcluster.getHclusterId());
-        String result = this.pythonService.checkMclusterStatus(mcluster.getMclusterName(),host.getHostIp(),host.getName(),host.getPassword());
-        Map map = this.transResult(result);
+        ApiResultObject result = this.pythonService.checkMclusterStatus(mcluster.getMclusterName(),host.getHostIp(),host.getName(),host.getPassword());
+        Map map = this.transResult(result.getResult());
         if(map.isEmpty()) {
             mcluster.setStatus(MclusterStatus.CRISIS.getValue());
             this.mclusterService.updateBySelective(mcluster);
@@ -496,7 +496,7 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             } else {
                 this.checkVipMcluster(mcluster);
             }
-        } else if(null !=result && result.contains("not existed")){
+        } else if(null !=result.getResult() && result.getResult().contains("not existed")){
             this.mclusterService.delete(mcluster);
             this.pythonService.checkMclusterStatus(mcluster.getMclusterName() + Constant.MCLUSTER_NODE_TYPE_VIP_SUFFIX, host.getHostIp(), host.getName(), host.getPassword());
         }
@@ -504,8 +504,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
     }
     private void checkVipMcluster(MclusterModel mcluster) {
         HostModel host = getHostByHclusterId(mcluster.getHclusterId());
-        String resultVip = this.pythonService.checkMclusterStatus(mcluster.getMclusterName() + Constant.MCLUSTER_NODE_TYPE_VIP_SUFFIX, host.getHostIp(), host.getName(), host.getPassword());
-        Map mapResult = this.transResult(resultVip);
+        ApiResultObject resultVip = this.pythonService.checkMclusterStatus(mcluster.getMclusterName() + Constant.MCLUSTER_NODE_TYPE_VIP_SUFFIX, host.getHostIp(), host.getName(), host.getPassword());
+        Map mapResult = this.transResult(resultVip.getResult());
         if(mapResult.isEmpty()) {
             mcluster.setStatus(MclusterStatus.CRISIS.getValue());
             this.mclusterService.updateBySelective(mcluster);
@@ -728,10 +728,8 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
 
         if(monitorType == 1) {
             monitor = analysisClusterData(result);
-        } else if(monitorType == 2) {
-            monitor = analysisNodeData(result);
-        } else if(monitorType == 3) {
-            monitor = analysisDbData(result);
+        } else {
+            monitor = analysisData(result, monitorType);
         }
         return monitor;
     }
@@ -739,7 +737,9 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
     private ClusterModel analysisClusterData(String result){
         Map<String,Object> data = transResult(result);
         ClusterModel monitor = new ClusterModel();
-        if(Constant.PYTHON_API_RESPONSE_SUCCESS.equals(String.valueOf(((Map)(data.get("meta"))).get("code")))) {
+        Map m = (Map)data.get("meta");
+        String code = String.valueOf(m.get("code"));
+        if(Constant.PYTHON_API_RESPONSE_SUCCESS.equals(code)) {
             ObjectMapper resultMapper = new ObjectMapper();
             try {
                 monitor = resultMapper.readValue(result, ClusterModel.class);
@@ -757,15 +757,20 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
             } else {
                 monitor.setResult(lostIp.length);
             }
+        } else if(Constant.REQUEST_ERROR.equals(code) && m.get("errorDetail") != null
+        		&& String.valueOf(m.get("errorDetail")).contains("timed out")) { 
+        	monitor.setResult(MonitorStatus.TIMEOUT.getValue());
         } else {
         	monitor.setResult(MonitorStatus.CRASH.getValue());
         }
         return monitor;
     }
-    private NodeModel analysisDbData(String result){
+    private NodeModel analysisData(String result, Long monitorType){
         Map<String,Object> data = transResult(result);
         NodeModel monitor = new NodeModel();
-        if(Constant.PYTHON_API_RESPONSE_SUCCESS.equals(String.valueOf(((Map)(data.get("meta"))).get("code")))) {
+        Map m = (Map)data.get("meta");
+        String code = String.valueOf(m.get("code"));
+        if(Constant.PYTHON_API_RESPONSE_SUCCESS.equals(code)) {
             ObjectMapper resultMapper = new ObjectMapper();
             try {
                 monitor = resultMapper.readValue(result, NodeModel.class);
@@ -774,83 +779,116 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
                 monitor.setResult(MonitorStatus.EXCEPTION.getValue());
                 return monitor;
             }
-            Date now = new Date();
-            //处理
-            boolean timeout = false;
-            int failCount = 0;
+            if(monitorType==2) {//分析Node结果
+            	analysisNodeData(monitor);
+            } else if(monitorType==3) {//分析db结果
+            	analysisDbData(monitor);
+            }
+            
+        } else if(Constant.REQUEST_ERROR.equals(code) && m.get("errorDetail") != null
+        		&& String.valueOf(m.get("errorDetail")).contains("timed out")) { 
+        	monitor.setResult(MonitorStatus.TIMEOUT.getValue());
+        } else {
+        	monitor.setResult(MonitorStatus.CRASH.getValue());
+        }
+        return monitor;
+    }
+    
+    private void analysisNodeData(NodeModel monitor) {
+    	Date now = new Date();
+        //处理
+        boolean timeout = false;
+        MonitorStatus status = null;
 
-            DetailModel detailModel = monitor.getResponse().getDb().getCur_conns();
-            failCount = compareFailCount(failCount,detailModel);
+        DetailModel detailModel = monitor.getResponse().getNode().getLog_health();
+        if(!timeout) {
             timeout = isTimeout(now, detailModel);
-
-            detailModel = monitor.getResponse().getDb().getExisted_db_anti_item();
-            failCount = compareFailCount(failCount,detailModel);
-            if(!timeout)
-                timeout = isTimeout(now, detailModel);
-
-            detailModel = monitor.getResponse().getDb().getWrite_read_avaliable();
-            failCount = compareFailCount(failCount,detailModel);
-            if(!timeout)
-                timeout = isTimeout(now, detailModel);
-
-            detailModel = monitor.getResponse().getDb().getWsrep_status();
-            failCount = compareFailCount(failCount,detailModel);
-            if(!timeout)
-                timeout = isTimeout(now, detailModel);
-            detailModel = monitor.getResponse().getDb().getCur_user_conns();
-            failCount = compareFailCount(failCount,detailModel);
-            if(!timeout)
-                timeout = isTimeout(now, detailModel);
-
-            monitor.setResult(failCount);
-            if(timeout) {
-                monitor.setResult(MonitorStatus.CRASH.getValue());
-            }
-        } else {
-        	monitor.setResult(MonitorStatus.CRASH.getValue());
         }
-        return monitor;
+        if(!timeout) {
+        	detailModel = monitor.getResponse().getNode().getLog_error();
+            timeout = isTimeout(now, detailModel);
+        }
+        if(!timeout) {
+        	detailModel = monitor.getResponse().getNode().getStarted();
+            status = calculateStatus(detailModel);
+            timeout = isTimeout(now, detailModel);
+        }
+        if(timeout) {
+            monitor.setResult(MonitorStatus.TIMEOUT.getValue());
+        } else {
+        	monitor.setResult(status.getValue());
+        } 
     }
-    private NodeModel analysisNodeData(String result){
-        Map<String,Object> data = transResult(result);
-        NodeModel monitor = new NodeModel();
-        if(Constant.PYTHON_API_RESPONSE_SUCCESS.equals(String.valueOf(((Map)(data.get("meta"))).get("code")))) {
-            ObjectMapper resultMapper = new ObjectMapper();
-            try {
-                monitor = resultMapper.readValue(result, NodeModel.class);
-            } catch (Exception e) {
-                logger.error("解析数据异常：" + e.getMessage());
-                monitor.setResult(MonitorStatus.EXCEPTION.getValue());
-                return monitor;
-            }
-            Date now = new Date();
-            //处理
-            boolean timeout = false;
-            int failCount = 0;
-
-            DetailModel detailModel = monitor.getResponse().getNode().getLog_health();
-            failCount = compareFailCount(failCount,detailModel);
-            if(!timeout)
-                timeout = isTimeout(now, detailModel);
-
-            detailModel = monitor.getResponse().getNode().getLog_error();
-            failCount = compareFailCount(failCount,detailModel);
-            if(!timeout)
-                timeout = isTimeout(now, detailModel);
-
-            detailModel = monitor.getResponse().getNode().getStarted();
-            failCount = compareFailCount(failCount,detailModel);
-            if(!timeout)
-                timeout = isTimeout(now, detailModel);
-
-            monitor.setResult(failCount);
-            if(timeout) {
-                monitor.setResult(MonitorStatus.CRASH.getValue());
-            }
-        } else {
-        	monitor.setResult(MonitorStatus.CRASH.getValue());
+    
+    private void analysisDbData(NodeModel monitor) {
+    	Date now = new Date();
+        //处理
+        boolean timeout = false;
+        MonitorStatus status = null;
+        boolean structError = false;//是否存在反例,true-存在，false-不存在
+    	
+    	DetailModel detailModel = monitor.getResponse().getDb().getWrite_read_avaliable();
+    	status = calculateStatus(detailModel);
+    	timeout = isTimeout(now, detailModel);
+        
+        if(!timeout) {
+    		detailModel = monitor.getResponse().getDb().getCur_conns();
+    		timeout = isTimeout(now, detailModel);
+    	}
+        if(!timeout) {
+        	detailModel = monitor.getResponse().getDb().getExisted_db_anti_item();
+            structError = checkStructError(detailModel);
+            timeout = isTimeout(now, detailModel);
         }
-        return monitor;
+        if(!timeout) {
+        	detailModel = monitor.getResponse().getDb().getWsrep_status();
+            timeout = isTimeout(now, detailModel);
+        }
+        if(!timeout) {
+        	detailModel = monitor.getResponse().getDb().getCur_user_conns();
+            timeout = isTimeout(now, detailModel);
+        }
+        if(timeout) {
+            monitor.setResult(MonitorStatus.TIMEOUT.getValue());
+        } else {
+        	monitor.setResult(status.getValue());
+        } 
+        if(MonitorStatus.NORMAL == status && structError){//当集群其他检查正常时,若存在反例,返回反例异常
+        	monitor.setResult(MonitorStatus.STRUCTERROR.getValue());
+        }
+        
+    }
+    
+    private MonitorStatus calculateStatus(DetailModel detailModel) {
+    	String message = detailModel.getMessage();
+    	//格式:total=3, success count=3, failed count=0
+    	if(org.apache.commons.lang.StringUtils.isNotEmpty(message)) {
+    		String[] items = message.split(",");
+    		int totalCount = Integer.parseInt(items[0].split("=")[1]);
+    		int failedCount = Integer.parseInt(items[2].split("=")[1]);
+    		if(totalCount == failedCount) {//失败节点等于总节点
+    			return MonitorStatus.CRASH;
+    		} else if(failedCount == 1) {//失败节点等于1
+    			return MonitorStatus.GENERAL;
+    		} else if(failedCount>1 && failedCount<totalCount){//失败节点大于1小于总节点
+    			return MonitorStatus.SERIOUS;
+    		} else {
+    			return MonitorStatus.NORMAL;
+    		}
+    	}
+    	return MonitorStatus.EXCEPTION;
+    }
+    
+    //检查数据库反例
+    @SuppressWarnings("unchecked")
+	private boolean checkStructError(DetailModel detailModel) {
+		Map<String, Object> errorInfo = (Map<String, Object>) detailModel.getError_record();
+		logger.info(errorInfo.toString());
+		String msg = (String) errorInfo.get("msg");
+		if(null!=msg && (msg.toLowerCase().contains("nopk") || msg.toLowerCase().contains("myisam"))) {
+			return true;
+		}
+		return false;
     }
     public boolean isTimeout(Date now,DetailModel detailModel) {
         if(null == detailModel)
@@ -1239,10 +1277,7 @@ public class BuildTaskServiceImpl implements IBuildTaskService{
 				continue;
 			}
 			detailModel = monitorNode.getResponse().getDb().getExisted_db_anti_item();
-			Map<String, Object> errorInfo = (Map<String, Object>) detailModel.getError_record();
-			logger.info(errorInfo.toString());
-			String msg = (String) errorInfo.get("msg");
-			if(null!=msg && (msg.toLowerCase().contains("nopk") || msg.toLowerCase().contains("myisam"))) {
+			if(checkStructError(detailModel)) {
 				UserModel user = this.userService.getUserById(container.getMcluster().getCreateUser());
 				List<DbModel> dbModels = this.dbService.selectDbByMclusterId(container.getMclusterId());
 				Map<String, Object> mailParams = new HashMap<String, Object>();

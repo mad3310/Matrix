@@ -7,7 +7,7 @@ $(function(){
 	page_init();
 	
 	/*动态加载界面下拉列表值*/
-	var sltArray = [1,7,8,9];
+	var sltArray = [1,7,8,9,14];
 	addSltOpt(sltArray,$("#containerStatus"));
 	
 	$(document).on('click', 'th input:checkbox' , function(){

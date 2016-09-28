@@ -8,6 +8,7 @@ package com.letv.portal.model.elasticcalc.gce;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.letv.common.model.BaseModel;
+import com.letv.portal.model.UserModel;
 
 /**
  * GCE应用包镜像
@@ -54,6 +55,7 @@ public class EcGceImage extends BaseModel {
 	 */
 	private Integer status;
 
+	private UserModel createUserModel;
 	public String getName() {
 		return name;
 	}
@@ -108,6 +110,14 @@ public class EcGceImage extends BaseModel {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public UserModel getCreateUserModel() {
+		return createUserModel;
+	}
+
+	public void setCreateUserModel(UserModel createUserModel) {
+		this.createUserModel = createUserModel;
 	}
 	
 }

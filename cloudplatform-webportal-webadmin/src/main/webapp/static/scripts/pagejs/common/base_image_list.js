@@ -134,7 +134,12 @@ function queryByPage() {
                     + (array[i].isUsed?'default':'')
                     + "</td>");
         var td8= $("<td class=\"td-descn hidden-480\">"+array[i].descn+"</td>");
-		var btnIcons=['del','modify','default'];
+        
+        if(array[i].purpose=="default"){
+        	var btnIcons=['del','modify'];
+        }else{
+        	var btnIcons=['del','modify','default'];
+        }
 		var td9=$(transStateHtml(btnIcons));	
         var tr = $("<tr></tr>");
 

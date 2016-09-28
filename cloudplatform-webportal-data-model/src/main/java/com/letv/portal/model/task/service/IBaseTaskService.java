@@ -150,8 +150,9 @@ public interface IBaseTaskService {
 	 * @author linzhanbo .
 	 * @since 2016年7月15日, 上午9:39:44 .
 	 * @version 1.0 .
+	 * @param <T>
 	 */
-	public ApiResultObject pollingTask(Object... params) throws InterruptedException;
+	public <T> T pollingTask(Object... params) throws InterruptedException;
 	
 	/**
 	 * 通用参数验证

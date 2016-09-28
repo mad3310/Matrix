@@ -19,6 +19,12 @@
 	</aop:aspectj-autoproxy>
     <bean id="jsonFilterPropertyAspect" class="com.letv.common.util.jacksonext.springframework.aop.JsonFilterPropertyAspect"/>
 	
+	<aop:aspectj-autoproxy proxy-target-class="true">
+        <aop:include name="securityAspect"/>
+    </aop:aspectj-autoproxy>
+    <bean id="securityAspect" class="com.letv.portal.annotation.security.SecurityAspect"></bean>
+	
+	
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
 	    <property name="locations">
 		    <list> 

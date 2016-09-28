@@ -6,8 +6,6 @@ var currentSelectedLineDbName = 1;
 	//初始化
 	page_init();
     /*动态添加select内容*/
-	var sltArray = [0,2,3,5,6,7,8,9,10,13,14];
-	addSltOpt(sltArray,$("#dbStatus"));
 	
 	$(document).on('click', 'th input:checkbox' , function(){
 		var that = this;
@@ -54,24 +52,18 @@ var currentSelectedLineDbName = 1;
 			$('.queryOption').addClass('collapsed').find('.widget-body').attr('style', 'dispaly:none;');
 			$('.queryOption').find('.widget-header').find('i').attr('class', 'ace-icon fa fa-chevron-down');
 			var qryStr='';
-			var qryStr1=$('#dbName').val();var qryStr2=$('#dbMcluster').val();var qryStr3=$("#dbPhyMcluster").find('option:selected').text();var qryStr4=$("#containeruser").find('option:selected').text();var qryStr5;
+			var qryStr1=$('#dbName').val();var qryStr3=$("#dbPhyMcluster").find('option:selected').text();var qryStr4=$("#containeruser").find('option:selected').text();var qryStr5;
 			if($('#dbStatus').val()){
 				qryStr5=translateStatus($('#dbStatus').val());
 			}
 			if(qryStr1){
 				qryStr+='<span class="label label-success arrowed">'+qryStr1+'<span class="queryBadge" data-rely-id="dbName"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
 			}
-			if(qryStr2){
-				qryStr+='<span class="label label-warning arrowed">'+qryStr2+'<span class="queryBadge" data-rely-id="dbMcluster"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
-			}
 			if(qryStr3){
 				qryStr+='<span class="label label-purple arrowed">'+qryStr3+'<span class="queryBadge" data-rely-id="dbPhyMcluster"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
 			}
 			if(qryStr4){
 				qryStr+='<span class="label label-yellow arrowed">'+qryStr4+'<span class="queryBadge" data-rely-id="containeruser"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
-			}
-			if(qryStr5){
-				qryStr+='<span class="label label-pink arrowed">'+qryStr5+'<span class="queryBadge" data-rely-id="dbStatus"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
 			}
 			if(qryStr){
 				$('.queryOption').find('.widget-title').html(qryStr);
@@ -94,8 +86,9 @@ var currentSelectedLineDbName = 1;
 	});
 	$("#dbSearchClear").click(function(){
 		//var clearList = ["","","","","",""]
-		var clearList = ["dbName","dbMcluster","dbPhyMcluster","containeruser","dbStatus"]
+		var clearList = ["dbName","dbPhyMcluster","containeruser","dbStatus"]
 		clearSearch(clearList);
+		queryByPage();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
@@ -103,7 +96,6 @@ var currentSelectedLineDbName = 1;
 
   function queryByPage() {
   	var dbName = $("#dbName").val()?$("#dbName").val():'';
-	var mclusterName = $("#dbMcluster").val()?$("#dbMcluster").val():'';
 	var hclusterName = $("#dbPhyMcluster").find('option:selected').attr('data-hclsName')?$("#dbPhyMcluster").find('option:selected').attr('data-hclsName'):'';
 	var userName = $("#containeruser").find('option:selected').text()?$("#containeruser").find('option:selected').text():'';
 	/*var createTime = $("#PhyMechineDate").val()?$("#PhyMechineDate").val():'null';*/
@@ -112,11 +104,8 @@ var currentSelectedLineDbName = 1;
 			'currentPage':currentPage,
 			'recordsPerPage':recordsPerPage,
 			'gceName':dbName,
-			'clusterName':mclusterName,
 			'hclusterName':hclusterName,
-			'userName':userName,
-			// // /*'createTime':createTime,*/
-			'status':status
+			'userName':userName
 	}
     $("#tby tr").remove();
     getLoading();
@@ -124,7 +113,7 @@ var currentSelectedLineDbName = 1;
       cache:false,
       type : "get",
       // url : '/slb',
-      url : queryUrlBuilder("/gce",queryCondition),
+      url : queryUrlBuilder("/ecgce",queryCondition),
       dataType : "json", /*这句可用可不用，没有影响*/
       contentType : "application/json; charset=utf-8",
       success : function(data) {
@@ -155,13 +144,6 @@ var currentSelectedLineDbName = 1;
 	      + "<a class=\"link\" style=\"text-decoration:none;\">"+array[i].gceName+"</a>"
 	      + "</td>");
 	  }
-	  if(array[i].gceCluster){
-	    var td3 = $("<td class='hidden-480'>"
-	      + "<a class=\"link\" href=\"/detail/gce/cluster/" + array[i].gceClusterId+"\">"+array[i].gceCluster.clusterName+"</a>"
-	      + "</td>");//href=\"/detail/mcluster/" + array[i].mclusterId+"\"
-	  } else {
-	    var td3 = $("<td class='hidden-480'> -</td>");
-	  }
 	  if(array[i].hcluster){
 	    var td4 = $("<td class='hidden-480'>"
 	      + array[i].hcluster.hclusterNameAlias
@@ -179,35 +161,18 @@ var currentSelectedLineDbName = 1;
 	  var td6 = $("<td class='hidden-480'>"
 	    + date('Y-m-d H:i:s',array[i].createTime)
 	      + "</td>");
-	  if(array[i].status == 4){
-	    var td7 = $("<td>"
-	      +"<a href=\"#\" name=\"dbRefuseStatus\" rel=\"popover\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"top\" data-trigger='hover' data-content=\""+ array[i].auditInfo + "\" style=\"cursor:pointer; text-decoration:none;\">"
-	      + translateStatus(array[i].status)
-		+"</a>"
-	      + "</td>");
-	  }else if(array[i].status == 2){
-	    var td7 = $("<td>"
-	      +"<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
-	      +"<i class=\"ace-icon fa fa-spinner fa-spin green bigger-125\" />"
-	      +"创建中...</a>"
-	      + "</td>");
+
+	  var td7 = $("<td>"+
+			  (array[i].status===7?"可用":"不可用")+
+				"</td>");
+
+	  if(array[i].status === 7){	    
+		var tr = $("<tr></tr>");
 	  }else{
-	    var td7 = $("<td> <a>"
-	      + translateStatus(array[i].status)
-		+ "</a></td>");
-	  }
-
-	  if(array[i].status == 0 ||array[i].status == 5||array[i].status == 13){
-	    var tr = $("<tr class=\"warning\"></tr>");
-
-	  }else if(array[i].status == 3 ||array[i].status == 4||array[i].status == 14){
 	    var tr = $("<tr class=\"default-danger\"></tr>");
-
-	  }else{
-	    var tr = $("<tr></tr>");
 	  }
 
-	  tr.append(td0).append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7);
+	  tr.append(td0).append(td1).append(td2).append(td4).append(td5).append(td6).append(td7);
 	  tr.appendTo(tby);
 
 	  $('[name = "dbRefuseStatus"]').popover();

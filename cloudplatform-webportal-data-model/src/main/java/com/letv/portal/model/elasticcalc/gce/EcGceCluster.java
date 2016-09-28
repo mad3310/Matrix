@@ -8,6 +8,8 @@ package com.letv.portal.model.elasticcalc.gce;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.letv.common.model.BaseModel;
+import com.letv.portal.model.HclusterModel;
+import com.letv.portal.model.UserModel;
 
 /**
  * GCE应用包集群
@@ -58,7 +60,11 @@ public class EcGceCluster extends BaseModel {
 	 * 状态
 	 */
 	private Integer status;
-
+	
+	private HclusterModel hcluster;
+	
+	private UserModel createUserModel;
+	
 	public String getClusterName() {
 		return clusterName;
 	}
@@ -121,6 +127,22 @@ public class EcGceCluster extends BaseModel {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public HclusterModel getHcluster() {
+		return hcluster;
+	}
+
+	public void setHcluster(HclusterModel hcluster) {
+		this.hcluster = hcluster;
+	}
+
+	public UserModel getCreateUserModel() {
+		return createUserModel;
+	}
+
+	public void setCreateUserModel(UserModel createUserModel) {
+		this.createUserModel = createUserModel;
 	}
 	
 }

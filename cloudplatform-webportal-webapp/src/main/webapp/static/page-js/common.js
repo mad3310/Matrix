@@ -139,7 +139,10 @@ define(function(require,exports,module){
                 return "<font color=\"red\">严重危险</font>";
             }else if(status == 15){
                 return "禁用";
-            }else if(status == 'FAILD'){
+            }else if(status == 19){
+            	return "删除失败";
+            }
+            else if(status == 'FAILD'){
                 return "<font color=\"red\">备份失败</font>";
             }else if(status == 'SUCCESS'){
                 return "<span class=\"text-success\">备份成功<span>";

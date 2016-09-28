@@ -159,6 +159,13 @@ public interface IMemcachedCache extends ICache<String,Object>
 	 */
 	public boolean add(String key,Object value, Date expiry);
 	
+	/**
+	 * 删除数据
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public boolean delete(String key);
 	
 	/**
 	 * 保存数据,前提是key必须存在于memcache中，否则保存不成功

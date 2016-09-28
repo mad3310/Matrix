@@ -12,6 +12,7 @@
 		<result column="TASK_TYPE" property="taskType" />
 		<result column="PARAMS" property="params" />
 		<result column="RETRY" property="retry" />
+		<result column="ASYNC_RETRY" property="asyncRetry" />
 		<result column="VERSION" property="version" />
 			
 		<result column="DELETED" property="deleted" />
@@ -22,7 +23,7 @@
 	</resultMap>
 	
 	<sql id="Base_Column_List">
-		ttd.ID,ttd.NAME,ttd.DESCN,ttd.BEANNAME,ttd.TASK_TYPE,ttd.PARAMS,ttd.RETRY,ttd.VERSION,ttd.DELETED,ttd.CREATE_TIME,ttd.CREATE_USER,ttd.UPDATE_TIME,ttd.UPDATE_USER
+		ttd.ID,ttd.NAME,ttd.DESCN,ttd.BEANNAME,ttd.TASK_TYPE,ttd.PARAMS,ttd.RETRY,ttd.ASYNC_RETRY,ttd.VERSION,ttd.DELETED,ttd.CREATE_TIME,ttd.CREATE_USER,ttd.UPDATE_TIME,ttd.UPDATE_USER
 	</sql>
 	
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -35,10 +36,10 @@
 	<insert id="insert" parameterType="TemplateTaskDetail" useGeneratedKeys="true" keyProperty="id" >
 		insert into
 		WEBPORTAL_TEMPLATE_TASK_DETAIL(
-			ID,NAME,DESCN,BEANNAME,TASK_TYPE,PARAMS,RETRY,VERSION,
+			ID,NAME,DESCN,BEANNAME,TASK_TYPE,PARAMS,RETRY,ASYNC_RETRY,VERSION,
 			DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER)
 		values(
-			#{id},#{name},#{descn},#{beanName},#{taskType},#{params},#{retry},#{version},
+			#{id},#{name},#{descn},#{beanName},#{taskType},#{params},#{retry},#{asyncRetry},#{version},
 			#{deleted},now(),#{createUser},#{updateTime},#{updateUser})
 	</insert>
 	

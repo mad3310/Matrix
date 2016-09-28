@@ -39,12 +39,17 @@ public class SkipController {
 		return mav;
 	}
 	
-	@RequestMapping(value ="/list/gce/server",method=RequestMethod.GET)
+	@RequestMapping(value ="/list/gce",method=RequestMethod.GET)
 	public ModelAndView toGceServerList(ModelAndView mav,HttpServletRequest request){
-		mav.setViewName("/cloudgce/gce_server_list");
+		mav.setViewName("/cloudgce/gce_list");
 		return mav;
 	}
 
+	@RequestMapping(value ="/list/gce-version",method=RequestMethod.GET)
+	public ModelAndView toGceVersionList(ModelAndView mav,HttpServletRequest request){
+		mav.setViewName("/cloudgce/gce_version_list");
+		return mav;
+	}
 	
 	/**
 	  * @Title: toGceClusterDetail
