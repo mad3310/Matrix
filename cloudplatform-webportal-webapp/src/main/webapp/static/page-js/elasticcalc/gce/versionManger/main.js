@@ -138,7 +138,7 @@ define(function(require) {
 	asyncData(1);
 
 	setInterval(function() {
-		if($("#tby td[status=2]").length>0){
+		if($("#tby td[status=2]").length>0 || $("#tby td[status=10]").length>0){
 			asyncData(cn.currentPage);
 		}
 	}, 5000);

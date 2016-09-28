@@ -822,6 +822,8 @@ function addSltOpt(array, obj) {
 			opt.html("严重危险");
 		} else if (array[i] == 15) {
 			opt.html("禁用");
+		}else if (array[i] == 19) {
+			opt.html("删除失败");
 		}
 		opt.attr({
 					"value" : array[i]
