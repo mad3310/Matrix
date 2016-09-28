@@ -18,27 +18,181 @@
 		<result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+		<association property="hcluster" javaType="Hcluster">
+			<result column="HCLUSTER_NAME_ALIAS" property="hclusterNameAlias" />
+		</association>
+		<association property="createUserModel" javaType="User">
+			<result column="USERNAME" property="userName" />
+		</association>
 	</resultMap>
 	<sql id="Base_Column_List">
-		ID, CLUSTER_NAME, SST_PASSWORD, HCLUSTER_ID, ADMIN_USER,
-		ADMIN_PASSWORD,
-		GCE_ID,
-		GCE_PACKAGE_ID, STATUS, DELETED, CREATE_TIME,
-		CREATE_USER, UPDATE_TIME, UPDATE_USER
+		CLUSTER.ID, CLUSTER.CLUSTER_NAME, CLUSTER.SST_PASSWORD, CLUSTER.HCLUSTER_ID, CLUSTER.ADMIN_USER,
+		CLUSTER.ADMIN_PASSWORD,
+		CLUSTER.GCE_ID,
+		CLUSTER.GCE_PACKAGE_ID, CLUSTER.STATUS, CLUSTER.DELETED, CLUSTER.CREATE_TIME,
+		CLUSTER.CREATE_USER, CLUSTER.UPDATE_TIME, CLUSTER.UPDATE_USER
 	</sql>
-
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id !=null  ">
+				and CLUSTER.ID=#{id}
+			</if>
+			<if test="clusterName != null  and clusterName != '' and clusterName != 'null'">
+				and CLUSTER.CLUSTER_NAME like CONCAT('%',#{clusterName},'%') escape '^'
+			</if>
+			<if test="sstPassword != null  and sstPassword != ''">
+				and CLUSTER.SST_PASSWORD=#{sstPassword}
+			</if>
+			<if test="hclusterId != null  and hclusterId != ''  ">
+				and CLUSTER.HCLUSTER_ID=#{hclusterId}
+			</if>
+			<if test="adminUser != null  and adminUser != ''  ">
+				and CLUSTER.ADMIN_USER=#{adminUser}
+			</if>
+			<if test="adminPassword != null  and adminPassword != ''  ">
+				and CLUSTER.ADMIN_PASSWORD=#{adminPassword}
+			</if>
+			<if test="gceId != null  and gceId != ''  ">
+				and CLUSTER.GCE_ID=#{gceId}
+			</if>
+			<if test="gcePackageId != null  and gcePackageId != ''  ">
+				and CLUSTER.GCE_PACKAGE_ID=#{gcePackageId}
+			</if>
+			<if test="status != null  and status != ''  ">
+				and CLUSTER.STATUS=#{status}
+			</if>
+			<if test="deleted != null  and deleted != ''  ">
+				and CLUSTER.DELETED=#{deleted}
+			</if>
+			<if test="createTime != null  and createTime != ''  ">
+				and CLUSTER.CREATE_TIME=#{createTime}
+			</if>
+			<if test="updateTime != null  and updateTime != ''  ">
+				and CLUSTER.UPDATE_TIME=#{updateTime}
+			</if>
+			<if test="createUser != null  and createUser != ''  ">
+				and CLUSTER.CREATE_USER=#{createUser}
+			</if>
+			<if test="updateUser != null  and updateUser != ''  ">
+				and CLUSTER.UPDATE_USER=#{updateUser}
+			</if>
+		</trim>
+	</sql>
+	<sql id="Example_Page_Where_Clause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="params != null and params.id !=null  ">
+				and CLUSTER.ID=#{params.id}
+			</if>
+			<if test="params != null and params.clusterName != null  and params.clusterName != ''  and params.clusterName != 'null'">
+				and CLUSTER.CLUSTER_NAME like CONCAT('%',#{params.clusterName},'%') escape '^'
+			</if>
+			<if test="params != null and params.sstPassword != null  and params.sstPassword != ''">
+				and CLUSTER.SST_PASSWORD=#{params.sstPassword}
+			</if>
+			<if test="params != null and params.hclusterId != null  and params.hclusterId != ''  ">
+				and CLUSTER.HCLUSTER_ID=#{params.hclusterId}
+			</if>
+			<if test="params != null and params.adminUser != null  and params.adminUser != ''  ">
+				and CLUSTER.ADMIN_USER=#{params.adminUser}
+			</if>
+			<if test="params != null and params.adminPassword != null  and params.adminPassword != ''  ">
+				and CLUSTER.ADMIN_PASSWORD=#{params.adminPassword}
+			</if>
+			<if test="params != null and params.gceId != null  and params.gceId != ''  ">
+				and CLUSTER.GCE_ID=#{params.gceId}
+			</if>
+			<if test="params != null and params.gcePackageId != null  and params.gcePackageId != ''  ">
+				and CLUSTER.GCE_PACKAGE_ID=#{params.gcePackageId}
+			</if>
+			<if test="params != null and params.status != null  and params.status != ''  ">
+				and CLUSTER.STATUS=#{params.status}
+			</if>
+			<if test="params != null and params.deleted != null  and params.deleted != ''  ">
+				and CLUSTER.DELETED=#{params.deleted}
+			</if>
+			<if test="params != null and params.createTime != null  and params.createTime != ''  ">
+				and CLUSTER.CREATE_TIME=#{params.createTime}
+			</if>
+			<if test="params != null and params.updateTime != null  and params.updateTime != ''  ">
+				and CLUSTER.UPDATE_TIME=#{params.updateTime}
+			</if>
+			<if test="params != null and params.createUser != null  and params.createUser != ''  ">
+				and CLUSTER.CREATE_USER=#{params.createUser}
+			</if>
+			<if test="params != null and params.updateUser != null  and params.updateUser != ''  ">
+				and CLUSTER.UPDATE_USER=#{params.updateUser}
+			</if>
+		</trim>
+	</sql>
 	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
-		<include refid="Base_Column_List" />
-		from EC_GCE_CLUSTER
-		where ID = #{id,jdbcType=BIGINT}
+		<include refid="Base_Column_List" />,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		from EC_GCE_CLUSTER CLUSTER
+		left join WEBPORTAL_USER u on CLUSTER.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on CLUSTER.HCLUSTER_ID = h.ID
+		where CLUSTER.ID = #{id,jdbcType=BIGINT}
 	</select>
 	<select id="selectByName" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
 		select
+		<include refid="Base_Column_List" />,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		from EC_GCE_CLUSTER CLUSTER
+		left join WEBPORTAL_USER u on CLUSTER.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on CLUSTER.HCLUSTER_ID = h.ID
+		where CLUSTER.CLUSTER_NAME=#{clusterName,jdbcType=VARCHAR}
+	</select>
+	<select id="selectByMap" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
 		<include refid="Base_Column_List" />
-		from EC_GCE_CLUSTER
-		where CLUSTER_NAME=#{clusterName,jdbcType=VARCHAR}
+		,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		from EC_GCE_CLUSTER CLUSTER
+		left join WEBPORTAL_USER u on CLUSTER.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on CLUSTER.HCLUSTER_ID = h.ID
+		<include refid="Example_Where_Clause" />
+		<if test="userName != null and userName != ''">
+			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
+		</if>
+		<if test="hclusterName != null and hclusterName != ''">
+			and h.HCLUSTER_NAME like CONCAT('%',#{hclusterName},'%') escape '^'
+		</if>
+	</select>
+	<!-- 分页：根据条件查询 -->
+	<select id="selectPageByMap" resultMap="BaseResultMap"
+		parameterType="com.letv.common.dao.QueryParam">
+		select
+		<include refid="Base_Column_List" />
+		,u.USERNAME,h.HCLUSTER_NAME_ALIAS
+		from EC_GCE_CLUSTER CLUSTER
+		left join WEBPORTAL_USER u on CLUSTER.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on CLUSTER.HCLUSTER_ID = h.ID
+		<include refid="Example_Page_Where_Clause" />
+		<if test="params != null and params.userName != null  and params.userName != ''">
+			and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+		</if>
+		<if test="params != null and params.hclusterName != null  and params.hclusterName != ''">
+			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'
+		</if>
+		ORDER BY CLUSTER.CREATE_TIME DESC
+		<if test="page != null">
+      		limit #{page.startRowPosition},#{page.recordsPerPage}
+    	</if>
+	</select>
+	<!-- 列表总数 -->
+	<select id="selectByMapCount" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		select count(1) from EC_GCE_CLUSTER CLUSTER
+		left join WEBPORTAL_USER u on CLUSTER.CREATE_USER = u.ID
+		left join WEBPORTAL_HCLUSTER h on CLUSTER.HCLUSTER_ID = h.ID
+		<include refid="Example_Where_Clause" />
+		<if test="userName != null  and userName != ''">
+			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
+		</if>
+		<if test="hclusterName != null  and hclusterName != ''">
+			and h.HCLUSTER_NAME like CONCAT('%',#{hclusterName},'%') escape '^'
+		</if>
 	</select>
 	<insert id="insert" parameterType="EcGceCluster"
 		useGeneratedKeys="true" keyProperty="id">
@@ -98,4 +252,9 @@
 		</set>
 		where `ID` =#{id}
 	</update>
+	<!-- 物理删除 -->
+	<delete id="delete" parameterType="EcGceCluster">
+		delete CLUSTER from EC_GCE_CLUSTER CLUSTER
+		<include refid="Example_Where_Clause" />
+	</delete>
 </mapper>

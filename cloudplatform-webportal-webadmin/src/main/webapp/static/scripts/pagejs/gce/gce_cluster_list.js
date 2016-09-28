@@ -7,7 +7,7 @@ $(function(){
 	page_init();
 	
 	/*动态加载界面下拉列表值*/
-	var sltArray = [1,2,3,5,7,8,9,10,11,12,13,14];
+	var sltArray = [1,2,3,5,7,8,9,10,11,12,13,14,19];
 	addSltOpt(sltArray,$("#containerStatus"));
 	
 	$(document).on('click', 'th input:checkbox' , function(){
@@ -94,6 +94,7 @@ $(function(){
 	$("#mclusterClearSearch").click(function(){
 		var clearList = ["containerName","Physicalcluster","containeruser","containerStatus"];
 		clearSearch(clearList);
+		queryByPage();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
@@ -120,7 +121,7 @@ function queryByPage() {
 		cache:false,
 		type : "get",
 		//url : "/mcluster/" + currentPage + "/" + recordsPerPage + "/" + mclusterName,
-		url : queryUrlBuilder("/gce/cluster",queryCondition),
+		url : queryUrlBuilder("/ecgce/cluster",queryCondition),
 		dataType : "json", /*这句可用可不用，没有影响*/
 		success : function(data) {
 			removeLoading();
@@ -146,15 +147,6 @@ function queryByPage() {
 				} else {
 					var td3 = $("<td class='hidden-480'> </td>");
 				} 
-				var type = "";
-				if(array[i].type) {
-					type="后台创建";
-				} else {
-					type = "系统创建";
-				}
-				var td4 = $("<td class='hidden-480'>"
-						+ type
-						+ "</td>");
 				
 				var userName='system';
 				if(array[i].createUserModel) {
@@ -166,15 +158,9 @@ function queryByPage() {
 				var td6 = $("<td class='hidden-480'>"
 						+ date('Y-m-d H:i:s',array[i].createTime)
 						+ "</td>");
-				if(array[i].status == 2){
-					var td7 = $("<td>"
-							+"<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
-							+"<i class=\"ace-icon fa fa-spinner fa-spin green bigger-125\"/>"
-							+"创建中...</a>"
-							+ "</td>");
-				}else if(array[i].status == 3){
-					var td7 = $("<td>"
-							+"<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
+				
+				if(array[i].status == 3){
+					var td7 = $("<td class='text-danger'>"
 							+translateStatus(array[i].status)
 							+"</a>"
 							+ "</td>");
@@ -184,7 +170,8 @@ function queryByPage() {
 							+ "</td>");
 					
 				}
-				var btnIcons=['start','stop','restart','extend'];
+				//var btnIcons=['start','stop','restart','extend'];
+				var btnIcons=[];
 				var td8=$(transStateHtml(btnIcons,array[i].status));	
 				if(array[i].status == 3||array[i].status == 4||array[i].status == 14){
 					var tr = $("<tr class=\"default-danger\"></tr>");
@@ -193,11 +180,8 @@ function queryByPage() {
 				}else{
 					var tr = $("<tr></tr>");
 				}
-				var td9 = $("<td>"
-						+ array[i].memorySize
-						+ "</td>");
 				
-				tr.append(td1).append(td2).append(td3).append(td9).append(td4).append(td5).append(td6).append(td7).append(td8);
+				tr.append(td1).append(td2).append(td3).append(td5).append(td6).append(td7).append(td8);
 				tr.appendTo(tby);
 			}//循环json中的数据 
 			
@@ -301,14 +285,14 @@ function pageControl() {
 	});
 }
 
-	function searchAction(){
+function searchAction(){
 		$('#nav-search-input').bind('keypress',function(event){
 	        if(event.keyCode == "13")    
 	        {
 	        	queryByPage();
 	        }
 	    });
-	}
+}
 	
 //创建Container集群表单验证
 function formValidate() {

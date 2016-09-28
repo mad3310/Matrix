@@ -208,7 +208,7 @@
 		left join WEBPORTAL_HCLUSTER h on g.HCLUSTER_ID = h.ID
 		<include refid="Example_Where_Clause" />
 		<if test="userName != null  and userName != ''">
-			and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
+			and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
 		</if>
 		<if test="hclusterName != null  and hclusterName != ''">
 			and h.HCLUSTER_NAME like CONCAT('%',#{params.hclusterName},'%') escape '^'

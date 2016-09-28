@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import com.letv.common.paging.impl.Page;
 import com.letv.common.result.ResultObject;
 import com.letv.common.util.HttpUtil;
 import com.letv.common.util.StringUtil;
+import com.letv.portal.annotation.submit.AvoidDuplicateSubmit;
 import com.letv.portal.enumeration.HclusterStatus;
 import com.letv.portal.model.HclusterModel;
 import com.letv.portal.model.adminoplog.AoLogType;
@@ -92,7 +94,8 @@ public class HclusterController {
 	 * @return
 	 */
 	@RequestMapping(value = "/{hclusterId}", method = RequestMethod.GET)
-	public @ResponseBody ResultObject list(@PathVariable Long hclusterId) {
+	@AvoidDuplicateSubmit(needSaveToken=true)
+	public @ResponseBody ResultObject list(HttpServletRequest request, HttpServletResponse response, @PathVariable Long hclusterId) {
 		ResultObject obj = new ResultObject();
 		obj.setData(this.hclusterService.selectByHclusterId(hclusterId));
 		return obj;

@@ -1,7 +1,15 @@
 <%@ page language="java" pageEncoding="UTF-8"%>  
 <%@page import="com.letv.common.util.ConfigUtil"%>
 <script>
-
+	$(function(){
+		if($(".user span").text()){
+			$(".user").show();
+			$(".login").hide();
+		}else{
+			$(".user").hide();
+			$(".login").show();
+		}
+	});
 </script>
 <style>
   body{font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei";}
@@ -19,10 +27,12 @@
       <li><a class="letv-logo" href="http://www.letvcloud.com/" target="_blank"><img src="${ctx}/static/img/letv-logo5.png" style="height:66px;width:232px;"></a></li>
     </ul>
     <ul class="ul_horizon pull-right" style="margin-top:30px;font-size:14px;">
-      <li><a class="index_a" href="" ><i class="fa fa-home"></i> 首页</a></li>
-      <li><a  class="index_a" href='<%=ConfigUtil.getString("oauth.auth.http") + "/index?redirect_uri=" + ConfigUtil.getString("webportal.local.http") +"/oauth/callback"  %>' ><i class="fa fa-key"></i> 登录</a></li>
-      <li><a class="reg_a" href='<%=ConfigUtil.getString("oauth.auth.http") + "/reg.jsp?redirect_uri=" + ConfigUtil.getString("webportal.local.http") +"/oauth/callback"  %>'><i class="fa fa-tag"></i> 注册</a></li>
-      <li><a class="index_a" href="${ctx}/helpCenter/helpCenter.jsp" ><i class="fa fa-magic"></i> 帮助中心</a></li>
+      <li class="index_a"><a href="" ><i class="fa fa-home"></i> 首页</a></li>
+      <li class="console"><a href='<%=ConfigUtil.getString("oauth.auth.http") + "/index?redirect_uri=" + ConfigUtil.getString("webportal.local.http") +"/oauth/callback"  %>' ><i class="fa fa-desktop"></i> 控制台</a></li>
+      <li class="user"><span href="" ><i class="fa fa-user"></i> ${sessionScope.userSession.userName}</span></li>   
+      <li class="login"><a href='<%=ConfigUtil.getString("oauth.auth.http") + "/index?redirect_uri=" + ConfigUtil.getString("webportal.local.http") +"/oauth/callback"  %>' ><i class="fa fa-key"></i> 登录</a></li>
+      <li class="reg_a"><a href='<%=ConfigUtil.getString("oauth.auth.http") + "/reg.jsp?redirect_uri=" + ConfigUtil.getString("webportal.local.http") +"/oauth/callback"  %>'><i class="fa fa-tag"></i> 注册</a></li>
+      <li class="index_a"><a href="${ctx}/helpCenter/helpCenter.jsp" ><i class="fa fa-magic"></i> 帮助中心</a></li>
     </ul>
     
   </div>

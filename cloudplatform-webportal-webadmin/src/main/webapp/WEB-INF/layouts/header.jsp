@@ -18,9 +18,9 @@
 		<div class="navbar-header pull-left">
 			<a href="#" class="navbar-brand logo"> 
 				<!--  <img class="hidden-xs hidden-sm" src="${ctx}/static/image/site.logo-sm.png" alt="paas云管理平台" style="max-width:50px;margin-top:-5px;"/>-->
-				<img class="hidden-xs hidden-sm" src="http://i3.letvimg.com/lc04_lecloud/201601/12/10/22/letvcloud-logo.png" alt="paas云管理平台" style="margin-top:-5px;"/>  
+				<img class="hidden-xs hidden-sm" src="http://i3.letvimg.com/lc04_lecloud/201601/12/10/22/letvcloud-logo.png" alt="Matrix管理系统" style="margin-top:-5px;"/>  
 				
-				<b><small>PAAS portal</small></b> 
+				<b><small>Matrix管理系统</small></b> 
 				<span><small style="font-size: 25%;">beta</small></span>
 			</a>
 		</div>

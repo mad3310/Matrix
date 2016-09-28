@@ -108,6 +108,10 @@ public class DbUserProxyImpl extends BaseProxyImpl<DbUserModel> implements
 		List<DbUserModel> oldUsers = this.dbUserService.selectByDbIdAndUsername(dbUserModel.getDbId(), dbUserModel.getUsername());
 		boolean flag = true;
 		Integer maxConcurrency = dbUserModel.getMaxConcurrency();
+		if(null != oldUsers && oldUsers.size()>0) {//如果老用户有备注，新用户也添加备注/密码
+			dbUserModel.setDescn(oldUsers.get(0).getDescn());
+			dbUserModel.setPassword(oldUsers.get(0).getPassword());
+		}
 		for (DbUserModel dbUser : oldUsers) {
 			String ip = dbUser.getAcceptIp();
 			for (int i = 0; i < arryIps.size(); i++) {
@@ -304,6 +308,17 @@ public class DbUserProxyImpl extends BaseProxyImpl<DbUserModel> implements
 			}
 
 		}
+	}
+	
+	public boolean checkIp(Long dbId, String ip) {
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put("dbId", dbId);
+		params.put("acceptIp", ip);
+		List<DbUserModel> realUsers = this.selectByMap(params);
+		if(!realUsers.isEmpty() && realUsers.size()>1) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

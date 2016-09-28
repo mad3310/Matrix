@@ -583,6 +583,11 @@ public class MemcachedCacheImpl implements IMemcachedCache
 		boolean result = getCacheClient(key).add(key,value,expiry);
 		return result;
 	}
+	
+	public boolean delete(String key) {
+		boolean result = getCacheClient(key).delete(key);
+		return result;
+	}
 
 
 	public boolean replace(String key, Object value)

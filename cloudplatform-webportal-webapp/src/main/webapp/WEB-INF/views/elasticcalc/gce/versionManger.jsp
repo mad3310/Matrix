@@ -39,10 +39,12 @@
 		<table class="table table-hover table-se">
 			<thead>
 			<tr>
-				<th width="25%">版本号</th>
-				<th width="25%">状态</th>
-				<th width="25%">创建时间</th>
-				<th width="25%">操作</th>
+				<th width="10%">版本号</th>
+				<th width="10%">状态</th>
+				<th width="20%">创建时间</th>
+				<th width="20%">备注</th>
+				<th width="20%">地址</th>
+				<th width="20%">操作</th>
 			</tr>
 			</thead>
 			<tbody id="tby">
@@ -82,7 +84,7 @@
 						<label class="col-sm-4 control-label">版本号： </label>
 						<div class="col-sm-8 row">
 							<div class="col-sm-12">
-								<input name="version" class="form-control input-radius-2" type="text" autocomplete="off"/>
+								<input name="version" class="form-control input-radius-2" type="text" autocomplete="off" placeholder="输入格式形如 10.12.12.1"/>
 							</div>
 						</div>
 					</div>
@@ -90,7 +92,15 @@
 						<label class="col-sm-4 control-label">上传本地镜像： </label>
 						<div class="col-sm-8 row">
 							<div class="col-sm-12">
-								<input type="file" name="file" autocomplete="off"/>
+								<input id="fileUpload" type="file" name="file" autocomplete="off" placeholder="上传文件必须是小于500M的zip文件"/>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">备注： </label>
+						<div class="col-sm-8 row">
+							<div class="col-sm-12">
+								<textarea name="descn" class="form-control input-radius-2" autocomplete="off" placeholder="备注描述不能超过100位"></textarea>
 							</div>
 						</div>
 					</div>
@@ -113,7 +123,7 @@
 				</div>
 				<div class="modal-footer">
 					<button id="uploadImageSubmit" type="submit" class="btn btn-primary">确定</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button id="cancelModal" type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 				</div>
 			</form>
 		</div>

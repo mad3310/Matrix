@@ -61,6 +61,7 @@ $(function(){
 	$("#mclusterClearSearch").click(function(){
 		var clearList = ["containerName","ipAddr","containerStatus"];
 		clearSearch(clearList);
+		queryByPage();
 	});
 	
 	enterKeydown($(".page-header > .input-group input"),queryByPage);
@@ -77,14 +78,14 @@ function queryByPage() {
 			'ipAddr':ipAddr,
 			/*'createTime':createTime,*/
 			'status':status
-		}
+		};
 	
 	$("#tby tr").remove();
 	getLoading();
 	$.ajax({
 		cache:false,
 		type : "get",
-		url : queryUrlBuilder("/gce/container",queryCondition),
+		url : queryUrlBuilder("/ecgce/container",queryCondition),
 		dataType : "json", /*这句可用可不用，没有影响*/
 		success : function(data) {
 			removeLoading();
@@ -101,7 +102,7 @@ function queryByPage() {
 								+"</label>"
 							+"</td>");
 				var td2 = $("<td>"
-						+  "<a class=\"link\"  href=\"/detail/gce/cluster/" + array[i].id+"\">"+array[i].containerName+"</a>"
+						+array[i].containerName
 						+ "</td>");
 				if(array[i].gceCluster){
 					var td3 = $("<td class='hidden-480'>"
@@ -110,13 +111,15 @@ function queryByPage() {
 				} else {
 					var td3 = $("<td class='hidden-480'>-</td>");
 				} 
-				if(array[i].hcluster){
-					var td4 =$("<td class='hidden-480'>"
-									+ "<a class=\"link\" href='#'>"+array[i].hcluster.hclusterNameAlias+"</a>"
-									+ "</td>");//href=\"/detail/hcluster/" + array[i].gcecluster.hclusterId+"\"
+				
+				if(array[i].gceCluster && array[i].array[i].gceCluster){
+					var td4 = $("<td class='hidden-480'>"
+							+ "<a class=\"link\" href=\"/detail/hcluster/" + array[i].gceCluster.hclusterId+"\">"+array[i].hcluster.hclusterNameAlias+"</a>"
+							+ "</td>");
 				} else {
-					var td4= $("<td class='hidden-480'>-</td>");
-				}
+					var td4 = $("<td class='hidden-480'> </td>");
+				}  
+				
 				var td5 = $("<td>"
 						+ array[i].ipAddr
 						+ "</td>");

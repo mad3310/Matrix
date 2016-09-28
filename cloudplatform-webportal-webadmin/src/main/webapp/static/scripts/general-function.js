@@ -203,6 +203,9 @@ var Status={
 			hcluster:{		
 				'0':'未启用',
 				'1':'启用'
+			},
+			gceVersion:{
+				'0':'未部署'
 			}
 };
 
@@ -344,7 +347,9 @@ function translateStatus(status, resourceType) {
 		return "<font color=\"red\">严重危险</font>";
 	} else if (status == 15) {
 		return "禁用";
-	} else if (status == 'FAILD') {
+	} else if (status == 19) {
+		return "删除失败";
+	}else if (status == 'FAILD') {
 		return "备份失败";
 	} else if (status == 'SUCCESS') {
 		return "备份成功";
@@ -403,6 +408,7 @@ function stateTransform(status,type){
 		"13":"<font color='orange'>危险</font>",
 		"14":"<font color='red'>严重危险</font>",
 		"15":"禁用",
+		"19":"删除失败",
 		"FAILD":"备份失败",
 		"SUCCESS":"备份成功",
 		"BUILDING":"备份中...",
@@ -424,20 +430,21 @@ function stateTransform(status,type){
 }
 function containerClusterOs(status,type,os){
 	var rds={
-		"1":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":1,"compress":1,"backup":1},
-		"2":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"3":{"start":0,"restart":0,"stop":0,"delete":1,"create":1,"expand":0,"compress":0,"backup":0},
-		"5":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"7":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"8":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"10":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"9":{"start":1,"restart":1,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"13":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"14":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"15":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"16":{"start":1,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"17":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0},
-		"18":{"start":0,"restart":0,"stop":0,"delete":0,"create":0,"expand":0,"compress":0,"backup":0},
+		"1":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":1,"compress":1,"backup":1,"changeUser":1},
+		"2":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"3":{"start":0,"restart":0,"stop":0,"delete":1,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"5":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"7":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeuser":1},
+		"8":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"10":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"9":{"start":1,"restart":1,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"13":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"14":{"start":0,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"15":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"16":{"start":1,"restart":1,"stop":1,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"17":{"start":0,"restart":0,"stop":0,"delete":0,"create":1,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"18":{"start":0,"restart":0,"stop":0,"delete":0,"create":0,"expand":0,"compress":0,"backup":0,"changeUser":1},
+		"19":{"start":0,"restart":0,"stop":0,"delete":0,"create":0,"expand":0,"compress":0,"backup":0,"changeUser":0},
 	};
 	var rdsContainer={
 		"1":{"start":0,"stop":0,"delete":0,"compress":1},
@@ -469,7 +476,9 @@ function containerOsHtml(type,os){
 		"all_backUp":"<a class='red' href='#' onclick='' onfocus='this.blur();'  title='全量备份' data-toggle='tooltip' data-placement='right'>"
 								+"<i class='ace-icon fa fa-trash-o bigger-120'></i></a>",
 		"add_backUp":"<a class='red' href='#' onclick='' onfocus='this.blur();'  title='增量备份' data-toggle='tooltip' data-placement='right'>"
-									+"<i class='ace-icon fa fa-trash-o bigger-120'></i></a>"
+									+"<i class='ace-icon fa fa-trash-o bigger-120'></i></a>",
+		"changeUser":"<a class='green' href='#' onclick='changeUserMcluster(this)' onfocus='this.blur();' title='更改用户' data-toggle='tooltip' data-placement='right'>"
+										+"<i class='ace-icon fa fa-user-md bigger-130'></i></a>"														
 	};
 	var rdsContainerHtml={
 		"start":"<a class='green' href='#' onclick='startContainer(this)' onfocus='this.blur();' title='启动' data-toggle='tooltip' data-placement='right'>"
@@ -813,6 +822,8 @@ function addSltOpt(array, obj) {
 			opt.html("严重危险");
 		} else if (array[i] == 15) {
 			opt.html("禁用");
+		}else if (array[i] == 19) {
+			opt.html("删除失败");
 		}
 		opt.attr({
 					"value" : array[i]

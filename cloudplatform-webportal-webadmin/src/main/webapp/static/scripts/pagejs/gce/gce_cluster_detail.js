@@ -1,20 +1,24 @@
-$(function(){
-	//隐藏搜索框
-	$('#nav-search').addClass("hidden");
-	queryContainer();
-})
-function queryContainer(){
+var currentPage = 1; //第几页 
+var recordsPerPage = 15; //每页显示条数
+
+function queryByPage(){
 	$("#tby tr").remove();
+	var queryCondition = {
+			'currentPage':currentPage,
+			'recordsPerPage':recordsPerPage,
+			'clusterId':$("#gceClusterId").val()
+		};
 	getLoading();
 	$.ajax({ 
 		cache:false,
 		type : "get",
-		url : "/gce/container/"+$("#gceClusterId").val(),
+		url : queryUrlBuilder("/ecgce/container",queryCondition),
 		dataType : "json", 
 		success : function(data) {
 			removeLoading();
 			if(error(data)) return;
-			var array = data.data;
+			var array = data.data.data;
+			var totalPages = data.data.totalPages;
 			var tby = $("#tby");
 //			if(array.length>0){
 //				if(array[0].gceCluster!=null){
@@ -99,6 +103,15 @@ function queryContainer(){
 					tr.append(td0).append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td8);
 					tr.appendTo(tby);
 				}
+				if (totalPages <= 1) {
+					$("#pageControlBar").hide();
+				} else {
+					$("#pageControlBar").show();
+					$("#totalPage_input").val(totalPages);
+					$("#currentPage").html(currentPage);
+					$("#totalRows").html(data.data.totalRecords);
+					$("#totalPage").html(totalPages);
+				}
 			}
 			/*初始化tooltip*/
 //			$('[data-toggle = "tooltip"]').tooltip();
@@ -152,3 +165,65 @@ function stopContainer(obj){
 	}
 	confirmframe("关闭container","关闭container将不能提供服务,再次启动需要十几分钟!","您确定要关闭?",stopCmd);
 }
+
+function pageControl() {
+	// 首页
+	$("#firstPage").bind("click", function() {
+		currentPage = 1;
+		queryByPage();
+	});
+
+	// 上一页
+	$("#prevPage").click(function() {
+		if (currentPage == 1) {
+			$.gritter.add({
+				title: '警告',
+				text: '已到达首页',
+				sticky: false,
+				time: '5',
+				class_name: 'gritter-warning'
+			});
+	
+			return false;
+			
+		} else {
+			currentPage--;
+			queryByPage();
+		}
+	});
+
+	// 下一页
+	$("#nextPage").click(function() {
+		if (currentPage == $("#totalPage_input").val()) {
+			$.gritter.add({
+				title: '警告',
+				text: '已到达末页',
+				sticky: false,
+				time: '5',
+				class_name: 'gritter-warning'
+			});
+	
+			return false;
+			
+		} else {
+			currentPage++;
+			queryByPage();
+		}
+	});
+
+	// 末页
+	$("#lastPage").bind("click", function() {
+		currentPage = $("#totalPage_input").val();
+		queryByPage();
+	});
+}
+
+function page_init(){	
+	//隐藏搜索框
+	$('#nav-search').addClass("hidden");
+	queryByPage();
+
+	pageControl();
+}
+
+page_init();

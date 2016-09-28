@@ -289,8 +289,8 @@ public class SlbProxyImpl extends BaseProxyImpl<SlbServer> implements
 			this.slbClusterService.updateBySelective(cluster);
 			return;
 		}
-		String result = this.pythonService.checkMclusterStatus(cluster.getClusterName(),host.getHostIp(),host.getName(),host.getPassword());
-		Map map = CommonServiceUtils.transResult(result);
+		ApiResultObject result = this.pythonService.checkMclusterStatus(cluster.getClusterName(),host.getHostIp(),host.getName(),host.getPassword());
+		Map map = CommonServiceUtils.transResult(result.getResult());
 		if(map.isEmpty()) {
 			cluster.setStatus(MclusterStatus.CRISIS.getValue());
 			this.slbClusterService.updateBySelective(cluster);
@@ -307,7 +307,7 @@ public class SlbProxyImpl extends BaseProxyImpl<SlbServer> implements
 			return;
 		}
 
-		if(null !=result && result.contains("not existed")){
+		if(null !=result.getResult() && result.getResult().contains("not existed")){
 			this.slbClusterService.delete(cluster);
 			return;
 		}

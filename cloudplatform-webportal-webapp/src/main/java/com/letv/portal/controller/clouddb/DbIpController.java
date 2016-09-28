@@ -47,6 +47,20 @@ public class DbIpController {
 		obj.setData(this.dbUserService.selectIpsFromUser(dbId));
 		return obj;
 	}
+	/**
+	 * 查询ip是否被其他数据库用户使用，删除之前检查
+	 * @param dbId
+	 * @param obj
+	 * @return
+	 */
+	@RequestMapping(value="/checkIp", method=RequestMethod.POST)   
+	public @ResponseBody ResultObject checkIp(Long dbId, String ip, ResultObject obj) {
+		if(null == dbId || null == ip) {
+			throw new ValidateException("参数不合法");
+		}
+		obj.setData(this.dbUserService.checkIp(dbId, ip));
+		return obj;
+	}
 	@RequestMapping(method=RequestMethod.POST)   
 	public @ResponseBody ResultObject save(Long dbId,String ips,ResultObject obj) {
 		if(null == dbId || StringUtils.isNullOrEmpty(ips)) {

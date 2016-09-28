@@ -102,8 +102,8 @@ public class MonitorProxyImpl implements IMonitorProxy{
 	}
 	@Override
 	public void collectClusterServiceData() {
-		List<SlbCluster> slbClusters = this.slbClusterService.selectByMap(null);
-		List<GceCluster> gceClusters = this.gceClusterService.selectByMap(null);
+		List<SlbCluster> slbClusters = this.slbClusterService.selectValidCluster();
+		List<GceCluster> gceClusters = this.gceClusterService.selectValidCluster();
 		List<MclusterModel> mclusters = this.mclusterService.selectValidMclusters();
 
 		Map<String,Object> indexParams = new  HashMap<String,Object>();

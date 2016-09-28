@@ -5,6 +5,8 @@
  */
 package com.letv.portal.service.elasticcalc.gce;
 
+import java.util.Map;
+
 import com.letv.portal.model.elasticcalc.gce.EcGceContainer;
 import com.letv.portal.service.IBaseService;
 
@@ -16,5 +18,9 @@ import com.letv.portal.service.IBaseService;
  */
 public interface IEcGceContainerService extends
 		IBaseService<EcGceContainer> {
+
+	void deleteBySelective(Map<String, Object> map);
+
+	void updateBySelective(Map<String, Object> map);
 
 }

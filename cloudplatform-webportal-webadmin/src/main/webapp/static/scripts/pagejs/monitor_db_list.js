@@ -124,7 +124,7 @@ function queryMcluster(queryCondition,updateflag) {
 							+ "</td>");
 				var td5 = $("<td name=\"mclusterControl\">"
 						//+ "<a href=\"/monitor/"+array[i].ipAddr+"/db/status\" target=\"_blank\">查看详情</a>"
-						+ "<a class=\"link\" href=\"/detail/mcluster/monitor/list/" + array[i].ipAddr + "/3\">查看详情</a>"
+						+ "<a target='_blank' class=\"link\" href=\"/detail/mcluster/monitor/list/" + array[i].ipAddr + "/3\">查看详情</a>"
 						+ "</td>");
 				if(array[i].status == 0 ||array[i].status == 5||array[i].status == 13){
 					var tr = $("<tr class=\"warning\"></tr>");
@@ -144,7 +144,8 @@ function queryMcluster(queryCondition,updateflag) {
 				var tr4 = $("<tr class=\"default-danger disableClusterTag\"></tr>");
 				var tr5 = $("<tr class=\"default-danger timeoutClusterTag\"></tr>");
 				var tr6 = $("<tr class=\"default-danger exceptionClusterTag\"></tr>");
-				tby.prepend(tr1).prepend(tr2).prepend(tr3).prepend(tr4).prepend(tr5).prepend(tr6);
+				var tr7 = $("<tr class=\"default-danger structError\"></tr>");
+				tby.prepend(tr1).prepend(tr2).prepend(tr3).prepend(tr4).prepend(tr5).prepend(tr6).prepend(tr7);
 				updateMclusterStatus();//查询集群状态
 			}
 		}
@@ -176,7 +177,7 @@ function getMclusterStatus(ip,obj) {
 			removeLoading();
 			if(error(data)) return;
 			var result = data.data.result;
-	
+			
 			$(obj).find('[name="mclusterStatus"]').attr("status",result);
 			if(result == "0"){
 				$(obj).removeClass();
@@ -207,13 +208,19 @@ function getMclusterStatus(ip,obj) {
 				$(obj).find('[name="mclusterStatus"]').html("<a>获取数据超时</a>");
 				$(obj).addClass("default-danger timeoutCluster");
 				$(obj).parent().find(".timeoutClusterTag").after($(obj));
-				addControlButton();
+				addNormalButton();
 			}else if(result == "5"){
 				$(obj).removeClass();
 				$(obj).find('[name="mclusterStatus"]').html("<a>解析出错，请联系管理员</a>");
 				$(obj).addClass("default-danger timeoutCluster");
 				$(obj).parent().find(".exceptionClusterTag").after($(obj));
-				addControlButton();
+				addNormalButton();
+			}else if(result == "6"){
+				$(obj).removeClass();
+				$(obj).find('[name="mclusterStatus"]').html("<a>存在反例</a>");
+				$(obj).addClass("default-danger timeoutCluster");
+				$(obj).parent().find(".structError").after($(obj));
+				addNormalButton();
 			}
 			$('[data-toggle = "tooltip"]').tooltip();
 		}	

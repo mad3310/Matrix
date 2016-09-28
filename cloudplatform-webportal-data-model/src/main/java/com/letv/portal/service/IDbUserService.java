@@ -141,4 +141,19 @@ public interface IDbUserService extends IBaseService<DbUserModel> {
 	 */
 	public boolean isLegalDbUserName(String dbUserName, Long dbId);
 	
+	/**
+	 * 检查ip是否已被使用
+	 * @param dbId 数据库id
+	 * @param ip 
+	 * @return true-使用，false-未使用
+	 */
+	public boolean checkIp(Long dbId, String ip);
+	
+	/**
+	 * 根据dbId更新更新db用户表
+	 * @param mclusterId
+	 * @param userId
+	 */
+	void updateUserByDbId(Long mclusterId, Long userId);
+	
 }
