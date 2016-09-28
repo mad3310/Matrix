@@ -8,7 +8,7 @@ define(function(require) {
 	require("bootstrapValidator")($);
 	var common = require('../../../common');
 	var cn = new common();
-
+	window.lock = false;
 	/*初始化工具提示*/
 	cn.Tooltip('#serviceName');
 
@@ -92,7 +92,37 @@ define(function(require) {
 			}
 		});	
 	}
-
+	
+	//删除
+	$('#tby').delegate(".delete","click",function(){
+		var gceId = $("#gceId").val();
+		var packageId = $(this).parents("tr").attr("pakageId");
+			
+		cn.DeleteData("/ecgce/packages/"+packageId+"?gceId="+gceId, function(data){
+			if(data.result!=1){
+				cn.alertoolDanger("GCE删除失败",50000);
+			}else{
+				cn.alertoolSuccess("GCE删除中",50000);
+			}
+			asyncData(cn.currentPage);
+		});
+	});
+	//部署
+	$('#tby').delegate(".deploy","click",function(){
+		var gceId = $("#gceId").val();
+		var packageId = $(this).parents("tr").attr("pakageId");
+		$(this).removeClass("deploy");
+		window.lock = true;
+		cn.GetData("/ecgce/packages/deploy/"+packageId+"?gceId="+gceId, function(data){
+			window.lock = false;
+			if(data.result!=1){
+				cn.alertoolDanger("GCE部署失败",50000);
+			}else{
+				cn.alertoolSuccess("GCE开始部署，请等待",50000);
+			}
+			asyncData(cn.currentPage);
+		});
+	});
 	
 	//加载列表数据
 	function asyncData(page) {
@@ -104,7 +134,6 @@ define(function(require) {
 	}
 
 	gceInfoHandler.GceAjaxFormHandler(asyncData);
-	gceInfoHandler.GceBandEventHandler();
 	
 	asyncData(1);
 

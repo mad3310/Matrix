@@ -112,9 +112,9 @@ function queryByPage() {
 					var td3 = $("<td class='hidden-480'>-</td>");
 				} 
 				
-				if(array[i].hcluster){
+				if(array[i].gceCluster){
 					var td4 = $("<td class='hidden-480'>"
-							+ "<a class=\"link\" href=\"/detail/hcluster/" + array[i].hclusterId+"\">"+array[i].hcluster.hclusterNameAlias+"</a>"
+							+ "<a class=\"link\" href=\"/detail/hcluster/" + array[i].gceCluster.hclusterId+"\">"+array[i].gceCluster.clusterName+"</a>"
 							+ "</td>");
 				} else {
 					var td4 = $("<td class='hidden-480'> </td>");
