@@ -408,6 +408,7 @@ function stateTransform(status,type){
 		"13":"<font color='orange'>危险</font>",
 		"14":"<font color='red'>严重危险</font>",
 		"15":"禁用",
+		"19":"删除失败",
 		"FAILD":"备份失败",
 		"SUCCESS":"备份成功",
 		"BUILDING":"备份中...",
@@ -821,6 +822,8 @@ function addSltOpt(array, obj) {
 			opt.html("严重危险");
 		} else if (array[i] == 15) {
 			opt.html("禁用");
+		}else if (array[i] == 19) {
+			opt.html("删除失败");
 		}
 		opt.attr({
 					"value" : array[i]

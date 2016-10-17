@@ -111,13 +111,15 @@ function queryByPage() {
 				} else {
 					var td3 = $("<td class='hidden-480'>-</td>");
 				} 
-				if(array[i].hcluster){
-					var td4 =$("<td class='hidden-480'>"
-									+ "<a class=\"link\" href='#'>"+array[i].hcluster.hclusterNameAlias+"</a>"
-									+ "</td>");//href=\"/detail/hcluster/" + array[i].gcecluster.hclusterId+"\"
+				
+				if(array[i].gceCluster && array[i].hcluster){
+					var td4 = $("<td class='hidden-480'>"
+							+ "<a class=\"link\" href=\"/detail/hcluster/" + array[i].gceCluster.hclusterId+"\">"+array[i].hcluster.hclusterNameAlias+"</a>"
+							+ "</td>");
 				} else {
-					var td4= $("<td class='hidden-480'>-</td>");
-				}
+					var td4 = $("<td class='hidden-480'> </td>");
+				}  
+				
 				var td5 = $("<td>"
 						+ array[i].ipAddr
 						+ "</td>");

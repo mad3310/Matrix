@@ -48,11 +48,6 @@
 							<input type="date" class="form-control" id="PhyMechineDate"
 								placeholder="创建时间">
 						</div> -->
-						<div class="form-group col-sm-6 col-xs-12 col-md-2">
-							<select class="form-control" id="dbStatus">
-								<option value="">请选择状态</option>
-							</select>
-						</div>
 						<div class="form-group col-sm-6 col-xs-12 col-md-2" style="padding-right:0;">
 							<button class="btn btn-sm btn-primary btn-search" type="button" id="dbSearch"><i class="ace-icon fa fa-search"></i>搜索
 							</button>

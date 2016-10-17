@@ -6,8 +6,6 @@ var currentSelectedLineDbName = 1;
 	//初始化
 	page_init();
     /*动态添加select内容*/
-	var sltArray = [0,2,3,5,6,7,8,9,10,13,14];
-	addSltOpt(sltArray,$("#dbStatus"));
 	
 	$(document).on('click', 'th input:checkbox' , function(){
 		var that = this;
@@ -67,9 +65,6 @@ var currentSelectedLineDbName = 1;
 			if(qryStr4){
 				qryStr+='<span class="label label-yellow arrowed">'+qryStr4+'<span class="queryBadge" data-rely-id="containeruser"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
 			}
-			if(qryStr5){
-				qryStr+='<span class="label label-pink arrowed">'+qryStr5+'<span class="queryBadge" data-rely-id="dbStatus"><i class="ace-icon fa fa-times-circle"></i></span></span>&nbsp;'
-			}
 			if(qryStr){
 				$('.queryOption').find('.widget-title').html(qryStr);
 				$('.queryBadge').click(function(event) {
@@ -110,9 +105,7 @@ var currentSelectedLineDbName = 1;
 			'recordsPerPage':recordsPerPage,
 			'gceName':dbName,
 			'hclusterName':hclusterName,
-			'userName':userName,
-			// // /*'createTime':createTime,*/
-			'status':status
+			'userName':userName
 	}
     $("#tby tr").remove();
     getLoading();
@@ -170,7 +163,7 @@ var currentSelectedLineDbName = 1;
 	      + "</td>");
 
 	  var td7 = $("<td>"+
-	      		(array[i].status===7?'正常':'异常')+
+			  (array[i].status===7?"可用":"不可用")+
 				"</td>");
 
 	  if(array[i].status === 7){	    

@@ -7,7 +7,7 @@ $(function(){
 	page_init();
 	
 	/*动态加载界面下拉列表值*/
-	var sltArray = [1,2,3,5,7,8,9,10,11,12,13,14];
+	var sltArray = [1,2,3,5,7,8,9,10,11,12,13,14,19];
 	addSltOpt(sltArray,$("#containerStatus"));
 	
 	$(document).on('click', 'th input:checkbox' , function(){
@@ -158,15 +158,9 @@ function queryByPage() {
 				var td6 = $("<td class='hidden-480'>"
 						+ date('Y-m-d H:i:s',array[i].createTime)
 						+ "</td>");
-				if(array[i].status == 2){
-					var td7 = $("<td>"
-							+"<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
-							+"<i class=\"ace-icon fa fa-spinner fa-spin green bigger-125\"/>"
-							+"创建中...</a>"
-							+ "</td>");
-				}else if(array[i].status == 3){
-					var td7 = $("<td>"
-							+"<a name=\"buildStatusBoxLink\" data-toggle=\"modal\" data-target=\"#create-mcluster-status-modal\" style=\"cursor:pointer; text-decoration:none;\">"
+				
+				if(array[i].status == 3){
+					var td7 = $("<td class='text-danger'>"
 							+translateStatus(array[i].status)
 							+"</a>"
 							+ "</td>");
@@ -176,7 +170,8 @@ function queryByPage() {
 							+ "</td>");
 					
 				}
-				var btnIcons=['start','stop','restart','extend'];
+				//var btnIcons=['start','stop','restart','extend'];
+				var btnIcons=[];
 				var td8=$(transStateHtml(btnIcons,array[i].status));	
 				if(array[i].status == 3||array[i].status == 4||array[i].status == 14){
 					var tr = $("<tr class=\"default-danger\"></tr>");
@@ -186,7 +181,7 @@ function queryByPage() {
 					var tr = $("<tr></tr>");
 				}
 				
-				tr.append(td1).append(td2).append(td3).append(td5).append(td6).append(td7).append(td8);
+				tr.append(td1).append(td2).append(td3).append(td5).append(td6).append(td7);
 				tr.appendTo(tby);
 			}//循环json中的数据 
 			

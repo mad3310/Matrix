@@ -92,7 +92,7 @@
 						<label class="col-sm-4 control-label">上传本地镜像： </label>
 						<div class="col-sm-8 row">
 							<div class="col-sm-12">
-								<input type="file" name="file" autocomplete="off" placeholder="上传文件必须是小于500M的zip文件"/>
+								<input id="fileUpload" type="file" name="file" autocomplete="off" placeholder="上传文件必须是小于500M的zip文件"/>
 							</div>
 						</div>
 					</div>
@@ -123,7 +123,7 @@
 				</div>
 				<div class="modal-footer">
 					<button id="uploadImageSubmit" type="submit" class="btn btn-primary">确定</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button id="cancelModal" type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 				</div>
 			</form>
 		</div>
