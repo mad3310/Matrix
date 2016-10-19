@@ -35,15 +35,21 @@ public class SkipController {
 		return mav;
 	}
     
-    	@RequestMapping(value ="/list/baseImages",method=RequestMethod.GET)
+    @RequestMapping(value ="/list/baseImages",method=RequestMethod.GET)
 	public ModelAndView toBaseImages(ModelAndView mav,HttpServletRequest request){
 		mav.setViewName("/common/base_image_list");
 		return mav;
 	}
 
-    	@RequestMapping(value ="/list/dictMgr",method=RequestMethod.GET)
+    @RequestMapping(value ="/list/dictMgr",method=RequestMethod.GET)
 	public ModelAndView toDictMgr(ModelAndView mav,HttpServletRequest request){
 		mav.setViewName("/common/dict_mgr");
+		return mav;
+	}
+    	
+    @RequestMapping(value ="/operation-logs",method=RequestMethod.GET)
+	public ModelAndView toOperationLogs(ModelAndView mav,HttpServletRequest request){
+		mav.setViewName("/common/operation_logs");
 		return mav;
 	}
 }

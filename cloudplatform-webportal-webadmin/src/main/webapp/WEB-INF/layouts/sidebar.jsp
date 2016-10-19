@@ -22,6 +22,7 @@
                 <li><a href="${ctx}/list/baseImages"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">基础镜像管理</span></a><b class="arrow"></b></li>
                 <li><a href="${ctx}/list/dictMgr"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">字典管理</span></a><b class="arrow"></b></li>
                 <li><a href="${ctx}/list/zk"><i class="menu-icon fa fa-cog"></i><span class="menu-text">zookeeper管理</span></a><b class="arrow"></b></li>
+                <li><a href="${ctx}/operation-logs"><i class="menu-icon fa fa-cog"></i><span class="menu-text">操作日志</span></a><b class="arrow"></b></li>
                 <li id="sidebar-task-mgr">
                     <a href="#" class="dropdown-toggle">
                         <i class="menu-icon fa fa-cogs"></i><span class="menu-text">任务管理</span><b class="arrow fa fa-angle-down"></b>
