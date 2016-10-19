@@ -140,6 +140,14 @@ function queryByPage() {
 				var td7 = $("<td>"
 						+stateTransform(tempObj.status,"rdsMcluster")
 						+ "</td>");
+				var tdNodeTypeHtml = '';
+				if(tempObj.type==='mclustervip'){
+					tdNodeTypeHtml = '<td>vip</td>';
+				} else if(tempObj.type==='mclusternode'){
+					tdNodeTypeHtml = '<td>node</td>';
+				} else{
+					tdNodeTypeHtml = '<td>未知</td>';
+				}
 					
 				if(tempObj.status == 3||tempObj.status == 4||tempObj.status == 14){
 					var tr = $("<tr class=\"default-danger\"></tr>");
@@ -149,7 +157,7 @@ function queryByPage() {
 					var tr = $("<tr></tr>");
 				}
 				
-				tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td10).append(td9).append(td7);
+				tr.append(td1).append(td2).append(tdNodeTypeHtml).append(td3).append(td4).append(td5).append(td6).append(td10).append(td9).append(td7);
 				tr.appendTo(tby);
 			}//循环json中的数据 
 			
