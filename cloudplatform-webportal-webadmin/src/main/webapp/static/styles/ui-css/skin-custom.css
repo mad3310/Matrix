@@ -1060,7 +1060,7 @@ edit by jinglinlin@letv.com
 .task-monitor-list{
 	
 }
-.task-monitor-list tr:hover{
+.task-monitor-list tr:hover,.task-monitor-list tr.selected{
 	background-color:#e6e6e6;
 }
 .task-monitor-list .selected{
