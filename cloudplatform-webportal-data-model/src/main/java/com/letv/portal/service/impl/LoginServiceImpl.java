@@ -65,7 +65,7 @@ public class LoginServiceImpl extends BaseServiceImpl<UserLogin> implements ILog
 	private Session createUserSession(UserModel user)
 	{
 		Session session = new Session();
-		session.setUserInfoId(user.getId());
+		session.setUserId(user.getId());
 		session.setUserName(user.getUserName());
 		
 		return session;

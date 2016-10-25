@@ -13,6 +13,7 @@ public class Session implements Serializable{
 	public static final String USER_SESSION_REQUEST_ATTRIBUTE = "userSession";
 
 	private Long userId;
+	private String oauthId;
 	
 	private String userName;
 	
@@ -26,15 +27,19 @@ public class Session implements Serializable{
 	
 	private Object openStackSession;
 	
+	
+	public String getOauthId() {
+		return oauthId;
+	}
+
+	public void setOauthId(String oauthId) {
+		this.oauthId = oauthId;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}
 	
-	public void setUserInfoId(Long userId)
-	{
-		this.userId = userId;
-	}
-
 	public boolean isPasswordExpired() {
 		return passwordExpired;
 	}
