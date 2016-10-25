@@ -189,6 +189,8 @@ public class BackupProxyImpl extends BaseProxyImpl<BackupResultModel> implements
 	private void backupByHcluster(int count,HclusterModel hcluster, Integer waitTime, Date backupDate) {
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("hclusterId", hcluster.getId());
+		//过滤所有可备份的
+		params.put("canBackup", true);
 		List<MclusterModel> mclusters = mclusterService.selectValidMclustersByMap(params);
 		List<MclusterModel> backups = new ArrayList<MclusterModel>();
 		List<MclusterModel> checkRecord = new ArrayList<MclusterModel>();
