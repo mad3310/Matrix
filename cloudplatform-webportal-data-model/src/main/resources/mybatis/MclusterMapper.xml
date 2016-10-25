@@ -14,6 +14,7 @@
 		<result column="SST_PASSWORD" property="sstPwd" />
 		<result column="HCLUSTER_ID" property="hclusterId" />
 		<result column="DELETED" property="deleted" />
+		<result column="CANBACKUP" property="canBackup" />
 		<result column="CREATE_TIME" property="createTime" />
 		<result column="CREATE_USER" property="createUser" />
 		<result column="UPDATE_TIME" property="updateTime" />
@@ -34,7 +35,7 @@
 		<result column="ADMIN_PASSWORD" property="password" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		M.ID,M.MCLUSTER_NAME,M.ADMIN_USER,M.ADMIN_PASSWORD,M.STATUS,M.TYPE,M.SST_PASSWORD,M.HCLUSTER_ID,M.DELETED,M.CREATE_TIME,M.CREATE_USER,M.UPDATE_TIME,M.UPDATE_USER
+		M.ID,M.MCLUSTER_NAME,M.ADMIN_USER,M.ADMIN_PASSWORD,M.STATUS,M.TYPE,M.SST_PASSWORD,M.HCLUSTER_ID,M.DELETED,M.CANBACKUP,M.CREATE_TIME,M.CREATE_USER,M.UPDATE_TIME,M.UPDATE_USER
 	</sql>
 	<!-- 查询条件 -->
 	<sql id="Example_Where_Clause">
@@ -48,6 +49,9 @@
 			</if>
 			<if test="status != null and status != ''">
 				and M.STATUS=#{status}
+			</if>
+			<if test="canBackup != null and canBackup != ''">
+				and M.CANBACKUP=#{canBackup}
 			</if>
 			<if test="type != null  ">
 				and M.TYPE=#{type}
@@ -88,6 +92,9 @@
 			<if test="params != null and params.status != null and params.status != '' ">
 				and M.STATUS=#{params.status}
 			</if>
+			<if test="params != null and params.canBackup != null and params.canBackup != '' ">
+				and M.CANBACKUP=#{params.canBackup}
+			</if>
 			<if test="params != null and params.type != null  ">
 				and M.TYPE=#{params.type}
 			</if>
@@ -118,14 +125,14 @@
 	<!-- 插入记录 -->
 	<insert id="insert" parameterType="Mcluster" useGeneratedKeys="true" keyProperty="id">
 		insert into
-		WEBPORTAL_MCLUSTER_INFO(MCLUSTER_NAME,ADMIN_USER,ADMIN_PASSWORD,STATUS,TYPE,SST_PASSWORD,HCLUSTER_ID,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER)
-		values(#{mclusterName},#{adminUser},#{adminPassword},#{status},#{type},#{sstPwd},#{hclusterId},#{deleted},now(),#{createUser},now(),#{updateUser})
+		WEBPORTAL_MCLUSTER_INFO(MCLUSTER_NAME,ADMIN_USER,ADMIN_PASSWORD,STATUS,CANBACKUP,TYPE,SST_PASSWORD,HCLUSTER_ID,DELETED,CREATE_TIME,CREATE_USER,UPDATE_TIME,UPDATE_USER)
+		values(#{mclusterName},#{adminUser},#{adminPassword},#{status},#{canBackup},#{type},#{sstPwd},#{hclusterId},#{deleted},now(),#{createUser},now(),#{updateUser})
 	</insert>
 
 	<!-- 根据id，修改记录 -->
 	<update id="update" parameterType="Mcluster">
 		update WEBPORTAL_MCLUSTER_INFO set
-		MCLUSTER_NAME=#{mclusterName},ADMIN_USER=#{adminUser},ADMIN_PASSWORD=#{adminPassword},STATUS=#{status},TYPE=#{type},SST_PASSWORD=#{sstPwd},HCLUSTER_ID=#{hclusterId},DELETED=#{deleted},CREATE_TIME=#{createTime},CREATE_USER=#{createUser},UPDATE_TIME=now(),UPDATE_USER=#{updateUser}
+		MCLUSTER_NAME=#{mclusterName},ADMIN_USER=#{adminUser},ADMIN_PASSWORD=#{adminPassword},STATUS=#{status},CANBACKUP=#{canBackup},TYPE=#{type},SST_PASSWORD=#{sstPwd},HCLUSTER_ID=#{hclusterId},DELETED=#{deleted},CREATE_TIME=#{createTime},CREATE_USER=#{createUser},UPDATE_TIME=now(),UPDATE_USER=#{updateUser}
 		where ID=#{id}
 	</update>
 
@@ -144,6 +151,9 @@
 			</if>
 			<if test="status != null  ">
 				STATUS=#{status},
+			</if>
+			<if test="canBackup != null  ">
+				CANBACKUP=#{canBackup},
 			</if>
 			<if test="type != null  ">
 				TYPE=#{type},
