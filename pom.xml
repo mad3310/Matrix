@@ -1431,7 +1431,7 @@
         <repository>
             <id>letv.public</id>
             <name>Letv.com Repository</name>
-            <url>http://10.75.137.254:8083/nexus/content/groups/public/</url>
+            <url>http://maven.letv.cn/nexus/content/groups/public/</url>
         </repository>
     </repositories>
     <!--私有仓库配置  end-->
@@ -1441,7 +1441,7 @@
         <pluginRepository>
             <id>letv.public</id>
             <name>Letv.com Repository</name>
-            <url>http://10.75.137.254:8083/nexus/content/groups/public/</url>
+            <url>http://maven.letv.cn/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -1456,12 +1456,12 @@
         <repository>
             <id>project-release</id>
             <name>Projects Release repository</name>
-            <url>http://10.75.137.254:8083/nexus/content/repositories/releases/</url>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Release/</url>
         </repository>
         <snapshotRepository>
             <id>project-snapshots</id>
             <name>Projects SnapShot repository</name>
-            <url>http://10.75.137.254:8083/nexus/content/repositories/snapshots/</url>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
     <!--deploy end-->
