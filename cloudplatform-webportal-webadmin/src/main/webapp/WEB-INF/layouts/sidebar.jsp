@@ -18,12 +18,11 @@
                 <b class="arrow fa fa-angle-down"></b>
             </a>
             <ul class="submenu">
-                <li><a href="${ctx}/list/hcluster"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">物理机集群列表</span></a><b class="arrow"></b></li>
                 <li><a href="${ctx}/list/timingTask"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">定时任务管理</span></a><b class="arrow"></b></li>
                 <li><a href="${ctx}/list/baseImages"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">基础镜像管理</span></a><b class="arrow"></b></li>
                 <li><a href="${ctx}/list/dictMgr"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">字典管理</span></a><b class="arrow"></b></li>
                 <li><a href="${ctx}/list/zk"><i class="menu-icon fa fa-cog"></i><span class="menu-text">zookeeper管理</span></a><b class="arrow"></b></li>
-                <li><a href="${ctx}/moniter/hcluster"><i class="menu-icon fa fa-cog"></i><span class="menu-text">物理机监控</span></a><b class="arrow"></b></li>
+                <li><a href="${ctx}/operation-logs"><i class="menu-icon fa fa-cog"></i><span class="menu-text">操作日志</span></a><b class="arrow"></b></li>
                 <li id="sidebar-task-mgr">
                     <a href="#" class="dropdown-toggle">
                         <i class="menu-icon fa fa-cogs"></i><span class="menu-text">任务管理</span><b class="arrow fa fa-angle-down"></b>
@@ -34,6 +33,17 @@
                         <li><a href="${ctx}/list/job/monitor"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">任务监控</span></a><b class="arrow"></b></li>
                     </ul>
                 </li>
+            </ul>
+        </li>
+        <li id="sidebar-common-mgr">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-cogs"></i>
+                <span class="menu-text">物理机管理</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <ul class="submenu">
+                <li><a href="${ctx}/list/hcluster"><i class="menu-icon fa fa-caret-right"></i><span class="menu-text">物理机集群管理</span></a><b class="arrow"></b></li>
+                <li><a href="${ctx}/moniter/hcluster"><i class="menu-icon fa fa-cog"></i><span class="menu-text">物理机监控</span></a><b class="arrow"></b></li>
             </ul>
         </li>
         <li id="sidebar-rds-mgr">

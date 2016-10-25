@@ -1060,7 +1060,7 @@ edit by jinglinlin@letv.com
 .task-monitor-list{
 	
 }
-.task-monitor-list tr:hover{
+.task-monitor-list tr:hover,.task-monitor-list tr.selected{
 	background-color:#e6e6e6;
 }
 .task-monitor-list .selected{
@@ -1227,6 +1227,13 @@ td .text-danger{color: #d95c5c;}
 #navbar-container .ace-nav li.light-blue a{display:table-cell;vertical-align:middle;}
 .image-size-adapt .form-group{padding-bottom:10px;}
 /*end*/
+
+/*begin operation_logs.jsp style*/
+.skin-custom .span-operation-request{
+	width:700px;
+	display: inline-block;
+}
+/*end operation_logs.jsp style*/
 
 
 

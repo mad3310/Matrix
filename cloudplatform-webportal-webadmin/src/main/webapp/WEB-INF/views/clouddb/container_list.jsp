@@ -80,6 +80,7 @@
 								<th width="15%">创建时间 </th>
 								<th width="15%" class="hidden-480">当前状态</th> -->
 								<th>Node名称</th>
+								<th>Node类型</th>
 								<th class='hidden-480'>所属rds集群</th>
 								<th class="hidden-480">所属物理机集群</th>
 								<th>ip</th>

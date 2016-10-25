@@ -95,6 +95,7 @@
 										</label>
 									</th>
 									<th>用户名</th>
+									<th>用户类型</th>
 									<!-- <th>所属数据库</th><th>用户权限</th>
 									<th>ip地址</th> -->
 									<th class="hidden-xs">最大并发量</th>
