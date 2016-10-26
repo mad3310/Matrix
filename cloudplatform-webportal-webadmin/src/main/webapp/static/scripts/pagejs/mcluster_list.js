@@ -686,9 +686,9 @@ function switchBackup(e){
 				};
 				if(error(data)) return;
 				queryByPage();
+				e.checked = targetValue;
 			}
 		});
-		e.checked = targetValue;
 	});
 }
 function queryHcluster(){
