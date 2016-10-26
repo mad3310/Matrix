@@ -1429,7 +1429,22 @@
     <repositories>
         <!--私有仓库 url-->
         <repository>
-            <id>letv.public</id>
+            <id>Matrix-Thirdparty repository</id>
+            <name>Letv.com Repository</name>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Thirdparty/</url>
+        </repository>
+        <repository>
+            <id>Matrix-Snapshot repository</id>
+            <name>Letv.com Repository</name>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Snapshot/</url>
+        </repository>
+        <repository>
+            <id>Matrix-Release repository</id>
+            <name>Letv.com Repository</name>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Release/</url>
+        </repository>
+        <repository>
+            <id>letv.public repository</id>
             <name>Letv.com Repository</name>
             <url>http://maven.letv.cn/nexus/content/groups/public/</url>
         </repository>
@@ -1439,7 +1454,7 @@
     <pluginRepositories>
         <!--私有仓库插件 url-->
         <pluginRepository>
-            <id>letv.public</id>
+            <id>letv.public plugin</id>
             <name>Letv.com Repository</name>
             <url>http://maven.letv.cn/nexus/content/groups/public/</url>
             <releases>

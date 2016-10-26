@@ -2,11 +2,16 @@ package com.letv.portal.interceptor;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.letv.common.util.IpUtil;
+import com.letv.portal.model.UserLogin;
+import com.letv.portal.service.impl.oauth.IOauthService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +41,9 @@ public class SessionTimeoutInterceptor  implements HandlerInterceptor{
 	
 	@Autowired
 	private ILoginProxy loginProxy;
+
+	@Autowired
+	private IOauthService oauthService;
 	
 	public String[] allowUrls;//还没发现可以直接配置不拦截的资源，所以在代码里面来排除
 	
@@ -60,6 +68,16 @@ public class SessionTimeoutInterceptor  implements HandlerInterceptor{
 			return true; 
 		}
 		Session session = (Session) request.getSession().getAttribute(Session.USER_SESSION_REQUEST_ATTRIBUTE);
+		String clientType = request.getHeader("clientType");
+		if(!StringUtils.isEmpty(clientType)) {
+			String token = request.getHeader("authtoken");
+			if(StringUtils.isEmpty(token)  || "".equals(token)) {
+				responseJson(request,response,"长时间未操作，请重新登录");
+				return false;
+			}
+
+			session  = this.validateToken(token, IpUtil.getIp(request));
+		}
 		if(session == null ) {
 			logger.debug("please login");
 			boolean isAjaxRequest = (request.getHeader("x-requested-with") != null)? true:false;
@@ -81,7 +99,30 @@ public class SessionTimeoutInterceptor  implements HandlerInterceptor{
 		}
 		return true;
 	}
-	
+	private Session validateToken(String token,String ip) {
+		//判断是否为移动端机器，如果是，通过token验证
+		Map<String, Object> userDetailInfo = this.oauthService.getUserdetailinfo(token);
+
+		if(userDetailInfo == null)
+			return null;
+
+		String username = (String) userDetailInfo.get("username");
+		String email = (String) userDetailInfo.get("email");
+		if(email.endsWith("le.com"))
+			email = email.replace("le.com","letv.com");
+
+		if(StringUtils.isEmpty(username))
+			return null;
+
+		UserLogin userLogin = new UserLogin();
+		userLogin.setLoginName(username);
+		userLogin.setLoginIp(ip);
+		userLogin.setEmail(email);
+		Session session = this.loginProxy.saveOrUpdateUserAndLogin(userLogin);
+
+		return session;
+
+	}
 	@Override
 	public void afterCompletion(HttpServletRequest arg0,
 			HttpServletResponse arg1, Object arg2, Exception arg3)
