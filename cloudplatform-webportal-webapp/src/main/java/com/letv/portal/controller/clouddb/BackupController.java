@@ -18,8 +18,11 @@ import com.letv.common.result.ResultObject;
 import com.letv.common.util.HttpUtil;
 import com.letv.portal.enumeration.BackupStatus;
 import com.letv.portal.model.BackupResultModel;
+import com.letv.portal.model.MclusterModel;
 import com.letv.portal.model.StrategyModel;
+import com.letv.portal.proxy.IBackupProxy;
 import com.letv.portal.service.IBackupService;
+import com.letv.portal.service.IMclusterService;
 
 @Controller
 @RequestMapping("/backup")
@@ -27,6 +30,10 @@ public class BackupController {
 	
 	@Autowired
 	private IBackupService backupService;
+	@Autowired
+	private IMclusterService mclusterService;
+	@Autowired
+	private IBackupProxy backupProxy;
 	
 	private final static Logger logger = LoggerFactory.getLogger(BackupController.class);
 		
@@ -54,4 +61,42 @@ public class BackupController {
 		obj.setData(ret);
 		return obj;
 	}
+	
+	/*@RequestMapping(value="/full", method=RequestMethod.POST)   
+	public @ResponseBody ResultObject wholeBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {
+		//先判断集群备份开关是否打开
+		MclusterModel mclusterModel = mclusterService.selectById(mcluster.getMclusterId());
+		if(mclusterModel != null && !mclusterModel.getCanBackup()){
+			obj.setResult(0);
+			obj.addMsg("备份请求失败，请先联系管理员打开备份权限后再次重试！");
+			return obj;
+		}
+		BackupResultModel dto = backupProxy.wholeBackup4Db(mcluster);
+		if(null == dto) {
+			obj.setResult(0);
+			obj.addMsg("备份请求异常, 服务器状态不符合备份要求！");
+		} else {
+			obj.setData(dto);
+		}
+		return obj;
+	}
+	
+	@RequestMapping(value="/incr", method=RequestMethod.POST)   
+	public @ResponseBody ResultObject incrBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {
+		//先判断集群备份开关是否打开
+		MclusterModel mclusterModel = mclusterService.selectById(mcluster.getMclusterId());
+		if(mclusterModel != null && !mclusterModel.getCanBackup()){
+			obj.setResult(0);
+			obj.addMsg("备份请求失败，请先联系管理员打开备份权限后再次重试！");
+			return obj;
+		}
+		BackupResultModel dto = backupProxy.incrBackup4Db(mcluster);
+		if(null == dto) {
+			obj.setResult(0);
+			obj.addMsg("备份请求异常, 服务器状态不符合备份要求！");
+		} else {
+			obj.setData(dto);
+		}
+		return obj;
+	}*/
 }

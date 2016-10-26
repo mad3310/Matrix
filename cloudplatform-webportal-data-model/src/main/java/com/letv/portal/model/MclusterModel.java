@@ -28,7 +28,15 @@ public class MclusterModel extends BaseModel {
 	private HclusterModel hcluster;
 	
 	private UserModel createUserModel;
+	//集群是否可备份
+	private boolean canBackup;
 	
+	public boolean getCanBackup() {
+		return canBackup;
+	}
+	public void setCanBackup(boolean canBackup) {
+		this.canBackup = canBackup;
+	}
 	public String getMclusterName() {
 		return mclusterName;
 	}
