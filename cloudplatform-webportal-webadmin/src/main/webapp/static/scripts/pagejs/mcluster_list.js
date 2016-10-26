@@ -169,7 +169,7 @@ function queryByPage() {
 				if(tempObj.status==1){
 					backupSwitchHtml = '<td>'+
 											'<label>'+
-												'<input name="switch-field-1" class="ace ace-switch ace-switch-4 btn-empty" type="checkbox" onchange="switchBackup(this)" '+(tempObj.canBackup?'checked':'')+' />'+
+												'<input name="switch-field-1" class="ace ace-switch ace-switch-4 btn-empty" type="checkbox" onclick="switchBackup(this)" '+(tempObj.canBackup?'checked':'')+' />'+
 												'<span class="lbl"></span>'+
 											'</label>'+
 										'</td>';
@@ -672,18 +672,23 @@ function expandMcluster(obj){
 }
 
 function switchBackup(e){
-	var mclusterId =$(e).closest("tr").find('[name="mcluster_id"]').val();
-	$.ajax({
-		cache:false,
-		url:'/mcluster/openOrcloseBackupSwitch/{mclusterId}'.replace('{mclusterId}',mclusterId),
-		type:'put',
-		success:function(data){
-			if(typeof(data) == 'string'){
-				data = JSON.parse(data)
-			};
-			if(error(data)) return;
-			queryByPage();
-		}
+	var targetValue = e.checked;
+	e.checked = !targetValue;
+	confirmframe('备份开关','确定要'+(targetValue ? '开启':'关闭')+'备份吗？','',function(){
+		var mclusterId =$(e).closest("tr").find('[name="mcluster_id"]').val();
+		$.ajax({
+			cache:false,
+			url:'/mcluster/openOrcloseBackupSwitch/{mclusterId}'.replace('{mclusterId}',mclusterId),
+			type:'put',
+			success:function(data){
+				if(typeof(data) == 'string'){
+					data = JSON.parse(data)
+				};
+				if(error(data)) return;
+				queryByPage();
+			}
+		});
+		e.checked = targetValue;
 	});
 }
 function queryHcluster(){
