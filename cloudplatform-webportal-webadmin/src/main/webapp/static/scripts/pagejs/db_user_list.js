@@ -185,19 +185,24 @@ function queryByPage(){
 				var td3 = $("<td class='hidden-xs'>"
 						+ "<a class=\"link\" href=\"/detail/db/" + array[i].dbId+"\">"+array[i].db.dbName+"</a>"
 						+ "</td>");
-				// if(array[i].type == 1){
-				// 	var td4 = $("<td>"
-				// 			    + "管理员"
-				// 			    + "</td>");
-				// }else if(array[i].type == 2){
-				// 	var td4 = $("<td>"
-				// 		    + "只读用户"
-				// 		    + "</td>");
-				// }else{
-				// 	var td4 = $("<td>"
-				// 			    + "读写用户"
-				// 			    + "</td>");
-				// }
+				var td4 = '';
+				 if(array[i].type == 1){
+				 	td4 = $("<td>"
+				 			    + "管理"
+				 			    + "</td>");
+				 }else if(array[i].type == 2){
+				 	td4 = $("<td>"
+				 		    + "只读"
+				 		    + "</td>");
+				 }else if(array[i].type == 3){
+				 	td4 = $("<td>"
+				 			    + "读写"
+				 			    + "</td>");
+				 }else{
+					 td4 = $("<td>"
+					 		+ "未知"
+					 		+ "</td>");
+				 }
 				// var td5 = $("<td>"
 				// 		+ array[i].acceptIp
 				// 		+ "</td>");
@@ -235,8 +240,7 @@ function queryByPage(){
 				}else{
 					var tr = $("<tr></tr>");
 				}
-				// tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7);
-				tr.append(td1).append(td2).append(td6).append(td7).append(td3).append(td8).append(td9);
+				tr.append(td1).append(td2).append(td4).append(td6).append(td7).append(td3).append(td8).append(td9);
 				tr.appendTo(tby);
 			}
 			
