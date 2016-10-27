@@ -9,32 +9,11 @@
     <!-- 提供方应用信息，用于计算依赖关系 -->
     <dubbo:application name="matrix-service-webportal-webapp" owner="matrix" organization="le"/>
     <!-- 使用zookeeper注册中心暴露服务地址 -->
-    <dubbo:registry protocol="zookeeper" address="${dubbo.registry.zkAddr}"/>
+    <dubbo:registry address="${dubbo.registry.zkAddr}" protocol="zookeeper"/>
     <!--自动扫描该包路径，省去每个都配合dubbo:service-->
     <dubbo:annotation package="com.le.matrix.template.service"/>
     <!-- dubbo协议定义 -->
     <dubbo:protocol name="dubbo" port="${dubbo.protocol.dubbo}"/>
 
-    <!--使用内置tomcat服务器   可以省去webapp里面内容          !!!与下面二选一-->
-    <!--如果直接Main启动/junit启动（一般测试时候用），使用下面配置  -->
-    <!--缺省配置-->
-    <!--<dubbo:protocol name="rest" port="${dubbo.protocol.rest}" threads="500" contextpath="services" server="tomcat" accepts="500"
-                    />-->
-    <!--使用内置tomcat服务器   可以省去webapp里面内容-->
-    <!--自定义配置-->
-    <!--<dubbo:protocol name="rest" port="${dubbo.protocol.rest}" threads="500" contextpath="services" server="tomcat" accepts="500"
-                    extension="com.le.matrix.template.extension.tomcat.TraceInterceptor,
-                    com.le.matrix.template.extension.tomcat.TraceFilter,
-                    com.le.matrix.template.extension.tomcat.ClientTraceFilter,
-                    com.le.matrix.template.extension.tomcat.DynamicTraceBinding,
-                    com.le.matrix.template.extension.tomcat.CustomExceptionMapper,
-                    com.alibaba.dubbo.rpc.protocol.rest.support.LoggingFilter"/>-->
-    <!--如果使用外部jetty服务器          !!!与上面二选一-->
-    <!-- rest协议定义：
-        port：和服务器端口保持一致
-        contextpath：和web服务器web.xml定义保持一致
-        server：默认servlet，在没有在web服务器中运行的时候，可以写tomcat等由应用启动一个web服务器-->
-    <dubbo:protocol name="rest" port="${dubbo.protocol.rest}" contextpath="services" server="jetty"/>
-    
 	<dubbo:service interface="com.letv.portal.service.IHclusterService" ref="hclusterService" validation="true"/>
 </beans>
