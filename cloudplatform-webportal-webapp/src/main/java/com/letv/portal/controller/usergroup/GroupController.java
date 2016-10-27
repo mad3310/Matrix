@@ -17,10 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -66,8 +63,8 @@ public class GroupController {
         groupProxy.insertUser(userId, ownerId);
         return obj;
     }
-    @RequestMapping(value = "/users", method = RequestMethod.DELETE)
-    public @ResponseBody ResultObject delUser(@RequestParam("userId") Long userId, ResultObject obj) {
+    @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
+    public @ResponseBody ResultObject delUser(@PathVariable Long userId, ResultObject obj) {
         if(null == userId){
             obj.setResult(0);
             obj.addMsg("用户ID为空");
