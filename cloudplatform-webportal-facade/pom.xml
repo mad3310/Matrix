@@ -28,11 +28,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
-		<!--为resteasy添加hibernate validate数据校验 -->
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-hibernatevalidator-provider</artifactId>
-		</dependency>
 		<!--数据校验 end -->
 		<!-- JSON start -->
 		<dependency>
@@ -40,18 +35,6 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 		</dependency>
 		<!-- JSON end -->
-		<!--Dubbox start -->
-		<!--restful需要 -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>dubbo</artifactId>
-		</dependency>
-		<!--restful需要 -->
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-		</dependency>
-		<!--Dubbox end -->
 
 		<dependency>
         	<groupId>com.letv.cloudplatform</groupId>
