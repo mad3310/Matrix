@@ -54,7 +54,7 @@ public class GroupController {
         obj.setData(this.groupUserService.queryByPagination(page, params));
         return obj;
     }
-    @RequestMapping(value = "/users/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
     public @ResponseBody ResultObject addUser(@RequestParam("userId") Long userId, ResultObject obj) {
         if(null == userId){
             obj.setResult(0);
@@ -66,7 +66,7 @@ public class GroupController {
         groupProxy.insertUser(userId, ownerId);
         return obj;
     }
-    @RequestMapping(value = "/users/del", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/users", method = RequestMethod.DELETE)
     public @ResponseBody ResultObject delUser(@RequestParam("userId") Long userId, ResultObject obj) {
         if(null == userId){
             obj.setResult(0);
