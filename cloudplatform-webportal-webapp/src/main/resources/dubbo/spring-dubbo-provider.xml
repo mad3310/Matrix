@@ -34,7 +34,7 @@
         port：和服务器端口保持一致
         contextpath：和web服务器web.xml定义保持一致
         server：默认servlet，在没有在web服务器中运行的时候，可以写tomcat等由应用启动一个web服务器-->
-    <dubbo:protocol name="rest" port="${dubbo.protocol.rest}" contextpath="services" server="servlet"/>
+    <dubbo:protocol name="rest" port="${dubbo.protocol.rest}" contextpath="services" server="jetty"/>
     
 	<dubbo:service interface="com.letv.portal.service.IHclusterService" ref="hclusterService" validation="true"/>
 </beans>
