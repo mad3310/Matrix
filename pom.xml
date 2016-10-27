@@ -605,6 +605,17 @@
 	        <artifactId>tomcat-embed-logging-juli</artifactId>
 	        <version>8.0.11</version>
 	      </dependency>
+            <!--如果要使用 jetty lynzabo-->
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>6.1.25</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty</artifactId>
+                <version>6.1.25</version>
+            </dependency>
 	      <!--Dubbox REST风格远程调用 end-->
 	      <!--Dubbox Kyro序列化 begin-->
 	      <dependency>
