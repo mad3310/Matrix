@@ -211,6 +211,11 @@ public class SkipController {
 		mav.setViewName("/clouddb/hcluster_monitor_view_topN");
 		return mav;
 	}
+	@RequestMapping(value ="/view/rds/warning",method=RequestMethod.GET)
+	public ModelAndView toRdsWarning(ModelAndView mav,HttpServletRequest request){
+		mav.setViewName("/clouddb/rds_warning");
+		return mav;
+	}
 	
 	
 	/**
@@ -288,6 +293,6 @@ public class SkipController {
 	public ModelAndView toRdsNodeGaleraList(ModelAndView mav,HttpServletRequest request){
 		mav.setViewName("/clouddb/rds_monitor_node_galera");
 		return mav;
-	}
+	}	
 }
 

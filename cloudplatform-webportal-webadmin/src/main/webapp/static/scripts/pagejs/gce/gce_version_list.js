@@ -23,6 +23,8 @@ function queryByPage() {
 			removeLoading();
 			error(data);
 			var array = data.data.data;
+			if(!array.length) return;
+			
 			var tby = $("#tby");
 			var totalPages = data.data.totalPages;
 			for (var i = 0, len = array.length; i < len; i++) {
@@ -36,7 +38,7 @@ function queryByPage() {
 			  var tdStatusHtml = $("<td>"+
 							      		(array[i].status===7?'正常':'异常')+
 									"</td>");
-			  var tr = $("<tr class='tr-gce'></tr>");
+			  var tr = $('<tr class="tr-gce '+(i===0?'selected':'')+'"></tr>');
 		
 			  tr.append(tdIdHtml).append(tdNameHtml).append(tdHclusterNameHtml).append(tdStatusHtml);
 			  tr.appendTo(tby);		
@@ -125,7 +127,8 @@ function addClickEventListenerToGceList(){
 		var event =e;
 		var trEl = $(e.target).parents('.tr-gce');
 		if(!trEl) return;
-		
+		$('#listGce tbody tr').removeClass('selected');
+		trEl.addClass('selected');
 		var gceId = trEl.find('input.hidden').val();
 		queryVersionDetail(gceId);
 	});
@@ -174,7 +177,6 @@ function queryVersionDetail(gceId){
 		}
 	});
 }
-
 
 function page_init(){
 	addClickEventListenerToButtonSearch();

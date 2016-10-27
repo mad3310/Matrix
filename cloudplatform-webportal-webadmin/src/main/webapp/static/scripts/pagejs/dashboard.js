@@ -64,6 +64,12 @@ function getOverview(){
 			$('#gce_clusterSum').html(view.gce_clusterSum);
 			$('#gce_gceSum').html(view.gce_gceSum);
 			$('#gce_unauditeGceSum').html(view.gce_unauditeGceSum);
+			
+			$('#es_clusterSum').html(view.es_clusterSum);
+			$('#es_esSum').html(view.es_esSum);
+			$('#es_hclusterSum').html(view.es_hclusterSum);
+			$('#es_hostSum').html(view.es_hostSum);
+			$('#es_unauditeEsSum').html(view.es_unauditeEsSum);
 
             $('#slb_hclusterSum').html(view.slb_hclusterSum);
             $('#slb_hostSum').html(view.slb_hostSum);

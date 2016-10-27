@@ -44,7 +44,7 @@ public class TaskEngineTest extends AbstractTest{
     @Test
     public void testRun3() {
     	TaskChain tc = this.taskChainService.selectFailedChainByIndex(31L);
-    	this.taskEngine.run(tc);
+//    	this.taskEngine.run(tc);
     }
     
     //-----------------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ public class TaskEngineTest extends AbstractTest{
     @Test
     public void testRun6() {
     	TaskChain tc = this.taskChainService.selectFailedChainByIndex(42L);
-    	this.taskEngine.run(tc);
+//    	this.taskEngine.run(tc);
     }
     
 }

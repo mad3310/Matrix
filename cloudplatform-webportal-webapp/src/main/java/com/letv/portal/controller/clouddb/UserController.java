@@ -2,6 +2,7 @@ package com.letv.portal.controller.clouddb;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import com.letv.common.result.ResultObject;
 import com.letv.common.session.SessionServiceImpl;
 import com.letv.portal.model.UserModel;
 import com.letv.portal.service.IUserService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -41,7 +45,13 @@ public class UserController {
 		obj.setData(u);
 		return obj;
 	}
-	
-
-	
+	@RequestMapping(value = "/email/{emailAddr}",method=RequestMethod.GET)
+	public @ResponseBody ResultObject getUsers(@PathVariable String emailAddr,ResultObject obj) {
+		logger.debug("使用邮箱地址匹配查询所有用户信息");
+		if(StringUtils.isEmpty(emailAddr)){
+			return obj;
+		}
+		obj.setData(userService.selectByEmail(emailAddr));
+		return obj;
+	}
 }

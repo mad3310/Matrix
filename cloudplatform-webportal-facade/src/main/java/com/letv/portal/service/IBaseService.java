@@ -1,9 +1,9 @@
 package com.letv.portal.service;
 
+import com.letv.common.paging.impl.Page;
+
 import java.util.List;
 import java.util.Map;
-
-import com.letv.common.paging.impl.Page;
 
 public interface IBaseService<T> {
 	

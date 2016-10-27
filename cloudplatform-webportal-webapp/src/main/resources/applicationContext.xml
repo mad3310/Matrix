@@ -44,5 +44,5 @@
     		</list>
     	</property>
     </bean>
-	
+	<!--<import resource="classpath*:dubbo/spring-*.xml"/>-->
 </beans>

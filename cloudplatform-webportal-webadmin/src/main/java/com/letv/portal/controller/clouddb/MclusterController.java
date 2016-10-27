@@ -1,7 +1,6 @@
 package com.letv.portal.controller.clouddb;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,14 +18,11 @@ import com.letv.common.exception.ValidateException;
 import com.letv.common.paging.impl.Page;
 import com.letv.common.result.ResultObject;
 import com.letv.common.util.HttpUtil;
-import com.letv.common.util.StringUtil;
 import com.letv.portal.enumeration.MclusterStatus;
 import com.letv.portal.fixedPush.IFixedPushService;
 import com.letv.portal.model.MclusterModel;
 import com.letv.portal.model.adminoplog.AoLogType;
 import com.letv.portal.proxy.IMclusterProxy;
-import com.letv.portal.python.service.IBuildTaskService;
-import com.letv.portal.service.IContainerService;
 import com.letv.portal.service.IMclusterService;
 import com.letv.portal.service.adminoplog.AoLog;
 import com.letv.portal.service.adminoplog.ClassAoLog;
@@ -65,7 +61,29 @@ public class MclusterController {
 	public @ResponseBody ResultObject validList(ResultObject result) {
 		result.setData(this.mclusterService.selectValidMclusters());
 		return result;
-	}	
+	}
+	
+	/**
+	 * 打开/关闭备份
+	 * @param result
+	 * @return
+	 * @author linzhanbo .
+	 * @since 2016年10月21日, 下午3:17:02 .
+	 * @version 1.0 .
+	 */
+	@RequestMapping(value="/openOrcloseBackupSwitch/{mclusterId}",method=RequestMethod.PUT)   
+	public @ResponseBody ResultObject openOrcloseBackupSwitch(@PathVariable Long mclusterId,ResultObject result) {
+		MclusterModel mclusterModel = mclusterService.selectById(mclusterId);
+		if(null == mclusterModel){
+			result.setResult(0);
+			result.addMsg("集群不存在");
+			return result;
+		}
+		//打开/关闭备份
+		mclusterModel.setCanBackup(!mclusterModel.getCanBackup());
+		mclusterService.update(mclusterModel);
+		return result;
+	}
 	
 	@RequestMapping(value="/valid/{hclusterId}",method=RequestMethod.GET)   
 	public @ResponseBody ResultObject validList(@PathVariable Long hclusterId,ResultObject result) {

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.letv.portal.dao.usergroup.IGroupUserDao" >
+  <resultMap id="BaseResultMap" type="GroupUser" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="GROUPID" property="groupId" jdbcType="BIGINT" />
+    <result column="USERID" property="userId" jdbcType="BIGINT" />
+    <result column="OWNERID" property="ownerId" jdbcType="BIGINT" />
+    <result column="DELETED" property="deleted" jdbcType="TINYINT" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="CREATE_USER" property="createUser" jdbcType="BIGINT" />
+    <result column="UPDATE_USER" property="updateUser" jdbcType="BIGINT" />
+    <association property="userInfo" javaType="User">
+      <result column="USERNAME" property="userName" />
+      <result column="EMAIL" property="email" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    gu.ID, gu.GROUPID, gu.USERID, gu.OWNERID, gu.DELETED, gu.CREATE_TIME, gu.UPDATE_TIME, gu.CREATE_USER, gu.UPDATE_USER
+  </sql>
+  <!-- 查询条件 -->
+  <sql id="Base_Where_Clause">
+    where 1=1
+    <if test="id != null and id != ''">
+      and gu.ID=#{id}
+    </if>
+    <if test="groupId != null and groupId != '' ">
+      and gu.GROUPID=#{groupId}
+    </if>
+    <if test="userId != null and userId != ''">
+      and gu.USERID=#{userId}
+    </if>
+    <if test="ownerId != null and ownerId != ''">
+      and gu.OWNERID=#{ownerId}
+    </if>
+    <if test="deleted != null ">
+      and gu.DELETED=#{deleted}
+    </if>
+    <if test="createTime != null ">
+      and gu.CREATE_TIME=#{createTime}
+    </if>
+    <if test="updateTime != null ">
+      and gu.UPDATE_TIME=#{updateTime}
+    </if>
+    <if test="createUser != null ">
+      and gu.CREATE_USER=#{createUser}
+    </if>
+    <if test="updateUser != null ">
+      and gu.UPDATE_USER=#{updateUser}
+    </if>
+  </sql>
+  <sql id="Page_Where_Clause">
+    where 1=1
+    <trim suffixOverrides=",">
+      <if test="params != null and params.id != null and params.id != '' ">
+        and gu.ID=#{params.id}
+      </if>
+      <if test="params != null and params.groupId != null and params.groupId != '' ">
+        and gu.GROUPID=#{params.groupId}
+      </if>
+      <if test="params != null and params.userId != null and params.userId != '' ">
+        and gu.USERID=#{params.userId}
+      </if>
+      <if test="params != null and params.ownerId != null and params.ownerId != '' ">
+        and gu.OWNERID=#{params.ownerId}
+      </if>
+      <if test="params != null and params.deleted != null ">
+        and gu.DELETED=#{params.deleted}
+      </if>
+      <if test="params != null and params.createTime != null  ">
+        and gu.CREATE_TIME=#{params.createTime}
+      </if>
+      <if test="params != null and params.updateTime != null  ">
+        and gu.UPDATE_TIME=#{params.updateTime}
+      </if>
+      <if test="params != null and params.createUser != null  ">
+        and gu.CREATE_USER=#{params.createUser}
+      </if>
+      <if test="params != null and params.updateUser != null  ">
+        and gu.UPDATE_USER=#{params.updateUser}
+      </if>
+    </trim>
+  </sql>
+  <!-- 列表总数 -->
+  <select id="selectByMapCount" resultType="java.lang.Integer" parameterType="com.letv.common.dao.QueryParam">
+    select
+    count(1)
+    from
+    WEBPORTAL_GROUP_USER gu
+    left join
+    WEBPORTAL_USER u on gu.USERID = u.ID
+    <include refid="Page_Where_Clause" />
+    <if test="params != null and params.userName != null  and params.userName != ''">
+      and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+    </if>
+  </select>
+  <!-- 分页：根据条件查询 -->
+  <select id="selectPageByMap" resultMap="BaseResultMap" parameterType="com.letv.common.dao.QueryParam">
+    select
+    <include refid="Base_Column_List" />,u.USERNAME,u.EMAIL
+    from
+    WEBPORTAL_GROUP_USER gu
+    left join
+    WEBPORTAL_USER u on gu.USERID = u.ID
+    <include refid="Page_Where_Clause" />
+    <if test="params != null and params.userName != null  and params.userName != ''">
+      and u.USERNAME like CONCAT('%',#{params.userName},'%') escape '^'
+    </if>
+    ORDER BY gu.CREATE_TIME DESC
+    <if test="page != null">
+      limit #{page.startRowPosition},#{page.recordsPerPage}
+    </if>
+  </select>
+
+  <select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />,u.USERNAME,u.EMAIL
+    from
+    WEBPORTAL_GROUP_USER gu
+    left join
+    WEBPORTAL_USER u on gu.USERID = u.ID
+    <include refid="Base_Where_Clause" />
+    <if test="params != null and userName != null  and userName != ''">
+      and u.USERNAME like CONCAT('%',#{userName},'%') escape '^'
+    </if>
+  </select>
+  <insert id="insert" parameterType="GroupUser" useGeneratedKeys="true" keyProperty="id" >
+    insert into WEBPORTAL_GROUP_USER (ID, GROUPID, USERID,
+      OWNERID, DELETED, CREATE_TIME,
+      UPDATE_TIME, CREATE_USER, UPDATE_USER
+      )
+    values (#{id,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
+      #{ownerId,jdbcType=BIGINT}, #{deleted,jdbcType=TINYINT}, now(),
+      #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT,typeHandler=com.letv.portal.util.mybatis.type.UserTypeHandler}, #{updateUser,jdbcType=BIGINT}
+      )
+  </insert>
+  <delete id="delete" parameterType="GroupUser" >
+    delete from WEBPORTAL_GROUP_USER
+    where OWNERID = #{ownerId,jdbcType=BIGINT} and USERID = #{userId,jdbcType=BIGINT}
+  </delete>
+</mapper>
