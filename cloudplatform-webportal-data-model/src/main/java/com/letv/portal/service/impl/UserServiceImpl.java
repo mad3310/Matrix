@@ -150,5 +150,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserModel> implements IUser
 	public void updateByMap(Map<String, Object> params) {
 		this.userDao.updateByMap(params);
 	}
-  
+
+	@Override
+	public List<UserModel> selectByEmail(String email) {
+		return userDao.selectByEmail(email);
+	}
+
 }
