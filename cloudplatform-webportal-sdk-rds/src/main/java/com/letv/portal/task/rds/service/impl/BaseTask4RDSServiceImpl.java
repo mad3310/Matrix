@@ -64,6 +64,7 @@ public class BaseTask4RDSServiceImpl extends BaseTaskServiceImpl implements IBas
 			throw new ValidateException("mclusterModel is null by mclusterId:" + mclusterId);
 		if(tr.isSuccess()) {
 			mclusterModel.setStatus(MclusterStatus.RUNNING.getValue());
+			mclusterModel.setCanBackup(true);
 			this.mclusterService.audit(mclusterModel);
 			logger.info("RDS service build success:" + mclusterModel.getMclusterName());
 		} else {
