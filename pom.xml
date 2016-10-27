@@ -839,6 +839,10 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>127.0.0.1:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
+                <cloudplatform.webportal.webapp.dubbo.protocol.rest>8081</cloudplatform.webportal.webapp.dubbo.protocol.rest>
+
                 <matrix.slb.default.image>10.160.140.32:5000/letv/gbalancer-cluster:0.10</matrix.slb.default.image>
                 <matrix.gce.nginx.default.image>10.160.140.32:5000/letv/base-nginx:logstash-forwarder-0.0.6</matrix.gce.nginx.default.image>
 
@@ -940,6 +944,10 @@
                 <cloudplatform.webportal.db.testConnectionOnCheckout>false</cloudplatform.webportal.db.testConnectionOnCheckout>
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
+
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.185.81.18:2181,10.185.81.141:2181,10.185.81.144:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
+                <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
 
                 <matrix.slb.default.image>10.160.140.32:5000/letv/gbalancer-cluster:0.10</matrix.slb.default.image>
                 <matrix.gce.nginx.default.image>10.160.140.32:5000/letv/base-nginx:logstash-forwarder-0.0.6</matrix.gce.nginx.default.image>
@@ -1044,6 +1052,10 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.180.82.228:2181,10.180.82.118:2181,10.180.91.13:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
+                <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
+
                 <matrix.slb.default.image>10.160.140.32:5000/letv/gbalancer-cluster:0.0.9</matrix.slb.default.image>
                 <matrix.gce.nginx.default.image>10.160.140.32:5000/letv/base-nginx:logstash-forwarder-0.0.8</matrix.gce.nginx.default.image>
                 <matrix.gce.jetty.default.image>10.160.140.32:5000/letv/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
@@ -1145,6 +1157,10 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.180.82.228:2181,10.180.82.118:2181,10.180.91.13:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
+                <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
+
                 <matrix.slb.default.image>10.160.140.32:5000/letv/gbalancer-cluster:0.0.9</matrix.slb.default.image>
                 <matrix.gce.nginx.default.image>10.160.140.32:5000/letv/base-nginx:logstash-forwarder-0.0.8</matrix.gce.nginx.default.image>
                 <matrix.gce.jetty.default.image>10.160.140.32:5000/letv/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
@@ -1244,6 +1260,10 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.180.82.228:2181,10.180.82.118:2181,10.180.91.13:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
+                <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
+
                 <matrix.slb.default.image>10.160.140.32:5000/letv/gbalancer-cluster:0.0.9</matrix.slb.default.image>
                 <matrix.gce.nginx.default.image>10.160.140.32:5000/letv/base-nginx:logstash-forwarder-0.0.8</matrix.gce.nginx.default.image>
                 <matrix.gce.jetty.default.image>10.160.140.32:5000/letv/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
@@ -1342,6 +1362,10 @@
                 <cloudplatform.webportal.db.testConnectionOnCheckout>false</cloudplatform.webportal.db.testConnectionOnCheckout>
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
+
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.180.82.228:2181,10.180.82.118:2181,10.180.91.13:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
+                <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
 
                 <matrix.slb.default.image>10.160.140.32:5000/letv/gbalancer-cluster:0.0.9</matrix.slb.default.image>
                 <matrix.gce.nginx.default.image>10.160.140.32:5000/letv/base-nginx:logstash-forwarder-0.0.8</matrix.gce.nginx.default.image>
