@@ -36,6 +36,7 @@ import com.letv.common.session.Session;
 import com.letv.common.session.SessionServiceImpl;
 import com.letv.common.util.BeanUtil;
 import com.letv.portal.service.IBaseService;
+import org.springframework.util.CollectionUtils;
 
 /**
  * <p>
@@ -264,30 +265,22 @@ public abstract class BaseServiceImpl<T> implements IBaseService<T>{
 	 * @return
 	 */
 	private <K, V> void replacePageUnLegalParams(Page page,Map<K, V> params){
-		Map<String,Integer> pageMap = new HashMap<String,Integer>();
-		String currentPage = params.get("currentPage").toString();
-		int curPage = 1;
-		if(!StringUtils.isEmpty(currentPage)){
-			curPage = Integer.parseInt(currentPage);
-			if(curPage <= 0)
-				curPage = 1;
+		int currentPage = page.getCurrentPage();
+		int recordsPerPage = page.getRecordsPerPage();
+		if(currentPage <= 0)
+			currentPage = 1;
+		if(recordsPerPage <= 0)
+			recordsPerPage = IPage.RECORDS_PER_PAGE;
+		else if(recordsPerPage > IPage.MAX_RETURN_RECORDS)
+			recordsPerPage = IPage.MAX_RETURN_RECORDS;
+		page.setCurrentPage(currentPage);
+		page.setRecordsPerPage(recordsPerPage);
+		if(!CollectionUtils.isEmpty(params)){
+			Map<String,Integer> pageMap = new HashMap<String,Integer>();
+			pageMap.put("currentPage", currentPage);
+			pageMap.put("recordsPerPage", recordsPerPage);
+			params.putAll((Map<? extends K, ? extends V>) pageMap);
 		}
-		pageMap.put("currentPage",curPage);
-		String recordsPerPage = params.get("recordsPerPage").toString();
-		int recsPerPage = IPage.RECORDS_PER_PAGE;
-		if(!StringUtils.isEmpty(recordsPerPage)){
-			recsPerPage = Integer.parseInt(recordsPerPage);
-			if(recsPerPage <= 0)
-				recsPerPage = IPage.RECORDS_PER_PAGE;
-			else if(recsPerPage > IPage.MAX_RETURN_RECORDS)
-				recsPerPage = IPage.MAX_RETURN_RECORDS;
-
-		}
-		pageMap.put("recordsPerPage", recsPerPage);
-		params.putAll((Map<? extends K, ? extends V>) pageMap);
-		//使用替换后的params(该params必然包含currentPage和recordsPerPage)，重新修改page
-		page.setCurrentPage(curPage);
-		page.setRecordsPerPage(recsPerPage);
 	}
 	public abstract IBaseDao<T> getDao();
 }
