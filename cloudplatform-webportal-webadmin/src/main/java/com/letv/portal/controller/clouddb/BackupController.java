@@ -21,6 +21,7 @@ import com.letv.portal.model.BackupResultModel;
 import com.letv.portal.model.MclusterModel;
 import com.letv.portal.proxy.IBackupProxy;
 import com.letv.portal.service.IBackupService;
+import com.letv.portal.service.IMclusterService;
 import com.letv.portal.service.adminoplog.ClassAoLog;
 
 @ClassAoLog(module="RDS管理/备份与恢复")
@@ -32,6 +33,8 @@ public class BackupController {
 	private IBackupService backupService;
 	@Autowired
 	private IBackupProxy backupProxy;
+	@Autowired
+	private IMclusterService mclusterService;
 	
 	private final static Logger logger = LoggerFactory.getLogger(BackupController.class);
 		
@@ -59,6 +62,13 @@ public class BackupController {
 	 
 	@RequestMapping(value="/full", method=RequestMethod.GET)   
 	public @ResponseBody ResultObject wholeBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {
+		//先判断集群备份开关是否打开
+		MclusterModel mclusterModel = mclusterService.selectById(mcluster.getMclusterId());
+		if(mclusterModel != null && !mclusterModel.getCanBackup()){
+			obj.setResult(0);
+			obj.addMsg("备份请求失败，请先打开备份开关再次重试！");
+			return obj;
+		}
 		BackupResultModel dto = backupProxy.wholeBackup4Db(mcluster);
 		if(null == dto) {
 			obj.setResult(0);
@@ -71,6 +81,13 @@ public class BackupController {
 	
 	@RequestMapping(value="/incr", method=RequestMethod.GET)   
 	public @ResponseBody ResultObject incrBackup4Db(HttpServletRequest request, BackupResultModel mcluster, ResultObject obj) {
+		//先判断集群备份开关是否打开
+		MclusterModel mclusterModel = mclusterService.selectById(mcluster.getMclusterId());
+		if(mclusterModel != null && !mclusterModel.getCanBackup()){
+			obj.setResult(0);
+			obj.addMsg("备份请求失败，请先打开备份开关再次重试！");
+			return obj;
+		}
 		BackupResultModel dto = backupProxy.incrBackup4Db(mcluster);
 		if(null == dto) {
 			obj.setResult(0);

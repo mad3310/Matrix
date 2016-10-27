@@ -165,6 +165,18 @@ function queryByPage() {
 				expandHtml=expandOs==0?expandHtml:containerOsHtml("rds","expand");
 				deleteHtml=deleteOs==0?deleteHtml:containerOsHtml("rds","delete");
 				changeUserHtml=changeUserOs==0?changeUserHtml:containerOsHtml("rds","changeUser");
+				var backupSwitchHtml = '';
+				if(tempObj.status==1){
+					backupSwitchHtml = '<td>'+
+											'<label>'+
+												'<input name="switch-field-1" class="ace ace-switch ace-switch-4 btn-empty" type="checkbox" onclick="switchBackup(this)" '+(tempObj.canBackup?'checked':'')+' />'+
+												'<span class="lbl"></span>'+
+											'</label>'+
+										'</td>';
+				} else{
+					backupSwitchHtml = '<td>无法备份</td>';
+				}
+
 	
 				var td8 ="<td data-status='"+tempStatus+"'>"
 							+"<div class='hidden-sm hidden-xs  action-buttons'>"
@@ -191,7 +203,7 @@ function queryByPage() {
 				}else{
 					tr ="<tr>";
 				}
-				recordsArray.push(tr,td1,td2,td3,td5,td6,td7,td8,"</tr>");
+				recordsArray.push(tr,td1,td2,td3,td5,td6,td7,backupSwitchHtml,td8,"</tr>");
 			}
 			tby.append(recordsArray.join(''));
 			/*初始化tooltip*/
@@ -657,6 +669,27 @@ function expandMcluster(obj){
 		});
 	}
 	confirmframe("扩容RDS集群","选择扩容数量",form,expandCmd);
+}
+
+function switchBackup(e){
+	var targetValue = e.checked;
+	e.checked = !targetValue;
+	confirmframe('备份开关','确定要'+(targetValue ? '开启':'关闭')+'备份吗？','',function(){
+		var mclusterId =$(e).closest("tr").find('[name="mcluster_id"]').val();
+		$.ajax({
+			cache:false,
+			url:'/mcluster/openOrcloseBackupSwitch/{mclusterId}'.replace('{mclusterId}',mclusterId),
+			type:'put',
+			success:function(data){
+				if(typeof(data) == 'string'){
+					data = JSON.parse(data)
+				};
+				if(error(data)) return;
+				queryByPage();
+				e.checked = targetValue;
+			}
+		});
+	});
 }
 function queryHcluster(){
 //	var options1 = $('#hcluster_select');

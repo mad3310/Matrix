@@ -104,6 +104,7 @@
 								<th>所属用户</th>
 								<th class="hidden-480">创建时间 </th>
 								<th>当前状态</th>
+								<th>备份开关</th>
 								<th>操作</th>
 							</tr>
 						</thead>

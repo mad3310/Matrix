@@ -15,9 +15,12 @@ package com.letv.portal.service.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.letv.common.paging.IPage;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,7 @@ import com.letv.common.session.Session;
 import com.letv.common.session.SessionServiceImpl;
 import com.letv.common.util.BeanUtil;
 import com.letv.portal.service.IBaseService;
+import org.springframework.util.CollectionUtils;
 
 /**
  * <p>
@@ -220,6 +224,8 @@ public abstract class BaseServiceImpl<T> implements IBaseService<T>{
 	
 	@Override
 	public <K, V> Page selectPageByParams(Page page, Map<K,V> params,String orderBy,Boolean isAsc) {
+		//如果传来当前页码currentPage或每页显示条数recordsPerPage不合法，做进一步处理
+		replacePageUnLegalParams(page,params);
 		QueryParam param = new QueryParam();
 		param.setPage(page);
 		param.setParams(params);
@@ -229,6 +235,8 @@ public abstract class BaseServiceImpl<T> implements IBaseService<T>{
 	}
 	@Override
 	public <K, V> Page selectPageByParams(Page page, Map<K,V> params) {
+		//如果传来当前页码currentPage或每页显示条数recordsPerPage不合法，做进一步处理
+		replacePageUnLegalParams(page, params);
 		QueryParam param = new QueryParam();
 		param.setPage(page);
 		param.setParams(params);
@@ -239,6 +247,8 @@ public abstract class BaseServiceImpl<T> implements IBaseService<T>{
 	
 	@Override
 	public <K, V> Page queryByPagination(Page page, Map<K, V> params) {
+		//如果传来当前页码currentPage或每页显示条数recordsPerPage不合法，做进一步处理
+		replacePageUnLegalParams(page,params);
 		QueryParam param = new QueryParam();
 		param.setPage(page);
 		param.setParams(params);
@@ -246,6 +256,31 @@ public abstract class BaseServiceImpl<T> implements IBaseService<T>{
 		page.setTotalRecords(getDao().selectByMapCount(param));
 		return page;
 	}
-	
+
+	/**
+	 * 替换分页元数据参数
+	 * @param params
+	 * @param <K>
+	 * @param <V>
+	 * @return
+	 */
+	private <K, V> void replacePageUnLegalParams(Page page,Map<K, V> params){
+		int currentPage = page.getCurrentPage();
+		int recordsPerPage = page.getRecordsPerPage();
+		if(currentPage <= 0)
+			currentPage = 1;
+		if(recordsPerPage <= 0)
+			recordsPerPage = IPage.RECORDS_PER_PAGE;
+		else if(recordsPerPage > IPage.MAX_RETURN_RECORDS)
+			recordsPerPage = IPage.MAX_RETURN_RECORDS;
+		page.setCurrentPage(currentPage);
+		page.setRecordsPerPage(recordsPerPage);
+		if(!CollectionUtils.isEmpty(params)){
+			Map<String,Integer> pageMap = new HashMap<String,Integer>();
+			pageMap.put("currentPage", currentPage);
+			pageMap.put("recordsPerPage", recordsPerPage);
+			params.putAll((Map<? extends K, ? extends V>) pageMap);
+		}
+	}
 	public abstract IBaseDao<T> getDao();
 }

@@ -106,7 +106,14 @@
 		<include refid="Base_Column_List" />
 		from WEBPORTAL_USER where USERNAME = #{userName}
 	</select>
-	
+
+	<!-- 根据email查询-->
+	<select id="selectByEmail" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select ID,USERNAME,EMAIL
+		<include refid="Base_Column_List" />
+		from WEBPORTAL_USER where EMAIL like CONCAT('%',#{email},'%') escape '^'
+	</select>
+
 	<!-- 根据userName查询用户是否存在-->
 	<select id="existByUserName" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select count(1)
