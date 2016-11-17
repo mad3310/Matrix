@@ -26,12 +26,12 @@
 		<property name="username" value="${smtp.username}" />
 		<property name="password" value="${smtp.password}" />
 		<property name="defaultEncoding" value="${smtp.defaultEncoding}" />
-		<!-- <property name="protocol" value="${smtp.protocol}" />
+		<property name="protocol" value="${smtp.protocol}" />
 		<property name="javaMailProperties">
 			<props>
 				<prop key="mail.smtp.auth">${smtp.auth}</prop>
 				<prop key="mail.smtp.timeout">${smtp.timeout}</prop>
 			</props>
-		</property> -->
+		</property>
 	</bean>
 </beans>
