@@ -767,9 +767,9 @@
             </activation>
             <properties>
                 <cloudplatform.webportal.db.driverClassName>com.mysql.jdbc.Driver</cloudplatform.webportal.db.driverClassName>
-                <cloudplatform.webportal.db.url>jdbc:mysql://10.204.29.161:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8</cloudplatform.webportal.db.url>
-                <cloudplatform.webportal.db.username>webportal</cloudplatform.webportal.db.username>
-                <cloudplatform.webportal.db.password>webportal</cloudplatform.webportal.db.password>
+                <cloudplatform.webportal.db.url>jdbc:mysql://127.0.0.1:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8</cloudplatform.webportal.db.url>
+                <cloudplatform.webportal.db.username>polex</cloudplatform.webportal.db.username>
+                <cloudplatform.webportal.db.password>polex</cloudplatform.webportal.db.password>
                <!-- <cloudplatform.webportal.db.url>jdbc:mysql://10.130.85.171:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8</cloudplatform.webportal.db.url>
                 <cloudplatform.webportal.db.username>admin</cloudplatform.webportal.db.username>
                 <cloudplatform.webportal.db.password>Passw0rd</cloudplatform.webportal.db.password>-->
@@ -785,7 +785,7 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
-                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>127.0.0.1:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.0.13.141:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
                 <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
                 <cloudplatform.webportal.webapp.dubbo.protocol.rest>8081</cloudplatform.webportal.webapp.dubbo.protocol.rest>
 
@@ -804,9 +804,9 @@
                 <webportal.admin.http>http://127.0.0.1:8080</webportal.admin.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
-                <webportal.errormail.to>linzhanbo@le.com</webportal.errormail.to>
-                <service.notice.email.to>linzhanbo@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>lisuxiao@le.com</service.operation.notice.email.to>
+                <webportal.errormail.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</webportal.errormail.to>
+                <service.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.notice.email.to>
+                <service.operation.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>D:</webportal.log.path>
@@ -877,8 +877,8 @@
             <properties>
                 <cloudplatform.webportal.db.driverClassName>com.mysql.jdbc.Driver</cloudplatform.webportal.db.driverClassName>
                 <cloudplatform.webportal.db.url>jdbc:mysql://127.0.0.1:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8</cloudplatform.webportal.db.url>
-                <cloudplatform.webportal.db.username>webportal</cloudplatform.webportal.db.username>
-                <cloudplatform.webportal.db.password>webportal</cloudplatform.webportal.db.password>
+                <cloudplatform.webportal.db.username>polex</cloudplatform.webportal.db.username>
+                <cloudplatform.webportal.db.password>polex</cloudplatform.webportal.db.password>
                 <cloudplatform.webportal.db.maxPoolSize>10</cloudplatform.webportal.db.maxPoolSize>
                 <cloudplatform.webportal.db.minPoolSize>5</cloudplatform.webportal.db.minPoolSize>
                 <cloudplatform.webportal.db.initialPoolSize>5</cloudplatform.webportal.db.initialPoolSize>
@@ -910,9 +910,9 @@
                 <webportal.api.http>http://10.150.149.31:8080</webportal.api.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
-                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;sunweiwei1@le.com;zhangtao8@le.com</service.operation.notice.email.to>
+                <webportal.errormail.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</webportal.errormail.to>
+                <service.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.notice.email.to>
+                <service.operation.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -982,9 +982,9 @@
             <id>production</id>
             <properties>
                 <cloudplatform.webportal.db.driverClassName>com.mysql.jdbc.Driver</cloudplatform.webportal.db.driverClassName>
-                <cloudplatform.webportal.db.url>jdbc:mysql://10.130.85.171:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull</cloudplatform.webportal.db.url>
-                <cloudplatform.webportal.db.username>paascloud_wr</cloudplatform.webportal.db.username>
-                <cloudplatform.webportal.db.password>snlPiwCu</cloudplatform.webportal.db.password>
+                <cloudplatform.webportal.db.url>jdbc:mysql://127.0.0.1:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull</cloudplatform.webportal.db.url>
+                <cloudplatform.webportal.db.username>polex</cloudplatform.webportal.db.username>
+                <cloudplatform.webportal.db.password>polex</cloudplatform.webportal.db.password>
                 <cloudplatform.webportal.db.maxPoolSize>10</cloudplatform.webportal.db.maxPoolSize>
                 <cloudplatform.webportal.db.minPoolSize>5</cloudplatform.webportal.db.minPoolSize>
                 <cloudplatform.webportal.db.initialPoolSize>5</cloudplatform.webportal.db.initialPoolSize>
@@ -1016,9 +1016,9 @@
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>zhoubingzheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
+                <webportal.errormail.to>bingzheng@polex.com.cn;wangjun@polex.com.cn;</webportal.errormail.to>
+                <service.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.notice.email.to>
+                <service.operation.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1119,9 +1119,9 @@
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>zhoubingzheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
+                <webportal.errormail.to>bingzheng@polex.com.cn;wangjun@polex.com.cn;</webportal.errormail.to>
+                <service.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.notice.email.to>
+                <service.operation.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1222,9 +1222,9 @@
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>zhoubingzheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
+                <webportal.errormail.to>bingzheng@polex.com.cn;wangjun@polex.com.cn;</webportal.errormail.to>
+                <service.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.notice.email.to>
+                <service.operation.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1325,9 +1325,9 @@
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
                 <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
                 <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>lisuxiao@le.com;linzhanbo@le.com;zhoubingzheng@le.com;</webportal.errormail.to>
-                <service.notice.email.to>lisuxiao@le.com;linzhanbo@le.com;liujinliu@le.com;zhoubingzheng@le.com;wulicheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.notice.email.to>
-                <service.operation.notice.email.to>zhoubingzheng@le.com;gaoqiang3@le.com;zhangchengqiang@le.com</service.operation.notice.email.to>
+                <webportal.errormail.to>bingzheng@polex.com.cn;wangjun@polex.com.cn;</webportal.errormail.to>
+                <service.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.notice.email.to>
+                <service.operation.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
@@ -1399,24 +1399,44 @@
     <repositories>
         <!--私有仓库 url-->
         <repository>
+            <!-- 
             <id>Matrix-Thirdparty repository</id>
             <name>Letv.com Repository</name>
             <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Thirdparty/</url>
+             -->
+            <id>polex-thrid-repository</id>
+            <name>polex thridparty Repository</name>
+            <url>http://10.0.13.140:8081/nexus/content/repositories/polex-thrid-repository/</url>
         </repository>
         <repository>
+            <!-- 
             <id>Matrix-Snapshot repository</id>
             <name>Letv.com Repository</name>
             <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Snapshot/</url>
+             -->
+            <id>polex-Snapshot</id>
+            <name>polex-Snapshot repository</name>
+            <url>http://10.0.13.140:8081/nexus/content/repositories/polex-Snapshot/</url>             
         </repository>
         <repository>
+            <!-- 
             <id>Matrix-Release repository</id>
             <name>Letv.com Repository</name>
             <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Release/</url>
+             -->
+            <id>polex-release</id>
+            <name>polex-release respository</name>
+            <url>http://10.0.13.140:8081/nexus/content/repositories/polex-release/</url>
         </repository>
         <repository>
+           <!-- 
             <id>letv.public repository</id>
             <name>Letv.com Repository</name>
             <url>http://maven.letv.cn/nexus/content/groups/public/</url>
+           -->
+            <id>public</id>
+            <name>Public Repositories</name>
+            <url>http://10.0.13.140:8081/nexus/content/groups/public/</url>
         </repository>
     </repositories>
     <!--私有仓库配置  end-->
@@ -1424,7 +1444,8 @@
     <pluginRepositories>
         <!--私有仓库插件 url-->
         <pluginRepository>
-            <id>letv.public plugin</id>
+            <!-- 
+             <id>letv.public plugin</id>
             <name>Letv.com Repository</name>
             <url>http://maven.letv.cn/nexus/content/groups/public/</url>
             <releases>
@@ -1433,21 +1454,43 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+             -->    
+            <id>public</id>
+            <name>Public Repositories</name>
+            <url>http://10.0.13.140:8081/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>   
         </pluginRepository>
     </pluginRepositories>
     <!--deploy begin-->
     <distributionManagement>
         <!--deploy url-->
         <repository>
+             <!-- 
             <id>project-release</id>
             <name>Projects Release repository</name>
             <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Release/</url>
+             -->
+            <id>polex-release</id>
+            <name>polex-release respository</name>
+            <url>http://10.0.13.140:8081/nexus/content/repositories/polex-release/</url>
         </repository>
+        
         <snapshotRepository>
+          <!--  
             <id>project-snapshots</id>
             <name>Projects SnapShot repository</name>
             <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Snapshot/</url>
-        </snapshotRepository>
+         -->
+            <id>polex-Snapshot</id>
+            <name>polex-Snapshot repository</name>
+            <url>http://10.0.13.140:8081/nexus/content/repositories/polex-Snapshot/</url> 
+        </snapshotRepository> 
+         
     </distributionManagement>
     <!--deploy end-->
 
