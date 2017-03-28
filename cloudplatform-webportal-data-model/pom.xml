@@ -230,5 +230,30 @@
 		</dependency>
 	        
     </dependencies>
+    
+    <!--deploy begin-->
+    <distributionManagement>
+        <!--deploy url-->
+        <repository>
+             <!-- 
+            <id>project-release</id>
+            <name>Projects Release repository</name>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Release/</url>
+             -->
+            <id>polex-release</id>
+            <name>polex-release respository</name>
+            <url>http://10.0.13.140:8081/nexus/content/repositories/polex-release/</url>
+        </repository>
+        <snapshotRepository>
+            <!-- 
+            <id>project-snapshots</id>
+            <name>Projects SnapShot repository</name>
+            <url>http://maven.letv.cn/nexus/content/repositories/Matrix-Snapshot/</url>
+             -->
+            <id>polex-Snapshot</id>
+            <name>polex-Snapshot repository</name>
+            <url>http://10.0.13.140:8081/nexus/content/repositories/polex-Snapshot/</url> 
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
