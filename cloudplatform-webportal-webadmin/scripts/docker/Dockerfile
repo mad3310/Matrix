@@ -2,10 +2,10 @@ FROM 120.132.124.218:5000/polex/centos:6
 MAINTAINER bingzheng.zhou <zhoubingzheng@letv.com>
 
 RUN rpm -ivh http://pkg-repo.oss.letv.com/pkgs/centos6/letv-release.noarch.rpm 
+RUN yum install java-1.7.0-openjdk-devel.x86_64 -y
 RUN yum install jetty -y
 RUN yum install vim -y
 RUN yum install gbalancer -y
-RUN yum install java-1.7.0-openjdk-devel.x86_64 -y
 RUN yum install openssl nss -y
 RUN rm -f /opt/letv/jetty/contexts/test.xml
 RUN yum install dejavu* -y
