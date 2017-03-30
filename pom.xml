@@ -794,10 +794,8 @@
 
                 <matrix.slb.default.image>10.160.140.32:5000/letv/gbalancer-cluster:0.10</matrix.slb.default.image>
                 <matrix.gce.nginx.default.image>10.160.140.32:5000/letv/base-nginx:logstash-forwarder-0.0.6</matrix.gce.nginx.default.image>
-
                 <matrix.gce.jetty.default.image>10.160.140.32:5000/letv/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
                 <matrix.cbase.default.image>10.160.140.32:5000/lihanlin1/cbase:V4</matrix.cbase.default.image>
-
                 <matrix.logstash.default.image>10.160.140.32:5000/letv/base-jetty:logstash-0.0.3</matrix.logstash.default.image>
                 <matrix.rds.data.default.image>letv/mcluster:0.0.2</matrix.rds.data.default.image>
                 <matrix.rds.vip.default.image>letv/mcluster_vip_gbalancer:0.0.3</matrix.rds.vip.default.image>
@@ -879,7 +877,7 @@
             <id>test</id>
             <properties>
                 <cloudplatform.webportal.db.driverClassName>com.mysql.jdbc.Driver</cloudplatform.webportal.db.driverClassName>
-                <cloudplatform.webportal.db.url>jdbc:mysql://10.0.13.142:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8</cloudplatform.webportal.db.url>
+                <cloudplatform.webportal.db.url>jdbc:mysql://127.0.0.1:3306/paascloud_test?useUnicode=true&amp;characterEncoding=utf-8</cloudplatform.webportal.db.url>
                 <cloudplatform.webportal.db.username>polex</cloudplatform.webportal.db.username>
                 <cloudplatform.webportal.db.password>polex</cloudplatform.webportal.db.password>
                 <cloudplatform.webportal.db.maxPoolSize>10</cloudplatform.webportal.db.maxPoolSize>
@@ -894,19 +892,17 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
-                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.185.81.18:2181,10.185.81.141:2181,10.185.81.144:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.200.91.15:2181,10.200.91.16:2181,10.200.91.17:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
                 <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
                 <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
 
-                <matrix.slb.default.image>10.160.140.32:5000/letv/gbalancer-cluster:0.10</matrix.slb.default.image>
-                <matrix.gce.nginx.default.image>10.160.140.32:5000/letv/base-nginx:logstash-forwarder-0.0.6</matrix.gce.nginx.default.image>
-
-                <matrix.gce.jetty.default.image>10.160.140.32:5000/letv/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
-                <matrix.cbase.default.image>10.160.140.32:5000/lihanlin1/cbase:V4</matrix.cbase.default.image>
-
-                <matrix.logstash.default.image>10.160.140.32:5000/letv/base-jetty:logstash-0.0.3</matrix.logstash.default.image>
-                <matrix.rds.data.default.image>letv/mcluster:0.0.2</matrix.rds.data.default.image>
-                <matrix.rds.vip.default.image>letv/mcluster_vip_gbalancer:0.0.3</matrix.rds.vip.default.image>
+                <matrix.slb.default.image>10.200.91.7:5000/polex/gbalancer-cluster:0.0.9</matrix.slb.default.image>
+                <matrix.gce.nginx.default.image>10.200.91.7:5000/polex/base-nginx:logstash-forwarder-0.0.8</matrix.gce.nginx.default.image>
+                <matrix.gce.jetty.default.image>10.200.91.7:5000/polex/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
+                <matrix.logstash.default.image>10.200.91.7:5000/polex/base-jetty:logstash-0.0.3</matrix.logstash.default.image>
+                <matrix.rds.data.default.image>10.200.91.7:5000/polex/mcluster5.5:0.2.3-4-1</matrix.rds.data.default.image>
+                <matrix.rds.vip.default.image>10.200.91.7:5000/polex/mcluster_gbalancer:0.2.3-4-1</matrix.rds.vip.default.image>
+                <matrix.cbase.default.image>10.200.91.7:5000/polex/cbase:1.0.0</matrix.cbase.default.image>
 
                 <webportal.local.http>http://10.154.238.29</webportal.local.http>
                 <webportal.admin.http>http://10.154.238.198</webportal.admin.http>
@@ -969,7 +965,7 @@
             	<matrix.gce.package.suffix>.zip</matrix.gce.package.suffix>
             	<matrix.gce.mirror.build.server.ip>10.204.30.15</matrix.gce.mirror.build.server.ip>
             	<matrix.gce.mirror.build.server.port>9998</matrix.gce.mirror.build.server.port>
-            	<matrix.gce.mirror.docker.addr.prefix>10.204.29.161:5000/letv_gce/</matrix.gce.mirror.docker.addr.prefix>
+            	<matrix.gce.mirror.docker.addr.prefix>10.200.91.7:5000/polex/gce/</matrix.gce.mirror.docker.addr.prefix>
             	<matrix.gce.mirror.build.check.interval>3000</matrix.gce.mirror.build.check.interval>
             	<matrix.gce.mirror.build.check.timeout>300000</matrix.gce.mirror.build.check.timeout>
             	<matrix.gce.container.memory.default.size>2147483648</matrix.gce.container.memory.default.size>
@@ -1149,7 +1145,7 @@
                 <zabbix.host.usermacro>115.182.93.59</zabbix.host.usermacro>
 
                 <task.executor.size>150</task.executor.size>
-
+				
                 <com.letv.cache.implStyle>Remote</com.letv.cache.implStyle>
 
                 <openstack.keystone.host>10.154.128.200</openstack.keystone.host>
