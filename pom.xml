@@ -1114,9 +1114,9 @@
                 <matrix.gce.nginx.default.image>10.200.91.7:5000/polex/base-nginx:logstash-forwarder-0.0.8</matrix.gce.nginx.default.image>
                 <matrix.gce.jetty.default.image>10.200.91.7:5000/polex/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
                 <matrix.logstash.default.image>10.200.91.7:5000/polex/base-jetty:logstash-0.0.3</matrix.logstash.default.image>
-                <matrix.rds.data.default.image>10.200.91.7:5000/polex/letv-mcluster:v0.1.3</matrix.rds.data.default.image>
-                <matrix.rds.vip.default.image>10.200.91.7:5000/polex/letv_mcluster_gbalancer:0.1.3</matrix.rds.vip.default.image>
-                <matrix.cbase.default.image>10.200.91.7:5000/polex/cbase:V4</matrix.cbase.default.image>
+                <matrix.rds.data.default.image>10.200.91.7:5000/polex/mcluster5.5:0.2.3-4-1</matrix.rds.data.default.image>
+                <matrix.rds.vip.default.image>10.200.91.7:5000/polex/mcluster_gbalancer:0.2.3-4-1</matrix.rds.vip.default.image>
+                <matrix.cbase.default.image>10.200.91.7:5000/polex/cbase:1.0.0</matrix.cbase.default.image>
                 <webportal.local.http>http://matrix.lecloud.com</webportal.local.http>
                 <webportal.admin.http>http://matrix-manage.lecloud.com</webportal.admin.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
@@ -1215,9 +1215,9 @@
                 <matrix.gce.nginx.default.image>10.200.91.7:5000/polex/base-nginx:logstash-forwarder-0.0.8</matrix.gce.nginx.default.image>
                 <matrix.gce.jetty.default.image>10.200.91.7:5000/polex/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
                 <matrix.logstash.default.image>10.200.91.7:5000/polex/base-jetty:logstash-0.0.3</matrix.logstash.default.image>
-                <matrix.rds.data.default.image>10.200.91.7:5000/polex/letv-mcluster:v0.1.3</matrix.rds.data.default.image>
-                <matrix.rds.vip.default.image>10.200.91.7:5000/polex/letv_mcluster_gbalancer:0.1.3</matrix.rds.vip.default.image>
-                <matrix.cbase.default.image>10.200.91.7:5000/polex/cbase:V4</matrix.cbase.default.image>
+                <matrix.rds.data.default.image>10.200.91.7:5000/polex/mcluster5.5:0.2.3-4-1</matrix.rds.data.default.image>
+                <matrix.rds.vip.default.image>10.200.91.7:5000/polex/mcluster_gbalancer:0.2.3-4-1</matrix.rds.vip.default.image>
+                <matrix.cbase.default.image>10.200.91.7:5000/polex/cbase:1.0.0</matrix.cbase.default.image>
                 <webportal.local.http>http://matrix.lecloud.com</webportal.local.http>
                 <webportal.admin.http>http://matrix-manage.lecloud.com</webportal.admin.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
@@ -1316,9 +1316,9 @@
                 <matrix.gce.nginx.default.image>10.200.91.7:5000/polex/base-nginx:logstash-forwarder-0.0.8</matrix.gce.nginx.default.image>
                 <matrix.gce.jetty.default.image>10.200.91.7:5000/polex/base-jetty:logstash-forwarder-0.0.10</matrix.gce.jetty.default.image>
                 <matrix.logstash.default.image>10.200.91.7:5000/polex/base-jetty:logstash-0.0.3</matrix.logstash.default.image>
-                <matrix.rds.data.default.image>10.200.91.7:5000/polex/letv-mcluster:v0.1.3</matrix.rds.data.default.image>
-                <matrix.rds.vip.default.image>10.200.91.7:5000/polex/letv_mcluster_gbalancer:0.1.3</matrix.rds.vip.default.image>
-                <matrix.cbase.default.image>10.200.91.7:5000/polex/cbase:V4</matrix.cbase.default.image>
+                <matrix.rds.data.default.image>10.200.91.7:5000/polex/mcluster5.5:0.2.3-4-1</matrix.rds.data.default.image>
+                <matrix.rds.vip.default.image>10.200.91.7:5000/polex/mcluster_gbalancer:0.2.3-4-1</matrix.rds.vip.default.image>
+                <matrix.cbase.default.image>10.200.91.7:5000/polex/cbase:1.0.0</matrix.cbase.default.image>
                 <webportal.local.http>http://matrix.lecloud.com</webportal.local.http>
                 <webportal.admin.http>http://matrix-manage.lecloud.com</webportal.admin.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
