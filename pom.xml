@@ -1106,7 +1106,7 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
-                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.180.82.228:2181,10.180.82.118:2181,10.180.91.13:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.200.91.15:2181,10.200.91.16:2181,10.200.91.17:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
                 <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
                 <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
 
@@ -1209,7 +1209,7 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
-                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.180.82.228:2181,10.180.82.118:2181,10.180.91.13:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.200.91.15:2181,10.200.91.16:2181,10.200.91.17:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
                 <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
                 <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
 
@@ -1312,7 +1312,7 @@
                 <cloudplatform.webportal.db.idleConnectionTestPeriod>60</cloudplatform.webportal.db.idleConnectionTestPeriod>
                 <cloudplatform.webportal.db.numHelperThreads>4</cloudplatform.webportal.db.numHelperThreads>
 
-                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.180.82.228:2181,10.180.82.118:2181,10.180.91.13:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
+                <cloudplatform.webportal.webapp.dubbo.registry.zkAddr>10.200.91.15:2181,10.200.91.16:2181,10.200.91.17:2181</cloudplatform.webportal.webapp.dubbo.registry.zkAddr>
                 <cloudplatform.webportal.webapp.dubbo.protocol.dubbo>20881</cloudplatform.webportal.webapp.dubbo.protocol.dubbo>
                 <cloudplatform.webportal.webapp.dubbo.protocol.rest>8080</cloudplatform.webportal.webapp.dubbo.protocol.rest>
 
