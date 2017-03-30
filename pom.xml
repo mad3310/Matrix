@@ -1013,11 +1013,9 @@
                 <webportal.api.http>http://10.150.149.32:8080</webportal.api.http>
                 <webportal.admin.http>http://10.150.149.30:8080</webportal.admin.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
-                <!-- 使用邮件组无法识别，暂时使用邮箱名 -->
-                <!-- <webportal.errormail.to>Mcluster_Members@letv.com</webportal.errormail.to> -->
-                <webportal.errormail.to>bingzheng@polex.com.cn;wangjun@polex.com.cn;</webportal.errormail.to>
-                <service.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.notice.email.to>
-                <service.operation.notice.email.to>bingzheng@polex.com.cn;wangjun@polex.com.cn</service.operation.notice.email.to>
+                <webportal.errormail.to>bingzheng@polex.com.cn</webportal.errormail.to>
+                <service.notice.email.to>bingzheng@polex.com.cn</service.notice.email.to>
+                <service.operation.notice.email.to>bingzheng@polex.com.cn</service.operation.notice.email.to>
                 <start.timing.jobs>N</start.timing.jobs>
 
                 <webportal.log.path>/var/log</webportal.log.path>
