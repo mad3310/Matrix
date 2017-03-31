@@ -79,7 +79,7 @@
 	<Set name="sessionIdManager">
     <New id="memcachedSessionIdManager" class="org.eclipse.jetty.nosql.memcached.MemcachedSessionIdManager">
       <Arg><Ref id="Server" /></Arg>
-      <Set name="serverString">10.154.28.163:11211</Set>
+      <Set name="serverString">127.0.0.1:11211</Set>
       <Set name="keyPrefix">session_admin:</Set>
     </New>
     </Set>
