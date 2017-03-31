@@ -12,12 +12,12 @@ SNAME=jetty
 #the full path and name of the daemon program  
 #Warning: The name of executable file must be identical with service name  
 PROG() {
-    cd /opt/letv/jetty
-    java -jar start.jar &>/dev/null &
+    sh /opt/letv/jetty/bin/jetty.sh start
 } 
   
 kill_jetty() {
-    kill -9 `ps -ef | grep -v "grep" | grep "java -jar start.jar" | awk '{print $2}'` &>/dev/null
+#    kill -9 `ps -ef | grep -v "grep" | grep "java -jar start.jar" | awk '{print $2}'` &>/dev/null
+	sh /opt/letv/jetty/bin/jetty.sh stop
 }
 
   
