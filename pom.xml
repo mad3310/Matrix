@@ -904,8 +904,8 @@
                 <matrix.rds.vip.default.image>10.200.91.7:5000/polex/mcluster_gbalancer:0.2.3-4-1</matrix.rds.vip.default.image>
                 <matrix.cbase.default.image>10.200.91.7:5000/polex/cbase:1.0.0</matrix.cbase.default.image>
 
-                <webportal.local.http>http://10.154.238.29</webportal.local.http>
-                <webportal.admin.http>http://10.154.238.198</webportal.admin.http>
+                <webportal.local.http>http://120.132.124.235/</webportal.local.http>
+                <webportal.admin.http>http://120.132.124.231</webportal.admin.http>
                 <webportal.api.http>http://10.150.149.31:8080</webportal.api.http>
                 <oauth.auth.http>https://login.lecloud.com</oauth.auth.http>
 
