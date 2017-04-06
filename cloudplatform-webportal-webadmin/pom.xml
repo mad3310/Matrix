@@ -238,6 +238,10 @@
 		  <groupId>org.google</groupId>
 		  <artifactId>kaptcha</artifactId>
 		</dependency>
+		<dependency>
+		  <groupId>com.jhlabs</groupId>
+		  <artifactId>filters</artifactId>
+	    </dependency>
 		
 		<dependency>
         	<groupId>com.letv.cloudplatform</groupId>
